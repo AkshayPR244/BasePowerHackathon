@@ -29,8 +29,6 @@
       "Bash(gh pr list*)",
       "Bash(gh pr diff *)",
       "Bash(python -m json.tool *)",
-      "Bash(bash lanes/*/init.sh)",
-      "Bash(./lanes/*/init.sh)",
       "Bash(curl *ercot.com*)",
       "Bash(curl *houstontx.gov*)",
       "Bash(curl *gridstatus.io*)",

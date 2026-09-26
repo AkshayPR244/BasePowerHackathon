@@ -14,6 +14,7 @@ One line of reasoning each. Newest changes at the bottom of each section.
 
 ## Changes from the scaffold prompt
 
+- **Agent-neutral lanes, no init scripts.** `AGENTS.md` holds the rules for any coding agent. `CLAUDE.md` imports it and adds Claude-only extras. Each lane's `PROGRESS.md` opens with a "Continue from here" block: branch, setup, check, reading list, next item. One line starts any agent: "Read AGENTS.md, then lanes/<lane>/PROGRESS.md, and continue from there."
 - **Framing: planning and recovery analysis, not booking.** The spec's `appointments.csv` is the current installation plan. The contract calls it `Scenario.current_plan` of `PlannedInstall` rows, the file is `current_plan.csv`, and the metric is `changed_installs`. Edits are disruptions or interventions. `docs/SPEC.md` stays verbatim.
 - **The scaffold ships no running product code.** It holds frozen contracts, the tiny fixture with expected results, lane briefs, and the harness. The loader, API, OpenAPI export, generated TS types, MSW mocks, and app shell are each lane's first items. Nothing was installed or built to make this scaffold.
 - **No MapLibre. The map is plain SVG.** We render about 30 points and 3 cluster outlines with no basemap. A WebGL map library adds weight and setup for no visible gain. `Site` carries `lon`/`lat` and `Cluster` carries `outline`, so the UI needs no GeoJSON parsing.

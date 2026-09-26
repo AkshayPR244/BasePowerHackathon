@@ -23,21 +23,21 @@ Needs `uv`, `pnpm`, `make`, and bash (macOS, Linux, or WSL).
 
 ## Start a lane
 
-Each teammate runs one lane. Each lane runs in its own clone or worktree.
+Each teammate runs one lane in their own clone, with any coding agent or by hand. The rules live in `AGENTS.md`. Each lane's state and next step live in `lanes/<lane>/PROGRESS.md`.
 
 ```bash
-git fetch origin
-git switch lane/a-data        # or lane/b-planning, lane/c-ui
-./lanes/A-data/init.sh        # or B-planning, C-ui
-claude "Follow CLAUDE.md. You are lane A. Do the session start ritual, then work through lanes/A-data/feature_list.json."
+git switch lane/a-data       # or lane/b-planning, lane/c-ui
 ```
 
-For overnight runs, start Claude Code with `--permission-mode acceptEdits`. The allowlist in `.claude/settings.json` covers the usual commands. Anything else waits for approval.
+Then give your agent one line:
+
+```text
+Read AGENTS.md, then lanes/A-data/PROGRESS.md, and continue from there.
+```
 
 - Stop an agent: `touch AGENT_STOP`. Resume: `rm AGENT_STOP`.
 - Redirect an agent: write a note to `lanes/<lane>/STEER.md` or `STEER.md`.
-
-One session can also run all three lanes as subagents. See "Orchestrator mode" in [`CLAUDE.md`](CLAUDE.md).
+- Claude Code users get hooks, subagents, and an orchestrator mode on top. See [`CLAUDE.md`](CLAUDE.md).
 
 ## Layout
 

@@ -79,6 +79,9 @@ async def _invalid_plan(_: Request, exc: InvalidPlanError) -> JSONResponse:
 async def _bad_request(_: Request, exc: RequestValidationError) -> JSONResponse:
     parts = []
     for e in exc.errors():
+        if e.get("type") == "json_invalid":
+            parts.append("The request body is not valid JSON.")
+            continue
         where = ".".join(str(p) for p in e.get("loc", ()) if p != "body")
         parts.append(f"{where}: {e.get('msg')}" if where else str(e.get("msg")))
     return _json(422, ApiError(code="invalid_request", message="; ".join(parts)))
@@ -88,6 +91,11 @@ async def _bad_request(_: Request, exc: RequestValidationError) -> JSONResponse:
 async def _http_error(_: Request, exc: StarletteHTTPException) -> JSONResponse:
     code = {404: "not_found", 405: "method_not_allowed"}.get(exc.status_code, "http_error")
     return _json(exc.status_code, ApiError(code=code, message=str(exc.detail)))
+
+
+@app.exception_handler(Exception)
+async def _unexpected(_: Request, exc: Exception) -> JSONResponse:
+    return _json(500, ApiError(code="internal_error", message=f"{type(exc).__name__}: {exc}"))
 
 
 def _scenario(scenario_id: str) -> Scenario:

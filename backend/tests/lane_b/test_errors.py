@@ -68,3 +68,34 @@ def test_openapi_documents_api_error_for_422(path):
 def test_warm_cache_reaches_ready():
     warm.start().join(timeout=300)
     assert warm.status()["values"] == "ready"
+
+
+def test_invalid_plan_is_500_api_error(monkeypatch):
+    from app.api import main
+    from app.planning.solve import InvalidPlanError
+
+    def broken(scenario, req):
+        raise InvalidPlanError("Plan x failed validation: CAPACITY")
+
+    monkeypatch.setattr(main, "plan", broken)
+    r = client.post("/api/plans", json={"scenario_id": "tiny", "revision": 0})
+    _is_api_error(r, 500, "invalid_plan")
+
+
+def test_unexpected_error_is_500_api_error(monkeypatch):
+    from app.api import main
+
+    def crash(scenario, req):
+        raise RuntimeError("boom")
+
+    monkeypatch.setattr(main, "plan", crash)
+    r = TestClient(app, raise_server_exceptions=False).post(
+        "/api/plans", json={"scenario_id": "tiny", "revision": 0}
+    )
+    _is_api_error(r, 500, "internal_error")
+
+
+def test_malformed_json_message():
+    r = client.post("/api/plans", content=b"{nope", headers={"content-type": "application/json"})
+    _is_api_error(r, 422, "invalid_request")
+    assert r.json()["message"] == "The request body is not valid JSON."

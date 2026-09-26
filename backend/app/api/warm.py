@@ -1,4 +1,7 @@
-"""Build every scenario's value table in the background so no request pays for it."""
+"""Build every scenario's value table in the background at startup.
+
+A request that arrives during warm-up waits for the same build and then reads the cache.
+"""
 
 import threading
 import time

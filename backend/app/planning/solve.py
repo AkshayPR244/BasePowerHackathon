@@ -34,7 +34,7 @@ STRICT_STAGES = [
     Stage("operating_value", maximize=True),
     Stage("changed_installs"),
     Stage("travel"),
-    Stage("canonical"),
+    Stage("canonical", max_s=2.0),
 ]
 RECOVERY_STAGES = [
     Stage("jobs_late_or_unscheduled"),
@@ -42,7 +42,7 @@ RECOVERY_STAGES = [
     Stage("operating_value", maximize=True),
     Stage("changed_installs"),
     Stage("travel"),
-    Stage("canonical"),
+    Stage("canonical", max_s=2.0),
 ]
 
 
@@ -185,10 +185,13 @@ def _solve(scenario, req, forced, values, policy, common) -> PlanResult:
         if v is not None and not p.locked:
             pm.model.add_hint(v, 1)
 
+    workers = scenario.config.num_workers
     run = [
         s
         for s in stages
         if not (policy == ObjectivePolicy.deadline_travel_only and s.name == "operating_value")
+        # One worker is already deterministic, so the tie-break stage would only cost time.
+        and not (s.name == "canonical" and workers == 1)
     ]
     budget = req.time_limit_s or scenario.config.solve_time_limit_s
     lex = solve_stages(

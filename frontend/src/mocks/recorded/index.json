@@ -118,7 +118,7 @@
         "message": "All 5 schedulable jobs meet their deadlines. Blocked: S-03 needs skill panel_upgrade. No crew has it.",
         "stages": [
           {
-            "name": "operating_value",
+            "name": "changed_installs",
             "status": "optimal",
             "value": 0.0,
             "bound": 0.0,
@@ -126,7 +126,7 @@
             "elapsed_ms": 0
           },
           {
-            "name": "changed_installs",
+            "name": "operating_value",
             "status": "optimal",
             "value": 0.0,
             "bound": 0.0,
@@ -280,7 +280,7 @@
             "kind": "assumed"
           }
         ],
-        "solve_ms": 0
+        "solve_ms": 15
       },
       "after": {
         "plan_id": "tiny-r1-recovery-a27dc71d",
@@ -317,7 +317,7 @@
             "elapsed_ms": 0
           },
           {
-            "name": "operating_value",
+            "name": "changed_installs",
             "status": "optimal",
             "value": 0.0,
             "bound": 0.0,
@@ -325,12 +325,12 @@
             "elapsed_ms": 0
           },
           {
-            "name": "changed_installs",
+            "name": "operating_value",
             "status": "optimal",
             "value": 0.0,
             "bound": 0.0,
             "gap": 0.0,
-            "elapsed_ms": 16
+            "elapsed_ms": 0
           },
           {
             "name": "travel",
@@ -527,7 +527,7 @@
             "elapsed_ms": 0
           },
           {
-            "name": "operating_value",
+            "name": "changed_installs",
             "status": "optimal",
             "value": 0.0,
             "bound": 0.0,
@@ -535,12 +535,12 @@
             "elapsed_ms": 0
           },
           {
-            "name": "changed_installs",
+            "name": "operating_value",
             "status": "optimal",
             "value": 0.0,
             "bound": 0.0,
             "gap": 0.0,
-            "elapsed_ms": 16
+            "elapsed_ms": 0
           },
           {
             "name": "travel",
@@ -741,7 +741,7 @@
             "elapsed_ms": 0
           },
           {
-            "name": "operating_value",
+            "name": "changed_installs",
             "status": "optimal",
             "value": 0.0,
             "bound": 0.0,
@@ -749,12 +749,12 @@
             "elapsed_ms": 0
           },
           {
-            "name": "changed_installs",
+            "name": "operating_value",
             "status": "optimal",
             "value": 0.0,
             "bound": 0.0,
             "gap": 0.0,
-            "elapsed_ms": 16
+            "elapsed_ms": 0
           },
           {
             "name": "travel",
@@ -917,9 +917,9 @@
     "path": "/api/plans/compare",
     "request": {
       "before": {
-        "plan_id": "standard-r0-strict-e4afa3ae",
+        "plan_id": "standard-r0-strict-9121db68",
         "scenario_id": "standard",
-        "scenario_hash": "e4afa3aec2d8b2c4788490dec5648708045ebb7532bb1a6bc51de3cfd8b045d5",
+        "scenario_hash": "9121db683a3893e136069fa7cfc20f6960a29407ef895653a0977339daff87ec",
         "revision": 0,
         "mode": "strict",
         "algorithm": "cpsat",
@@ -929,28 +929,28 @@
         "message": "All 30 schedulable jobs meet their deadlines.",
         "stages": [
           {
-            "name": "operating_value",
-            "status": "optimal",
-            "value": 1998.39,
-            "bound": 1998.39,
-            "gap": 0.0,
-            "elapsed_ms": 47
-          },
-          {
             "name": "changed_installs",
             "status": "optimal",
-            "value": 13.0,
-            "bound": 13.0,
+            "value": 0.0,
+            "bound": 0.0,
             "gap": 0.0,
-            "elapsed_ms": 250
+            "elapsed_ms": 31
+          },
+          {
+            "name": "operating_value",
+            "status": "optimal",
+            "value": 1958.97,
+            "bound": 1958.97,
+            "gap": 0.0,
+            "elapsed_ms": 14
           },
           {
             "name": "travel",
             "status": "optimal",
-            "value": 1190.0,
-            "bound": 1190.0,
+            "value": 1550.0,
+            "bound": 1550.0,
             "gap": 0.0,
-            "elapsed_ms": 77
+            "elapsed_ms": 16
           }
         ],
         "assignments": [
@@ -997,10 +997,10 @@
           {
             "site_id": "N-06",
             "crew_id": "A",
-            "date": "2018-06-08",
+            "date": "2018-06-11",
             "state": "scheduled",
             "days_late": 0,
-            "value_usd": 63.94390741279432
+            "value_usd": 62.990420422056786
           },
           {
             "site_id": "N-07",
@@ -1021,18 +1021,18 @@
           {
             "site_id": "N-09",
             "crew_id": "A",
-            "date": "2018-06-13",
-            "state": "scheduled",
-            "days_late": 0,
-            "value_usd": 61.864116690650974
-          },
-          {
-            "site_id": "N-10",
-            "crew_id": "B",
             "date": "2018-06-14",
             "state": "scheduled",
             "days_late": 0,
             "value_usd": 61.645364081094186
+          },
+          {
+            "site_id": "N-10",
+            "crew_id": "A",
+            "date": "2018-06-15",
+            "state": "scheduled",
+            "days_late": 0,
+            "value_usd": 61.07812821852493
           },
           {
             "site_id": "S-01",
@@ -1045,26 +1045,26 @@
           {
             "site_id": "S-02",
             "crew_id": "B",
-            "date": "2018-06-04",
-            "state": "scheduled",
-            "days_late": 0,
-            "value_usd": 82.06228806428324
-          },
-          {
-            "site_id": "S-03",
-            "crew_id": "C",
             "date": "2018-06-05",
             "state": "scheduled",
             "days_late": 0,
             "value_usd": 66.04969110282202
+          },
+          {
+            "site_id": "S-03",
+            "crew_id": "B",
+            "date": "2018-06-06",
+            "state": "scheduled",
+            "days_late": 0,
+            "value_usd": 65.49619415808519
           },
           {
             "site_id": "S-04",
             "crew_id": "B",
-            "date": "2018-06-05",
+            "date": "2018-06-07",
             "state": "scheduled",
             "days_late": 0,
-            "value_usd": 66.04969110282202
+            "value_usd": 65.05538980109073
           },
           {
             "site_id": "S-05",
@@ -1077,10 +1077,10 @@
           {
             "site_id": "S-06",
             "crew_id": "B",
-            "date": "2018-06-07",
+            "date": "2018-06-11",
             "state": "scheduled",
             "days_late": 0,
-            "value_usd": 65.05538980109073
+            "value_usd": 62.990420422056786
           },
           {
             "site_id": "S-07",
@@ -1093,26 +1093,26 @@
           {
             "site_id": "S-08",
             "crew_id": "B",
-            "date": "2018-06-12",
-            "state": "scheduled",
-            "days_late": 0,
-            "value_usd": 62.797377416239605
-          },
-          {
-            "site_id": "S-09",
-            "crew_id": "B",
             "date": "2018-06-13",
             "state": "scheduled",
             "days_late": 0,
             "value_usd": 61.864116690650974
           },
           {
-            "site_id": "S-10",
-            "crew_id": "A",
+            "site_id": "S-09",
+            "crew_id": "B",
             "date": "2018-06-14",
             "state": "scheduled",
             "days_late": 0,
             "value_usd": 61.645364081094186
+          },
+          {
+            "site_id": "S-10",
+            "crew_id": "B",
+            "date": "2018-06-15",
+            "state": "scheduled",
+            "days_late": 0,
+            "value_usd": 61.07812821852493
           },
           {
             "site_id": "W-01",
@@ -1125,18 +1125,18 @@
           {
             "site_id": "W-02",
             "crew_id": "C",
-            "date": "2018-06-04",
+            "date": "2018-06-05",
             "state": "scheduled",
             "days_late": 0,
-            "value_usd": 82.06228806428324
+            "value_usd": 66.04969110282202
           },
           {
             "site_id": "W-03",
             "crew_id": "C",
-            "date": "2018-06-07",
+            "date": "2018-06-06",
             "state": "scheduled",
             "days_late": 0,
-            "value_usd": 65.05538980109073
+            "value_usd": 65.49619415808519
           },
           {
             "site_id": "W-04",
@@ -1189,10 +1189,10 @@
           {
             "site_id": "W-10",
             "crew_id": "C",
-            "date": "2018-06-13",
+            "date": "2018-06-15",
             "state": "scheduled",
             "days_late": 0,
-            "value_usd": 61.864116690650974
+            "value_usd": 61.07812821852493
           }
         ],
         "unscheduled": [],
@@ -1233,16 +1233,16 @@
             "crew_id": "A",
             "date": "2018-06-08",
             "cluster_id": "N",
-            "onsite_min": 420,
+            "onsite_min": 210,
             "travel_min": 60,
             "available_min": 480
           },
           {
             "crew_id": "A",
             "date": "2018-06-11",
-            "cluster_id": null,
-            "onsite_min": 0,
-            "travel_min": 0,
+            "cluster_id": "N",
+            "onsite_min": 210,
+            "travel_min": 60,
             "available_min": 480
           },
           {
@@ -1257,31 +1257,31 @@
             "crew_id": "A",
             "date": "2018-06-13",
             "cluster_id": "N",
-            "onsite_min": 420,
+            "onsite_min": 240,
             "travel_min": 60,
             "available_min": 480
           },
           {
             "crew_id": "A",
             "date": "2018-06-14",
-            "cluster_id": "S",
-            "onsite_min": 240,
-            "travel_min": 45,
+            "cluster_id": "N",
+            "onsite_min": 180,
+            "travel_min": 60,
             "available_min": 480
           },
           {
             "crew_id": "A",
             "date": "2018-06-15",
-            "cluster_id": null,
-            "onsite_min": 0,
-            "travel_min": 0,
+            "cluster_id": "N",
+            "onsite_min": 210,
+            "travel_min": 60,
             "available_min": 480
           },
           {
             "crew_id": "B",
             "date": "2018-06-04",
             "cluster_id": "S",
-            "onsite_min": 420,
+            "onsite_min": 180,
             "travel_min": 45,
             "available_min": 480
           },
@@ -1296,9 +1296,9 @@
           {
             "crew_id": "B",
             "date": "2018-06-06",
-            "cluster_id": null,
-            "onsite_min": 0,
-            "travel_min": 0,
+            "cluster_id": "S",
+            "onsite_min": 240,
+            "travel_min": 45,
             "available_min": 480
           },
           {
@@ -1320,16 +1320,16 @@
           {
             "crew_id": "B",
             "date": "2018-06-11",
-            "cluster_id": null,
-            "onsite_min": 0,
-            "travel_min": 0,
+            "cluster_id": "S",
+            "onsite_min": 240,
+            "travel_min": 45,
             "available_min": 480
           },
           {
             "crew_id": "B",
             "date": "2018-06-12",
             "cluster_id": "S",
-            "onsite_min": 390,
+            "onsite_min": 210,
             "travel_min": 45,
             "available_min": 480
           },
@@ -1337,37 +1337,21 @@
             "crew_id": "B",
             "date": "2018-06-13",
             "cluster_id": "S",
-            "onsite_min": 210,
+            "onsite_min": 180,
             "travel_min": 45,
             "available_min": 480
           },
           {
             "crew_id": "B",
             "date": "2018-06-14",
-            "cluster_id": "N",
+            "cluster_id": "S",
             "onsite_min": 210,
-            "travel_min": 60,
+            "travel_min": 45,
             "available_min": 480
           },
           {
             "crew_id": "B",
             "date": "2018-06-15",
-            "cluster_id": null,
-            "onsite_min": 0,
-            "travel_min": 0,
-            "available_min": 480
-          },
-          {
-            "crew_id": "C",
-            "date": "2018-06-04",
-            "cluster_id": "W",
-            "onsite_min": 390,
-            "travel_min": 50,
-            "available_min": 480
-          },
-          {
-            "crew_id": "C",
-            "date": "2018-06-05",
             "cluster_id": "S",
             "onsite_min": 240,
             "travel_min": 45,
@@ -1375,17 +1359,33 @@
           },
           {
             "crew_id": "C",
+            "date": "2018-06-04",
+            "cluster_id": "W",
+            "onsite_min": 210,
+            "travel_min": 50,
+            "available_min": 480
+          },
+          {
+            "crew_id": "C",
+            "date": "2018-06-05",
+            "cluster_id": "W",
+            "onsite_min": 180,
+            "travel_min": 50,
+            "available_min": 480
+          },
+          {
+            "crew_id": "C",
             "date": "2018-06-06",
-            "cluster_id": null,
-            "onsite_min": 0,
-            "travel_min": 0,
+            "cluster_id": "W",
+            "onsite_min": 180,
+            "travel_min": 50,
             "available_min": 480
           },
           {
             "crew_id": "C",
             "date": "2018-06-07",
             "cluster_id": "W",
-            "onsite_min": 360,
+            "onsite_min": 180,
             "travel_min": 50,
             "available_min": 480
           },
@@ -1417,7 +1417,7 @@
             "crew_id": "C",
             "date": "2018-06-13",
             "cluster_id": "W",
-            "onsite_min": 420,
+            "onsite_min": 180,
             "travel_min": 50,
             "available_min": 480
           },
@@ -1432,9 +1432,9 @@
           {
             "crew_id": "C",
             "date": "2018-06-15",
-            "cluster_id": null,
-            "onsite_min": 0,
-            "travel_min": 0,
+            "cluster_id": "W",
+            "onsite_min": 240,
+            "travel_min": 50,
             "available_min": 480
           }
         ],
@@ -1444,10 +1444,10 @@
           "jobs_unscheduled": 0,
           "jobs_blocked": 0,
           "total_delay_days": 0,
-          "operating_value_usd": 1998.3905024270603,
-          "changed_installs": 13,
-          "travel_allowance_min": 1190,
-          "crew_utilization": 0.5222,
+          "operating_value_usd": 1958.948632102926,
+          "changed_installs": 0,
+          "travel_allowance_min": 1550,
+          "crew_utilization": 0.5472,
           "value_distinguishes_choices": true
         },
         "validation": {
@@ -1469,12 +1469,12 @@
             "kind": "assumed"
           }
         ],
-        "solve_ms": 405
+        "solve_ms": 93
       },
       "after": {
-        "plan_id": "standard-r1-recovery-785cfba2",
+        "plan_id": "standard-r1-recovery-c6c42aec",
         "scenario_id": "standard",
-        "scenario_hash": "785cfba2ebe89ee24188ebb8b41be42511ed6c41cac332aaf13bbf88096ae861",
+        "scenario_hash": "c6c42aec2b73a7b6effbabadf75373500eef39b2719fd973f326698017fd64f5",
         "revision": 1,
         "mode": "recovery",
         "algorithm": "cpsat",
@@ -1505,31 +1505,31 @@
             "value": 13.0,
             "bound": 13.0,
             "gap": 0.0,
-            "elapsed_ms": 110
-          },
-          {
-            "name": "operating_value",
-            "status": "optimal",
-            "value": 1979.26,
-            "bound": 1979.26,
-            "gap": 0.0,
-            "elapsed_ms": 422
+            "elapsed_ms": 125
           },
           {
             "name": "changed_installs",
             "status": "optimal",
-            "value": 15.0,
-            "bound": 15.0,
+            "value": 10.0,
+            "bound": 10.0,
             "gap": 0.0,
-            "elapsed_ms": 389
+            "elapsed_ms": 125
+          },
+          {
+            "name": "operating_value",
+            "status": "optimal",
+            "value": 1945.49,
+            "bound": 1945.49,
+            "gap": 0.0,
+            "elapsed_ms": 125
           },
           {
             "name": "travel",
             "status": "optimal",
-            "value": 1140.0,
-            "bound": 1140.0,
+            "value": 1235.0,
+            "bound": 1235.0,
             "gap": 0.0,
-            "elapsed_ms": 297
+            "elapsed_ms": 172
           }
         ],
         "assignments": [
@@ -1567,7 +1567,7 @@
           },
           {
             "site_id": "N-05",
-            "crew_id": "B",
+            "crew_id": "C",
             "date": "2018-06-12",
             "state": "scheduled",
             "days_late": 0,
@@ -1575,7 +1575,7 @@
           },
           {
             "site_id": "N-06",
-            "crew_id": "B",
+            "crew_id": "C",
             "date": "2018-06-12",
             "state": "scheduled",
             "days_late": 0,
@@ -1600,10 +1600,10 @@
           {
             "site_id": "N-09",
             "crew_id": "A",
-            "date": "2018-06-13",
+            "date": "2018-06-14",
             "state": "scheduled",
             "days_late": 0,
-            "value_usd": 61.864116690650974
+            "value_usd": 61.645364081094186
           },
           {
             "site_id": "N-10",
@@ -1624,26 +1624,26 @@
           {
             "site_id": "S-02",
             "crew_id": "B",
-            "date": "2018-06-04",
-            "state": "scheduled",
-            "days_late": 0,
-            "value_usd": 82.06228806428324
-          },
-          {
-            "site_id": "S-03",
-            "crew_id": "C",
             "date": "2018-06-05",
             "state": "scheduled",
             "days_late": 0,
             "value_usd": 66.04969110282202
+          },
+          {
+            "site_id": "S-03",
+            "crew_id": "B",
+            "date": "2018-06-06",
+            "state": "scheduled",
+            "days_late": 0,
+            "value_usd": 65.49619415808519
           },
           {
             "site_id": "S-04",
             "crew_id": "B",
-            "date": "2018-06-05",
+            "date": "2018-06-07",
             "state": "scheduled",
             "days_late": 0,
-            "value_usd": 66.04969110282202
+            "value_usd": 65.05538980109073
           },
           {
             "site_id": "S-05",
@@ -1704,14 +1704,14 @@
           {
             "site_id": "W-02",
             "crew_id": "C",
-            "date": "2018-06-04",
+            "date": "2018-06-05",
             "state": "scheduled",
             "days_late": 0,
-            "value_usd": 82.06228806428324
+            "value_usd": 66.04969110282202
           },
           {
             "site_id": "W-03",
-            "crew_id": "C",
+            "crew_id": "B",
             "date": "2018-06-12",
             "state": "late",
             "days_late": 4,
@@ -1727,7 +1727,7 @@
           },
           {
             "site_id": "W-05",
-            "crew_id": "C",
+            "crew_id": "B",
             "date": "2018-06-12",
             "state": "scheduled",
             "days_late": 0,
@@ -1836,7 +1836,7 @@
             "crew_id": "A",
             "date": "2018-06-13",
             "cluster_id": "N",
-            "onsite_min": 420,
+            "onsite_min": 240,
             "travel_min": 60,
             "available_min": 480
           },
@@ -1844,7 +1844,7 @@
             "crew_id": "A",
             "date": "2018-06-14",
             "cluster_id": "N",
-            "onsite_min": 240,
+            "onsite_min": 420,
             "travel_min": 60,
             "available_min": 480
           },
@@ -1860,7 +1860,7 @@
             "crew_id": "B",
             "date": "2018-06-04",
             "cluster_id": "S",
-            "onsite_min": 420,
+            "onsite_min": 180,
             "travel_min": 45,
             "available_min": 480
           },
@@ -1875,17 +1875,17 @@
           {
             "crew_id": "B",
             "date": "2018-06-06",
-            "cluster_id": null,
-            "onsite_min": 0,
-            "travel_min": 0,
+            "cluster_id": "S",
+            "onsite_min": 240,
+            "travel_min": 45,
             "available_min": 480
           },
           {
             "crew_id": "B",
             "date": "2018-06-07",
-            "cluster_id": null,
-            "onsite_min": 0,
-            "travel_min": 0,
+            "cluster_id": "S",
+            "onsite_min": 240,
+            "travel_min": 45,
             "available_min": 480
           },
           {
@@ -1907,9 +1907,9 @@
           {
             "crew_id": "B",
             "date": "2018-06-12",
-            "cluster_id": "N",
-            "onsite_min": 420,
-            "travel_min": 60,
+            "cluster_id": "W",
+            "onsite_min": 360,
+            "travel_min": 50,
             "available_min": 480
           },
           {
@@ -1940,16 +1940,16 @@
             "crew_id": "C",
             "date": "2018-06-04",
             "cluster_id": "W",
-            "onsite_min": 390,
+            "onsite_min": 210,
             "travel_min": 50,
             "available_min": 480
           },
           {
             "crew_id": "C",
             "date": "2018-06-05",
-            "cluster_id": "S",
-            "onsite_min": 240,
-            "travel_min": 45,
+            "cluster_id": "W",
+            "onsite_min": 180,
+            "travel_min": 50,
             "available_min": 480
           },
           {
@@ -1987,9 +1987,9 @@
           {
             "crew_id": "C",
             "date": "2018-06-12",
-            "cluster_id": "W",
-            "onsite_min": 360,
-            "travel_min": 50,
+            "cluster_id": "N",
+            "onsite_min": 420,
+            "travel_min": 60,
             "available_min": 480
           },
           {
@@ -2023,10 +2023,10 @@
           "jobs_unscheduled": 0,
           "jobs_blocked": 0,
           "total_delay_days": 13,
-          "operating_value_usd": 1979.2604536001559,
-          "changed_installs": 15,
-          "travel_allowance_min": 1140,
-          "crew_utilization": 0.5188,
+          "operating_value_usd": 1945.4687088212086,
+          "changed_installs": 10,
+          "travel_allowance_min": 1235,
+          "crew_utilization": 0.5253,
           "value_distinguishes_choices": true
         },
         "validation": {
@@ -2048,7 +2048,7 @@
             "kind": "assumed"
           }
         ],
-        "solve_ms": 1312
+        "solve_ms": 953
       }
     }
   },
@@ -2071,9 +2071,9 @@
         ]
       },
       "base": {
-        "plan_id": "standard-r1-recovery-785cfba2",
+        "plan_id": "standard-r1-recovery-c6c42aec",
         "scenario_id": "standard",
-        "scenario_hash": "785cfba2ebe89ee24188ebb8b41be42511ed6c41cac332aaf13bbf88096ae861",
+        "scenario_hash": "c6c42aec2b73a7b6effbabadf75373500eef39b2719fd973f326698017fd64f5",
         "revision": 1,
         "mode": "recovery",
         "algorithm": "cpsat",
@@ -2104,31 +2104,31 @@
             "value": 13.0,
             "bound": 13.0,
             "gap": 0.0,
-            "elapsed_ms": 110
-          },
-          {
-            "name": "operating_value",
-            "status": "optimal",
-            "value": 1979.26,
-            "bound": 1979.26,
-            "gap": 0.0,
-            "elapsed_ms": 422
+            "elapsed_ms": 125
           },
           {
             "name": "changed_installs",
             "status": "optimal",
-            "value": 15.0,
-            "bound": 15.0,
+            "value": 10.0,
+            "bound": 10.0,
             "gap": 0.0,
-            "elapsed_ms": 389
+            "elapsed_ms": 125
+          },
+          {
+            "name": "operating_value",
+            "status": "optimal",
+            "value": 1945.49,
+            "bound": 1945.49,
+            "gap": 0.0,
+            "elapsed_ms": 125
           },
           {
             "name": "travel",
             "status": "optimal",
-            "value": 1140.0,
-            "bound": 1140.0,
+            "value": 1235.0,
+            "bound": 1235.0,
             "gap": 0.0,
-            "elapsed_ms": 297
+            "elapsed_ms": 172
           }
         ],
         "assignments": [
@@ -2166,7 +2166,7 @@
           },
           {
             "site_id": "N-05",
-            "crew_id": "B",
+            "crew_id": "C",
             "date": "2018-06-12",
             "state": "scheduled",
             "days_late": 0,
@@ -2174,7 +2174,7 @@
           },
           {
             "site_id": "N-06",
-            "crew_id": "B",
+            "crew_id": "C",
             "date": "2018-06-12",
             "state": "scheduled",
             "days_late": 0,
@@ -2199,10 +2199,10 @@
           {
             "site_id": "N-09",
             "crew_id": "A",
-            "date": "2018-06-13",
+            "date": "2018-06-14",
             "state": "scheduled",
             "days_late": 0,
-            "value_usd": 61.864116690650974
+            "value_usd": 61.645364081094186
           },
           {
             "site_id": "N-10",
@@ -2223,26 +2223,26 @@
           {
             "site_id": "S-02",
             "crew_id": "B",
-            "date": "2018-06-04",
-            "state": "scheduled",
-            "days_late": 0,
-            "value_usd": 82.06228806428324
-          },
-          {
-            "site_id": "S-03",
-            "crew_id": "C",
             "date": "2018-06-05",
             "state": "scheduled",
             "days_late": 0,
             "value_usd": 66.04969110282202
+          },
+          {
+            "site_id": "S-03",
+            "crew_id": "B",
+            "date": "2018-06-06",
+            "state": "scheduled",
+            "days_late": 0,
+            "value_usd": 65.49619415808519
           },
           {
             "site_id": "S-04",
             "crew_id": "B",
-            "date": "2018-06-05",
+            "date": "2018-06-07",
             "state": "scheduled",
             "days_late": 0,
-            "value_usd": 66.04969110282202
+            "value_usd": 65.05538980109073
           },
           {
             "site_id": "S-05",
@@ -2303,14 +2303,14 @@
           {
             "site_id": "W-02",
             "crew_id": "C",
-            "date": "2018-06-04",
+            "date": "2018-06-05",
             "state": "scheduled",
             "days_late": 0,
-            "value_usd": 82.06228806428324
+            "value_usd": 66.04969110282202
           },
           {
             "site_id": "W-03",
-            "crew_id": "C",
+            "crew_id": "B",
             "date": "2018-06-12",
             "state": "late",
             "days_late": 4,
@@ -2326,7 +2326,7 @@
           },
           {
             "site_id": "W-05",
-            "crew_id": "C",
+            "crew_id": "B",
             "date": "2018-06-12",
             "state": "scheduled",
             "days_late": 0,
@@ -2435,7 +2435,7 @@
             "crew_id": "A",
             "date": "2018-06-13",
             "cluster_id": "N",
-            "onsite_min": 420,
+            "onsite_min": 240,
             "travel_min": 60,
             "available_min": 480
           },
@@ -2443,7 +2443,7 @@
             "crew_id": "A",
             "date": "2018-06-14",
             "cluster_id": "N",
-            "onsite_min": 240,
+            "onsite_min": 420,
             "travel_min": 60,
             "available_min": 480
           },
@@ -2459,7 +2459,7 @@
             "crew_id": "B",
             "date": "2018-06-04",
             "cluster_id": "S",
-            "onsite_min": 420,
+            "onsite_min": 180,
             "travel_min": 45,
             "available_min": 480
           },
@@ -2474,17 +2474,17 @@
           {
             "crew_id": "B",
             "date": "2018-06-06",
-            "cluster_id": null,
-            "onsite_min": 0,
-            "travel_min": 0,
+            "cluster_id": "S",
+            "onsite_min": 240,
+            "travel_min": 45,
             "available_min": 480
           },
           {
             "crew_id": "B",
             "date": "2018-06-07",
-            "cluster_id": null,
-            "onsite_min": 0,
-            "travel_min": 0,
+            "cluster_id": "S",
+            "onsite_min": 240,
+            "travel_min": 45,
             "available_min": 480
           },
           {
@@ -2506,9 +2506,9 @@
           {
             "crew_id": "B",
             "date": "2018-06-12",
-            "cluster_id": "N",
-            "onsite_min": 420,
-            "travel_min": 60,
+            "cluster_id": "W",
+            "onsite_min": 360,
+            "travel_min": 50,
             "available_min": 480
           },
           {
@@ -2539,16 +2539,16 @@
             "crew_id": "C",
             "date": "2018-06-04",
             "cluster_id": "W",
-            "onsite_min": 390,
+            "onsite_min": 210,
             "travel_min": 50,
             "available_min": 480
           },
           {
             "crew_id": "C",
             "date": "2018-06-05",
-            "cluster_id": "S",
-            "onsite_min": 240,
-            "travel_min": 45,
+            "cluster_id": "W",
+            "onsite_min": 180,
+            "travel_min": 50,
             "available_min": 480
           },
           {
@@ -2586,9 +2586,9 @@
           {
             "crew_id": "C",
             "date": "2018-06-12",
-            "cluster_id": "W",
-            "onsite_min": 360,
-            "travel_min": 50,
+            "cluster_id": "N",
+            "onsite_min": 420,
+            "travel_min": 60,
             "available_min": 480
           },
           {
@@ -2622,10 +2622,10 @@
           "jobs_unscheduled": 0,
           "jobs_blocked": 0,
           "total_delay_days": 13,
-          "operating_value_usd": 1979.2604536001559,
-          "changed_installs": 15,
-          "travel_allowance_min": 1140,
-          "crew_utilization": 0.5188,
+          "operating_value_usd": 1945.4687088212086,
+          "changed_installs": 10,
+          "travel_allowance_min": 1235,
+          "crew_utilization": 0.5253,
           "value_distinguishes_choices": true
         },
         "validation": {
@@ -2647,7 +2647,7 @@
             "kind": "assumed"
           }
         ],
-        "solve_ms": 1312
+        "solve_ms": 953
       },
       "intervention": {
         "kind": "force_include",

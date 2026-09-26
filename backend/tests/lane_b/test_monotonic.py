@@ -14,8 +14,8 @@ def _key(r):
     return (
         v["jobs_late_or_unscheduled"],
         v["total_delay"],
-        -v["operating_value"],
         v["changed_installs"],
+        -v["operating_value"],
         v["travel"],
     )
 

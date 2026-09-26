@@ -9,6 +9,7 @@ The contract in `backend/app/contracts/` is frozen as of the scaffold commit. Fu
 
 | Date | Lane | Change | Reason |
 |---|---|---|---|
+| 2026-09-26 | B | Every error response (400, 404, 405, 422, 500) is an `ApiError`. OpenAPI documents `ApiError` for 400, 404, 422, 500 and no longer lists `HTTPValidationError`. `GET /api/health` adds `values` and `values_seconds`. | The UI handles one error shape. Health reports whether value tables are warm. |
 
 ## Proposed (waiting for a human)
 

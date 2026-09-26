@@ -5,9 +5,9 @@
   },
   "feasible": true,
   "result": {
-    "plan_id": "standard-r1-recovery-d0a4998b",
+    "plan_id": "standard-r1-recovery-4eab9b61",
     "scenario_id": "standard",
-    "scenario_hash": "d0a4998b1ca752a618b78be6ad00818058168c0210e93e5e32d3e4411326b637",
+    "scenario_hash": "4eab9b61325e34a22d7001f4c46c4b15f3938707f0a1f74bb90338ceb20fbd8f",
     "revision": 1,
     "mode": "recovery",
     "algorithm": "cpsat",
@@ -26,7 +26,7 @@
       }
     ],
     "status": "optimal",
-    "message": "All units of B13 due Thu 7 Jun arrive Mon 11 Jun instead. N-04 must finish by its deadline. S-04 is 6 days late on Wed 13 Jun. W-03 is 3 days late on Mon 11 Jun. W-04 is 5 days late on Tue 12 Jun.",
+    "message": "All units of B13 due Thu 7 Jun arrive Mon 11 Jun instead. N-04 must finish by its deadline. S-04 is 6 days late on Wed 13 Jun. W-03 is 4 days late on Tue 12 Jun. W-04 is 4 days late on Mon 11 Jun.",
     "stages": [
       {
         "name": "jobs_late_or_unscheduled",
@@ -34,7 +34,7 @@
         "value": 3.0,
         "bound": 3.0,
         "gap": 0.0,
-        "elapsed_ms": 78
+        "elapsed_ms": 92
       },
       {
         "name": "total_delay",
@@ -42,31 +42,31 @@
         "value": 14.0,
         "bound": 14.0,
         "gap": 0.0,
-        "elapsed_ms": 109
-      },
-      {
-        "name": "operating_value",
-        "status": "optimal",
-        "value": 1979.83,
-        "bound": 1979.83,
-        "gap": 0.0,
-        "elapsed_ms": 233
+        "elapsed_ms": 188
       },
       {
         "name": "changed_installs",
         "status": "optimal",
-        "value": 16.0,
-        "bound": 16.0,
+        "value": 10.0,
+        "bound": 10.0,
         "gap": 0.0,
-        "elapsed_ms": 312
+        "elapsed_ms": 171
+      },
+      {
+        "name": "operating_value",
+        "status": "optimal",
+        "value": 1945.49,
+        "bound": 1945.49,
+        "gap": 0.0,
+        "elapsed_ms": 343
       },
       {
         "name": "travel",
         "status": "optimal",
-        "value": 1095.0,
-        "bound": 1095.0,
+        "value": 1235.0,
+        "bound": 1235.0,
         "gap": 0.0,
-        "elapsed_ms": 343
+        "elapsed_ms": 250
       }
     ],
     "assignments": [
@@ -96,11 +96,11 @@
       },
       {
         "site_id": "N-04",
-        "crew_id": "C",
-        "date": "2018-06-05",
+        "crew_id": "A",
+        "date": "2018-06-07",
         "state": "scheduled",
         "days_late": 0,
-        "value_usd": 66.04969110282202
+        "value_usd": 65.05538980109073
       },
       {
         "site_id": "N-05",
@@ -161,18 +161,18 @@
       {
         "site_id": "S-02",
         "crew_id": "B",
-        "date": "2018-06-04",
-        "state": "scheduled",
-        "days_late": 0,
-        "value_usd": 82.06228806428324
-      },
-      {
-        "site_id": "S-03",
-        "crew_id": "B",
         "date": "2018-06-05",
         "state": "scheduled",
         "days_late": 0,
         "value_usd": 66.04969110282202
+      },
+      {
+        "site_id": "S-03",
+        "crew_id": "B",
+        "date": "2018-06-06",
+        "state": "scheduled",
+        "days_late": 0,
+        "value_usd": 65.49619415808519
       },
       {
         "site_id": "S-04",
@@ -216,11 +216,11 @@
       },
       {
         "site_id": "S-09",
-        "crew_id": "A",
-        "date": "2018-06-13",
+        "crew_id": "B",
+        "date": "2018-06-14",
         "state": "scheduled",
         "days_late": 0,
-        "value_usd": 61.864116690650974
+        "value_usd": 61.645364081094186
       },
       {
         "site_id": "S-10",
@@ -241,26 +241,26 @@
       {
         "site_id": "W-02",
         "crew_id": "C",
-        "date": "2018-06-04",
+        "date": "2018-06-05",
         "state": "scheduled",
         "days_late": 0,
-        "value_usd": 82.06228806428324
+        "value_usd": 66.04969110282202
       },
       {
         "site_id": "W-03",
-        "crew_id": "C",
-        "date": "2018-06-11",
-        "state": "late",
-        "days_late": 3,
-        "value_usd": 62.990420422056786
-      },
-      {
-        "site_id": "W-04",
         "crew_id": "B",
         "date": "2018-06-12",
         "state": "late",
-        "days_late": 5,
+        "days_late": 4,
         "value_usd": 62.797377416239605
+      },
+      {
+        "site_id": "W-04",
+        "crew_id": "C",
+        "date": "2018-06-11",
+        "state": "late",
+        "days_late": 4,
+        "value_usd": 62.990420422056786
       },
       {
         "site_id": "W-05",
@@ -304,11 +304,11 @@
       },
       {
         "site_id": "W-10",
-        "crew_id": "B",
-        "date": "2018-06-14",
+        "crew_id": "C",
+        "date": "2018-06-15",
         "state": "scheduled",
         "days_late": 0,
-        "value_usd": 61.645364081094186
+        "value_usd": 61.07812821852493
       }
     ],
     "unscheduled": [],
@@ -340,9 +340,9 @@
       {
         "crew_id": "A",
         "date": "2018-06-07",
-        "cluster_id": null,
-        "onsite_min": 0,
-        "travel_min": 0,
+        "cluster_id": "N",
+        "onsite_min": 240,
+        "travel_min": 60,
         "available_min": 480
       },
       {
@@ -373,7 +373,7 @@
         "crew_id": "A",
         "date": "2018-06-13",
         "cluster_id": "S",
-        "onsite_min": 420,
+        "onsite_min": 210,
         "travel_min": 45,
         "available_min": 480
       },
@@ -397,7 +397,7 @@
         "crew_id": "B",
         "date": "2018-06-04",
         "cluster_id": "S",
-        "onsite_min": 420,
+        "onsite_min": 180,
         "travel_min": 45,
         "available_min": 480
       },
@@ -412,9 +412,9 @@
       {
         "crew_id": "B",
         "date": "2018-06-06",
-        "cluster_id": null,
-        "onsite_min": 0,
-        "travel_min": 0,
+        "cluster_id": "S",
+        "onsite_min": 240,
+        "travel_min": 45,
         "available_min": 480
       },
       {
@@ -460,9 +460,9 @@
       {
         "crew_id": "B",
         "date": "2018-06-14",
-        "cluster_id": "W",
-        "onsite_min": 240,
-        "travel_min": 50,
+        "cluster_id": "S",
+        "onsite_min": 210,
+        "travel_min": 45,
         "available_min": 480
       },
       {
@@ -477,16 +477,16 @@
         "crew_id": "C",
         "date": "2018-06-04",
         "cluster_id": "W",
-        "onsite_min": 390,
+        "onsite_min": 210,
         "travel_min": 50,
         "available_min": 480
       },
       {
         "crew_id": "C",
         "date": "2018-06-05",
-        "cluster_id": "N",
-        "onsite_min": 240,
-        "travel_min": 60,
+        "cluster_id": "W",
+        "onsite_min": 180,
+        "travel_min": 50,
         "available_min": 480
       },
       {
@@ -548,9 +548,9 @@
       {
         "crew_id": "C",
         "date": "2018-06-15",
-        "cluster_id": null,
-        "onsite_min": 0,
-        "travel_min": 0,
+        "cluster_id": "W",
+        "onsite_min": 240,
+        "travel_min": 50,
         "available_min": 480
       }
     ],
@@ -560,10 +560,10 @@
       "jobs_unscheduled": 0,
       "jobs_blocked": 0,
       "total_delay_days": 14,
-      "operating_value_usd": 1979.8276894627252,
-      "changed_installs": 16,
-      "travel_allowance_min": 1095,
-      "crew_utilization": 0.5156,
+      "operating_value_usd": 1945.4687088212086,
+      "changed_installs": 10,
+      "travel_allowance_min": 1235,
+      "crew_utilization": 0.5253,
       "value_distinguishes_choices": true
     },
     "validation": {
@@ -585,11 +585,11 @@
         "kind": "assumed"
       }
     ],
-    "solve_ms": 1125
+    "solve_ms": 1438
   },
   "diff": {
-    "before_plan_id": "standard-r1-recovery-785cfba2",
-    "after_plan_id": "standard-r1-recovery-d0a4998b",
+    "before_plan_id": "standard-r1-recovery-c6c42aec",
+    "after_plan_id": "standard-r1-recovery-4eab9b61",
     "changes": [
       {
         "site_id": "N-04",
@@ -599,79 +599,19 @@
           "date": "2018-06-13"
         },
         "after": {
-          "crew_id": "C",
-          "date": "2018-06-05"
+          "crew_id": "A",
+          "date": "2018-06-07"
         },
         "before_state": "late",
         "after_state": "scheduled",
-        "note": "N-04 moves from Crew A Wed 13 Jun to Crew C Tue 5 Jun."
-      },
-      {
-        "site_id": "N-05",
-        "kind": "moved",
-        "before": {
-          "crew_id": "B",
-          "date": "2018-06-12"
-        },
-        "after": {
-          "crew_id": "C",
-          "date": "2018-06-12"
-        },
-        "before_state": "scheduled",
-        "after_state": "scheduled",
-        "note": "N-05 moves from Crew B Tue 12 Jun to Crew C Tue 12 Jun."
-      },
-      {
-        "site_id": "N-06",
-        "kind": "moved",
-        "before": {
-          "crew_id": "B",
-          "date": "2018-06-12"
-        },
-        "after": {
-          "crew_id": "C",
-          "date": "2018-06-12"
-        },
-        "before_state": "scheduled",
-        "after_state": "scheduled",
-        "note": "N-06 moves from Crew B Tue 12 Jun to Crew C Tue 12 Jun."
-      },
-      {
-        "site_id": "N-09",
-        "kind": "moved",
-        "before": {
-          "crew_id": "A",
-          "date": "2018-06-13"
-        },
-        "after": {
-          "crew_id": "A",
-          "date": "2018-06-14"
-        },
-        "before_state": "scheduled",
-        "after_state": "scheduled",
-        "note": "N-09 moves from Crew A Wed 13 Jun to Crew A Thu 14 Jun."
-      },
-      {
-        "site_id": "S-03",
-        "kind": "moved",
-        "before": {
-          "crew_id": "C",
-          "date": "2018-06-05"
-        },
-        "after": {
-          "crew_id": "B",
-          "date": "2018-06-05"
-        },
-        "before_state": "scheduled",
-        "after_state": "scheduled",
-        "note": "S-03 moves from Crew C Tue 5 Jun to Crew B Tue 5 Jun."
+        "note": "N-04 moves from Crew A Wed 13 Jun to Crew A Thu 7 Jun."
       },
       {
         "site_id": "S-04",
         "kind": "moved",
         "before": {
           "crew_id": "B",
-          "date": "2018-06-05"
+          "date": "2018-06-07"
         },
         "after": {
           "crew_id": "B",
@@ -679,7 +619,7 @@
         },
         "before_state": "scheduled",
         "after_state": "late",
-        "note": "S-04 moves from Crew B Tue 5 Jun to Crew B Wed 13 Jun. 6 days late."
+        "note": "S-04 moves from Crew B Thu 7 Jun to Crew B Wed 13 Jun. 6 days late."
       },
       {
         "site_id": "S-07",
@@ -695,92 +635,17 @@
         "before_state": "scheduled",
         "after_state": "scheduled",
         "note": "S-07 moves from Crew B Wed 13 Jun to Crew A Wed 13 Jun."
-      },
-      {
-        "site_id": "S-09",
-        "kind": "moved",
-        "before": {
-          "crew_id": "B",
-          "date": "2018-06-14"
-        },
-        "after": {
-          "crew_id": "A",
-          "date": "2018-06-13"
-        },
-        "before_state": "scheduled",
-        "after_state": "scheduled",
-        "note": "S-09 moves from Crew B Thu 14 Jun to Crew A Wed 13 Jun."
-      },
-      {
-        "site_id": "W-03",
-        "kind": "moved",
-        "before": {
-          "crew_id": "C",
-          "date": "2018-06-12"
-        },
-        "after": {
-          "crew_id": "C",
-          "date": "2018-06-11"
-        },
-        "before_state": "late",
-        "after_state": "late",
-        "note": "W-03 moves from Crew C Tue 12 Jun to Crew C Mon 11 Jun. 3 days late."
-      },
-      {
-        "site_id": "W-04",
-        "kind": "moved",
-        "before": {
-          "crew_id": "C",
-          "date": "2018-06-11"
-        },
-        "after": {
-          "crew_id": "B",
-          "date": "2018-06-12"
-        },
-        "before_state": "late",
-        "after_state": "late",
-        "note": "W-04 moves from Crew C Mon 11 Jun to Crew B Tue 12 Jun. 5 days late."
-      },
-      {
-        "site_id": "W-05",
-        "kind": "moved",
-        "before": {
-          "crew_id": "C",
-          "date": "2018-06-12"
-        },
-        "after": {
-          "crew_id": "B",
-          "date": "2018-06-12"
-        },
-        "before_state": "scheduled",
-        "after_state": "scheduled",
-        "note": "W-05 moves from Crew C Tue 12 Jun to Crew B Tue 12 Jun."
-      },
-      {
-        "site_id": "W-10",
-        "kind": "moved",
-        "before": {
-          "crew_id": "C",
-          "date": "2018-06-15"
-        },
-        "after": {
-          "crew_id": "B",
-          "date": "2018-06-14"
-        },
-        "before_state": "scheduled",
-        "after_state": "scheduled",
-        "note": "W-10 moves from Crew C Fri 15 Jun to Crew B Thu 14 Jun."
       }
     ],
     "summary": {
-      "moved": 12,
+      "moved": 3,
       "added": 0,
       "removed": 0,
       "newly_late": 1,
-      "value_delta_usd": 0.567235862569305,
-      "travel_delta_min": -45
+      "value_delta_usd": 0.0,
+      "travel_delta_min": 0
     },
-    "headline": "12 jobs move. 1 misses its deadline by 6 days."
+    "headline": "3 jobs move. 1 misses its deadline by 6 days."
   },
-  "summary": "Including N-04 by its deadline is feasible. N-04 is back on time. S-04 becomes late instead. 3 jobs late. 12 jobs move."
+  "summary": "Including N-04 by its deadline is feasible. N-04 is back on time. S-04 becomes late instead. 3 jobs late. 3 jobs move."
 }

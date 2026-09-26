@@ -59,7 +59,7 @@
         "elapsed_ms": 0
       },
       {
-        "name": "operating_value",
+        "name": "changed_installs",
         "status": "optimal",
         "value": 0.0,
         "bound": 0.0,
@@ -67,7 +67,7 @@
         "elapsed_ms": 0
       },
       {
-        "name": "changed_installs",
+        "name": "operating_value",
         "status": "optimal",
         "value": 0.0,
         "bound": 0.0,

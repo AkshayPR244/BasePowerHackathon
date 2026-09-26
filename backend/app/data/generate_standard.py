@@ -48,6 +48,7 @@ def generate_standard(
         description="30 synthetic jobs, 3 clusters, 3 crews and 10 working days.",
         planning_end=days[-1],
         random_seed=seed,
+        num_workers=8,
         unscheduled_penalty_days=30,
         solve_time_limit_s=15,
         travel_allowance_min={"N": 60, "S": 45, "W": 50},

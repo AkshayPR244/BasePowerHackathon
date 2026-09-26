@@ -10,6 +10,8 @@ import io
 import json
 import os
 import tempfile
+import threading
+from collections import defaultdict
 from pathlib import Path
 from zoneinfo import ZoneInfo
 
@@ -67,7 +69,16 @@ def _atomic_cache(path, rows):
             temporary.unlink(missing_ok=True)
 
 
-def value_table(
+_build_locks: defaultdict[str, threading.Lock] = defaultdict(threading.Lock)
+
+
+def value_table(scenario, **kwargs) -> list[ValueTableRow]:
+    """Serialize builds per scenario, so a request during warm-up waits and reads the cache."""
+    with _build_locks[scenario.scenario_id]:
+        return _value_table(scenario, **kwargs)
+
+
+def _value_table(
     scenario, *, load_limited=False, export_allowance_kw=0.0, time_limit=30.0
 ) -> list[ValueTableRow]:
     folder = loader.DATA_ROOT / scenario.scenario_id

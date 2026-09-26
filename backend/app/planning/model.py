@@ -1,4 +1,7 @@
-"""CP-SAT variables, hard constraints, and objective expressions (SPEC section 7)."""
+"""CP-SAT variables, hard constraints, and objective expressions.
+
+Constraints follow SPEC section 7. Stage order follows docs/DECISIONS.md, "Objective order".
+"""
 
 import datetime as dt
 from dataclasses import dataclass, field
@@ -191,5 +194,20 @@ def build(
         "operating_value": sum(values.get((sid, d), 0) * v for (sid, _, d), v in x.items()),
         "changed_installs": sum(changes),
         "travel": sum(travel[k] * v for (_, _, k), v in y.items()),
+        "canonical": _canonical(x),
     }
     return pm
+
+
+def _canonical(x: dict) -> cp_model.LinearExpr:
+    """Tie-break so parallel solves return one plan among equal optima.
+
+    Weight (slot rank + 1) * (site rank + 1): swapping two sites between two slots always
+    changes the sum, so equal-objective plans rarely tie here.
+    """
+    slots = sorted({(d, crew) for (_, crew, d) in x})
+    slot_rank = {s: i for i, s in enumerate(slots)}
+    site_rank = {sid: i for i, sid in enumerate(sorted({sid for sid, _, _ in x}))}
+    return sum(
+        (slot_rank[d, crew] + 1) * (site_rank[sid] + 1) * v for (sid, crew, d), v in x.items()
+    )

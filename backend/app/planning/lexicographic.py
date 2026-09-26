@@ -13,6 +13,7 @@ from app.contracts.models import StageMeta
 class Stage:
     name: str
     maximize: bool = False
+    max_s: float | None = None  # cap on this stage's share of the budget
 
 
 @dataclass
@@ -53,6 +54,8 @@ def solve_stages(
     for i, st in enumerate(stages):
         expr = exprs[st.name]
         remaining = deadline - time.monotonic()
+        if st.max_s is not None:
+            remaining = min(remaining, st.max_s)
         if remaining <= 0.01:
             metas += [
                 StageMeta(name=s.name, status=StageStatus.skipped, elapsed_ms=0) for s in stages[i:]

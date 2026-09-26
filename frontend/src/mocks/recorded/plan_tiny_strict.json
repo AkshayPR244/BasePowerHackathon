@@ -11,7 +11,7 @@
   "message": "All 5 schedulable jobs meet their deadlines. Blocked: S-03 needs skill panel_upgrade. No crew has it.",
   "stages": [
     {
-      "name": "operating_value",
+      "name": "changed_installs",
       "status": "optimal",
       "value": 0.0,
       "bound": 0.0,
@@ -19,7 +19,7 @@
       "elapsed_ms": 0
     },
     {
-      "name": "changed_installs",
+      "name": "operating_value",
       "status": "optimal",
       "value": 0.0,
       "bound": 0.0,
@@ -173,5 +173,5 @@
       "kind": "assumed"
     }
   ],
-  "solve_ms": 0
+  "solve_ms": 15
 }

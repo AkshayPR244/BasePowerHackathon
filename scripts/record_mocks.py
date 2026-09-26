@@ -61,7 +61,8 @@ def record(index: list, name: str, method: str, path: str, body: dict | None = N
     if r.status_code != 200:
         print(f"skip {name}: {r.status_code} {r.text[:120]}")
         return None
-    (OUT / f"{name}.json").write_text(json.dumps(r.json(), indent=2) + "\n", encoding="utf-8")
+    text = json.dumps(r.json(), indent=2) + "\n"
+    (OUT / f"{name}.json").write_text(text, encoding="utf-8", newline="\n")
     index.append({"name": name, "method": method, "path": path, "request": body})
     print(f"recorded {name}")
     return r.json()
@@ -114,7 +115,9 @@ def main():
             }
             record(index, "cf_standard_force_first_late", "POST", "/api/plans/counterfactual", body)
 
-    (OUT / "index.json").write_text(json.dumps(index, indent=2) + "\n", encoding="utf-8")
+    (OUT / "index.json").write_text(
+        json.dumps(index, indent=2) + "\n", encoding="utf-8", newline="\n"
+    )
 
 
 if __name__ == "__main__":

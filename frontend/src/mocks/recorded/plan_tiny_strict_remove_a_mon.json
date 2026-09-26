@@ -17,7 +17,7 @@
   "message": "No plan meets every deadline. N-02 is due Mon 4 Jun. No crew that serves N works on or before that day. Try recovery mode.",
   "stages": [
     {
-      "name": "operating_value",
+      "name": "changed_installs",
       "status": "infeasible",
       "value": null,
       "bound": null,
@@ -25,7 +25,7 @@
       "elapsed_ms": 0
     },
     {
-      "name": "changed_installs",
+      "name": "operating_value",
       "status": "skipped",
       "value": null,
       "bound": null,
@@ -86,5 +86,5 @@
       "kind": "assumed"
     }
   ],
-  "solve_ms": 0
+  "solve_ms": 14
 }

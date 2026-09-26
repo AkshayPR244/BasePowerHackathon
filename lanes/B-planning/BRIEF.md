@@ -65,7 +65,7 @@ Lane B turns the current plan plus disruptions into the best feasible recovery, 
 6. Run solves off the event loop (`run_in_threadpool` or `asyncio.to_thread`).
 
 ### P1
-7. Recovery mode with the five lexicographic stages from SPEC section 7. One total time budget. Stage-level status, value, bound, gap, and elapsed time.
+7. Recovery mode with five lexicographic stages. The order differs from SPEC section 7 on purpose: see docs/DECISIONS.md, "Objective order". One total time budget. Stage-level status, value, bound, gap, and elapsed time.
 8. Edits. Disruptions: remove crew-day, delay inventory, change ready date. Interventions: add crew-day, force include. Echo `revision`. Set `scenario_hash` with `app.contracts.hashing.scenario_hash(base, edits)`.
 9. `POST /api/plans/compare`: stateless diff of `{before, after}`.
 10. Baselines EDF and nearest-cluster-first via `algorithm` on `POST /api/plans`. Same validator.

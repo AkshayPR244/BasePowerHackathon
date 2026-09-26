@@ -30,17 +30,20 @@ from app.planning.result import build_result, no_legal_date_jobs
 from app.validate import validate_plan
 from app.valuation import value_table as valuation
 
+# Value is a tie-breaker: a recovery tool should not move customers for small modeled value.
 STRICT_STAGES = [
-    Stage("operating_value", maximize=True),
     Stage("changed_installs"),
+    Stage("operating_value", maximize=True),
     Stage("travel"),
+    Stage("canonical", max_s=2.0),
 ]
 RECOVERY_STAGES = [
     Stage("jobs_late_or_unscheduled"),
     Stage("total_delay"),
-    Stage("operating_value", maximize=True),
     Stage("changed_installs"),
+    Stage("operating_value", maximize=True),
     Stage("travel"),
+    Stage("canonical", max_s=2.0),
 ]
 
 
@@ -183,10 +186,13 @@ def _solve(scenario, req, forced, values, policy, common) -> PlanResult:
         if v is not None and not p.locked:
             pm.model.add_hint(v, 1)
 
+    workers = scenario.config.num_workers
     run = [
         s
         for s in stages
         if not (policy == ObjectivePolicy.deadline_travel_only and s.name == "operating_value")
+        # One worker is already deterministic, so the tie-break stage would only cost time.
+        and not (s.name == "canonical" and workers == 1)
     ]
     budget = req.time_limit_s or scenario.config.solve_time_limit_s
     lex = solve_stages(
@@ -197,7 +203,8 @@ def _solve(scenario, req, forced, values, policy, common) -> PlanResult:
         seed=scenario.config.random_seed,
         workers=scenario.config.num_workers,
     )
-    metas = [_in_usd(m) for m in _merge_skipped(stages, lex.stages)]
+    reported = [st for st in stages if st.name != "canonical"]
+    metas = [_in_usd(m) for m in _merge_skipped(reported, lex.stages)]
 
     if lex.values is None:
         status = (
@@ -250,7 +257,7 @@ def _solve(scenario, req, forced, values, policy, common) -> PlanResult:
         for n, val in lex.values.items()
         if n in names and val
     }
-    run_names = {s.name for s in run}
+    run_names = {s.name for s in run} - {"canonical"}
     proven = all(m.status == StageStatus.optimal for m in metas if m.name in run_names)
     result = build_result(
         scenario=scenario,
@@ -265,6 +272,7 @@ def _solve(scenario, req, forced, values, policy, common) -> PlanResult:
 
 
 def _infeasible_stages(stages: list[Stage]) -> list[StageMeta]:
+    stages = [st for st in stages if st.name != "canonical"]
     return [StageMeta(name=stages[0].name, status=StageStatus.infeasible, elapsed_ms=0)] + [
         StageMeta(name=s.name, status=StageStatus.skipped, elapsed_ms=0) for s in stages[1:]
     ]

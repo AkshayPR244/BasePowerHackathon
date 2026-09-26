@@ -632,19 +632,6 @@
         "title": "ForceInclude",
         "type": "object"
       },
-      "HTTPValidationError": {
-        "properties": {
-          "detail": {
-            "items": {
-              "$ref": "#/components/schemas/ValidationError"
-            },
-            "title": "Detail",
-            "type": "array"
-          }
-        },
-        "title": "HTTPValidationError",
-        "type": "object"
-      },
       "InputIssue": {
         "additionalProperties": false,
         "properties": {
@@ -1706,46 +1693,6 @@
         "title": "UnscheduledJob",
         "type": "object"
       },
-      "ValidationError": {
-        "properties": {
-          "ctx": {
-            "title": "Context",
-            "type": "object"
-          },
-          "input": {
-            "title": "Input"
-          },
-          "loc": {
-            "items": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "integer"
-                }
-              ]
-            },
-            "title": "Location",
-            "type": "array"
-          },
-          "msg": {
-            "title": "Message",
-            "type": "string"
-          },
-          "type": {
-            "title": "Error Type",
-            "type": "string"
-          }
-        },
-        "required": [
-          "loc",
-          "msg",
-          "type"
-        ],
-        "title": "ValidationError",
-        "type": "object"
-      },
       "ValidationIssue": {
         "additionalProperties": false,
         "properties": {
@@ -1862,6 +1809,7 @@
   "paths": {
     "/api/health": {
       "get": {
+        "description": "`values` is not_started, warming, ready, or failed.",
         "operationId": "health_api_health_get",
         "responses": {
           "200": {
@@ -1906,6 +1854,16 @@
             },
             "description": "Successful Response"
           },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            },
+            "description": "The request is valid JSON but makes no sense"
+          },
           "404": {
             "content": {
               "application/json": {
@@ -1914,7 +1872,7 @@
                 }
               }
             },
-            "description": "Unknown scenario"
+            "description": "Unknown scenario or path"
           },
           "422": {
             "content": {
@@ -1924,7 +1882,7 @@
                 }
               }
             },
-            "description": "Scenario files are invalid"
+            "description": "The request or the scenario files are invalid"
           },
           "500": {
             "content": {
@@ -1964,15 +1922,45 @@
             },
             "description": "Successful Response"
           },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            },
+            "description": "The request is valid JSON but makes no sense"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            },
+            "description": "Unknown scenario or path"
+          },
           "422": {
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
+                  "$ref": "#/components/schemas/ApiError"
                 }
               }
             },
-            "description": "Validation Error"
+            "description": "The request or the scenario files are invalid"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            },
+            "description": "The planner produced a plan that failed validation"
           }
         },
         "summary": "Compare Plans"
@@ -2002,6 +1990,16 @@
             },
             "description": "Successful Response"
           },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            },
+            "description": "The request is valid JSON but makes no sense"
+          },
           "404": {
             "content": {
               "application/json": {
@@ -2010,7 +2008,7 @@
                 }
               }
             },
-            "description": "Unknown scenario"
+            "description": "Unknown scenario or path"
           },
           "422": {
             "content": {
@@ -2020,7 +2018,7 @@
                 }
               }
             },
-            "description": "Scenario files are invalid"
+            "description": "The request or the scenario files are invalid"
           },
           "500": {
             "content": {
@@ -2083,6 +2081,16 @@
             },
             "description": "Successful Response"
           },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            },
+            "description": "The request is valid JSON but makes no sense"
+          },
           "404": {
             "content": {
               "application/json": {
@@ -2091,7 +2099,7 @@
                 }
               }
             },
-            "description": "Unknown scenario"
+            "description": "Unknown scenario or path"
           },
           "422": {
             "content": {
@@ -2101,7 +2109,7 @@
                 }
               }
             },
-            "description": "Scenario files are invalid"
+            "description": "The request or the scenario files are invalid"
           },
           "500": {
             "content": {

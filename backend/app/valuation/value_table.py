@@ -17,7 +17,6 @@ import numpy as np
 import pandas as pd
 from pydantic import TypeAdapter, ValidationError
 
-from app.contracts.hashing import scenario_hash
 from app.contracts.models import ValueTableRow
 from app.data import load as loader
 from app.data.time_series import validate_energy_series
@@ -34,6 +33,25 @@ def commissioning_utc(day: dt.date, config) -> dt.datetime:
         dt.time(),
         ZoneInfo(config.timezone),
     ).astimezone(dt.UTC)
+
+
+def _value_inputs(scenario) -> dict:
+    """Only inputs that change a site-date value. Crew, inventory, and plan edits do not."""
+    c = scenario.config
+    return {
+        "scenario_id": scenario.scenario_id,
+        "sites": sorted(
+            [s.site_id, s.configuration_id, s.load_zone, s.profile_id] for s in scenario.sites
+        ),
+        "batteries": sorted(
+            (b.model_dump(mode="json") for b in c.batteries), key=lambda b: b["configuration_id"]
+        ),
+        "timezone": c.timezone,
+        "planning_start": c.planning_start.isoformat(),
+        "planning_end": c.planning_end.isoformat(),
+        "evaluation_end": c.evaluation_end.isoformat(),
+        "qualification_lag_days": c.qualification_lag_days,
+    }
 
 
 def _atomic_cache(path, rows):
@@ -66,7 +84,7 @@ def value_table(
         json.dumps(
             {
                 "model": MODEL_VERSION,
-                "scenario": scenario_hash(scenario),
+                "inputs": _value_inputs(scenario),
                 "prices": hashlib.sha256(price_bytes).hexdigest()
                 if price_bytes is not None
                 else None,

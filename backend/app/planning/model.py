@@ -1,4 +1,7 @@
-"""CP-SAT variables, hard constraints, and objective expressions (SPEC section 7)."""
+"""CP-SAT variables, hard constraints, and objective expressions.
+
+Constraints follow SPEC section 7. Stage order follows docs/DECISIONS.md, "Objective order".
+"""
 
 import datetime as dt
 from dataclasses import dataclass, field

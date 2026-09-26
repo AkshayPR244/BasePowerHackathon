@@ -14,7 +14,7 @@ from app.contracts.models import PlanRequest
 from app.planning.solve import plan
 from tests.lane_b.conftest import make_scenario
 
-PRIORITY = ["jobs_late_or_unscheduled", "total_delay", "operating_value", "changed_installs"]
+PRIORITY = ["jobs_late_or_unscheduled", "total_delay", "changed_installs", "operating_value"]
 
 
 def _run(n_jobs: int, n_crews: int, seed: int, limit: float):

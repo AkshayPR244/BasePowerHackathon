@@ -56,3 +56,13 @@ def test_parallel_solves_are_reproducible():
         tuple((a.site_id, a.crew_id, a.date) for a in plan(s, req).assignments) for _ in range(3)
     }
     assert len(runs) == 1
+
+
+def test_changed_installs_outrank_value_on_standard():
+    """Locks the objective order: no disruption means no customer is moved for value."""
+    from app.api.scenarios import load_scenario
+
+    s = load_scenario("standard")
+    r = plan(s, PlanRequest(scenario_id="standard", revision=0))
+    assert [m.name for m in r.stages][:2] == ["changed_installs", "operating_value"]
+    assert r.objective.changed_installs == 0

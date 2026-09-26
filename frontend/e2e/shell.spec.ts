@@ -3,7 +3,7 @@ import { load, shot } from "./helpers";
 test("shell header calendar deferred inspector and dark", async ({ page }) => {
   await load(page);
   await expect(page.getByText("Synthetic data", { exact: true })).toBeVisible();
-  await expect(page.getByText("Not validated", { exact: true })).toBeVisible();
+  await expect(page.getByText("Validated", { exact: true })).toBeVisible();
   await expect(
     page.getByRole("heading", { name: "Crew calendar" }),
   ).toBeVisible();

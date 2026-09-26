@@ -136,3 +136,17 @@ def test_incomplete_cache_recomputed(valued):
     path = next(module.CACHE_ROOT.glob("*.json"))
     path.write_text("[]")
     assert module.value_table(scenario) == first
+
+
+def test_cache_ignores_edits_that_cannot_change_values(valued, monkeypatch):
+    scenario, _ = valued
+    first = module.value_table(scenario)
+    edited = scenario.model_copy(update={"crew_days": scenario.crew_days[1:], "current_plan": []})
+
+    def no_solve(*a, **k):
+        raise AssertionError("a crew or plan edit must reuse cached values")
+
+    monkeypatch.setattr(module, "dispatch", no_solve)
+    again = module.value_table(edited)
+    assert [r.value_usd for r in again] == [r.value_usd for r in first]
+    assert again[0].input_hash == first[0].input_hash

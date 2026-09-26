@@ -10,11 +10,16 @@ test("exports assignments, missed commitments, assumptions and solver status", (
     "assumption",
     "solver",
     "validation",
-    "Not validated",
+    "Validated",
     "N-02",
     "S-03",
   ])
     expect(csv).toContain(text);
+});
+test("exports Not validated when the validator did not check the plan", () => {
+  const plan = structuredClone(fixture) as Plan;
+  plan.validation = { ...plan.validation, checked: false, valid: false };
+  expect(planCsv(plan)).toContain("Not validated");
 });
 test("quotes delimiters and prevents spreadsheet formulas", () => {
   const plan = structuredClone(fixture) as Plan;

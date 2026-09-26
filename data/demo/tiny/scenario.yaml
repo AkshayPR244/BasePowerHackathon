@@ -1,0 +1,28 @@
+name: Tiny hand-built check
+description: 6 jobs, 2 crews, 3 days, 2 clusters. Hand-built to test the full loop. All inputs are synthetic.
+timezone: America/Chicago
+planning_start: 2018-06-04
+planning_end: 2018-06-06
+evaluation_end: 2018-07-29
+qualification_lag_days: 0
+unscheduled_penalty_days: 10
+objective_policy: value_aware
+solve_time_limit_s: 5
+random_seed: 0
+num_workers: 1
+synthetic: true
+travel_allowance_min:
+  N: 60
+  S: 45
+batteries:
+  - configuration_id: B13
+    capacity_kwh: 13.5
+    reserve_kwh: 1.35
+    charge_limit_kw: 5.0
+    discharge_limit_kw: 5.0
+    eta_charge: 0.95
+    eta_discharge: 0.95
+provenance:
+  - input: all files
+    kind: synthetic
+    source: Hand-built for tests. Not real parcels, crews, or inventory.

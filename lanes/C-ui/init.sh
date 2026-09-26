@@ -1,0 +1,33 @@
+#!/usr/bin/env bash
+# Session start for lanes/C-ui: sync main, install, check, show next items.
+set -euo pipefail
+cd "$(git rev-parse --show-toplevel)"
+LANE_DIR=lanes/C-ui
+BRANCH=lane/c-ui
+CHECK=check-c
+PY=$(command -v python3 || command -v python)
+
+if [ "$(git branch --show-current)" = "$BRANCH" ]; then
+  git fetch origin && git merge --no-edit origin/main || echo "NOTE: could not merge origin/main. Resolve before new work."
+fi
+
+if [ -f frontend/package.json ]; then (cd frontend && pnpm install); else echo "NOTE: frontend/package.json does not exist yet. C-01 creates it."; fi
+
+status=0
+if [ -f Makefile ] && make -n "$CHECK" >/dev/null 2>&1; then
+  make "$CHECK" || { status=$?; echo "CHECK FAILED: make $CHECK"; }
+else
+  echo "NOTE: make $CHECK does not exist yet. Running the fallback check."
+  ( if [ -f frontend/package.json ]; then cd frontend && pnpm typecheck && pnpm test && pnpm build; else echo "NOTE: no frontend app yet."; fi ) || { status=$?; echo "CHECK FAILED: fallback check"; }
+fi
+
+"$PY" - "$LANE_DIR/feature_list.json" <<'PY'
+import json, sys
+todo = [f for f in json.load(open(sys.argv[1])) if not f["passes"]]
+print(f"{len(todo)} items not passing. Next:")
+for f in todo[:3]:
+    print(f"  {f['id']} [{f['priority']}] {f['title']}")
+    print(f"      proof: {f['acceptance']}")
+PY
+echo "Start the app on mocks: make dev (planned). Until then: cd frontend && pnpm dev. Live API: VITE_API_MODE=live pnpm dev"
+exit $status

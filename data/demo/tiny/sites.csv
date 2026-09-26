@@ -1,0 +1,7 @@
+site_id,cluster_id,program_id,ready_date,deadline,duration_min,required_skill,configuration_id,load_zone,profile_id
+N-01,N,P1,2018-06-04,2018-06-06,180,install,B13,LZ_HOUSTON,
+N-02,N,P1,2018-06-04,2018-06-04,180,install,B13,LZ_HOUSTON,
+N-03,N,P1,2018-06-05,2018-06-06,240,install,B13,LZ_HOUSTON,
+S-01,S,P1,2018-06-04,2018-06-06,180,install,B13,LZ_HOUSTON,
+S-02,S,P1,2018-06-04,2018-06-05,240,install,B13,LZ_HOUSTON,
+S-03,S,P1,2018-06-04,2018-06-06,180,panel_upgrade,B13,LZ_HOUSTON,

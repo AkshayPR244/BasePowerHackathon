@@ -1,0 +1,27 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+.pytest_cache/
+.ruff_cache/
+
+# Node
+node_modules/
+frontend/dist/
+frontend/test-results/
+frontend/playwright-report/
+
+# Data
+data/raw/
+data/cache/
+
+# Env and local agent control
+.env
+.env.*
+!.env.example
+AGENT_STOP
+STEER.md
+.claude/settings.local.json
+.claude/.evidence-reads
+
+.DS_Store

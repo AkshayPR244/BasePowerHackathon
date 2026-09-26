@@ -1,0 +1,277 @@
+{
+  "intervention": {
+    "kind": "add_crew_day",
+    "crew_id": "C",
+    "date": "2018-06-04",
+    "available_min": 480,
+    "skills": [
+      "install"
+    ],
+    "allowed_clusters": [
+      "N"
+    ]
+  },
+  "feasible": true,
+  "result": {
+    "plan_id": "tiny-r1-recovery-add-C-mon",
+    "scenario_id": "tiny",
+    "scenario_hash": "af288f52df14e5765802a828b55a0d1d1af1088b85161de4a10305b2ec31f82d",
+    "revision": 1,
+    "mode": "recovery",
+    "algorithm": "cpsat",
+    "objective_policy": "value_aware",
+    "edits": [
+      {
+        "kind": "remove_crew_day",
+        "crew_id": "A",
+        "date": "2018-06-04"
+      },
+      {
+        "kind": "add_crew_day",
+        "crew_id": "C",
+        "date": "2018-06-04",
+        "available_min": 480,
+        "skills": [
+          "install"
+        ],
+        "allowed_clusters": [
+          "N"
+        ]
+      }
+    ],
+    "status": "optimal",
+    "message": "With Crew C on Monday, all 5 schedulable jobs meet their deadlines.",
+    "stages": [
+      {
+        "name": "jobs_late_or_unscheduled",
+        "status": "optimal",
+        "value": 0.0,
+        "bound": 0.0,
+        "gap": 0.0,
+        "elapsed_ms": 0
+      },
+      {
+        "name": "total_delay",
+        "status": "optimal",
+        "value": 0.0,
+        "bound": 0.0,
+        "gap": 0.0,
+        "elapsed_ms": 0
+      },
+      {
+        "name": "operating_value",
+        "status": "optimal",
+        "value": 0.0,
+        "bound": 0.0,
+        "gap": 0.0,
+        "elapsed_ms": 0
+      },
+      {
+        "name": "changed_installs",
+        "status": "optimal",
+        "value": 0.0,
+        "bound": 0.0,
+        "gap": 0.0,
+        "elapsed_ms": 0
+      },
+      {
+        "name": "travel",
+        "status": "optimal",
+        "value": 165.0,
+        "bound": 165.0,
+        "gap": 0.0,
+        "elapsed_ms": 0
+      }
+    ],
+    "assignments": [
+      {
+        "site_id": "N-01",
+        "crew_id": "A",
+        "date": "2018-06-05",
+        "state": "locked",
+        "days_late": 0,
+        "value_usd": 0.0
+      },
+      {
+        "site_id": "N-02",
+        "crew_id": "C",
+        "date": "2018-06-04",
+        "state": "scheduled",
+        "days_late": 0,
+        "value_usd": 0.0
+      },
+      {
+        "site_id": "N-03",
+        "crew_id": "A",
+        "date": "2018-06-05",
+        "state": "scheduled",
+        "days_late": 0,
+        "value_usd": 0.0
+      },
+      {
+        "site_id": "S-01",
+        "crew_id": "B",
+        "date": "2018-06-04",
+        "state": "scheduled",
+        "days_late": 0,
+        "value_usd": 0.0
+      },
+      {
+        "site_id": "S-02",
+        "crew_id": "B",
+        "date": "2018-06-04",
+        "state": "scheduled",
+        "days_late": 0,
+        "value_usd": 0.0
+      }
+    ],
+    "unscheduled": [
+      {
+        "site_id": "S-03",
+        "state": "blocked",
+        "reasons": [
+          "SKILL_MISMATCH"
+        ],
+        "detail": "S-03 needs skill panel_upgrade. No crew has it."
+      }
+    ],
+    "crew_days": [
+      {
+        "crew_id": "A",
+        "date": "2018-06-05",
+        "cluster_id": "N",
+        "onsite_min": 420,
+        "travel_min": 60,
+        "available_min": 480
+      },
+      {
+        "crew_id": "A",
+        "date": "2018-06-06",
+        "cluster_id": null,
+        "onsite_min": 0,
+        "travel_min": 0,
+        "available_min": 480
+      },
+      {
+        "crew_id": "B",
+        "date": "2018-06-04",
+        "cluster_id": "S",
+        "onsite_min": 420,
+        "travel_min": 45,
+        "available_min": 480
+      },
+      {
+        "crew_id": "B",
+        "date": "2018-06-05",
+        "cluster_id": null,
+        "onsite_min": 0,
+        "travel_min": 0,
+        "available_min": 480
+      },
+      {
+        "crew_id": "B",
+        "date": "2018-06-06",
+        "cluster_id": null,
+        "onsite_min": 0,
+        "travel_min": 0,
+        "available_min": 480
+      },
+      {
+        "crew_id": "C",
+        "date": "2018-06-04",
+        "cluster_id": "N",
+        "onsite_min": 180,
+        "travel_min": 60,
+        "available_min": 480
+      }
+    ],
+    "objective": {
+      "jobs_on_time": 5,
+      "jobs_late": 0,
+      "jobs_unscheduled": 1,
+      "jobs_blocked": 1,
+      "total_delay_days": 0,
+      "operating_value_usd": 0.0,
+      "changed_installs": 0,
+      "travel_allowance_min": 165,
+      "crew_utilization": 0.4115,
+      "value_distinguishes_choices": false
+    },
+    "validation": {
+      "checked": false,
+      "valid": false,
+      "issues": [],
+      "validator": "not implemented yet (Lane A)"
+    },
+    "input_issues": [],
+    "assumptions": [
+      {
+        "key": "synthetic_inputs",
+        "text": "All tiny inputs are synthetic and hand-built.",
+        "kind": "synthetic"
+      },
+      {
+        "key": "travel_allowance",
+        "text": "Travel is a fixed allowance per active crew-day and cluster, not a routed drive time.",
+        "kind": "assumed"
+      },
+      {
+        "key": "equal_values",
+        "text": "All site values are equal, so energy value did not change any choice.",
+        "kind": "assumed"
+      },
+      {
+        "key": "recorded_fixture",
+        "text": "This response was computed by exhaustive enumeration for the tiny fixture, not by the CP-SAT planner.",
+        "kind": "derived"
+      }
+    ],
+    "solve_ms": 0
+  },
+  "diff": {
+    "before_plan_id": "tiny-r1-recovery",
+    "after_plan_id": "tiny-r1-recovery-add-C-mon",
+    "changes": [
+      {
+        "site_id": "N-02",
+        "kind": "moved",
+        "before": {
+          "crew_id": "A",
+          "date": "2018-06-05"
+        },
+        "after": {
+          "crew_id": "C",
+          "date": "2018-06-04"
+        },
+        "before_state": "late",
+        "after_state": "scheduled",
+        "note": "N-02 moves from Crew A Tue 5 Jun to Crew C Mon 4 Jun."
+      },
+      {
+        "site_id": "N-03",
+        "kind": "moved",
+        "before": {
+          "crew_id": "A",
+          "date": "2018-06-06"
+        },
+        "after": {
+          "crew_id": "A",
+          "date": "2018-06-05"
+        },
+        "before_state": "scheduled",
+        "after_state": "scheduled",
+        "note": "N-03 moves from Crew A Wed 6 Jun to Crew A Tue 5 Jun."
+      }
+    ],
+    "summary": {
+      "moved": 2,
+      "added": 0,
+      "removed": 0,
+      "newly_late": 0,
+      "value_delta_usd": 0.0,
+      "travel_delta_min": 0
+    },
+    "headline": "Adding Crew C on Monday puts N-02 back on time."
+  },
+  "summary": "Adding Crew C on Monday (North, 480 min) makes N-02 on time. No job is late."
+}

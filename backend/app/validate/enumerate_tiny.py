@@ -124,7 +124,9 @@ def enumerate_tiny(
             else ()
         )
         value_key = (
-            (-round(value * 100),) if scenario.config.objective_policy == "value_aware" else ()
+            (-sum(round(a.value_usd * 100) for a in assignments),)
+            if scenario.config.objective_policy == "value_aware"
+            else ()
         )
         key = (*prefix, *value_key, changes, travel_minutes)
         if best is not None and key > best.key:

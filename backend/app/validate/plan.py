@@ -103,6 +103,9 @@ def validate_plan(scenario: Scenario, result: PlanResult) -> ValidationReport:
             ValidationIssue(code=code, message=message, site_id=site_id, crew_id=crew_id, date=date)
         )
 
+    if result.scenario_id != scenario.scenario_id:
+        add("STATE_MISMATCH", "Result and scenario IDs differ")
+
     if result.status not in ("optimal", "feasible"):
         if result.assignments or result.crew_days:
             add("STATE_MISMATCH", "A response without an incumbent cannot contain a plan")

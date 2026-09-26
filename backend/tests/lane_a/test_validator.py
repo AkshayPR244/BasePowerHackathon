@@ -72,3 +72,22 @@ def test_no_incumbent_does_not_certify_infeasibility(scenario, plan):
     report = validate_plan(scenario, plan)
     assert not report.valid
     assert "no-incumbent-shape" in report.validator
+
+
+def test_result_from_different_scenario_rejected(scenario, plan):
+    plan.scenario_id = "different"
+    assert "STATE_MISMATCH" in {i.code for i in validate_plan(scenario, plan).issues}
+
+
+def test_force_include_remains_by_deadline_in_recovery():
+    from app.contracts.models import ForceInclude
+
+    name, plan = next((n, p) for n, p in expected_plans() if n == "plan_recovery_remove_a_mon")
+    scenario = edited_scenario(plan)
+    plan.edits.append(ForceInclude(site_id="N-02"))
+    assert "AFTER_DEADLINE" in {i.code for i in validate_plan(scenario, plan).issues}
+
+
+def test_inventory_is_cumulative_not_end_of_horizon(scenario, plan):
+    scenario.inventory[0].available_date = dt.date(2018, 6, 6)
+    assert "INVENTORY" in {i.code for i in validate_plan(scenario, plan).issues}

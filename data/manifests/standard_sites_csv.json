@@ -7,7 +7,7 @@
   "covered_start": "2018-06-04",
   "covered_end": "2018-06-15",
   "license_notes": "Synthetic benchmark data; repository MIT license.",
-  "sha256": "5da6567ad96429bfd50644aef569a0b743837188383db2f9e8dfffe0b7ddf05c",
+  "sha256": "67f86297a2e9b3f11e9d66e43a37ef76a373be3797b1622e8d841cba9e72c1ef",
   "transformation": "Seeded synthetic operational and geometry inputs; no real customers.",
   "row_count": 30,
   "fields": {
@@ -20,6 +20,6 @@
     "required_skill": "synthetic",
     "configuration_id": "synthetic",
     "load_zone": "synthetic",
-    "profile_id": "synthetic"
+    "profile_id": "modeled"
   }
 }

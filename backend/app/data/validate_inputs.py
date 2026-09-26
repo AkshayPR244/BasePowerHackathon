@@ -3,10 +3,21 @@
 from collections import Counter
 from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 
+from pydantic import ValidationError
+
 from app.contracts.models import InputIssue, Scenario
 
 
 def validate_inputs(scenario: Scenario) -> list[InputIssue]:
+    # Models can be mutated after loading (Pydantic does not validate assignment).
+    # Revalidate their contents before semantic checks or arithmetic.
+    try:
+        Scenario.model_validate(scenario.model_dump(warnings=False))
+    except ValidationError as exc:
+        return [
+            InputIssue(code="BAD_VALUE", message=f"{'.'.join(map(str, e['loc']))}: {e['msg']}")
+            for e in exc.errors()
+        ]
     issues = []
 
     def add(code, message, file=None):

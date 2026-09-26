@@ -31,3 +31,11 @@ provenance:
   kind: observed
   source: https://www.ercot.com/misdownload/servlets/mirDownload?doclookupId=642564849
   manifest_id: ercot_np6_785_2018
+- input: loads.parquet
+  kind: modeled
+  source: https://oedi-data-lake.s3.amazonaws.com/nrel-pds-building-stock/end-use-load-profiles-for-us-building-stock/2025/resstock_amy2018_release_1/timeseries_individual_buildings/by_state/upgrade=0/state=TX/100-0.parquet
+  manifest_id: resstock_amy2018_tx_100
+- input: sites.csv:profile_id
+  kind: modeled
+  source: https://oedi-data-lake.s3.amazonaws.com/nrel-pds-building-stock/end-use-load-profiles-for-us-building-stock/2025/resstock_amy2018_release_1/timeseries_individual_buildings/by_state/upgrade=0/state=TX/100-0.parquet
+  manifest_id: resstock_amy2018_tx_100

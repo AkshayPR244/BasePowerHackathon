@@ -115,3 +115,24 @@ def test_load_limited_table_requires_aligned_modeled_profiles(valued):
     unrestricted = module.value_table(scenario)
     assert limited[0].value_usd < unrestricted[0].value_usd
     assert limited[0].input_hash != unrestricted[0].input_hash
+
+
+def test_cache_invalidates_battery_and_lag(valued):
+    scenario, _ = valued
+    first = module.value_table(scenario)
+    scenario.config.batteries[0].discharge_limit_kw = 0.1
+    second = module.value_table(scenario)
+    assert first[0].input_hash != second[0].input_hash
+    assert second[0].value_usd < first[0].value_usd
+    scenario.config.qualification_lag_days = 1
+    third = module.value_table(scenario)
+    assert third[0].input_hash != second[0].input_hash
+    assert third[0].value_usd < second[0].value_usd
+
+
+def test_incomplete_cache_recomputed(valued):
+    scenario, _ = valued
+    first = module.value_table(scenario)
+    path = next(module.CACHE_ROOT.glob("*.json"))
+    path.write_text("[]")
+    assert module.value_table(scenario) == first

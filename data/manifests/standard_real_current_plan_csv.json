@@ -11,7 +11,7 @@
   "transformation": "Seeded synthetic inputs; no real customers.",
   "row_count": 30,
   "fields": {
-    "site_id": "synthetic",
+    "site_id": "derived",
     "crew_id": "synthetic",
     "date": "synthetic",
     "locked": "synthetic"

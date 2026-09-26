@@ -4,6 +4,7 @@ import datetime as dt
 import hashlib
 from pathlib import Path
 
+from app.contracts.enums import DataKind
 from app.contracts.models import Manifest
 
 MANIFEST_ROOT = Path(__file__).resolve().parents[3] / "data/manifests"
@@ -56,11 +57,15 @@ def write_manifest(manifest: Manifest, directory: Path | None = None) -> Path:
     return path
 
 
-def refresh_manifest(path: Path, dataset_id: str, directory: Path | None = None):
+def refresh_manifest(
+    path: Path, dataset_id: str, directory: Path | None = None, field_kinds: dict | None = None
+):
     """Keep an existing prepared-file manifest current after a provenance update."""
     directory = MANIFEST_ROOT if directory is None else Path(directory)
     manifest_path = directory / f"{dataset_id}.json"
     if manifest_path.exists():
         manifest = Manifest.model_validate_json(manifest_path.read_text())
         manifest.sha256 = hashlib.sha256(path.read_bytes()).hexdigest()
+        if field_kinds:
+            manifest.fields.update({k: DataKind(v) for k, v in field_kinds.items()})
         write_manifest(manifest, directory)

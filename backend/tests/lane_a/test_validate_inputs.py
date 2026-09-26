@@ -89,3 +89,9 @@ def test_geometry_ids_must_match(copied_tiny):
     with pytest.raises(ScenarioLoadError) as error:
         load_scenario("tiny")
     assert error.value.issues[0].code == "UNKNOWN_REFERENCE"
+
+
+@pytest.mark.parametrize("field,value", [("available_min", -1), ("available_min", float("inf"))])
+def test_mutated_numeric_values_still_checked(scenario, field, value):
+    setattr(scenario.crew_days[0], field, value)
+    assert "BAD_VALUE" in codes(scenario)

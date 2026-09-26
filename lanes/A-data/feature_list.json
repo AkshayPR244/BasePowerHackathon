@@ -123,6 +123,6 @@
     "priority": "P2",
     "title": "Load-limited valuation sensitivity with ResStock profiles, labeled modeled",
     "acceptance": "cd backend && uv run pytest tests/lane_a/test_battery.py -q -k load_limited",
-    "passes": false
+    "passes": true
   }
 ]

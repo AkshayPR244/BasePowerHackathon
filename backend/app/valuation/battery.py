@@ -35,6 +35,8 @@ def dispatch(
     model. Non-optimal results carry status and may not become exact coefficients.
     """
     price = np.asarray(price, dtype=float)
+    if price.ndim != 1:
+        raise ValueError("Prices must be a one-dimensional array")
     hours = np.asarray(interval_hours, dtype=float)
     if hours.ndim == 0:
         hours = np.full(len(price), float(hours))

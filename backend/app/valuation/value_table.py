@@ -6,6 +6,7 @@ prices. An unfinished solve raises instead of silently becoming an exact coeffic
 
 import datetime as dt
 import hashlib
+import io
 import json
 import os
 import tempfile
@@ -19,6 +20,7 @@ from pydantic import TypeAdapter, ValidationError
 from app.contracts.hashing import scenario_hash
 from app.contracts.models import ValueTableRow
 from app.data import load as loader
+from app.data.time_series import validate_energy_series
 from app.valuation.battery import dispatch
 
 CACHE_ROOT = Path(__file__).resolve().parents[3] / "data/cache"
@@ -32,33 +34,6 @@ def commissioning_utc(day: dt.date, config) -> dt.datetime:
         dt.time(),
         ZoneInfo(config.timezone),
     ).astimezone(dt.UTC)
-
-
-def _series(frame, value_column, start, end):
-    """Validate exact interval coverage; never localize naive timestamps or fill gaps."""
-    required = {"timestamp_utc", "interval_hours", value_column}
-    if not required <= set(frame.columns):
-        raise ValueError(f"Prepared series requires {sorted(required)}")
-    if not isinstance(frame.timestamp_utc.dtype, pd.DatetimeTZDtype):
-        raise ValueError("Energy timestamps must be timezone-aware")
-    frame = frame.sort_values("timestamp_utc").copy()
-    frame["timestamp_utc"] = frame.timestamp_utc.dt.tz_convert("UTC")
-    frame = frame[(frame.timestamp_utc >= start) & (frame.timestamp_utc < end)]
-    numeric = frame[["interval_hours", value_column]].to_numpy(dtype=float)
-    if not len(frame) or not np.isfinite(numeric).all() or (numeric[:, 0] <= 0).any():
-        raise ValueError("Empty, non-finite or invalid energy series")
-    if frame.timestamp_utc.duplicated().any():
-        raise ValueError("Duplicate energy intervals")
-    ends = frame.timestamp_utc + pd.to_timedelta(frame.interval_hours, unit="h")
-    if (
-        frame.timestamp_utc.iloc[0] != start
-        or ends.iloc[-1] != end
-        or not np.array_equal(ends.iloc[:-1].to_numpy(), frame.timestamp_utc.iloc[1:].to_numpy())
-    ):
-        raise ValueError(
-            "MISSING_INTERVAL: energy horizon has gaps, overlaps or missing boundaries"
-        )
-    return frame.reset_index(drop=True)
 
 
 def _atomic_cache(path, rows):
@@ -142,7 +117,7 @@ def value_table(
         ]
         _atomic_cache(cache, rows)
         return rows
-    prices = pd.read_parquet(price_path)
+    prices = pd.read_parquet(io.BytesIO(price_bytes))
     if "load_zone" not in prices:
         raise ValueError("Prepared prices require load_zone")
     start = dt.datetime.combine(
@@ -154,10 +129,10 @@ def value_table(
         ZoneInfo(scenario.config.timezone),
     ).astimezone(dt.UTC)
     by_zone = {
-        zone: _series(prices[prices.load_zone == zone], "price_usd_mwh", start, end)
+        zone: validate_energy_series(prices[prices.load_zone == zone], "price_usd_mwh", start, end)
         for zone in {s.load_zone for s in scenario.sites}
     }
-    loads = pd.read_parquet(load_path) if load_limited else None
+    loads = pd.read_parquet(io.BytesIO(load_bytes)) if load_limited else None
     by_profile = {}
     if loads is not None:
         if "profile_id" not in loads:
@@ -165,7 +140,9 @@ def value_table(
         for profile in {s.profile_id for s in scenario.sites}:
             if profile is None:
                 raise ValueError("Each load-limited site requires a modeled profile_id")
-            series = _series(loads[loads.profile_id == profile], "load_kw", start, end)
+            series = validate_energy_series(
+                loads[loads.profile_id == profile], "load_kw", start, end
+            )
             if (series.load_kw < 0).any():
                 raise ValueError("Load must be nonnegative")
             by_profile[profile] = series

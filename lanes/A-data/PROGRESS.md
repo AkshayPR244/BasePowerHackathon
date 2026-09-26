@@ -1,28 +1,32 @@
 # Lane A · Data, Valuation, Truth · progress
 
 ## Continue from here
-- Branch: `codex/lane-a-data` (Lane A implementation worktree).
-- Setup: `cd backend && uv sync`.
-- Check: `make check-a`.
-- Read `AGENTS.md`, this lane brief, and `docs/CONTRACTS.md`.
-- Next: A-18 ResStock load-limited sensitivity, then final integration review.
+- Branch: `lane/a-data` in the original checkout; implementation commits originated on `codex/lane-a-data`.
+- Setup: `cd backend && uv sync --locked`.
+- Check: `make check-a` from the repository root.
+- Read `AGENTS.md` and `lanes/A-data/IMPLEMENTATION.md` for the interfaces, provenance and reproduction commands.
+- All A-01 through A-18 items are implemented and their acceptance checks pass.
+- Next: publish the branch and open a PR once the user authorizes the remote write. Lane B can import the local implementation now. Do not merge to main.
 
 ## Done
-- A-01: local scenario loader, structured errors, scenario list and summaries. Tiny hash matches the frozen fixture. Semantic input validation foundation included.
-- A-02/A-03: all frozen hashes and round-trips pass; validator import boundaries enforced.
-- A-04/A-05/A-06: independent constraints, states, usage and objective checks; every ViolationCode has a broken-plan test. No-incumbent responses validate shape only, not infeasibility proof.
-- A-07: exhaustive oracle reproduces all five tiny plan cases and their unique optima/infeasibility.
-- A-08/A-09: structured semantic checks, invalid raw values, valid ready-after-deadline cases, contradictory locks retained and reported.
-- A-10/A-11: deterministic 30-job synthetic standard scenario and SHA-256 manifests.
-- A-12: actual ERCOT 2018 archive ingested, LZ type selected explicitly; 5,376 Houston quarter-hours for June 4–July 29. DST/gap/duplicate tests pass.
-- A-13/A-14: continuous-horizon HiGHS MILP, binary charge mode, equal reserve boundaries; physics and negative-price tests pass.
-- A-15/A-16: 360 standard site/date values, input-hashed atomic cache, identical-site solve reuse. Measured first preparation 21.221 seconds; cache reload 0.001 seconds.
-- A-17: bounded HCAD queries verified with 30 real parcel candidates; only geometry and hashed IDs survive preparation. Observed scenario files stay local/ignored pending redistribution terms. Recipes and manifests are tracked.
-- Evidence: `make check-a` passed, 90 tests.
+- A-01: loader, scenario list and summaries; structured errors and exact frozen tiny hash.
+- A-02/A-03: scenario/result round trips, all expected hashes, and absolute/relative import boundary checks.
+- A-04/A-05/A-06: independent hard-constraint, state, crew-usage and objective validation; every ViolationCode tested with a broken plan.
+- A-07: exhaustive oracle reproduces all five frozen plan cases and unique optima/infeasibility.
+- A-08/A-09: duplicate/reference/value/date checks; ready-after-deadline allowed; contradictory locks retained and reported.
+- A-10/A-11: deterministic 30-job standard fixture, SHA-256 manifests and provenance checks.
+- A-12: actual ERCOT 2018 archive prepared; 5,376 observed Houston quarter-hours; explicit LZ filter, DST conversion, no gap filling.
+- A-13/A-14: HiGHS battery MILP, binary charge/discharge exclusivity, energy conservation and reserve boundaries.
+- A-15/A-16: 360 site/date values, identical-site solve reuse, content-hashed atomic cache with invalidation tests.
+- A-17: 30 bounded HCAD parcel candidates successfully prepared and loaded. Observed files remain local/ignored; no owner or address fields in prepared data.
+- A-18: actual ResStock AMY2018 Texas archetype prepared and aligned to prices, modeled provenance, standalone load-limited sensitivity verified. Default API valuation remains unrestricted export.
+- Evidence: `make check-a` passes 101 tests. Standard existing plan independently validates with 30 on-time assignments. See `evidence.json` for measured valuation/cache results.
 
 ## In progress
-- ResStock load preparation and final review.
+- None.
 
-## Blockers
-- Publishing requires user approval after automatic review rejected exporting code to the unverified remote. Continue all local work.
-- Tiny valuation remains explicitly assumed zero, matching the frozen fixture. Standard uses observed prices and modeled operating margin.
+## Blockers and limits
+- Automatic approval review rejected pushing code to the unverified remote. No push or PR was made. User approval is required to publish to `https://github.com/AkshayPR244/BasePowerHackathon.git`.
+- HCAD source redistribution terms remain unverified; regenerate the ignored local sample with the documented explicit command.
+- No-incumbent validation checks response shape, not a solver's infeasibility proof. The exhaustive oracle supplies the tiny-case proof.
+- Frozen contracts, expected tiny results, Lane B source and frontend source were not changed.

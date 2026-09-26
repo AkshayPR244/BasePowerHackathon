@@ -87,6 +87,8 @@ def anonymize(collection, cluster, *, seed=42):
 def prepare_hcad(
     collections, *, output=None, seed=42, retrieved_at=None, manifest_dir=None, source_url=None
 ):
+    if retrieved_at is None:
+        raise ValueError("Observed parcel data requires a retrieval timestamp")
     if set(collections) != set(BOUNDS):
         raise ValueError("Supply one bounded collection for each of N, S and W")
     output = DATA_ROOT / "standard_real" if output is None else Path(output)
@@ -132,7 +134,10 @@ def prepare_hcad(
             writer.writeheader()
             writer.writerows(rows)
         refresh_manifest(
-            output / filename, output.name + "_" + filename.replace(".", "_"), manifest_dir
+            output / filename,
+            output.name + "_" + filename.replace(".", "_"),
+            manifest_dir,
+            field_kinds={"site_id": "derived"},
         )
     cfg_path = output / "scenario.yaml"
     cfg = yaml.safe_load(cfg_path.read_text())

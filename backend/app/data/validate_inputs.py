@@ -5,7 +5,9 @@ from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 
 from pydantic import ValidationError
 
+from app.contracts.enums import VisitType
 from app.contracts.models import InputIssue, Scenario
+from app.contracts.visits import jobs_of
 
 
 def validate_inputs(scenario: Scenario) -> list[InputIssue]:
@@ -75,48 +77,68 @@ def validate_inputs(scenario: Scenario) -> list[InputIssue]:
     for receipt in scenario.inventory:
         if receipt.configuration_id not in batteries:
             add("UNKNOWN_REFERENCE", f"Unknown inventory battery {receipt.configuration_id}")
-    for sid, count in Counter(p.site_id for p in scenario.current_plan).items():
+    jobs = {}
+    for s in scenario.sites:
+        if s.visits:
+            types = sorted(v.visit_type for v in s.visits)
+            if types != sorted([VisitType.install, VisitType.battery_day]):
+                add("BAD_VALUE", f"{s.site_id} needs one install and one battery day", "visits.csv")
+            if any(v.duration_min <= 0 for v in s.visits):
+                add("BAD_VALUE", f"Invalid visit duration: {s.site_id}", "visits.csv")
+        for j in jobs_of(s):
+            if j.job_id in jobs and jobs[j.job_id].site_id != s.site_id:
+                add("DUPLICATE_ID", f"Duplicate visit ID: {j.job_id}", "visits.csv")
+            jobs[j.job_id] = j
+
+    def row_job(p):
+        if p.job_id is None:
+            site = sites.get(p.site_id)
+            return next((j for j in jobs_of(site) if j.final), None) if site else None
+        j = jobs.get(p.job_id)
+        return j if j is not None and j.site_id == p.site_id else None
+
+    for key, count in Counter((p.site_id, p.job_id) for p in scenario.current_plan).items():
         if count > 1:
-            add("DUPLICATE_PLANNED_INSTALL", f"Multiple current installs for {sid}")
+            add("DUPLICATE_PLANNED_INSTALL", f"Multiple current plan rows for {key[1] or key[0]}")
     locks = []
     for p in scenario.current_plan:
-        site, crew = sites.get(p.site_id), crew_days.get((p.crew_id, p.date))
-        if site is None or crew is None:
-            add("UNKNOWN_REFERENCE", f"Unknown site or crew-day in current plan: {p.site_id}")
+        site, crew, job = sites.get(p.site_id), crew_days.get((p.crew_id, p.date)), row_job(p)
+        if site is None or crew is None or job is None:
+            add(
+                "UNKNOWN_REFERENCE",
+                f"Unknown site, visit, or crew-day in current plan: {p.site_id}",
+            )
         if p.locked:
-            locks.append(p)
+            locks.append((p, job))
             if (
                 site is None
                 or crew is None
+                or job is None
                 or p.date < site.ready_date
                 or not cfg.planning_start <= p.date <= cfg.planning_end
-                or site.required_skill not in crew.skills
+                or job.required_skill not in crew.skills
                 or site.cluster_id not in crew.allowed_clusters
             ):
-                add("CONTRADICTORY_LOCKS", f"Locked install has no legal slot: {p.site_id}")
-    for sid, count in Counter(p.site_id for p in locks).items():
+                add("CONTRADICTORY_LOCKS", f"Locked visit has no legal slot: {p.site_id}")
+    for key, count in Counter(j.job_id for _, j in locks if j).items():
         if count > 1:
-            add("CONTRADICTORY_LOCKS", f"Multiple locks for {sid}")
+            add("CONTRADICTORY_LOCKS", f"Multiple locks for {key}")
     for key, crew in crew_days.items():
-        locked_sites = [
-            sites[p.site_id] for p in locks if (p.crew_id, p.date) == key and p.site_id in sites
-        ]
-        used_clusters = {s.cluster_id for s in locked_sites}
+        here = [(sites[p.site_id], j) for p, j in locks if (p.crew_id, p.date) == key and j]
+        used_clusters = {s.cluster_id for s, _ in here}
         travel = sum(
             c.travel_allowance_min for c in scenario.clusters if c.cluster_id in used_clusters
         )
         if (
             len(used_clusters) > 1
-            or sum(s.duration_min for s in locked_sites) + travel > crew.available_min
+            or sum(j.duration_min for _, j in here) + travel > crew.available_min
         ):
             add("CONTRADICTORY_LOCKS", f"Locks exceed crew-day capacity or clusters: {key}")
-    for p in locks:
-        if p.site_id not in sites:
-            continue
+    final_locks = [p for p, j in locks if j is not None and j.final]
+    for p in final_locks:
         battery = sites[p.site_id].configuration_id
         used = sum(
-            q.date <= p.date and q.site_id in sites and sites[q.site_id].configuration_id == battery
-            for q in locks
+            q.date <= p.date and sites[q.site_id].configuration_id == battery for q in final_locks
         )
         available = sum(
             r.quantity

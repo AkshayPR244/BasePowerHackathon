@@ -17,7 +17,7 @@ from pathlib import Path
 
 import yaml
 
-from app.data.generate_standard import generate_standard
+from app.data.generate_standard import Spec, generate_standard
 from app.data.load import DATA_ROOT, _point
 from app.data.manifest import build_manifest, refresh_manifest, write_manifest
 
@@ -100,7 +100,7 @@ def prepare_hcad(
         features.extend(clean[:10])
     if len({f["properties"]["site_id"] for f in features}) != 30:
         raise ValueError("Parcel samples overlap across clusters")
-    generate_standard(output, seed, manifest_dir)
+    generate_standard(output, seed, manifest_dir, Spec(scenario_id=output.name, n_homes=30))
     # Keep observed files local; include only the recipe and manifest in version control.
     (output / ".gitignore").write_text("*\n!.gitignore\n!README.md\n")
     (output / "README.md").write_text(
@@ -123,12 +123,15 @@ def prepare_hcad(
         old = s["site_id"]
         s["site_id"] = next(available[s["cluster_id"]])["properties"]["site_id"]
         remap[old] = s["site_id"]
-    for filename, rows in [("sites.csv", sites), ("current_plan.csv", None)]:
+    for filename, rows in [("sites.csv", sites), ("visits.csv", None), ("current_plan.csv", None)]:
         if rows is None:
             with (output / filename).open(newline="") as f:
                 rows = list(csv.DictReader(f))
             for row in rows:
-                row["site_id"] = remap[row["site_id"]]
+                old = row["site_id"]
+                row["site_id"] = remap[old]
+                if row.get("job_id"):
+                    row["job_id"] = remap[old] + row["job_id"][len(old) :]
         with (output / filename).open("w", newline="") as f:
             writer = csv.DictWriter(f, fieldnames=list(rows[0]), lineterminator="\n")
             writer.writeheader()

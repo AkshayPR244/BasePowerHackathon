@@ -14,7 +14,8 @@ def test_expected(name, plan):
     assert not report.issues
 
 
-@pytest.mark.parametrize("code", list(ViolationCode))
+# PRECEDENCE needs a two-visit home: see test_two_visit.py.
+@pytest.mark.parametrize("code", [c for c in ViolationCode if c != "PRECEDENCE"])
 def test_broken_per_violation(code, scenario, plan):
     if code == "UNKNOWN_SITE":
         plan.assignments[1].site_id = "ghost"

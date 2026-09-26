@@ -1,13 +1,13 @@
 [
   {
     "scenario_id": "standard",
-    "name": "standard synthetic recovery benchmark",
-    "scenario_hash": "6c0f6d8105c349caa19953b80b35f28bbc509219648b3f739acb1297710e25ac",
+    "name": "standard synthetic two-visit recovery benchmark",
+    "scenario_hash": "cb4ff456e8a6b1ebed416af56b95cc83cb3715a642f5bde46506019c7fa7e550",
     "planning_start": "2018-06-04",
     "planning_end": "2018-06-15",
-    "n_sites": 30,
+    "n_sites": 45,
     "n_crews": 3,
-    "n_crew_days": 30,
+    "n_crew_days": 29,
     "synthetic": true
   },
   {
@@ -17,6 +17,17 @@
     "planning_start": "2018-06-04",
     "planning_end": "2018-06-06",
     "n_sites": 6,
+    "n_crews": 2,
+    "n_crew_days": 6,
+    "synthetic": true
+  },
+  {
+    "scenario_id": "tiny_two_visit",
+    "name": "Tiny two-visit check",
+    "scenario_hash": "300489366cdaa32529b293f7b48ca17b6b261760c2f70f49596df3ca8ae838ce",
+    "planning_start": "2018-06-04",
+    "planning_end": "2018-06-06",
+    "n_sites": 3,
     "n_crews": 2,
     "n_crew_days": 6,
     "synthetic": true

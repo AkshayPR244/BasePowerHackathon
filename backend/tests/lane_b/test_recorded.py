@@ -12,7 +12,7 @@ from app.contracts.models import (
     Scenario,
     ScenarioSummary,
 )
-from tests.lane_b.conftest import expected
+from tests.lane_b.conftest import expected, frozen
 
 RECORDED = Path(__file__).resolve().parents[3] / "frontend" / "src" / "mocks" / "recorded"
 MODELS = {
@@ -57,4 +57,8 @@ def test_recording_parses(entry):
 def test_recorded_plans_match_expected(recorded, exp):
     r = PlanResult.model_validate_json((RECORDED / f"{recorded}.json").read_text("utf-8"))
     e = expected(exp)
-    assert (r.status, r.objective, r.scenario_hash) == (e.status, e.objective, e.scenario_hash)
+    assert (r.status, frozen(r.objective), r.scenario_hash) == (
+        e.status,
+        frozen(e.objective),
+        e.scenario_hash,
+    )

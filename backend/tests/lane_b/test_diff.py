@@ -4,7 +4,7 @@ from fastapi.testclient import TestClient
 
 from app.api.main import app
 from app.compare.diff import diff_plans
-from tests.lane_b.conftest import expected
+from tests.lane_b.conftest import expected, frozen
 
 client = TestClient(app)
 
@@ -18,7 +18,7 @@ def test_diff_matches_expected():
     d = diff_plans(before, after)
     e = expected("compare_strict_vs_recovery")
     assert _strip(d.changes) == _strip(e.changes)
-    assert d.summary == e.summary
+    assert frozen(d.summary) == frozen(e.summary)
     assert d.headline == e.headline
 
 

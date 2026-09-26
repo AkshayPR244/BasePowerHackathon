@@ -1,0 +1,320 @@
+{
+  "scenario_id": "tiny_two_visit",
+  "scenario_hash": "300489366cdaa32529b293f7b48ca17b6b261760c2f70f49596df3ca8ae838ce",
+  "revision": 0,
+  "config": {
+    "name": "Tiny two-visit check",
+    "description": "3 homes, one install crew, one battery crew, 3 days. Each home needs an install, then a battery day at least 1 business day later. Hand-built. All operational inputs are synthetic.",
+    "timezone": "America/Chicago",
+    "planning_start": "2018-06-04",
+    "planning_end": "2018-06-06",
+    "evaluation_end": "2018-06-30",
+    "qualification_lag_days": 0,
+    "unscheduled_penalty_days": 10,
+    "objective_policy": "value_aware",
+    "solve_time_limit_s": 5.0,
+    "random_seed": 0,
+    "num_workers": 1,
+    "batteries": [
+      {
+        "configuration_id": "B13",
+        "capacity_kwh": 13.5,
+        "reserve_kwh": 1.35,
+        "charge_limit_kw": 5.0,
+        "discharge_limit_kw": 11.5,
+        "eta_charge": 0.943398,
+        "eta_discharge": 0.943398
+      }
+    ],
+    "synthetic": true,
+    "provenance": [
+      {
+        "input": "all operational and geometry files",
+        "kind": "synthetic",
+        "source": "Hand-built for tests. Not real homes, crews, or inventory.",
+        "manifest_id": null
+      },
+      {
+        "input": "prices.parquet",
+        "kind": "observed",
+        "source": "Copy of data/demo/standard/prices.parquet (ERCOT NP6-785-ER 2018, LZ_HOUSTON).",
+        "manifest_id": "ercot_np6_785_2018"
+      }
+    ],
+    "parameters": [],
+    "weather_rule": null,
+    "min_gap_business_days": 1
+  },
+  "clusters": [
+    {
+      "cluster_id": "N",
+      "name": "North",
+      "travel_allowance_min": 60,
+      "outline": [
+        [
+          -95.425,
+          29.79
+        ],
+        [
+          -95.39,
+          29.788
+        ],
+        [
+          -95.385,
+          29.818
+        ],
+        [
+          -95.42,
+          29.822
+        ],
+        [
+          -95.425,
+          29.79
+        ]
+      ]
+    },
+    {
+      "cluster_id": "S",
+      "name": "South",
+      "travel_allowance_min": 45,
+      "outline": [
+        [
+          -95.39,
+          29.668
+        ],
+        [
+          -95.352,
+          29.67
+        ],
+        [
+          -95.35,
+          29.695
+        ],
+        [
+          -95.385,
+          29.699
+        ],
+        [
+          -95.39,
+          29.668
+        ]
+      ]
+    }
+  ],
+  "sites": [
+    {
+      "site_id": "H1",
+      "cluster_id": "N",
+      "program_id": "P1",
+      "ready_date": "2018-06-04",
+      "deadline": "2018-06-05",
+      "duration_min": 75,
+      "required_skill": "battery",
+      "configuration_id": "B13",
+      "load_zone": "LZ_HOUSTON",
+      "profile_id": null,
+      "lon": -95.412,
+      "lat": 29.812,
+      "visits": [
+        {
+          "job_id": "H1-I",
+          "visit_type": "install",
+          "duration_min": 120,
+          "required_skill": "install"
+        },
+        {
+          "job_id": "H1-B",
+          "visit_type": "battery_day",
+          "duration_min": 75,
+          "required_skill": "battery"
+        }
+      ]
+    },
+    {
+      "site_id": "H2",
+      "cluster_id": "N",
+      "program_id": "P1",
+      "ready_date": "2018-06-04",
+      "deadline": "2018-06-06",
+      "duration_min": 75,
+      "required_skill": "battery",
+      "configuration_id": "B13",
+      "load_zone": "LZ_HOUSTON",
+      "profile_id": null,
+      "lon": -95.398,
+      "lat": 29.806,
+      "visits": [
+        {
+          "job_id": "H2-I",
+          "visit_type": "install",
+          "duration_min": 150,
+          "required_skill": "install"
+        },
+        {
+          "job_id": "H2-B",
+          "visit_type": "battery_day",
+          "duration_min": 75,
+          "required_skill": "battery"
+        }
+      ]
+    },
+    {
+      "site_id": "H3",
+      "cluster_id": "S",
+      "program_id": "P1",
+      "ready_date": "2018-06-04",
+      "deadline": "2018-06-06",
+      "duration_min": 75,
+      "required_skill": "battery",
+      "configuration_id": "B13",
+      "load_zone": "LZ_HOUSTON",
+      "profile_id": null,
+      "lon": -95.371,
+      "lat": 29.689,
+      "visits": [
+        {
+          "job_id": "H3-I",
+          "visit_type": "install",
+          "duration_min": 90,
+          "required_skill": "install"
+        },
+        {
+          "job_id": "H3-B",
+          "visit_type": "battery_day",
+          "duration_min": 75,
+          "required_skill": "battery"
+        }
+      ]
+    }
+  ],
+  "crew_days": [
+    {
+      "crew_id": "I",
+      "date": "2018-06-04",
+      "available_min": 480,
+      "skills": [
+        "install"
+      ],
+      "allowed_clusters": [
+        "N",
+        "S"
+      ]
+    },
+    {
+      "crew_id": "I",
+      "date": "2018-06-05",
+      "available_min": 480,
+      "skills": [
+        "install"
+      ],
+      "allowed_clusters": [
+        "N",
+        "S"
+      ]
+    },
+    {
+      "crew_id": "I",
+      "date": "2018-06-06",
+      "available_min": 480,
+      "skills": [
+        "install"
+      ],
+      "allowed_clusters": [
+        "N",
+        "S"
+      ]
+    },
+    {
+      "crew_id": "B",
+      "date": "2018-06-04",
+      "available_min": 480,
+      "skills": [
+        "battery"
+      ],
+      "allowed_clusters": [
+        "N",
+        "S"
+      ]
+    },
+    {
+      "crew_id": "B",
+      "date": "2018-06-05",
+      "available_min": 480,
+      "skills": [
+        "battery"
+      ],
+      "allowed_clusters": [
+        "N",
+        "S"
+      ]
+    },
+    {
+      "crew_id": "B",
+      "date": "2018-06-06",
+      "available_min": 480,
+      "skills": [
+        "battery"
+      ],
+      "allowed_clusters": [
+        "N",
+        "S"
+      ]
+    }
+  ],
+  "inventory": [
+    {
+      "configuration_id": "B13",
+      "available_date": "2018-06-04",
+      "quantity": 2
+    },
+    {
+      "configuration_id": "B13",
+      "available_date": "2018-06-06",
+      "quantity": 1
+    }
+  ],
+  "current_plan": [
+    {
+      "site_id": "H1",
+      "crew_id": "I",
+      "date": "2018-06-04",
+      "locked": true,
+      "job_id": "H1-I"
+    },
+    {
+      "site_id": "H2",
+      "crew_id": "I",
+      "date": "2018-06-04",
+      "locked": false,
+      "job_id": "H2-I"
+    },
+    {
+      "site_id": "H3",
+      "crew_id": "I",
+      "date": "2018-06-05",
+      "locked": false,
+      "job_id": "H3-I"
+    },
+    {
+      "site_id": "H1",
+      "crew_id": "B",
+      "date": "2018-06-05",
+      "locked": false,
+      "job_id": "H1-B"
+    },
+    {
+      "site_id": "H2",
+      "crew_id": "B",
+      "date": "2018-06-05",
+      "locked": false,
+      "job_id": "H2-B"
+    },
+    {
+      "site_id": "H3",
+      "crew_id": "B",
+      "date": "2018-06-06",
+      "locked": false,
+      "job_id": "H3-B"
+    }
+  ]
+}

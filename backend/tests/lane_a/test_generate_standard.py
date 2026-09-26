@@ -14,9 +14,10 @@ def test_standard_reproducible_and_loadable(tmp_path, monkeypatch):
     }
     monkeypatch.setattr(loader, "DATA_ROOT", first.parent)
     scenario = loader.load_scenario("standard")
-    assert len(scenario.sites) == 30
+    assert len(scenario.sites) == 45
+    assert all(len(s.visits) == 2 for s in scenario.sites)
     assert len(scenario.clusters) == 3
-    assert len({c.crew_id for c in scenario.crew_days}) == 3
+    assert len({c.crew_id for c in scenario.crew_days}) == 3  # two install crews, one battery
     assert len({c.date for c in scenario.crew_days}) == 10
     assert scenario.config.synthetic
     assert scenario.config.provenance[0].kind == "synthetic"

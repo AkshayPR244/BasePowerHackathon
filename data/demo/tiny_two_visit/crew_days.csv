@@ -1,0 +1,7 @@
+crew_id,date,available_min,skills,allowed_clusters
+I,2018-06-04,480,install,N;S
+I,2018-06-05,480,install,N;S
+I,2018-06-06,480,install,N;S
+B,2018-06-04,480,battery,N;S
+B,2018-06-05,480,battery,N;S
+B,2018-06-06,480,battery,N;S

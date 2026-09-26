@@ -53,6 +53,19 @@ PLANS = {
     "plan_standard_strict": {"scenario_id": "standard", "revision": 0, "mode": "strict"},
     "plan_standard_edf": {"scenario_id": "standard", "revision": 0, "algorithm": "baseline_edf"},
     "plan_standard_recovery_late_shipment": STANDARD_RECOVERY,
+    "plan_standard_recovery_install_crew_out": {
+        "scenario_id": "standard",
+        "revision": 1,
+        "mode": "recovery",
+        "edits": [{"kind": "remove_crew_day", "crew_id": "IA", "date": "2018-06-07"}],
+    },
+    "plan_standard_recovery_battery_crew_out": {
+        "scenario_id": "standard",
+        "revision": 1,
+        "mode": "recovery",
+        "edits": [{"kind": "remove_crew_day", "crew_id": "BA", "date": "2018-06-07"}],
+    },
+    "plan_tiny_two_visit_strict": {"scenario_id": "tiny_two_visit", "revision": 0},
 }
 
 

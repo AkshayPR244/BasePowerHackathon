@@ -86,6 +86,25 @@ A stub may answer 501 with an `ApiError` body for requests it cannot serve yet.
 ### stages
 One `StageMeta` per lexicographic stage in order. Stages after a failed stage are `skipped`. `gap` is relative: `|value - bound| / max(1, |value|)`.
 
+### Two visits per home (contract 1.1, additive)
+
+A home can need two crew visits:
+
+- **install**: the electrical disconnect visit. Install crews do it (`required_skill: install`).
+- **battery day** (`battery_day`): the visit where the battery is placed. Battery crews do it (`required_skill: battery`).
+
+The battery day comes at least `config.min_gap_business_days` business days after the install (default 1). The deadline, the energy value, and the battery from inventory belong to the battery day only. The install earns no value and is never late.
+
+- `Site.visits`: empty for a one-visit home (then `duration_min` and `required_skill` describe the only visit). For a two-visit home it lists both visits with `job_id`, `visit_type`, `duration_min`, `required_skill`. `site_id` stays the home.
+- **`assignments` can hold two entries per `site_id`.** Key them by `job_id` when it is set, else by `site_id`. `visit_type` says which visit it is. The same holds for `PlanChange` in diffs and for `UnscheduledJob`, where `job_id: null` covers the whole home (for example a blocked home).
+- `current_plan` rows carry `job_id` for two-visit homes.
+- Home-level counts: `jobs_on_time`, `jobs_late`, `jobs_unscheduled`, and `jobs_blocked` count homes, judged by the battery day.
+- Customer metrics: `objective.visits_moved` counts planned visits moved or dropped (the same number as `changed_installs`, whose name predates two visits). `objective.customers_to_reschedule` counts distinct homes with at least one moved or dropped visit. `PlanDiff.summary.customers_to_reschedule` counts the same over a diff. Show "customers to reschedule" to operators: each is a customer contacted.
+- The stage name `changed_installs` is unchanged and counts moved visits of both types.
+- Validation adds `PRECEDENCE`: a battery day without an install at least the minimum gap earlier.
+
+Scenarios with two-visit homes: `standard`, `tiny_two_visit`. `tiny` stays one-visit.
+
 ## Regenerating (planned)
 
 ```bash

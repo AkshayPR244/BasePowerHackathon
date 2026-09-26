@@ -55,10 +55,17 @@ def no_legal_date_detail(site: Site, scenario: Scenario) -> str:
     )
 
 
-def unscheduled_detail(site: Site) -> str:
+def visit_label(job) -> str:
+    """'' for one-visit homes, else ' install' or ' battery day'."""
+    if job is None or job.visit_type is None:
+        return ""
+    return " install" if job.visit_type == "install" else " battery day"
+
+
+def unscheduled_detail(site: Site, job=None) -> str:
     return (
-        f"{site.site_id} is not in the best recovery. No single hard blocker applies. "
-        "Force it in to see what it displaces."
+        f"{site.site_id}{visit_label(job)} is not in the best recovery. "
+        "No single hard blocker applies. Force it in to see what it displaces."
     )
 
 

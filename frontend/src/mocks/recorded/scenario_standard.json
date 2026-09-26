@@ -1,10 +1,10 @@
 {
   "scenario_id": "standard",
-  "scenario_hash": "6c0f6d8105c349caa19953b80b35f28bbc509219648b3f739acb1297710e25ac",
+  "scenario_hash": "cb4ff456e8a6b1ebed416af56b95cc83cb3715a642f5bde46506019c7fa7e550",
   "revision": 0,
   "config": {
-    "name": "standard synthetic recovery benchmark",
-    "description": "30 synthetic jobs, 3 clusters, 3 crews, 10 business days. Every number comes from a stated rule or source.",
+    "name": "standard synthetic two-visit recovery benchmark",
+    "description": "45 synthetic homes, each needing an install then a battery day. 3 clusters, 2 install crews, 1 battery crew(s), 10 business days. Every number comes from a stated rule or source.",
     "timezone": "America/Chicago",
     "planning_start": "2018-06-04",
     "planning_end": "2018-06-15",
@@ -31,7 +31,7 @@
       {
         "input": "all operational and geometry files",
         "kind": "synthetic",
-        "source": "Rule-based generator v2, seed 42. Not customers.",
+        "source": "Rule-based generator v3, seed 42. Not customers.",
         "manifest_id": null
       },
       {
@@ -64,10 +64,42 @@
       },
       {
         "name": "install_duration",
-        "value": "180/210/240",
+        "value": "90/120/150/180",
         "unit": "min",
         "kind": "assumed",
-        "derivation": "Onsite battery retrofit of 3 to 4 hours, drawn uniformly per job (seeded)",
+        "derivation": "Electrical disconnect visit of 1.5 to 3 hours, varied per home (seeded)",
+        "source": null
+      },
+      {
+        "name": "battery_day_duration",
+        "value": "60/75/90",
+        "unit": "min",
+        "kind": "assumed",
+        "derivation": "About 75 min to place one battery, so a battery crew fits 5 to 6 a day with travel",
+        "source": null
+      },
+      {
+        "name": "min_gap_install_to_battery_day",
+        "value": 1.0,
+        "unit": "business days",
+        "kind": "assumed",
+        "derivation": "The battery day comes at least one business day after the install",
+        "source": null
+      },
+      {
+        "name": "crew_mix",
+        "value": "2:1",
+        "unit": "install:battery crews",
+        "kind": "assumed",
+        "derivation": "Installs take longer per home, so two install crews feed one battery crew",
+        "source": null
+      },
+      {
+        "name": "battery_crew_start",
+        "value": 1.0,
+        "unit": "business days",
+        "kind": "assumed",
+        "derivation": "Battery crews start after the first window day because no install is finished yet",
         "source": null
       },
       {
@@ -75,15 +107,15 @@
         "value": 5.0,
         "unit": "business days",
         "kind": "synthetic",
-        "derivation": "Each job becomes ready on a uniform random day in the first N business days",
+        "derivation": "Each home becomes ready on a uniform random day in the first N business days",
         "source": null
       },
       {
         "name": "deadline_rule",
-        "value": 5.0,
+        "value": 6.0,
         "unit": "business days",
         "kind": "assumed",
-        "derivation": "Deadline = ready date + N business days, capped at the last window day",
+        "derivation": "Battery-day deadline = ready date + N business days, capped at the last window day",
         "source": null
       },
       {
@@ -99,7 +131,7 @@
         "value": 0.0,
         "unit": "business days",
         "kind": "assumed",
-        "derivation": "Crew days after the window where late jobs can still land",
+        "derivation": "Crew days after the window where late visits can still land",
         "source": null
       },
       {
@@ -107,7 +139,7 @@
         "value": "EDF",
         "unit": "",
         "kind": "derived",
-        "derivation": "Current plan = earliest-deadline-first booking in the window, day 0 locked",
+        "derivation": "Current plan = this tool's strict plan for the undisrupted scenario, day 0 locked. Deliveries are sized to it",
         "source": null
       },
       {
@@ -152,7 +184,7 @@
       },
       {
         "name": "travel_W",
-        "value": 32.0,
+        "value": 33.0,
         "unit": "min",
         "kind": "derived",
         "derivation": "(2 x depot-to-center + 2 x mean site radius) x circuity / speed, depot distance 6.77 km",
@@ -163,7 +195,7 @@
         "value": 3.0,
         "unit": "business days",
         "kind": "assumed",
-        "derivation": "A delivery every N business days, sized to the planned installs until the next",
+        "derivation": "A delivery every N business days, sized to the planned battery days until the next",
         "source": null
       },
       {
@@ -215,11 +247,19 @@
         "source": null
       },
       {
+        "name": "value_start",
+        "value": "after battery day",
+        "unit": "",
+        "kind": "assumed",
+        "derivation": "Energy value starts after the battery day; the install alone earns nothing",
+        "source": null
+      },
+      {
         "name": "unscheduled_penalty",
         "value": 30.0,
         "unit": "days",
         "kind": "assumed",
-        "derivation": "Delay charged for a job left unscheduled; larger than any lateness in the horizon",
+        "derivation": "Delay charged for a home left unscheduled; larger than any lateness in the horizon",
         "source": null
       },
       {
@@ -228,6 +268,14 @@
         "unit": "",
         "kind": "assumed",
         "derivation": "Electrical work stops for lightning. A thunderstorm report in working hours loses the crew-day",
+        "source": null
+      },
+      {
+        "name": "weather_battery_day",
+        "value": "same rule",
+        "unit": "",
+        "kind": "assumed",
+        "derivation": "Battery days stop for the same weather as installs; their sensitivity is untested",
         "source": null
       },
       {
@@ -260,7 +308,8 @@
       "heavy_rain_mm_per_h": 7.6,
       "work_start_hour": 8,
       "work_end_hour": 17
-    }
+    },
+    "min_gap_business_days": 1
   },
   "clusters": [
     {
@@ -320,7 +369,7 @@
     {
       "cluster_id": "W",
       "name": "W",
-      "travel_allowance_min": 32,
+      "travel_allowance_min": 33,
       "outline": [
         [
           -95.505,
@@ -351,425 +400,1265 @@
       "cluster_id": "N",
       "program_id": "P1",
       "ready_date": "2018-06-04",
-      "deadline": "2018-06-11",
-      "duration_min": 180,
-      "required_skill": "install",
+      "deadline": "2018-06-12",
+      "duration_min": 60,
+      "required_skill": "battery",
       "configuration_id": "B13",
       "load_zone": "LZ_HOUSTON",
       "profile_id": "resstock-2025-1-amy2018-tx-100",
       "lon": -95.4095,
-      "lat": 29.805501
+      "lat": 29.805501,
+      "visits": [
+        {
+          "job_id": "N-01-I",
+          "visit_type": "install",
+          "duration_min": 120,
+          "required_skill": "install"
+        },
+        {
+          "job_id": "N-01-B",
+          "visit_type": "battery_day",
+          "duration_min": 60,
+          "required_skill": "battery"
+        }
+      ]
     },
     {
       "site_id": "S-01",
       "cluster_id": "S",
       "program_id": "P1",
-      "ready_date": "2018-06-05",
+      "ready_date": "2018-06-04",
       "deadline": "2018-06-12",
-      "duration_min": 240,
-      "required_skill": "install",
+      "duration_min": 90,
+      "required_skill": "battery",
       "configuration_id": "B13",
       "load_zone": "LZ_HOUSTON",
       "profile_id": "resstock-2025-1-amy2018-tx-100",
-      "lon": -95.365271,
-      "lat": 29.683534
+      "lon": -95.366466,
+      "lat": 29.687844,
+      "visits": [
+        {
+          "job_id": "S-01-I",
+          "visit_type": "install",
+          "duration_min": 90,
+          "required_skill": "install"
+        },
+        {
+          "job_id": "S-01-B",
+          "visit_type": "battery_day",
+          "duration_min": 90,
+          "required_skill": "battery"
+        }
+      ]
     },
     {
       "site_id": "W-01",
       "cluster_id": "W",
       "program_id": "P1",
-      "ready_date": "2018-06-04",
-      "deadline": "2018-06-11",
-      "duration_min": 180,
-      "required_skill": "install",
+      "ready_date": "2018-06-07",
+      "deadline": "2018-06-15",
+      "duration_min": 90,
+      "required_skill": "battery",
       "configuration_id": "B13",
       "load_zone": "LZ_HOUSTON",
       "profile_id": "resstock-2025-1-amy2018-tx-100",
-      "lon": -95.48819,
-      "lat": 29.740636
+      "lon": -95.499364,
+      "lat": 29.741874,
+      "visits": [
+        {
+          "job_id": "W-01-I",
+          "visit_type": "install",
+          "duration_min": 120,
+          "required_skill": "install"
+        },
+        {
+          "job_id": "W-01-B",
+          "visit_type": "battery_day",
+          "duration_min": 90,
+          "required_skill": "battery"
+        }
+      ]
     },
     {
       "site_id": "N-02",
       "cluster_id": "N",
       "program_id": "P1",
-      "ready_date": "2018-06-05",
-      "deadline": "2018-06-12",
-      "duration_min": 240,
-      "required_skill": "install",
+      "ready_date": "2018-06-08",
+      "deadline": "2018-06-15",
+      "duration_min": 60,
+      "required_skill": "battery",
       "configuration_id": "B13",
       "load_zone": "LZ_HOUSTON",
       "profile_id": "resstock-2025-1-amy2018-tx-100",
-      "lon": -95.405347,
-      "lat": 29.81204
+      "lon": -95.409469,
+      "lat": 29.803977,
+      "visits": [
+        {
+          "job_id": "N-02-I",
+          "visit_type": "install",
+          "duration_min": 180,
+          "required_skill": "install"
+        },
+        {
+          "job_id": "N-02-B",
+          "visit_type": "battery_day",
+          "duration_min": 60,
+          "required_skill": "battery"
+        }
+      ]
     },
     {
       "site_id": "S-02",
       "cluster_id": "S",
       "program_id": "P1",
-      "ready_date": "2018-06-05",
-      "deadline": "2018-06-12",
-      "duration_min": 210,
-      "required_skill": "install",
+      "ready_date": "2018-06-07",
+      "deadline": "2018-06-15",
+      "duration_min": 60,
+      "required_skill": "battery",
       "configuration_id": "B13",
       "load_zone": "LZ_HOUSTON",
       "profile_id": "resstock-2025-1-amy2018-tx-100",
-      "lon": -95.36568,
-      "lat": 29.684026
+      "lon": -95.368215,
+      "lat": 29.686189,
+      "visits": [
+        {
+          "job_id": "S-02-I",
+          "visit_type": "install",
+          "duration_min": 90,
+          "required_skill": "install"
+        },
+        {
+          "job_id": "S-02-B",
+          "visit_type": "battery_day",
+          "duration_min": 60,
+          "required_skill": "battery"
+        }
+      ]
     },
     {
       "site_id": "W-02",
       "cluster_id": "W",
       "program_id": "P1",
-      "ready_date": "2018-06-05",
-      "deadline": "2018-06-12",
-      "duration_min": 180,
-      "required_skill": "install",
+      "ready_date": "2018-06-07",
+      "deadline": "2018-06-15",
+      "duration_min": 60,
+      "required_skill": "battery",
       "configuration_id": "B13",
       "load_zone": "LZ_HOUSTON",
       "profile_id": "resstock-2025-1-amy2018-tx-100",
-      "lon": -95.491016,
-      "lat": 29.745564
+      "lon": -95.493195,
+      "lat": 29.74311,
+      "visits": [
+        {
+          "job_id": "W-02-I",
+          "visit_type": "install",
+          "duration_min": 150,
+          "required_skill": "install"
+        },
+        {
+          "job_id": "W-02-B",
+          "visit_type": "battery_day",
+          "duration_min": 60,
+          "required_skill": "battery"
+        }
+      ]
     },
     {
       "site_id": "N-03",
       "cluster_id": "N",
       "program_id": "P1",
-      "ready_date": "2018-06-05",
+      "ready_date": "2018-06-04",
       "deadline": "2018-06-12",
-      "duration_min": 180,
-      "required_skill": "install",
+      "duration_min": 90,
+      "required_skill": "battery",
       "configuration_id": "B13",
       "load_zone": "LZ_HOUSTON",
       "profile_id": "resstock-2025-1-amy2018-tx-100",
-      "lon": -95.396037,
-      "lat": 29.806805
+      "lon": -95.402401,
+      "lat": 29.80718,
+      "visits": [
+        {
+          "job_id": "N-03-I",
+          "visit_type": "install",
+          "duration_min": 150,
+          "required_skill": "install"
+        },
+        {
+          "job_id": "N-03-B",
+          "visit_type": "battery_day",
+          "duration_min": 90,
+          "required_skill": "battery"
+        }
+      ]
     },
     {
       "site_id": "S-03",
       "cluster_id": "S",
       "program_id": "P1",
-      "ready_date": "2018-06-05",
-      "deadline": "2018-06-12",
-      "duration_min": 180,
-      "required_skill": "install",
+      "ready_date": "2018-06-06",
+      "deadline": "2018-06-14",
+      "duration_min": 75,
+      "required_skill": "battery",
       "configuration_id": "B13",
       "load_zone": "LZ_HOUSTON",
       "profile_id": "resstock-2025-1-amy2018-tx-100",
-      "lon": -95.360856,
-      "lat": 29.676732
+      "lon": -95.363857,
+      "lat": 29.684595,
+      "visits": [
+        {
+          "job_id": "S-03-I",
+          "visit_type": "install",
+          "duration_min": 90,
+          "required_skill": "install"
+        },
+        {
+          "job_id": "S-03-B",
+          "visit_type": "battery_day",
+          "duration_min": 75,
+          "required_skill": "battery"
+        }
+      ]
     },
     {
       "site_id": "W-03",
       "cluster_id": "W",
       "program_id": "P1",
-      "ready_date": "2018-06-07",
-      "deadline": "2018-06-14",
-      "duration_min": 240,
-      "required_skill": "install",
+      "ready_date": "2018-06-04",
+      "deadline": "2018-06-12",
+      "duration_min": 90,
+      "required_skill": "battery",
       "configuration_id": "B13",
       "load_zone": "LZ_HOUSTON",
       "profile_id": "resstock-2025-1-amy2018-tx-100",
-      "lon": -95.498066,
-      "lat": 29.75695
+      "lon": -95.488959,
+      "lat": 29.756588,
+      "visits": [
+        {
+          "job_id": "W-03-I",
+          "visit_type": "install",
+          "duration_min": 150,
+          "required_skill": "install"
+        },
+        {
+          "job_id": "W-03-B",
+          "visit_type": "battery_day",
+          "duration_min": 90,
+          "required_skill": "battery"
+        }
+      ]
     },
     {
       "site_id": "N-04",
       "cluster_id": "N",
       "program_id": "P1",
-      "ready_date": "2018-06-06",
+      "ready_date": "2018-06-05",
       "deadline": "2018-06-13",
-      "duration_min": 240,
-      "required_skill": "install",
+      "duration_min": 75,
+      "required_skill": "battery",
       "configuration_id": "B13",
       "load_zone": "LZ_HOUSTON",
       "profile_id": "resstock-2025-1-amy2018-tx-100",
-      "lon": -95.393857,
-      "lat": 29.814595
+      "lon": -95.395909,
+      "lat": 29.800916,
+      "visits": [
+        {
+          "job_id": "N-04-I",
+          "visit_type": "install",
+          "duration_min": 120,
+          "required_skill": "install"
+        },
+        {
+          "job_id": "N-04-B",
+          "visit_type": "battery_day",
+          "duration_min": 75,
+          "required_skill": "battery"
+        }
+      ]
     },
     {
       "site_id": "S-04",
       "cluster_id": "S",
       "program_id": "P1",
       "ready_date": "2018-06-04",
-      "deadline": "2018-06-11",
-      "duration_min": 240,
-      "required_skill": "install",
+      "deadline": "2018-06-12",
+      "duration_min": 75,
+      "required_skill": "battery",
       "configuration_id": "B13",
       "load_zone": "LZ_HOUSTON",
       "profile_id": "resstock-2025-1-amy2018-tx-100",
-      "lon": -95.360538,
-      "lat": 29.677571
+      "lon": -95.362894,
+      "lat": 29.68733,
+      "visits": [
+        {
+          "job_id": "S-04-I",
+          "visit_type": "install",
+          "duration_min": 180,
+          "required_skill": "install"
+        },
+        {
+          "job_id": "S-04-B",
+          "visit_type": "battery_day",
+          "duration_min": 75,
+          "required_skill": "battery"
+        }
+      ]
     },
     {
       "site_id": "W-04",
       "cluster_id": "W",
       "program_id": "P1",
-      "ready_date": "2018-06-06",
-      "deadline": "2018-06-13",
-      "duration_min": 210,
-      "required_skill": "install",
+      "ready_date": "2018-06-07",
+      "deadline": "2018-06-15",
+      "duration_min": 75,
+      "required_skill": "battery",
       "configuration_id": "B13",
       "load_zone": "LZ_HOUSTON",
       "profile_id": "resstock-2025-1-amy2018-tx-100",
-      "lon": -95.483412,
-      "lat": 29.75237
+      "lon": -95.487286,
+      "lat": 29.747297,
+      "visits": [
+        {
+          "job_id": "W-04-I",
+          "visit_type": "install",
+          "duration_min": 150,
+          "required_skill": "install"
+        },
+        {
+          "job_id": "W-04-B",
+          "visit_type": "battery_day",
+          "duration_min": 75,
+          "required_skill": "battery"
+        }
+      ]
     },
     {
       "site_id": "N-05",
       "cluster_id": "N",
       "program_id": "P1",
-      "ready_date": "2018-06-08",
-      "deadline": "2018-06-15",
-      "duration_min": 240,
-      "required_skill": "install",
+      "ready_date": "2018-06-05",
+      "deadline": "2018-06-13",
+      "duration_min": 90,
+      "required_skill": "battery",
       "configuration_id": "B13",
       "load_zone": "LZ_HOUSTON",
       "profile_id": "resstock-2025-1-amy2018-tx-100",
-      "lon": -95.406154,
-      "lat": 29.801391
+      "lon": -95.396596,
+      "lat": 29.814036,
+      "visits": [
+        {
+          "job_id": "N-05-I",
+          "visit_type": "install",
+          "duration_min": 90,
+          "required_skill": "install"
+        },
+        {
+          "job_id": "N-05-B",
+          "visit_type": "battery_day",
+          "duration_min": 90,
+          "required_skill": "battery"
+        }
+      ]
     },
     {
       "site_id": "S-05",
       "cluster_id": "S",
       "program_id": "P1",
       "ready_date": "2018-06-05",
-      "deadline": "2018-06-12",
-      "duration_min": 180,
-      "required_skill": "install",
+      "deadline": "2018-06-13",
+      "duration_min": 75,
+      "required_skill": "battery",
       "configuration_id": "B13",
       "load_zone": "LZ_HOUSTON",
       "profile_id": "resstock-2025-1-amy2018-tx-100",
-      "lon": -95.364539,
-      "lat": 29.689704
+      "lon": -95.369317,
+      "lat": 29.674896,
+      "visits": [
+        {
+          "job_id": "S-05-I",
+          "visit_type": "install",
+          "duration_min": 180,
+          "required_skill": "install"
+        },
+        {
+          "job_id": "S-05-B",
+          "visit_type": "battery_day",
+          "duration_min": 75,
+          "required_skill": "battery"
+        }
+      ]
     },
     {
       "site_id": "W-05",
       "cluster_id": "W",
       "program_id": "P1",
-      "ready_date": "2018-06-04",
-      "deadline": "2018-06-11",
-      "duration_min": 210,
-      "required_skill": "install",
+      "ready_date": "2018-06-06",
+      "deadline": "2018-06-14",
+      "duration_min": 90,
+      "required_skill": "battery",
       "configuration_id": "B13",
       "load_zone": "LZ_HOUSTON",
       "profile_id": "resstock-2025-1-amy2018-tx-100",
-      "lon": -95.492397,
-      "lat": 29.749068
+      "lon": -95.48021,
+      "lat": 29.7528,
+      "visits": [
+        {
+          "job_id": "W-05-I",
+          "visit_type": "install",
+          "duration_min": 120,
+          "required_skill": "install"
+        },
+        {
+          "job_id": "W-05-B",
+          "visit_type": "battery_day",
+          "duration_min": 90,
+          "required_skill": "battery"
+        }
+      ]
     },
     {
       "site_id": "N-06",
       "cluster_id": "N",
       "program_id": "P1",
-      "ready_date": "2018-06-05",
-      "deadline": "2018-06-12",
-      "duration_min": 210,
-      "required_skill": "install",
+      "ready_date": "2018-06-06",
+      "deadline": "2018-06-14",
+      "duration_min": 60,
+      "required_skill": "battery",
       "configuration_id": "B13",
       "load_zone": "LZ_HOUSTON",
       "profile_id": "resstock-2025-1-amy2018-tx-100",
-      "lon": -95.402596,
-      "lat": 29.80419
+      "lon": -95.393143,
+      "lat": 29.81552,
+      "visits": [
+        {
+          "job_id": "N-06-I",
+          "visit_type": "install",
+          "duration_min": 120,
+          "required_skill": "install"
+        },
+        {
+          "job_id": "N-06-B",
+          "visit_type": "battery_day",
+          "duration_min": 60,
+          "required_skill": "battery"
+        }
+      ]
     },
     {
       "site_id": "S-06",
       "cluster_id": "S",
       "program_id": "P1",
-      "ready_date": "2018-06-04",
-      "deadline": "2018-06-11",
-      "duration_min": 240,
-      "required_skill": "install",
+      "ready_date": "2018-06-06",
+      "deadline": "2018-06-14",
+      "duration_min": 60,
+      "required_skill": "battery",
       "configuration_id": "B13",
       "load_zone": "LZ_HOUSTON",
       "profile_id": "resstock-2025-1-amy2018-tx-100",
-      "lon": -95.367817,
-      "lat": 29.673423
+      "lon": -95.371977,
+      "lat": 29.671324,
+      "visits": [
+        {
+          "job_id": "S-06-I",
+          "visit_type": "install",
+          "duration_min": 150,
+          "required_skill": "install"
+        },
+        {
+          "job_id": "S-06-B",
+          "visit_type": "battery_day",
+          "duration_min": 60,
+          "required_skill": "battery"
+        }
+      ]
     },
     {
       "site_id": "W-06",
       "cluster_id": "W",
       "program_id": "P1",
-      "ready_date": "2018-06-05",
-      "deadline": "2018-06-12",
-      "duration_min": 240,
-      "required_skill": "install",
+      "ready_date": "2018-06-07",
+      "deadline": "2018-06-15",
+      "duration_min": 60,
+      "required_skill": "battery",
       "configuration_id": "B13",
       "load_zone": "LZ_HOUSTON",
       "profile_id": "resstock-2025-1-amy2018-tx-100",
-      "lon": -95.496732,
-      "lat": 29.747589
+      "lon": -95.492087,
+      "lat": 29.758291,
+      "visits": [
+        {
+          "job_id": "W-06-I",
+          "visit_type": "install",
+          "duration_min": 180,
+          "required_skill": "install"
+        },
+        {
+          "job_id": "W-06-B",
+          "visit_type": "battery_day",
+          "duration_min": 60,
+          "required_skill": "battery"
+        }
+      ]
     },
     {
       "site_id": "N-07",
       "cluster_id": "N",
       "program_id": "P1",
-      "ready_date": "2018-06-08",
-      "deadline": "2018-06-15",
-      "duration_min": 180,
-      "required_skill": "install",
+      "ready_date": "2018-06-06",
+      "deadline": "2018-06-14",
+      "duration_min": 90,
+      "required_skill": "battery",
       "configuration_id": "B13",
       "load_zone": "LZ_HOUSTON",
       "profile_id": "resstock-2025-1-amy2018-tx-100",
-      "lon": -95.405608,
-      "lat": 29.806486
+      "lon": -95.407207,
+      "lat": 29.8149,
+      "visits": [
+        {
+          "job_id": "N-07-I",
+          "visit_type": "install",
+          "duration_min": 150,
+          "required_skill": "install"
+        },
+        {
+          "job_id": "N-07-B",
+          "visit_type": "battery_day",
+          "duration_min": 90,
+          "required_skill": "battery"
+        }
+      ]
     },
     {
       "site_id": "S-07",
       "cluster_id": "S",
       "program_id": "P1",
-      "ready_date": "2018-06-05",
-      "deadline": "2018-06-12",
-      "duration_min": 210,
-      "required_skill": "install",
+      "ready_date": "2018-06-08",
+      "deadline": "2018-06-15",
+      "duration_min": 60,
+      "required_skill": "battery",
       "configuration_id": "B13",
       "load_zone": "LZ_HOUSTON",
       "profile_id": "resstock-2025-1-amy2018-tx-100",
-      "lon": -95.363564,
-      "lat": 29.686101
+      "lon": -95.371431,
+      "lat": 29.681671,
+      "visits": [
+        {
+          "job_id": "S-07-I",
+          "visit_type": "install",
+          "duration_min": 150,
+          "required_skill": "install"
+        },
+        {
+          "job_id": "S-07-B",
+          "visit_type": "battery_day",
+          "duration_min": 60,
+          "required_skill": "battery"
+        }
+      ]
     },
     {
       "site_id": "W-07",
       "cluster_id": "W",
       "program_id": "P1",
-      "ready_date": "2018-06-06",
+      "ready_date": "2018-06-05",
       "deadline": "2018-06-13",
-      "duration_min": 240,
-      "required_skill": "install",
+      "duration_min": 60,
+      "required_skill": "battery",
       "configuration_id": "B13",
       "load_zone": "LZ_HOUSTON",
       "profile_id": "resstock-2025-1-amy2018-tx-100",
-      "lon": -95.498676,
-      "lat": 29.758263
+      "lon": -95.489809,
+      "lat": 29.741818,
+      "visits": [
+        {
+          "job_id": "W-07-I",
+          "visit_type": "install",
+          "duration_min": 90,
+          "required_skill": "install"
+        },
+        {
+          "job_id": "W-07-B",
+          "visit_type": "battery_day",
+          "duration_min": 60,
+          "required_skill": "battery"
+        }
+      ]
     },
     {
       "site_id": "N-08",
       "cluster_id": "N",
       "program_id": "P1",
-      "ready_date": "2018-06-06",
+      "ready_date": "2018-06-05",
       "deadline": "2018-06-13",
-      "duration_min": 240,
-      "required_skill": "install",
+      "duration_min": 90,
+      "required_skill": "battery",
       "configuration_id": "B13",
       "load_zone": "LZ_HOUSTON",
       "profile_id": "resstock-2025-1-amy2018-tx-100",
-      "lon": -95.405747,
-      "lat": 29.809985
+      "lon": -95.397451,
+      "lat": 29.815842,
+      "visits": [
+        {
+          "job_id": "N-08-I",
+          "visit_type": "install",
+          "duration_min": 180,
+          "required_skill": "install"
+        },
+        {
+          "job_id": "N-08-B",
+          "visit_type": "battery_day",
+          "duration_min": 90,
+          "required_skill": "battery"
+        }
+      ]
     },
     {
       "site_id": "S-08",
       "cluster_id": "S",
       "program_id": "P1",
-      "ready_date": "2018-06-07",
-      "deadline": "2018-06-14",
-      "duration_min": 240,
-      "required_skill": "install",
+      "ready_date": "2018-06-04",
+      "deadline": "2018-06-12",
+      "duration_min": 90,
+      "required_skill": "battery",
       "configuration_id": "B13",
       "load_zone": "LZ_HOUSTON",
       "profile_id": "resstock-2025-1-amy2018-tx-100",
-      "lon": -95.377143,
-      "lat": 29.672793
+      "lon": -95.372305,
+      "lat": 29.681918,
+      "visits": [
+        {
+          "job_id": "S-08-I",
+          "visit_type": "install",
+          "duration_min": 180,
+          "required_skill": "install"
+        },
+        {
+          "job_id": "S-08-B",
+          "visit_type": "battery_day",
+          "duration_min": 90,
+          "required_skill": "battery"
+        }
+      ]
     },
     {
       "site_id": "W-08",
       "cluster_id": "W",
       "program_id": "P1",
-      "ready_date": "2018-06-08",
-      "deadline": "2018-06-15",
-      "duration_min": 210,
-      "required_skill": "install",
+      "ready_date": "2018-06-06",
+      "deadline": "2018-06-14",
+      "duration_min": 90,
+      "required_skill": "battery",
       "configuration_id": "B13",
       "load_zone": "LZ_HOUSTON",
       "profile_id": "resstock-2025-1-amy2018-tx-100",
-      "lon": -95.48922,
-      "lat": 29.75494
+      "lon": -95.480578,
+      "lat": 29.757216,
+      "visits": [
+        {
+          "job_id": "W-08-I",
+          "visit_type": "install",
+          "duration_min": 90,
+          "required_skill": "install"
+        },
+        {
+          "job_id": "W-08-B",
+          "visit_type": "battery_day",
+          "duration_min": 90,
+          "required_skill": "battery"
+        }
+      ]
     },
     {
       "site_id": "N-09",
       "cluster_id": "N",
       "program_id": "P1",
-      "ready_date": "2018-06-08",
-      "deadline": "2018-06-15",
-      "duration_min": 180,
-      "required_skill": "install",
+      "ready_date": "2018-06-04",
+      "deadline": "2018-06-12",
+      "duration_min": 90,
+      "required_skill": "battery",
       "configuration_id": "B13",
       "load_zone": "LZ_HOUSTON",
       "profile_id": "resstock-2025-1-amy2018-tx-100",
-      "lon": -95.402012,
-      "lat": 29.804386
+      "lon": -95.396366,
+      "lat": 29.810739,
+      "visits": [
+        {
+          "job_id": "N-09-I",
+          "visit_type": "install",
+          "duration_min": 150,
+          "required_skill": "install"
+        },
+        {
+          "job_id": "N-09-B",
+          "visit_type": "battery_day",
+          "duration_min": 90,
+          "required_skill": "battery"
+        }
+      ]
     },
     {
       "site_id": "S-09",
       "cluster_id": "S",
       "program_id": "P1",
-      "ready_date": "2018-06-08",
-      "deadline": "2018-06-15",
-      "duration_min": 180,
-      "required_skill": "install",
+      "ready_date": "2018-06-06",
+      "deadline": "2018-06-14",
+      "duration_min": 60,
+      "required_skill": "battery",
       "configuration_id": "B13",
       "load_zone": "LZ_HOUSTON",
       "profile_id": "resstock-2025-1-amy2018-tx-100",
-      "lon": -95.37013,
-      "lat": 29.685116
+      "lon": -95.377769,
+      "lat": 29.678695,
+      "visits": [
+        {
+          "job_id": "S-09-I",
+          "visit_type": "install",
+          "duration_min": 180,
+          "required_skill": "install"
+        },
+        {
+          "job_id": "S-09-B",
+          "visit_type": "battery_day",
+          "duration_min": 60,
+          "required_skill": "battery"
+        }
+      ]
     },
     {
       "site_id": "W-09",
       "cluster_id": "W",
       "program_id": "P1",
-      "ready_date": "2018-06-05",
-      "deadline": "2018-06-12",
-      "duration_min": 210,
-      "required_skill": "install",
+      "ready_date": "2018-06-06",
+      "deadline": "2018-06-14",
+      "duration_min": 90,
+      "required_skill": "battery",
       "configuration_id": "B13",
       "load_zone": "LZ_HOUSTON",
       "profile_id": "resstock-2025-1-amy2018-tx-100",
-      "lon": -95.487451,
-      "lat": 29.755842
+      "lon": -95.480562,
+      "lat": 29.755239,
+      "visits": [
+        {
+          "job_id": "W-09-I",
+          "visit_type": "install",
+          "duration_min": 90,
+          "required_skill": "install"
+        },
+        {
+          "job_id": "W-09-B",
+          "visit_type": "battery_day",
+          "duration_min": 90,
+          "required_skill": "battery"
+        }
+      ]
     },
     {
       "site_id": "N-10",
       "cluster_id": "N",
       "program_id": "P1",
-      "ready_date": "2018-06-08",
-      "deadline": "2018-06-15",
-      "duration_min": 210,
-      "required_skill": "install",
+      "ready_date": "2018-06-06",
+      "deadline": "2018-06-14",
+      "duration_min": 60,
+      "required_skill": "battery",
       "configuration_id": "B13",
       "load_zone": "LZ_HOUSTON",
       "profile_id": "resstock-2025-1-amy2018-tx-100",
-      "lon": -95.408729,
-      "lat": 29.807632
+      "lon": -95.393167,
+      "lat": 29.810153,
+      "visits": [
+        {
+          "job_id": "N-10-I",
+          "visit_type": "install",
+          "duration_min": 120,
+          "required_skill": "install"
+        },
+        {
+          "job_id": "N-10-B",
+          "visit_type": "battery_day",
+          "duration_min": 60,
+          "required_skill": "battery"
+        }
+      ]
     },
     {
       "site_id": "S-10",
       "cluster_id": "S",
       "program_id": "P1",
-      "ready_date": "2018-06-08",
-      "deadline": "2018-06-15",
-      "duration_min": 180,
-      "required_skill": "install",
+      "ready_date": "2018-06-06",
+      "deadline": "2018-06-14",
+      "duration_min": 90,
+      "required_skill": "battery",
       "configuration_id": "B13",
       "load_zone": "LZ_HOUSTON",
       "profile_id": "resstock-2025-1-amy2018-tx-100",
-      "lon": -95.374972,
-      "lat": 29.681065
+      "lon": -95.36475,
+      "lat": 29.680788,
+      "visits": [
+        {
+          "job_id": "S-10-I",
+          "visit_type": "install",
+          "duration_min": 90,
+          "required_skill": "install"
+        },
+        {
+          "job_id": "S-10-B",
+          "visit_type": "battery_day",
+          "duration_min": 90,
+          "required_skill": "battery"
+        }
+      ]
     },
     {
       "site_id": "W-10",
       "cluster_id": "W",
       "program_id": "P1",
-      "ready_date": "2018-06-04",
-      "deadline": "2018-06-11",
-      "duration_min": 210,
-      "required_skill": "install",
+      "ready_date": "2018-06-06",
+      "deadline": "2018-06-14",
+      "duration_min": 75,
+      "required_skill": "battery",
       "configuration_id": "B13",
       "load_zone": "LZ_HOUSTON",
       "profile_id": "resstock-2025-1-amy2018-tx-100",
-      "lon": -95.486366,
-      "lat": 29.750739
+      "lon": -95.490228,
+      "lat": 29.742237,
+      "visits": [
+        {
+          "job_id": "W-10-I",
+          "visit_type": "install",
+          "duration_min": 150,
+          "required_skill": "install"
+        },
+        {
+          "job_id": "W-10-B",
+          "visit_type": "battery_day",
+          "duration_min": 75,
+          "required_skill": "battery"
+        }
+      ]
+    },
+    {
+      "site_id": "N-11",
+      "cluster_id": "N",
+      "program_id": "P1",
+      "ready_date": "2018-06-05",
+      "deadline": "2018-06-13",
+      "duration_min": 60,
+      "required_skill": "battery",
+      "configuration_id": "B13",
+      "load_zone": "LZ_HOUSTON",
+      "profile_id": "resstock-2025-1-amy2018-tx-100",
+      "lon": -95.408841,
+      "lat": 29.81756,
+      "visits": [
+        {
+          "job_id": "N-11-I",
+          "visit_type": "install",
+          "duration_min": 90,
+          "required_skill": "install"
+        },
+        {
+          "job_id": "N-11-B",
+          "visit_type": "battery_day",
+          "duration_min": 60,
+          "required_skill": "battery"
+        }
+      ]
+    },
+    {
+      "site_id": "S-11",
+      "cluster_id": "S",
+      "program_id": "P1",
+      "ready_date": "2018-06-07",
+      "deadline": "2018-06-15",
+      "duration_min": 60,
+      "required_skill": "battery",
+      "configuration_id": "B13",
+      "load_zone": "LZ_HOUSTON",
+      "profile_id": "resstock-2025-1-amy2018-tx-100",
+      "lon": -95.36368,
+      "lat": 29.68956,
+      "visits": [
+        {
+          "job_id": "S-11-I",
+          "visit_type": "install",
+          "duration_min": 120,
+          "required_skill": "install"
+        },
+        {
+          "job_id": "S-11-B",
+          "visit_type": "battery_day",
+          "duration_min": 60,
+          "required_skill": "battery"
+        }
+      ]
+    },
+    {
+      "site_id": "W-11",
+      "cluster_id": "W",
+      "program_id": "P1",
+      "ready_date": "2018-06-07",
+      "deadline": "2018-06-15",
+      "duration_min": 60,
+      "required_skill": "battery",
+      "configuration_id": "B13",
+      "load_zone": "LZ_HOUSTON",
+      "profile_id": "resstock-2025-1-amy2018-tx-100",
+      "lon": -95.481063,
+      "lat": 29.743303,
+      "visits": [
+        {
+          "job_id": "W-11-I",
+          "visit_type": "install",
+          "duration_min": 180,
+          "required_skill": "install"
+        },
+        {
+          "job_id": "W-11-B",
+          "visit_type": "battery_day",
+          "duration_min": 60,
+          "required_skill": "battery"
+        }
+      ]
+    },
+    {
+      "site_id": "N-12",
+      "cluster_id": "N",
+      "program_id": "P1",
+      "ready_date": "2018-06-08",
+      "deadline": "2018-06-15",
+      "duration_min": 75,
+      "required_skill": "battery",
+      "configuration_id": "B13",
+      "load_zone": "LZ_HOUSTON",
+      "profile_id": "resstock-2025-1-amy2018-tx-100",
+      "lon": -95.394895,
+      "lat": 29.813797,
+      "visits": [
+        {
+          "job_id": "N-12-I",
+          "visit_type": "install",
+          "duration_min": 150,
+          "required_skill": "install"
+        },
+        {
+          "job_id": "N-12-B",
+          "visit_type": "battery_day",
+          "duration_min": 75,
+          "required_skill": "battery"
+        }
+      ]
+    },
+    {
+      "site_id": "S-12",
+      "cluster_id": "S",
+      "program_id": "P1",
+      "ready_date": "2018-06-06",
+      "deadline": "2018-06-14",
+      "duration_min": 60,
+      "required_skill": "battery",
+      "configuration_id": "B13",
+      "load_zone": "LZ_HOUSTON",
+      "profile_id": "resstock-2025-1-amy2018-tx-100",
+      "lon": -95.371238,
+      "lat": 29.680352,
+      "visits": [
+        {
+          "job_id": "S-12-I",
+          "visit_type": "install",
+          "duration_min": 90,
+          "required_skill": "install"
+        },
+        {
+          "job_id": "S-12-B",
+          "visit_type": "battery_day",
+          "duration_min": 60,
+          "required_skill": "battery"
+        }
+      ]
+    },
+    {
+      "site_id": "W-12",
+      "cluster_id": "W",
+      "program_id": "P1",
+      "ready_date": "2018-06-05",
+      "deadline": "2018-06-13",
+      "duration_min": 90,
+      "required_skill": "battery",
+      "configuration_id": "B13",
+      "load_zone": "LZ_HOUSTON",
+      "profile_id": "resstock-2025-1-amy2018-tx-100",
+      "lon": -95.498719,
+      "lat": 29.740421,
+      "visits": [
+        {
+          "job_id": "W-12-I",
+          "visit_type": "install",
+          "duration_min": 120,
+          "required_skill": "install"
+        },
+        {
+          "job_id": "W-12-B",
+          "visit_type": "battery_day",
+          "duration_min": 90,
+          "required_skill": "battery"
+        }
+      ]
+    },
+    {
+      "site_id": "N-13",
+      "cluster_id": "N",
+      "program_id": "P1",
+      "ready_date": "2018-06-05",
+      "deadline": "2018-06-13",
+      "duration_min": 60,
+      "required_skill": "battery",
+      "configuration_id": "B13",
+      "load_zone": "LZ_HOUSTON",
+      "profile_id": "resstock-2025-1-amy2018-tx-100",
+      "lon": -95.409856,
+      "lat": 29.814157,
+      "visits": [
+        {
+          "job_id": "N-13-I",
+          "visit_type": "install",
+          "duration_min": 90,
+          "required_skill": "install"
+        },
+        {
+          "job_id": "N-13-B",
+          "visit_type": "battery_day",
+          "duration_min": 60,
+          "required_skill": "battery"
+        }
+      ]
+    },
+    {
+      "site_id": "S-13",
+      "cluster_id": "S",
+      "program_id": "P1",
+      "ready_date": "2018-06-04",
+      "deadline": "2018-06-12",
+      "duration_min": 90,
+      "required_skill": "battery",
+      "configuration_id": "B13",
+      "load_zone": "LZ_HOUSTON",
+      "profile_id": "resstock-2025-1-amy2018-tx-100",
+      "lon": -95.361892,
+      "lat": 29.687193,
+      "visits": [
+        {
+          "job_id": "S-13-I",
+          "visit_type": "install",
+          "duration_min": 90,
+          "required_skill": "install"
+        },
+        {
+          "job_id": "S-13-B",
+          "visit_type": "battery_day",
+          "duration_min": 90,
+          "required_skill": "battery"
+        }
+      ]
+    },
+    {
+      "site_id": "W-13",
+      "cluster_id": "W",
+      "program_id": "P1",
+      "ready_date": "2018-06-05",
+      "deadline": "2018-06-13",
+      "duration_min": 90,
+      "required_skill": "battery",
+      "configuration_id": "B13",
+      "load_zone": "LZ_HOUSTON",
+      "profile_id": "resstock-2025-1-amy2018-tx-100",
+      "lon": -95.49443,
+      "lat": 29.749708,
+      "visits": [
+        {
+          "job_id": "W-13-I",
+          "visit_type": "install",
+          "duration_min": 120,
+          "required_skill": "install"
+        },
+        {
+          "job_id": "W-13-B",
+          "visit_type": "battery_day",
+          "duration_min": 90,
+          "required_skill": "battery"
+        }
+      ]
+    },
+    {
+      "site_id": "N-14",
+      "cluster_id": "N",
+      "program_id": "P1",
+      "ready_date": "2018-06-08",
+      "deadline": "2018-06-15",
+      "duration_min": 75,
+      "required_skill": "battery",
+      "configuration_id": "B13",
+      "load_zone": "LZ_HOUSTON",
+      "profile_id": "resstock-2025-1-amy2018-tx-100",
+      "lon": -95.398476,
+      "lat": 29.80486,
+      "visits": [
+        {
+          "job_id": "N-14-I",
+          "visit_type": "install",
+          "duration_min": 180,
+          "required_skill": "install"
+        },
+        {
+          "job_id": "N-14-B",
+          "visit_type": "battery_day",
+          "duration_min": 75,
+          "required_skill": "battery"
+        }
+      ]
+    },
+    {
+      "site_id": "S-14",
+      "cluster_id": "S",
+      "program_id": "P1",
+      "ready_date": "2018-06-05",
+      "deadline": "2018-06-13",
+      "duration_min": 75,
+      "required_skill": "battery",
+      "configuration_id": "B13",
+      "load_zone": "LZ_HOUSTON",
+      "profile_id": "resstock-2025-1-amy2018-tx-100",
+      "lon": -95.378113,
+      "lat": 29.68318,
+      "visits": [
+        {
+          "job_id": "S-14-I",
+          "visit_type": "install",
+          "duration_min": 150,
+          "required_skill": "install"
+        },
+        {
+          "job_id": "S-14-B",
+          "visit_type": "battery_day",
+          "duration_min": 75,
+          "required_skill": "battery"
+        }
+      ]
+    },
+    {
+      "site_id": "W-14",
+      "cluster_id": "W",
+      "program_id": "P1",
+      "ready_date": "2018-06-07",
+      "deadline": "2018-06-15",
+      "duration_min": 60,
+      "required_skill": "battery",
+      "configuration_id": "B13",
+      "load_zone": "LZ_HOUSTON",
+      "profile_id": "resstock-2025-1-amy2018-tx-100",
+      "lon": -95.49066,
+      "lat": 29.754582,
+      "visits": [
+        {
+          "job_id": "W-14-I",
+          "visit_type": "install",
+          "duration_min": 90,
+          "required_skill": "install"
+        },
+        {
+          "job_id": "W-14-B",
+          "visit_type": "battery_day",
+          "duration_min": 60,
+          "required_skill": "battery"
+        }
+      ]
+    },
+    {
+      "site_id": "N-15",
+      "cluster_id": "N",
+      "program_id": "P1",
+      "ready_date": "2018-06-07",
+      "deadline": "2018-06-15",
+      "duration_min": 60,
+      "required_skill": "battery",
+      "configuration_id": "B13",
+      "load_zone": "LZ_HOUSTON",
+      "profile_id": "resstock-2025-1-amy2018-tx-100",
+      "lon": -95.395436,
+      "lat": 29.816012,
+      "visits": [
+        {
+          "job_id": "N-15-I",
+          "visit_type": "install",
+          "duration_min": 90,
+          "required_skill": "install"
+        },
+        {
+          "job_id": "N-15-B",
+          "visit_type": "battery_day",
+          "duration_min": 60,
+          "required_skill": "battery"
+        }
+      ]
+    },
+    {
+      "site_id": "S-15",
+      "cluster_id": "S",
+      "program_id": "P1",
+      "ready_date": "2018-06-05",
+      "deadline": "2018-06-13",
+      "duration_min": 60,
+      "required_skill": "battery",
+      "configuration_id": "B13",
+      "load_zone": "LZ_HOUSTON",
+      "profile_id": "resstock-2025-1-amy2018-tx-100",
+      "lon": -95.376196,
+      "lat": 29.678972,
+      "visits": [
+        {
+          "job_id": "S-15-I",
+          "visit_type": "install",
+          "duration_min": 180,
+          "required_skill": "install"
+        },
+        {
+          "job_id": "S-15-B",
+          "visit_type": "battery_day",
+          "duration_min": 60,
+          "required_skill": "battery"
+        }
+      ]
+    },
+    {
+      "site_id": "W-15",
+      "cluster_id": "W",
+      "program_id": "P1",
+      "ready_date": "2018-06-06",
+      "deadline": "2018-06-14",
+      "duration_min": 75,
+      "required_skill": "battery",
+      "configuration_id": "B13",
+      "load_zone": "LZ_HOUSTON",
+      "profile_id": "resstock-2025-1-amy2018-tx-100",
+      "lon": -95.490747,
+      "lat": 29.75749,
+      "visits": [
+        {
+          "job_id": "W-15-I",
+          "visit_type": "install",
+          "duration_min": 90,
+          "required_skill": "install"
+        },
+        {
+          "job_id": "W-15-B",
+          "visit_type": "battery_day",
+          "duration_min": 75,
+          "required_skill": "battery"
+        }
+      ]
     }
   ],
   "crew_days": [
     {
-      "crew_id": "A",
+      "crew_id": "IA",
       "date": "2018-06-04",
       "available_min": 480,
       "skills": [
@@ -782,7 +1671,7 @@
       ]
     },
     {
-      "crew_id": "A",
+      "crew_id": "IA",
       "date": "2018-06-05",
       "available_min": 480,
       "skills": [
@@ -795,7 +1684,7 @@
       ]
     },
     {
-      "crew_id": "A",
+      "crew_id": "IA",
       "date": "2018-06-06",
       "available_min": 480,
       "skills": [
@@ -808,7 +1697,7 @@
       ]
     },
     {
-      "crew_id": "A",
+      "crew_id": "IA",
       "date": "2018-06-07",
       "available_min": 480,
       "skills": [
@@ -821,7 +1710,7 @@
       ]
     },
     {
-      "crew_id": "A",
+      "crew_id": "IA",
       "date": "2018-06-08",
       "available_min": 480,
       "skills": [
@@ -834,7 +1723,7 @@
       ]
     },
     {
-      "crew_id": "A",
+      "crew_id": "IA",
       "date": "2018-06-11",
       "available_min": 480,
       "skills": [
@@ -847,7 +1736,7 @@
       ]
     },
     {
-      "crew_id": "A",
+      "crew_id": "IA",
       "date": "2018-06-12",
       "available_min": 480,
       "skills": [
@@ -860,7 +1749,7 @@
       ]
     },
     {
-      "crew_id": "A",
+      "crew_id": "IA",
       "date": "2018-06-13",
       "available_min": 480,
       "skills": [
@@ -873,7 +1762,7 @@
       ]
     },
     {
-      "crew_id": "A",
+      "crew_id": "IA",
       "date": "2018-06-14",
       "available_min": 480,
       "skills": [
@@ -886,7 +1775,7 @@
       ]
     },
     {
-      "crew_id": "A",
+      "crew_id": "IA",
       "date": "2018-06-15",
       "available_min": 480,
       "skills": [
@@ -899,7 +1788,7 @@
       ]
     },
     {
-      "crew_id": "B",
+      "crew_id": "IB",
       "date": "2018-06-04",
       "available_min": 480,
       "skills": [
@@ -912,7 +1801,7 @@
       ]
     },
     {
-      "crew_id": "B",
+      "crew_id": "IB",
       "date": "2018-06-05",
       "available_min": 480,
       "skills": [
@@ -925,7 +1814,7 @@
       ]
     },
     {
-      "crew_id": "B",
+      "crew_id": "IB",
       "date": "2018-06-06",
       "available_min": 480,
       "skills": [
@@ -938,7 +1827,7 @@
       ]
     },
     {
-      "crew_id": "B",
+      "crew_id": "IB",
       "date": "2018-06-07",
       "available_min": 480,
       "skills": [
@@ -951,7 +1840,7 @@
       ]
     },
     {
-      "crew_id": "B",
+      "crew_id": "IB",
       "date": "2018-06-08",
       "available_min": 480,
       "skills": [
@@ -964,7 +1853,7 @@
       ]
     },
     {
-      "crew_id": "B",
+      "crew_id": "IB",
       "date": "2018-06-11",
       "available_min": 480,
       "skills": [
@@ -977,7 +1866,7 @@
       ]
     },
     {
-      "crew_id": "B",
+      "crew_id": "IB",
       "date": "2018-06-12",
       "available_min": 480,
       "skills": [
@@ -990,7 +1879,7 @@
       ]
     },
     {
-      "crew_id": "B",
+      "crew_id": "IB",
       "date": "2018-06-13",
       "available_min": 480,
       "skills": [
@@ -1003,7 +1892,7 @@
       ]
     },
     {
-      "crew_id": "B",
+      "crew_id": "IB",
       "date": "2018-06-14",
       "available_min": 480,
       "skills": [
@@ -1016,7 +1905,7 @@
       ]
     },
     {
-      "crew_id": "B",
+      "crew_id": "IB",
       "date": "2018-06-15",
       "available_min": 480,
       "skills": [
@@ -1029,24 +1918,11 @@
       ]
     },
     {
-      "crew_id": "C",
-      "date": "2018-06-04",
-      "available_min": 480,
-      "skills": [
-        "install"
-      ],
-      "allowed_clusters": [
-        "N",
-        "S",
-        "W"
-      ]
-    },
-    {
-      "crew_id": "C",
+      "crew_id": "BA",
       "date": "2018-06-05",
       "available_min": 480,
       "skills": [
-        "install"
+        "battery"
       ],
       "allowed_clusters": [
         "N",
@@ -1055,11 +1931,11 @@
       ]
     },
     {
-      "crew_id": "C",
+      "crew_id": "BA",
       "date": "2018-06-06",
       "available_min": 480,
       "skills": [
-        "install"
+        "battery"
       ],
       "allowed_clusters": [
         "N",
@@ -1068,11 +1944,11 @@
       ]
     },
     {
-      "crew_id": "C",
+      "crew_id": "BA",
       "date": "2018-06-07",
       "available_min": 480,
       "skills": [
-        "install"
+        "battery"
       ],
       "allowed_clusters": [
         "N",
@@ -1081,11 +1957,11 @@
       ]
     },
     {
-      "crew_id": "C",
+      "crew_id": "BA",
       "date": "2018-06-08",
       "available_min": 480,
       "skills": [
-        "install"
+        "battery"
       ],
       "allowed_clusters": [
         "N",
@@ -1094,11 +1970,11 @@
       ]
     },
     {
-      "crew_id": "C",
+      "crew_id": "BA",
       "date": "2018-06-11",
       "available_min": 480,
       "skills": [
-        "install"
+        "battery"
       ],
       "allowed_clusters": [
         "N",
@@ -1107,11 +1983,11 @@
       ]
     },
     {
-      "crew_id": "C",
+      "crew_id": "BA",
       "date": "2018-06-12",
       "available_min": 480,
       "skills": [
-        "install"
+        "battery"
       ],
       "allowed_clusters": [
         "N",
@@ -1120,11 +1996,11 @@
       ]
     },
     {
-      "crew_id": "C",
+      "crew_id": "BA",
       "date": "2018-06-13",
       "available_min": 480,
       "skills": [
-        "install"
+        "battery"
       ],
       "allowed_clusters": [
         "N",
@@ -1133,11 +2009,11 @@
       ]
     },
     {
-      "crew_id": "C",
+      "crew_id": "BA",
       "date": "2018-06-14",
       "available_min": 480,
       "skills": [
-        "install"
+        "battery"
       ],
       "allowed_clusters": [
         "N",
@@ -1146,11 +2022,11 @@
       ]
     },
     {
-      "crew_id": "C",
+      "crew_id": "BA",
       "date": "2018-06-15",
       "available_min": 480,
       "skills": [
-        "install"
+        "battery"
       ],
       "allowed_clusters": [
         "N",
@@ -1163,199 +2039,654 @@
     {
       "configuration_id": "B13",
       "available_date": "2018-06-04",
-      "quantity": 14
+      "quantity": 6
     },
     {
       "configuration_id": "B13",
       "available_date": "2018-06-07",
-      "quantity": 13
+      "quantity": 15
     },
     {
       "configuration_id": "B13",
       "available_date": "2018-06-12",
-      "quantity": 3
+      "quantity": 18
+    },
+    {
+      "configuration_id": "B13",
+      "available_date": "2018-06-15",
+      "quantity": 6
     }
   ],
   "current_plan": [
     {
       "site_id": "N-01",
-      "crew_id": "A",
+      "crew_id": "IA",
       "date": "2018-06-04",
-      "locked": true
-    },
-    {
-      "site_id": "S-04",
-      "crew_id": "B",
-      "date": "2018-06-04",
-      "locked": true
-    },
-    {
-      "site_id": "S-06",
-      "crew_id": "C",
-      "date": "2018-06-04",
-      "locked": true
-    },
-    {
-      "site_id": "W-01",
-      "crew_id": "A",
-      "date": "2018-06-05",
-      "locked": false
-    },
-    {
-      "site_id": "W-05",
-      "crew_id": "A",
-      "date": "2018-06-05",
-      "locked": false
-    },
-    {
-      "site_id": "W-02",
-      "crew_id": "B",
-      "date": "2018-06-05",
-      "locked": false
-    },
-    {
-      "site_id": "W-10",
-      "crew_id": "B",
-      "date": "2018-06-05",
-      "locked": false
-    },
-    {
-      "site_id": "N-02",
-      "crew_id": "C",
-      "date": "2018-06-05",
-      "locked": false
+      "locked": true,
+      "job_id": "N-01-I"
     },
     {
       "site_id": "N-03",
-      "crew_id": "C",
-      "date": "2018-06-05",
-      "locked": false
-    },
-    {
-      "site_id": "N-06",
-      "crew_id": "A",
-      "date": "2018-06-06",
-      "locked": false
-    },
-    {
-      "site_id": "S-01",
-      "crew_id": "B",
-      "date": "2018-06-06",
-      "locked": false
-    },
-    {
-      "site_id": "S-03",
-      "crew_id": "B",
-      "date": "2018-06-06",
-      "locked": false
-    },
-    {
-      "site_id": "S-02",
-      "crew_id": "C",
-      "date": "2018-06-06",
-      "locked": false
-    },
-    {
-      "site_id": "S-05",
-      "crew_id": "C",
-      "date": "2018-06-06",
-      "locked": false
-    },
-    {
-      "site_id": "S-07",
-      "crew_id": "A",
-      "date": "2018-06-07",
-      "locked": false
-    },
-    {
-      "site_id": "W-06",
-      "crew_id": "B",
-      "date": "2018-06-07",
-      "locked": false
-    },
-    {
-      "site_id": "W-04",
-      "crew_id": "C",
-      "date": "2018-06-07",
-      "locked": false
-    },
-    {
-      "site_id": "W-09",
-      "crew_id": "C",
-      "date": "2018-06-07",
-      "locked": false
-    },
-    {
-      "site_id": "N-04",
-      "crew_id": "A",
-      "date": "2018-06-08",
-      "locked": false
-    },
-    {
-      "site_id": "N-07",
-      "crew_id": "A",
-      "date": "2018-06-08",
-      "locked": false
-    },
-    {
-      "site_id": "N-08",
-      "crew_id": "B",
-      "date": "2018-06-08",
-      "locked": false
+      "crew_id": "IA",
+      "date": "2018-06-04",
+      "locked": true,
+      "job_id": "N-03-I"
     },
     {
       "site_id": "N-09",
-      "crew_id": "B",
-      "date": "2018-06-08",
-      "locked": false
+      "crew_id": "IA",
+      "date": "2018-06-04",
+      "locked": true,
+      "job_id": "N-09-I"
     },
     {
-      "site_id": "W-07",
-      "crew_id": "C",
-      "date": "2018-06-08",
-      "locked": false
+      "site_id": "S-04",
+      "crew_id": "IB",
+      "date": "2018-06-04",
+      "locked": true,
+      "job_id": "S-04-I"
     },
     {
       "site_id": "S-08",
-      "crew_id": "A",
-      "date": "2018-06-11",
-      "locked": false
+      "crew_id": "IB",
+      "date": "2018-06-04",
+      "locked": true,
+      "job_id": "S-08-I"
     },
     {
-      "site_id": "S-09",
-      "crew_id": "A",
-      "date": "2018-06-11",
-      "locked": false
+      "site_id": "N-01",
+      "crew_id": "BA",
+      "date": "2018-06-05",
+      "locked": false,
+      "job_id": "N-01-B"
+    },
+    {
+      "site_id": "N-03",
+      "crew_id": "BA",
+      "date": "2018-06-05",
+      "locked": false,
+      "job_id": "N-03-B"
+    },
+    {
+      "site_id": "N-09",
+      "crew_id": "BA",
+      "date": "2018-06-05",
+      "locked": false,
+      "job_id": "N-09-B"
     },
     {
       "site_id": "W-03",
-      "crew_id": "B",
-      "date": "2018-06-11",
-      "locked": false
+      "crew_id": "IA",
+      "date": "2018-06-05",
+      "locked": false,
+      "job_id": "W-03-I"
     },
     {
-      "site_id": "N-05",
-      "crew_id": "C",
-      "date": "2018-06-11",
-      "locked": false
+      "site_id": "W-07",
+      "crew_id": "IA",
+      "date": "2018-06-05",
+      "locked": false,
+      "job_id": "W-07-I"
+    },
+    {
+      "site_id": "W-13",
+      "crew_id": "IA",
+      "date": "2018-06-05",
+      "locked": false,
+      "job_id": "W-13-I"
+    },
+    {
+      "site_id": "S-05",
+      "crew_id": "IB",
+      "date": "2018-06-05",
+      "locked": false,
+      "job_id": "S-05-I"
+    },
+    {
+      "site_id": "S-13",
+      "crew_id": "IB",
+      "date": "2018-06-05",
+      "locked": false,
+      "job_id": "S-13-I"
+    },
+    {
+      "site_id": "S-14",
+      "crew_id": "IB",
+      "date": "2018-06-05",
+      "locked": false,
+      "job_id": "S-14-I"
+    },
+    {
+      "site_id": "S-04",
+      "crew_id": "BA",
+      "date": "2018-06-06",
+      "locked": false,
+      "job_id": "S-04-B"
+    },
+    {
+      "site_id": "S-08",
+      "crew_id": "BA",
+      "date": "2018-06-06",
+      "locked": false,
+      "job_id": "S-08-B"
+    },
+    {
+      "site_id": "S-13",
+      "crew_id": "BA",
+      "date": "2018-06-06",
+      "locked": false,
+      "job_id": "S-13-B"
+    },
+    {
+      "site_id": "W-09",
+      "crew_id": "IA",
+      "date": "2018-06-06",
+      "locked": false,
+      "job_id": "W-09-I"
+    },
+    {
+      "site_id": "W-10",
+      "crew_id": "IA",
+      "date": "2018-06-06",
+      "locked": false,
+      "job_id": "W-10-I"
+    },
+    {
+      "site_id": "W-15",
+      "crew_id": "IA",
+      "date": "2018-06-06",
+      "locked": false,
+      "job_id": "W-15-I"
+    },
+    {
+      "site_id": "N-07",
+      "crew_id": "IB",
+      "date": "2018-06-06",
+      "locked": false,
+      "job_id": "N-07-I"
     },
     {
       "site_id": "N-10",
-      "crew_id": "A",
-      "date": "2018-06-12",
-      "locked": false
+      "crew_id": "IB",
+      "date": "2018-06-06",
+      "locked": false,
+      "job_id": "N-10-I"
+    },
+    {
+      "site_id": "N-11",
+      "crew_id": "IB",
+      "date": "2018-06-06",
+      "locked": false,
+      "job_id": "N-11-I"
+    },
+    {
+      "site_id": "W-03",
+      "crew_id": "BA",
+      "date": "2018-06-07",
+      "locked": false,
+      "job_id": "W-03-B"
+    },
+    {
+      "site_id": "W-09",
+      "crew_id": "BA",
+      "date": "2018-06-07",
+      "locked": false,
+      "job_id": "W-09-B"
+    },
+    {
+      "site_id": "W-10",
+      "crew_id": "BA",
+      "date": "2018-06-07",
+      "locked": false,
+      "job_id": "W-10-B"
+    },
+    {
+      "site_id": "W-15",
+      "crew_id": "BA",
+      "date": "2018-06-07",
+      "locked": false,
+      "job_id": "W-15-B"
+    },
+    {
+      "site_id": "S-01",
+      "crew_id": "IA",
+      "date": "2018-06-07",
+      "locked": false,
+      "job_id": "S-01-I"
+    },
+    {
+      "site_id": "S-11",
+      "crew_id": "IA",
+      "date": "2018-06-07",
+      "locked": false,
+      "job_id": "S-11-I"
+    },
+    {
+      "site_id": "S-15",
+      "crew_id": "IA",
+      "date": "2018-06-07",
+      "locked": false,
+      "job_id": "S-15-I"
+    },
+    {
+      "site_id": "S-02",
+      "crew_id": "IB",
+      "date": "2018-06-07",
+      "locked": false,
+      "job_id": "S-02-I"
+    },
+    {
+      "site_id": "S-06",
+      "crew_id": "IB",
+      "date": "2018-06-07",
+      "locked": false,
+      "job_id": "S-06-I"
     },
     {
       "site_id": "S-10",
-      "crew_id": "B",
-      "date": "2018-06-12",
-      "locked": false
+      "crew_id": "IB",
+      "date": "2018-06-07",
+      "locked": false,
+      "job_id": "S-10-I"
+    },
+    {
+      "site_id": "S-12",
+      "crew_id": "IB",
+      "date": "2018-06-07",
+      "locked": false,
+      "job_id": "S-12-I"
+    },
+    {
+      "site_id": "S-01",
+      "crew_id": "BA",
+      "date": "2018-06-08",
+      "locked": false,
+      "job_id": "S-01-B"
+    },
+    {
+      "site_id": "S-05",
+      "crew_id": "BA",
+      "date": "2018-06-08",
+      "locked": false,
+      "job_id": "S-05-B"
+    },
+    {
+      "site_id": "S-10",
+      "crew_id": "BA",
+      "date": "2018-06-08",
+      "locked": false,
+      "job_id": "S-10-B"
+    },
+    {
+      "site_id": "S-14",
+      "crew_id": "BA",
+      "date": "2018-06-08",
+      "locked": false,
+      "job_id": "S-14-B"
+    },
+    {
+      "site_id": "S-15",
+      "crew_id": "BA",
+      "date": "2018-06-08",
+      "locked": false,
+      "job_id": "S-15-B"
+    },
+    {
+      "site_id": "N-05",
+      "crew_id": "IA",
+      "date": "2018-06-08",
+      "locked": false,
+      "job_id": "N-05-I"
+    },
+    {
+      "site_id": "N-12",
+      "crew_id": "IA",
+      "date": "2018-06-08",
+      "locked": false,
+      "job_id": "N-12-I"
+    },
+    {
+      "site_id": "N-14",
+      "crew_id": "IA",
+      "date": "2018-06-08",
+      "locked": false,
+      "job_id": "N-14-I"
+    },
+    {
+      "site_id": "N-02",
+      "crew_id": "IB",
+      "date": "2018-06-08",
+      "locked": false,
+      "job_id": "N-02-I"
+    },
+    {
+      "site_id": "N-06",
+      "crew_id": "IB",
+      "date": "2018-06-08",
+      "locked": false,
+      "job_id": "N-06-I"
+    },
+    {
+      "site_id": "N-13",
+      "crew_id": "IB",
+      "date": "2018-06-08",
+      "locked": false,
+      "job_id": "N-13-I"
+    },
+    {
+      "site_id": "N-02",
+      "crew_id": "BA",
+      "date": "2018-06-11",
+      "locked": false,
+      "job_id": "N-02-B"
+    },
+    {
+      "site_id": "N-05",
+      "crew_id": "BA",
+      "date": "2018-06-11",
+      "locked": false,
+      "job_id": "N-05-B"
+    },
+    {
+      "site_id": "N-07",
+      "crew_id": "BA",
+      "date": "2018-06-11",
+      "locked": false,
+      "job_id": "N-07-B"
+    },
+    {
+      "site_id": "N-10",
+      "crew_id": "BA",
+      "date": "2018-06-11",
+      "locked": false,
+      "job_id": "N-10-B"
+    },
+    {
+      "site_id": "N-13",
+      "crew_id": "BA",
+      "date": "2018-06-11",
+      "locked": false,
+      "job_id": "N-13-B"
+    },
+    {
+      "site_id": "N-14",
+      "crew_id": "BA",
+      "date": "2018-06-11",
+      "locked": false,
+      "job_id": "N-14-B"
+    },
+    {
+      "site_id": "W-02",
+      "crew_id": "IA",
+      "date": "2018-06-11",
+      "locked": false,
+      "job_id": "W-02-I"
+    },
+    {
+      "site_id": "W-05",
+      "crew_id": "IA",
+      "date": "2018-06-11",
+      "locked": false,
+      "job_id": "W-05-I"
+    },
+    {
+      "site_id": "W-12",
+      "crew_id": "IA",
+      "date": "2018-06-11",
+      "locked": false,
+      "job_id": "W-12-I"
+    },
+    {
+      "site_id": "W-04",
+      "crew_id": "IB",
+      "date": "2018-06-11",
+      "locked": false,
+      "job_id": "W-04-I"
+    },
+    {
+      "site_id": "W-06",
+      "crew_id": "IB",
+      "date": "2018-06-11",
+      "locked": false,
+      "job_id": "W-06-I"
     },
     {
       "site_id": "W-08",
-      "crew_id": "C",
+      "crew_id": "IB",
+      "date": "2018-06-11",
+      "locked": false,
+      "job_id": "W-08-I"
+    },
+    {
+      "site_id": "W-05",
+      "crew_id": "BA",
       "date": "2018-06-12",
-      "locked": false
+      "locked": false,
+      "job_id": "W-05-B"
+    },
+    {
+      "site_id": "W-07",
+      "crew_id": "BA",
+      "date": "2018-06-12",
+      "locked": false,
+      "job_id": "W-07-B"
+    },
+    {
+      "site_id": "W-08",
+      "crew_id": "BA",
+      "date": "2018-06-12",
+      "locked": false,
+      "job_id": "W-08-B"
+    },
+    {
+      "site_id": "W-12",
+      "crew_id": "BA",
+      "date": "2018-06-12",
+      "locked": false,
+      "job_id": "W-12-B"
+    },
+    {
+      "site_id": "W-13",
+      "crew_id": "BA",
+      "date": "2018-06-12",
+      "locked": false,
+      "job_id": "W-13-B"
+    },
+    {
+      "site_id": "W-01",
+      "crew_id": "IA",
+      "date": "2018-06-12",
+      "locked": false,
+      "job_id": "W-01-I"
+    },
+    {
+      "site_id": "W-11",
+      "crew_id": "IA",
+      "date": "2018-06-12",
+      "locked": false,
+      "job_id": "W-11-I"
+    },
+    {
+      "site_id": "W-14",
+      "crew_id": "IA",
+      "date": "2018-06-12",
+      "locked": false,
+      "job_id": "W-14-I"
+    },
+    {
+      "site_id": "N-04",
+      "crew_id": "IB",
+      "date": "2018-06-12",
+      "locked": false,
+      "job_id": "N-04-I"
+    },
+    {
+      "site_id": "N-08",
+      "crew_id": "IB",
+      "date": "2018-06-12",
+      "locked": false,
+      "job_id": "N-08-I"
+    },
+    {
+      "site_id": "N-15",
+      "crew_id": "IB",
+      "date": "2018-06-12",
+      "locked": false,
+      "job_id": "N-15-I"
+    },
+    {
+      "site_id": "N-04",
+      "crew_id": "BA",
+      "date": "2018-06-13",
+      "locked": false,
+      "job_id": "N-04-B"
+    },
+    {
+      "site_id": "N-06",
+      "crew_id": "BA",
+      "date": "2018-06-13",
+      "locked": false,
+      "job_id": "N-06-B"
+    },
+    {
+      "site_id": "N-08",
+      "crew_id": "BA",
+      "date": "2018-06-13",
+      "locked": false,
+      "job_id": "N-08-B"
+    },
+    {
+      "site_id": "N-11",
+      "crew_id": "BA",
+      "date": "2018-06-13",
+      "locked": false,
+      "job_id": "N-11-B"
+    },
+    {
+      "site_id": "N-12",
+      "crew_id": "BA",
+      "date": "2018-06-13",
+      "locked": false,
+      "job_id": "N-12-B"
+    },
+    {
+      "site_id": "N-15",
+      "crew_id": "BA",
+      "date": "2018-06-13",
+      "locked": false,
+      "job_id": "N-15-B"
+    },
+    {
+      "site_id": "S-03",
+      "crew_id": "IB",
+      "date": "2018-06-13",
+      "locked": false,
+      "job_id": "S-03-I"
+    },
+    {
+      "site_id": "S-07",
+      "crew_id": "IB",
+      "date": "2018-06-13",
+      "locked": false,
+      "job_id": "S-07-I"
+    },
+    {
+      "site_id": "S-09",
+      "crew_id": "IB",
+      "date": "2018-06-13",
+      "locked": false,
+      "job_id": "S-09-I"
+    },
+    {
+      "site_id": "S-02",
+      "crew_id": "BA",
+      "date": "2018-06-14",
+      "locked": false,
+      "job_id": "S-02-B"
+    },
+    {
+      "site_id": "S-03",
+      "crew_id": "BA",
+      "date": "2018-06-14",
+      "locked": false,
+      "job_id": "S-03-B"
+    },
+    {
+      "site_id": "S-06",
+      "crew_id": "BA",
+      "date": "2018-06-14",
+      "locked": false,
+      "job_id": "S-06-B"
+    },
+    {
+      "site_id": "S-07",
+      "crew_id": "BA",
+      "date": "2018-06-14",
+      "locked": false,
+      "job_id": "S-07-B"
+    },
+    {
+      "site_id": "S-09",
+      "crew_id": "BA",
+      "date": "2018-06-14",
+      "locked": false,
+      "job_id": "S-09-B"
+    },
+    {
+      "site_id": "S-11",
+      "crew_id": "BA",
+      "date": "2018-06-14",
+      "locked": false,
+      "job_id": "S-11-B"
+    },
+    {
+      "site_id": "S-12",
+      "crew_id": "BA",
+      "date": "2018-06-14",
+      "locked": false,
+      "job_id": "S-12-B"
+    },
+    {
+      "site_id": "W-01",
+      "crew_id": "BA",
+      "date": "2018-06-15",
+      "locked": false,
+      "job_id": "W-01-B"
+    },
+    {
+      "site_id": "W-02",
+      "crew_id": "BA",
+      "date": "2018-06-15",
+      "locked": false,
+      "job_id": "W-02-B"
+    },
+    {
+      "site_id": "W-04",
+      "crew_id": "BA",
+      "date": "2018-06-15",
+      "locked": false,
+      "job_id": "W-04-B"
+    },
+    {
+      "site_id": "W-06",
+      "crew_id": "BA",
+      "date": "2018-06-15",
+      "locked": false,
+      "job_id": "W-06-B"
+    },
+    {
+      "site_id": "W-11",
+      "crew_id": "BA",
+      "date": "2018-06-15",
+      "locked": false,
+      "job_id": "W-11-B"
+    },
+    {
+      "site_id": "W-14",
+      "crew_id": "BA",
+      "date": "2018-06-15",
+      "locked": false,
+      "job_id": "W-14-B"
     }
   ]
 }

@@ -1,0 +1,185 @@
+{
+  "plan_id": "tiny_two_visit-r0-strict-30048936",
+  "scenario_id": "tiny_two_visit",
+  "scenario_hash": "300489366cdaa32529b293f7b48ca17b6b261760c2f70f49596df3ca8ae838ce",
+  "revision": 0,
+  "mode": "strict",
+  "algorithm": "cpsat",
+  "objective_policy": "value_aware",
+  "edits": [],
+  "status": "optimal",
+  "message": "All 3 schedulable jobs meet their deadlines.",
+  "stages": [
+    {
+      "name": "changed_installs",
+      "status": "optimal",
+      "value": 0.0,
+      "bound": 0.0,
+      "gap": 0.0,
+      "elapsed_ms": 0
+    },
+    {
+      "name": "operating_value",
+      "status": "optimal",
+      "value": 43.22,
+      "bound": 43.22,
+      "gap": 0.0,
+      "elapsed_ms": 0
+    },
+    {
+      "name": "travel",
+      "status": "optimal",
+      "value": 210.0,
+      "bound": 210.0,
+      "gap": 0.0,
+      "elapsed_ms": 0
+    }
+  ],
+  "assignments": [
+    {
+      "site_id": "H1",
+      "crew_id": "I",
+      "date": "2018-06-04",
+      "state": "locked",
+      "days_late": 0,
+      "value_usd": 0.0,
+      "job_id": "H1-I",
+      "visit_type": "install"
+    },
+    {
+      "site_id": "H1",
+      "crew_id": "B",
+      "date": "2018-06-05",
+      "state": "scheduled",
+      "days_late": 0,
+      "value_usd": 14.616258516365857,
+      "job_id": "H1-B",
+      "visit_type": "battery_day"
+    },
+    {
+      "site_id": "H2",
+      "crew_id": "I",
+      "date": "2018-06-04",
+      "state": "scheduled",
+      "days_late": 0,
+      "value_usd": 0.0,
+      "job_id": "H2-I",
+      "visit_type": "install"
+    },
+    {
+      "site_id": "H2",
+      "crew_id": "B",
+      "date": "2018-06-05",
+      "state": "scheduled",
+      "days_late": 0,
+      "value_usd": 14.616258516365857,
+      "job_id": "H2-B",
+      "visit_type": "battery_day"
+    },
+    {
+      "site_id": "H3",
+      "crew_id": "I",
+      "date": "2018-06-05",
+      "state": "scheduled",
+      "days_late": 0,
+      "value_usd": 0.0,
+      "job_id": "H3-I",
+      "visit_type": "install"
+    },
+    {
+      "site_id": "H3",
+      "crew_id": "B",
+      "date": "2018-06-06",
+      "state": "scheduled",
+      "days_late": 0,
+      "value_usd": 13.980177183928387,
+      "job_id": "H3-B",
+      "visit_type": "battery_day"
+    }
+  ],
+  "unscheduled": [],
+  "crew_days": [
+    {
+      "crew_id": "B",
+      "date": "2018-06-04",
+      "cluster_id": null,
+      "onsite_min": 0,
+      "travel_min": 0,
+      "available_min": 480
+    },
+    {
+      "crew_id": "B",
+      "date": "2018-06-05",
+      "cluster_id": "N",
+      "onsite_min": 150,
+      "travel_min": 60,
+      "available_min": 480
+    },
+    {
+      "crew_id": "B",
+      "date": "2018-06-06",
+      "cluster_id": "S",
+      "onsite_min": 75,
+      "travel_min": 45,
+      "available_min": 480
+    },
+    {
+      "crew_id": "I",
+      "date": "2018-06-04",
+      "cluster_id": "N",
+      "onsite_min": 270,
+      "travel_min": 60,
+      "available_min": 480
+    },
+    {
+      "crew_id": "I",
+      "date": "2018-06-05",
+      "cluster_id": "S",
+      "onsite_min": 90,
+      "travel_min": 45,
+      "available_min": 480
+    },
+    {
+      "crew_id": "I",
+      "date": "2018-06-06",
+      "cluster_id": null,
+      "onsite_min": 0,
+      "travel_min": 0,
+      "available_min": 480
+    }
+  ],
+  "objective": {
+    "jobs_on_time": 3,
+    "jobs_late": 0,
+    "jobs_unscheduled": 0,
+    "jobs_blocked": 0,
+    "total_delay_days": 0,
+    "operating_value_usd": 43.2126942166601,
+    "changed_installs": 0,
+    "travel_allowance_min": 210,
+    "crew_utilization": 0.276,
+    "value_distinguishes_choices": true,
+    "visits_moved": 0,
+    "customers_to_reschedule": 0
+  },
+  "validation": {
+    "checked": true,
+    "valid": true,
+    "issues": [],
+    "validator": "independent-v1"
+  },
+  "input_issues": [],
+  "assumptions": [
+    {
+      "key": "synthetic_inputs",
+      "text": "All inputs in this scenario are synthetic.",
+      "kind": "synthetic"
+    },
+    {
+      "key": "travel_allowance",
+      "text": "Travel is a fixed allowance per active crew-day and cluster, not a routed drive time.",
+      "kind": "assumed"
+    }
+  ],
+  "solve_ms": 0
+}

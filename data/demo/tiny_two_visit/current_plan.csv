@@ -1,0 +1,7 @@
+site_id,job_id,crew_id,date,locked
+H1,H1-I,I,2018-06-04,true
+H2,H2-I,I,2018-06-04,false
+H3,H3-I,I,2018-06-05,false
+H1,H1-B,B,2018-06-05,false
+H2,H2-B,B,2018-06-05,false
+H3,H3-B,B,2018-06-06,false

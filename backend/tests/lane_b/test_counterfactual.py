@@ -14,7 +14,7 @@ from app.contracts.models import (
 )
 from app.planning.counterfactual import counterfactual
 from app.planning.solve import plan
-from tests.lane_b.conftest import REMOVE_A_MON, deferred, expected, slots
+from tests.lane_b.conftest import REMOVE_A_MON, deferred, expected, frozen, slots
 
 client = TestClient(app)
 REQ = PlanRequest(scenario_id="tiny", revision=1, mode=Mode.recovery, edits=[REMOVE_A_MON])
@@ -38,10 +38,10 @@ def test_matches_expected(tiny, name, intervention):
     e = expected(name)
     assert cf.feasible == e.feasible
     assert cf.result.status == e.result.status
-    assert cf.result.objective == e.result.objective
+    assert frozen(cf.result.objective) == frozen(e.result.objective)
     assert slots(cf.result) == slots(e.result)
     assert deferred(cf.result) == deferred(e.result)
-    assert cf.diff.summary == e.diff.summary
+    assert frozen(cf.diff.summary) == frozen(e.diff.summary)
 
 
 def test_summaries_name_the_cause(tiny):

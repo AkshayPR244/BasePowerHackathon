@@ -2,7 +2,7 @@
   "dataset_id": "standard_clusters_geojson",
   "kind": "synthetic",
   "source_url": null,
-  "release": "generator-v2-seed-42",
+  "release": "generator-v3-seed-42",
   "retrieved_at": null,
   "covered_start": "2018-06-04",
   "covered_end": "2018-06-15",

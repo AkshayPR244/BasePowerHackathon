@@ -51,6 +51,16 @@ One line of reasoning each. Newest changes at the bottom of each section.
 - **Weather uses observed METAR reports from Houston Hobby (IEM ASOS archive), not Open-Meteo.** Open-Meteo's reanalysis reported no thunderstorm codes for Houston in June and July 2018 (1 lost weekday). METAR reported thunder on 10 weekdays. The lightning rule needs observed thunder, so we use METAR. The rule: any `TS` report or at least 7.6 mm/h (AMS heavy rain) during 08:00 to 17:00 loses the crew-day.
 - **The late-shipment example no longer makes any job late** under the rule-based deadlines. We report that as is.
 
+## Two visits per home (2026-09-26)
+
+- **Each home needs an install (the electrical disconnect visit), then a battery day (the battery is placed) at least 1 business day later.** Install crews and battery crews are separate. The two visits compete for different crews, so a lost crew-day on one side has a different impact than on the other. That is the recovery question a single-visit model cannot ask.
+- **Deadline, energy value, and inventory attach to the battery day.** Value starts after the battery is in place. The install alone earns nothing.
+- **Visits moved and customers to reschedule are both reported.** A customer with two moved visits is still one phone call. Objective order is unchanged: deadline misses, total delay, changed visits, energy value, travel.
+- **Timing is assumed, not sourced:** install 90 to 180 min, battery day 60, 75, or 90 min (about 75, so 5 to 6 a day with travel). None of it comes from any company's internal data.
+- **Standard: 45 homes, 2 install crews, 1 battery crew, 10 business days.** The battery crew is the bottleneck at 84.6% utilization in the strict plan, with install crews at 66.9%. Two settings make that load feasible on time, both tagged assumed: battery crews start on the second window day (no install is finished on the first), and deadlines are ready date + 6 business days (+5 made 45 homes infeasible).
+- **The current plan is this tool's strict plan for the undisrupted scenario** (single worker, deterministic work limit, so it is reproducible). The earlier earliest-deadline-first booking could not place all 45 homes. This matches the workflow: plan first, then a disruption hits.
+- **Two solver fixes came out of this.** A stage whose objective is a constant no longer counts as "optimal" before any solve proved feasibility; it used to turn an infeasible plan into `timeout_no_incumbent`. Each non-final lexicographic stage now uses at most half of the remaining budget, so a slow early stage cannot starve "changed visits". A new per-skill capacity cut made the first recovery stage prove in 2.4 s instead of 38 s on the battery-crew disruption.
+
 ## Skills
 
 - **frontend-design** (anthropics/claude-plugins-official) and **webapp-testing** (anthropics/skills): vendored into `.claude/skills/` with their Apache-2.0 licenses. Vendoring means teammates need no plugin install and subagents can preload them by name.

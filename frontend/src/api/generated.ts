@@ -169,6 +169,11 @@ export interface components {
              * @default 0
              */
             days_late: number;
+            /**
+             * Job Id
+             * @description Visit job; None for one-visit homes
+             */
+            job_id?: string | null;
             /** Site Id */
             site_id: string;
             state: components["schemas"]["JobState"];
@@ -178,6 +183,7 @@ export interface components {
              * @default 0
              */
             value_usd: number;
+            visit_type?: components["schemas"]["VisitType"] | null;
         };
         /** Assumption */
         Assumption: {
@@ -360,6 +366,8 @@ export interface components {
         DiffSummary: {
             /** Added */
             added: number;
+            /** Customers To Reschedule */
+            customers_to_reschedule?: number | null;
             /** Moved */
             moved: number;
             /** Newly Late */
@@ -430,6 +438,11 @@ export interface components {
             changed_installs: number;
             /** Crew Utilization */
             crew_utilization: number;
+            /**
+             * Customers To Reschedule
+             * @description Distinct homes with at least one moved or dropped visit
+             */
+            customers_to_reschedule?: number | null;
             /** Jobs Blocked */
             jobs_blocked: number;
             /** Jobs Late */
@@ -458,6 +471,11 @@ export interface components {
             travel_allowance_min: number;
             /** Value Distinguishes Choices */
             value_distinguishes_choices: boolean;
+            /**
+             * Visits Moved
+             * @description Planned visits moved or dropped. Same count as changed_installs
+             */
+            visits_moved?: number | null;
         };
         /**
          * ObjectivePolicy
@@ -493,11 +511,14 @@ export interface components {
             after_state: components["schemas"]["JobState"];
             before: components["schemas"]["Slot"] | null;
             before_state: components["schemas"]["JobState"];
+            /** Job Id */
+            job_id?: string | null;
             kind: components["schemas"]["ChangeKind"];
             /** Note */
             note: string;
             /** Site Id */
             site_id: string;
+            visit_type?: components["schemas"]["VisitType"] | null;
         };
         /** PlanDiff */
         PlanDiff: {
@@ -591,6 +612,11 @@ export interface components {
              * Format: date
              */
             date: string;
+            /**
+             * Job Id
+             * @description Visit job; None for one-visit homes
+             */
+            job_id?: string | null;
             /** Locked */
             locked: boolean;
             /** Site Id */
@@ -663,6 +689,11 @@ export interface components {
              * Format: date
              */
             evaluation_end: string;
+            /**
+             * Min Gap Business Days
+             * @description Business days from install to battery day. None means 1.
+             */
+            min_gap_business_days?: number | null;
             /** Name */
             name: string;
             /**
@@ -781,6 +812,12 @@ export interface components {
             required_skill: string;
             /** Site Id */
             site_id: string;
+            /**
+             * Visits
+             * @description Empty: one visit described by duration_min and required_skill. Otherwise an install and a battery day; the deadline and energy value apply to the battery day, and duration_min / required_skill describe the battery day.
+             * @default []
+             */
+            visits: components["schemas"]["Visit"][];
         };
         /** Slot */
         Slot: {
@@ -815,11 +852,17 @@ export interface components {
         UnscheduledJob: {
             /** Detail */
             detail: string;
+            /**
+             * Job Id
+             * @description None covers the whole home
+             */
+            job_id?: string | null;
             /** Reasons */
             reasons: components["schemas"]["ReasonCode"][];
             /** Site Id */
             site_id: string;
             state: components["schemas"]["JobState"];
+            visit_type?: components["schemas"]["VisitType"] | null;
         };
         /** ValidationIssue */
         ValidationIssue: {
@@ -828,6 +871,8 @@ export interface components {
             crew_id?: string | null;
             /** Date */
             date?: string | null;
+            /** Job Id */
+            job_id?: string | null;
             /** Message */
             message: string;
             /** Site Id */
@@ -854,7 +899,28 @@ export interface components {
          * ViolationCode
          * @enum {string}
          */
-        ViolationCode: "UNKNOWN_SITE" | "DUPLICATE_ASSIGNMENT" | "NO_CREW_DAY" | "BEFORE_READY" | "AFTER_DEADLINE" | "MISSING_JOB" | "SKILL" | "CLUSTER_NOT_ALLOWED" | "MULTIPLE_CLUSTERS" | "CAPACITY" | "INVENTORY" | "LOCK_BROKEN" | "STATE_MISMATCH" | "OBJECTIVE_MISMATCH";
+        ViolationCode: "UNKNOWN_SITE" | "DUPLICATE_ASSIGNMENT" | "NO_CREW_DAY" | "BEFORE_READY" | "AFTER_DEADLINE" | "MISSING_JOB" | "SKILL" | "CLUSTER_NOT_ALLOWED" | "MULTIPLE_CLUSTERS" | "CAPACITY" | "INVENTORY" | "LOCK_BROKEN" | "STATE_MISMATCH" | "OBJECTIVE_MISMATCH" | "PRECEDENCE";
+        /**
+         * Visit
+         * @description One crew visit to a home. A two-visit home has an install, then a battery day.
+         */
+        Visit: {
+            /**
+             * Duration Min
+             * @description Integer minutes
+             */
+            duration_min: number;
+            /** Job Id */
+            job_id: string;
+            /** Required Skill */
+            required_skill: string;
+            visit_type: components["schemas"]["VisitType"];
+        };
+        /**
+         * VisitType
+         * @enum {string}
+         */
+        VisitType: "install" | "battery_day";
         /**
          * WeatherRule
          * @description A crew-day is lost when any working hour meets either condition.

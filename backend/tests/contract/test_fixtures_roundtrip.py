@@ -17,7 +17,10 @@ MODEL_BY_PREFIX = {
 def test_expected_roundtrip(path):
     model = next(m for p, m in MODEL_BY_PREFIX.items() if path.stem.startswith(p))
     obj = model.model_validate_json(path.read_text("utf-8"))
-    assert json.loads(obj.model_dump_json()) == json.loads(path.read_text("utf-8"))
+    # Fields added after contract 1.0.0 are optional and absent from the frozen files.
+    assert json.loads(obj.model_dump_json(exclude_unset=True)) == json.loads(
+        path.read_text("utf-8")
+    )
 
 
 def test_scenario_roundtrip_and_expected_hashes():

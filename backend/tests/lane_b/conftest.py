@@ -75,6 +75,13 @@ def expected(name: str):
     return CounterfactualResult.model_validate_json(text)
 
 
+def frozen(model):
+    """Fields the frozen tiny fixtures contain. Fields added later are optional and absent there."""
+    if model is None:
+        return None
+    return model.model_dump(exclude={"visits_moved", "customers_to_reschedule"})
+
+
 def slots(r: PlanResult) -> list[tuple]:
     return [(a.site_id, a.crew_id, a.date, a.state, a.days_late) for a in r.assignments]
 

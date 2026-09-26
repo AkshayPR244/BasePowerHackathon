@@ -1,0 +1,85 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "permissions": {
+    "allow": [
+      "Bash(uv *)",
+      "Bash(uvx *)",
+      "Bash(pytest *)",
+      "Bash(pnpm *)",
+      "Bash(npx playwright *)",
+      "Bash(make *)",
+      "Bash(git status*)",
+      "Bash(git diff*)",
+      "Bash(git log*)",
+      "Bash(git show*)",
+      "Bash(git add *)",
+      "Bash(git commit *)",
+      "Bash(git checkout *)",
+      "Bash(git switch *)",
+      "Bash(git branch*)",
+      "Bash(git fetch*)",
+      "Bash(git merge *)",
+      "Bash(git pull*)",
+      "Bash(git stash*)",
+      "Bash(git rev-parse *)",
+      "Bash(git push -u origin lane/*)",
+      "Bash(git push origin lane/*)",
+      "Bash(gh pr create *)",
+      "Bash(gh pr view *)",
+      "Bash(gh pr list*)",
+      "Bash(gh pr diff *)",
+      "Bash(python -m json.tool *)",
+      "Bash(curl *ercot.com*)",
+      "Bash(curl *houstontx.gov*)",
+      "Bash(curl *gridstatus.io*)",
+      "Bash(curl *pypi.org*)",
+      "Bash(curl *pythonhosted.org*)",
+      "Bash(curl *registry.npmjs.org*)",
+      "WebFetch(domain:ercot.com)",
+      "WebFetch(domain:www.ercot.com)",
+      "WebFetch(domain:mycity2.houstontx.gov)",
+      "WebFetch(domain:docs.gridstatus.io)",
+      "WebFetch(domain:developers.google.com)",
+      "WebFetch(domain:docs.scipy.org)"
+    ],
+    "deny": [
+      "Read(./.env)",
+      "Read(./.env.*)",
+      "Read(**/.env)",
+      "Read(**/.env.*)",
+      "Bash(git push --force*)",
+      "Bash(git push -f*)",
+      "Bash(git push * --force*)",
+      "Bash(git push * -f*)",
+      "Bash(git push * main*)",
+      "Bash(git push origin HEAD:main*)",
+      "Bash(git reset --hard origin*)",
+      "Bash(gh pr merge *)",
+      "Bash(rm -rf /*)",
+      "Bash(rm -rf ~*)",
+      "Bash(rm -rf ..*)",
+      "Bash(rm * /*)",
+      "Bash(rm * ~/*)",
+      "Bash(rm * ../*)",
+      "Bash(sudo *)"
+    ]
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "*",
+        "hooks": [
+          { "type": "command", "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/kill-switch.sh\"" },
+          { "type": "command", "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/steer.sh\"" }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          { "type": "command", "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/commit-on-stop.sh\"" }
+        ]
+      }
+    ]
+  }
+}

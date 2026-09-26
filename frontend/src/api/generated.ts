@@ -266,6 +266,7 @@ export interface components {
         };
         /** ApproveResult */
         ApproveResult: {
+            effective_scenario?: components["schemas"]["Scenario"] | null;
             /** New Current Plan */
             new_current_plan: components["schemas"]["PlannedInstall"][];
             /**
@@ -628,6 +629,10 @@ export interface components {
             current_plan?: components["schemas"]["PlannedInstall"][] | null;
             /** Disruption */
             disruption: (components["schemas"]["RemoveCrewDay"] | components["schemas"]["AddCrewDay"] | components["schemas"]["DelayInventory"] | components["schemas"]["ChangeReadyDate"] | components["schemas"]["ForceInclude"] | components["schemas"]["ReduceCrewDay"] | components["schemas"]["ChangeAppointment"] | components["schemas"]["ExtendCrewDay"] | components["schemas"]["PinVisit"] | components["schemas"]["MoveVisit"])[];
+            /** Economics Overrides */
+            economics_overrides?: {
+                [key: string]: number;
+            } | null;
             /**
              * Interactive
              * @default true

@@ -45,10 +45,10 @@ class Board:
         slot = self.placed.get(first.job_id)
         return slot is not None and gap_ok(slot[1], day, self.gap, self.origin)
 
-    def fits(self, jid: str, slot: Slot) -> bool:
+    def fits(self, jid: str, slot: Slot, *, check_ready: bool = True) -> bool:
         job = self.jobs[jid]
         s = self.sites[job.site_id]
-        if not self.ready(job, slot[1]):
+        if check_ready and not self.ready(job, slot[1]):
             return False
         k = self.cluster.get(slot)
         if k is not None and k != s.cluster_id:

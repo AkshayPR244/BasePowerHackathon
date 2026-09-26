@@ -598,6 +598,7 @@ class EvaluateRequest(Contract):
     current_plan: list[PlannedInstall] | None = None
     disruption: list[Edit]
     interventions: list[Edit]
+    economics_overrides: dict[str, float] | None = None
     interactive: bool = True
 
 
@@ -609,6 +610,7 @@ class ApproveRequest(Contract):
 
 class ApproveResult(Contract):
     new_current_plan: list[PlannedInstall]
+    effective_scenario: Scenario | None = None
     summary: str
     stub: bool = False
 

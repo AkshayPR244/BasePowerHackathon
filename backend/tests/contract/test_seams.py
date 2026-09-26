@@ -32,7 +32,7 @@ def test_recovery_options_seam():
     assert result.revision == 7
     assert result.no_action.kind == "no_action"
     assert {o.kind for o in result.options} == {"rebalance", "overtime", "temporary_capacity"}
-    assert sum(o.lowest_modeled_cost for o in result.options) == 1
+    assert sum(o.lowest_modeled_cost for o in [result.no_action, *result.options]) == 1
     for o in [result.no_action, *result.options]:
         assert o.result.validation.checked and o.result.validation.valid
     if result.stub:
@@ -70,7 +70,7 @@ def test_unknown_scenario_is_404():
     assert r.status_code == 404
 
 
-def test_new_edits_are_invalid_input_until_implemented():
+def test_new_edits_are_implemented_with_validated_results():
     for edit in [
         {"kind": "reduce_crew_day", "crew_id": "A", "date": "2018-06-04", "available_min": 240},
         {"kind": "change_appointment", "job_id": "N-01", "available_from": "2018-06-05"},
@@ -79,4 +79,6 @@ def test_new_edits_are_invalid_input_until_implemented():
         {"kind": "move_visit", "job_id": "N-01", "crew_id": "A", "date": "2018-06-05"},
     ]:
         r = client.post("/api/plans", json={"scenario_id": "tiny", "revision": 1, "edits": [edit]})
-        assert r.json()["status"] == "invalid_input", edit
+        assert r.status_code == 200, r.text
+        assert r.json()["status"] != "invalid_input", edit
+        assert r.json()["validation"]["valid"], r.text

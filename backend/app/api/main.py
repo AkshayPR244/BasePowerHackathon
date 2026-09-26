@@ -163,12 +163,19 @@ def _mark(response: Response, stub: bool) -> None:
         response.headers["X-Rollout-Stub"] = "true"
 
 
+async def _recovery_call(function, *args):
+    try:
+        return await asyncio.to_thread(function, *args)
+    except ValueError as exc:
+        raise ApiException(422, "invalid_recovery", str(exc)) from exc
+
+
 @app.post("/api/recovery/options", responses=ERRORS)
 async def recovery_options(
     req: RecoveryOptionsRequest, response: Response
 ) -> RecoveryOptionsResult:
-    s = _scenario(req.scenario_id)
-    out = await asyncio.to_thread(
+    s = _scenario(req.scenario_id).model_copy(update={"revision": req.revision})
+    out = await _recovery_call(
         recovery.recover,
         s,
         req.disruption,
@@ -182,14 +189,14 @@ async def recovery_options(
 
 @app.post("/api/recovery/evaluate", responses=ERRORS)
 async def recovery_evaluate(req: EvaluateRequest, response: Response) -> RecoveryOption:
-    s = _scenario(req.scenario_id)
-    out = await asyncio.to_thread(
+    s = _scenario(req.scenario_id).model_copy(update={"revision": req.revision})
+    out = await _recovery_call(
         recovery.evaluate,
         s,
         req.disruption,
         req.interventions,
         req.current_plan,
-        None,
+        req.economics_overrides,
         req.interactive,
     )
     _mark(response, out.stub)
@@ -198,7 +205,12 @@ async def recovery_evaluate(req: EvaluateRequest, response: Response) -> Recover
 
 @app.post("/api/recovery/approve", responses=ERRORS)
 def recovery_approve(req: ApproveRequest, response: Response) -> ApproveResult:
-    out = recovery.approve(_scenario(req.scenario_id), req.option)
+    try:
+        out = recovery.approve(
+            _scenario(req.scenario_id).model_copy(update={"revision": req.revision}), req.option
+        )
+    except ValueError as exc:
+        raise ApiException(422, "invalid_recovery", str(exc)) from exc
     _mark(response, out.stub)
     return out
 

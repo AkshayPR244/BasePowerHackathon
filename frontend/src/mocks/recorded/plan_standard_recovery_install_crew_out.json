@@ -22,7 +22,7 @@
       "value": 0.0,
       "bound": 0.0,
       "gap": 0.0,
-      "elapsed_ms": 78
+      "elapsed_ms": 49
     },
     {
       "name": "total_delay",
@@ -30,7 +30,7 @@
       "value": 0.0,
       "bound": 0.0,
       "gap": 0.0,
-      "elapsed_ms": 46
+      "elapsed_ms": 25
     },
     {
       "name": "changed_installs",
@@ -38,7 +38,7 @@
       "value": 9.0,
       "bound": 9.0,
       "gap": 0.0,
-      "elapsed_ms": 93
+      "elapsed_ms": 56
     },
     {
       "name": "operating_value",
@@ -46,7 +46,7 @@
       "value": 4136.48,
       "bound": 4136.48,
       "gap": 0.0,
-      "elapsed_ms": 94
+      "elapsed_ms": 73
     },
     {
       "name": "travel",
@@ -54,7 +54,7 @@
       "value": 905.0,
       "bound": 905.0,
       "gap": 0.0,
-      "elapsed_ms": 62
+      "elapsed_ms": 32
     }
   ],
   "assignments": [
@@ -1219,5 +1219,5 @@
       "kind": "assumed"
     }
   ],
-  "solve_ms": 827
+  "solve_ms": 529
 }

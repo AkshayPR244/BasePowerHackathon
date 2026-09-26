@@ -7,16 +7,23 @@ from app.contracts.enums import InputIssueCode
 from app.contracts.hashing import scenario_hash
 from app.contracts.models import (
     AddCrewDay,
+    ChangeAppointment,
     ChangeReadyDate,
     CrewDay,
     DelayInventory,
     Edit,
+    ExtendCrewDay,
     ForceInclude,
     InputIssue,
     InventoryReceipt,
+    MoveVisit,
+    PinVisit,
+    PlannedInstall,
+    ReduceCrewDay,
     RemoveCrewDay,
     Scenario,
 )
+from app.contracts.visits import all_jobs, job_of_row, jobs_of
 
 
 @dataclass
@@ -34,6 +41,10 @@ def apply_edits(base: Scenario, edits: Sequence[Edit]) -> Edited:
     crew_days = list(base.crew_days)
     inventory = list(base.inventory)
     sites = {s.site_id: s for s in base.sites}
+    overtime: dict[tuple, int] = {}
+    current = list(base.current_plan)
+    jobs = all_jobs(base)
+    by_site = {s.site_id: jobs_of(s) for s in base.sites}
     forced: set[str] = set()
     issues: list[InputIssue] = []
 
@@ -50,6 +61,16 @@ def apply_edits(base: Scenario, edits: Sequence[Edit]) -> Edited:
                     )
                 crew_days = keep
             case AddCrewDay():
+                if not base.config.planning_start <= e.date <= base.config.planning_end:
+                    issues.append(
+                        _issue(
+                            InputIssueCode.DATE_ORDER, "Crew date is outside the planning window."
+                        )
+                    )
+                    continue
+                if not set(e.allowed_clusters) <= {c.cluster_id for c in base.clusters}:
+                    issues.append(_issue(InputIssueCode.UNKNOWN_REFERENCE, "Unknown crew cluster."))
+                    continue
                 if any((c.crew_id, c.date) == (e.crew_id, e.date) for c in crew_days):
                     issues.append(
                         _issue(
@@ -81,15 +102,113 @@ def apply_edits(base: Scenario, edits: Sequence[Edit]) -> Edited:
                     issues.append(_issue(InputIssueCode.UNKNOWN_REFERENCE, f"No site {e.site_id}."))
                     continue
                 forced.add(e.site_id)
-            case _:
-                # TODO(lane-r): reduce_crew_day, change_appointment, extend_crew_day,
-                # pin_visit, move_visit.
-                issues.append(
-                    _issue(InputIssueCode.BAD_VALUE, f"Edit {e.kind} is not implemented yet.")
+            case ReduceCrewDay() | ExtendCrewDay():
+                index = next(
+                    (
+                        i
+                        for i, c in enumerate(crew_days)
+                        if (c.crew_id, c.date) == (e.crew_id, e.date)
+                    ),
+                    None,
                 )
+                if index is None:
+                    issues.append(
+                        _issue(InputIssueCode.UNKNOWN_REFERENCE, "Crew-day does not exist.")
+                    )
+                    continue
+                cd = crew_days[index]
+                if isinstance(e, ReduceCrewDay):
+                    if e.available_min > cd.available_min:
+                        issues.append(
+                            _issue(
+                                InputIssueCode.BAD_VALUE,
+                                "Reduced capacity cannot increase availability.",
+                            )
+                        )
+                        continue
+                    minutes = e.available_min
+                else:
+                    original = next(
+                        (
+                            c.available_min
+                            for c in base.crew_days
+                            if (c.crew_id, c.date) == (e.crew_id, e.date)
+                        ),
+                        cd.available_min,
+                    )
+                    cap = next(
+                        (
+                            float(p.value)
+                            for p in base.config.parameters
+                            if p.name == "max_overtime_min"
+                        ),
+                        120,
+                    )
+                    minutes = cd.available_min + e.extra_min
+                    slot = (e.crew_id, e.date)
+                    requested = overtime.get(slot, 0) + e.extra_min
+                    if requested > cap or minutes > original + cap:
+                        issues.append(
+                            _issue(
+                                InputIssueCode.BAD_VALUE,
+                                f"Overtime exceeds {cap:g} minutes per crew-day.",
+                            )
+                        )
+                        continue
+                if isinstance(e, ExtendCrewDay):
+                    overtime[slot] = requested
+                crew_days[index] = cd.model_copy(update={"available_min": minutes})
+            case ChangeAppointment():
+                if e.job_id not in jobs:
+                    issues.append(
+                        _issue(InputIssueCode.UNKNOWN_REFERENCE, f"Unknown visit {e.job_id}.")
+                    )
+                elif e.available_to is not None and e.available_to < e.available_from:
+                    issues.append(
+                        _issue(InputIssueCode.DATE_ORDER, "Appointment ends before it starts.")
+                    )
+            case PinVisit() | MoveVisit():
+                job = jobs.get(e.job_id)
+                if job is None:
+                    issues.append(
+                        _issue(InputIssueCode.UNKNOWN_REFERENCE, f"Unknown visit {e.job_id}.")
+                    )
+                    continue
+                old = next((p for p in current if job_of_row(p, by_site) == e.job_id), None)
+                if isinstance(e, PinVisit):
+                    if old is None:
+                        issues.append(
+                            _issue(
+                                InputIssueCode.UNKNOWN_REFERENCE, "Cannot pin an unbooked visit."
+                            )
+                        )
+                        continue
+                    row = old.model_copy(update={"locked": True})
+                else:
+                    if old and old.locked and (old.crew_id, old.date) != (e.crew_id, e.date):
+                        issues.append(
+                            _issue(InputIssueCode.BAD_VALUE, "Cannot move a locked visit.")
+                        )
+                        continue
+                    if (e.crew_id, e.date) not in {(c.crew_id, c.date) for c in crew_days}:
+                        issues.append(
+                            _issue(
+                                InputIssueCode.UNKNOWN_REFERENCE, "Target crew-day does not exist."
+                            )
+                        )
+                        continue
+                    row = PlannedInstall(
+                        site_id=job.site_id,
+                        job_id=job.assignment_job_id,
+                        crew_id=e.crew_id,
+                        date=e.date,
+                        locked=True,
+                    )
+                current = [p for p in current if job_of_row(p, by_site) != e.job_id] + [row]
 
     edited = base.model_copy(
         update={
+            "current_plan": current,
             "crew_days": sorted(crew_days, key=lambda c: (c.date, c.crew_id)),
             "inventory": sorted(inventory, key=lambda r: (r.available_date, r.configuration_id)),
             "sites": [sites[s.site_id] for s in base.sites],
@@ -135,3 +254,24 @@ def _delay(
         for (cfg, d), q in merged.items()
     ]
     return rest, None
+
+
+def appointment_windows(edits):
+    """Last appointment edit wins; bounds are inclusive and specific to one visit."""
+    return {
+        e.job_id: (e.available_from, e.available_to)
+        for e in edits
+        if isinstance(e, ChangeAppointment)
+    }
+
+
+def restrict_appointments(elig, edits):
+    for jid, (start, end) in appointment_windows(edits).items():
+        for slots in (elig.options, elig.any_option):
+            if jid in slots:
+                slots[jid] = [
+                    (crew, day)
+                    for crew, day in slots[jid]
+                    if day >= start and (end is None or day <= end)
+                ]
+    return elig

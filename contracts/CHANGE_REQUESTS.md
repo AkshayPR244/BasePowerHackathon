@@ -18,3 +18,9 @@ The contract in `backend/app/contracts/` is frozen as of the scaffold commit. Fu
 
 | Date | Lane | Proposed change | Reason | Affects |
 |---|---|---|---|---|
+
+- 2026-09-27 Lane R: additive `EvaluateRequest.economics_overrides = None` keeps manual evaluations on the same economic assumptions as options. Generated schemas and types regenerated.
+
+- 2026-09-27 Lane R: additive `ApproveResult.effective_scenario = None` carries approved capacity, appointment edits via plan history, and bookings so temporary resources are not lost in exports. Approval API remains stateless; callers must retain the effective scenario.
+
+- 2026-09-27 Lane R: transition contract seam assertions from unimplemented-edit stubs to independently validated edit results; cost ranking includes canonical no action.

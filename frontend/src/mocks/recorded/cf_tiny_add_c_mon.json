@@ -198,10 +198,10 @@
       "value_distinguishes_choices": false
     },
     "validation": {
-      "checked": false,
-      "valid": false,
+      "checked": true,
+      "valid": true,
       "issues": [],
-      "validator": "stub"
+      "validator": "independent-v1"
     },
     "input_issues": [],
     "assumptions": [

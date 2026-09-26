@@ -1,0 +1,555 @@
+{
+  "plan_id": "standard-r0-strict-e4afa3ae",
+  "scenario_id": "standard",
+  "scenario_hash": "e4afa3aec2d8b2c4788490dec5648708045ebb7532bb1a6bc51de3cfd8b045d5",
+  "revision": 0,
+  "mode": "strict",
+  "algorithm": "cpsat",
+  "objective_policy": "value_aware",
+  "edits": [],
+  "status": "optimal",
+  "message": "All 30 schedulable jobs meet their deadlines.",
+  "stages": [
+    {
+      "name": "operating_value",
+      "status": "optimal",
+      "value": 1998.39,
+      "bound": 1998.39,
+      "gap": 0.0,
+      "elapsed_ms": 47
+    },
+    {
+      "name": "changed_installs",
+      "status": "optimal",
+      "value": 13.0,
+      "bound": 13.0,
+      "gap": 0.0,
+      "elapsed_ms": 250
+    },
+    {
+      "name": "travel",
+      "status": "optimal",
+      "value": 1190.0,
+      "bound": 1190.0,
+      "gap": 0.0,
+      "elapsed_ms": 77
+    }
+  ],
+  "assignments": [
+    {
+      "site_id": "N-01",
+      "crew_id": "A",
+      "date": "2018-06-04",
+      "state": "locked",
+      "days_late": 0,
+      "value_usd": 82.06228806428324
+    },
+    {
+      "site_id": "N-02",
+      "crew_id": "A",
+      "date": "2018-06-05",
+      "state": "scheduled",
+      "days_late": 0,
+      "value_usd": 66.04969110282202
+    },
+    {
+      "site_id": "N-03",
+      "crew_id": "A",
+      "date": "2018-06-06",
+      "state": "scheduled",
+      "days_late": 0,
+      "value_usd": 65.49619415808519
+    },
+    {
+      "site_id": "N-04",
+      "crew_id": "A",
+      "date": "2018-06-07",
+      "state": "scheduled",
+      "days_late": 0,
+      "value_usd": 65.05538980109073
+    },
+    {
+      "site_id": "N-05",
+      "crew_id": "A",
+      "date": "2018-06-08",
+      "state": "scheduled",
+      "days_late": 0,
+      "value_usd": 63.94390741279432
+    },
+    {
+      "site_id": "N-06",
+      "crew_id": "A",
+      "date": "2018-06-08",
+      "state": "scheduled",
+      "days_late": 0,
+      "value_usd": 63.94390741279432
+    },
+    {
+      "site_id": "N-07",
+      "crew_id": "A",
+      "date": "2018-06-12",
+      "state": "scheduled",
+      "days_late": 0,
+      "value_usd": 62.797377416239605
+    },
+    {
+      "site_id": "N-08",
+      "crew_id": "A",
+      "date": "2018-06-13",
+      "state": "scheduled",
+      "days_late": 0,
+      "value_usd": 61.864116690650974
+    },
+    {
+      "site_id": "N-09",
+      "crew_id": "A",
+      "date": "2018-06-13",
+      "state": "scheduled",
+      "days_late": 0,
+      "value_usd": 61.864116690650974
+    },
+    {
+      "site_id": "N-10",
+      "crew_id": "B",
+      "date": "2018-06-14",
+      "state": "scheduled",
+      "days_late": 0,
+      "value_usd": 61.645364081094186
+    },
+    {
+      "site_id": "S-01",
+      "crew_id": "B",
+      "date": "2018-06-04",
+      "state": "locked",
+      "days_late": 0,
+      "value_usd": 82.06228806428324
+    },
+    {
+      "site_id": "S-02",
+      "crew_id": "B",
+      "date": "2018-06-04",
+      "state": "scheduled",
+      "days_late": 0,
+      "value_usd": 82.06228806428324
+    },
+    {
+      "site_id": "S-03",
+      "crew_id": "C",
+      "date": "2018-06-05",
+      "state": "scheduled",
+      "days_late": 0,
+      "value_usd": 66.04969110282202
+    },
+    {
+      "site_id": "S-04",
+      "crew_id": "B",
+      "date": "2018-06-05",
+      "state": "scheduled",
+      "days_late": 0,
+      "value_usd": 66.04969110282202
+    },
+    {
+      "site_id": "S-05",
+      "crew_id": "B",
+      "date": "2018-06-08",
+      "state": "scheduled",
+      "days_late": 0,
+      "value_usd": 63.94390741279432
+    },
+    {
+      "site_id": "S-06",
+      "crew_id": "B",
+      "date": "2018-06-07",
+      "state": "scheduled",
+      "days_late": 0,
+      "value_usd": 65.05538980109073
+    },
+    {
+      "site_id": "S-07",
+      "crew_id": "B",
+      "date": "2018-06-12",
+      "state": "scheduled",
+      "days_late": 0,
+      "value_usd": 62.797377416239605
+    },
+    {
+      "site_id": "S-08",
+      "crew_id": "B",
+      "date": "2018-06-12",
+      "state": "scheduled",
+      "days_late": 0,
+      "value_usd": 62.797377416239605
+    },
+    {
+      "site_id": "S-09",
+      "crew_id": "B",
+      "date": "2018-06-13",
+      "state": "scheduled",
+      "days_late": 0,
+      "value_usd": 61.864116690650974
+    },
+    {
+      "site_id": "S-10",
+      "crew_id": "A",
+      "date": "2018-06-14",
+      "state": "scheduled",
+      "days_late": 0,
+      "value_usd": 61.645364081094186
+    },
+    {
+      "site_id": "W-01",
+      "crew_id": "C",
+      "date": "2018-06-04",
+      "state": "locked",
+      "days_late": 0,
+      "value_usd": 82.06228806428324
+    },
+    {
+      "site_id": "W-02",
+      "crew_id": "C",
+      "date": "2018-06-04",
+      "state": "scheduled",
+      "days_late": 0,
+      "value_usd": 82.06228806428324
+    },
+    {
+      "site_id": "W-03",
+      "crew_id": "C",
+      "date": "2018-06-07",
+      "state": "scheduled",
+      "days_late": 0,
+      "value_usd": 65.05538980109073
+    },
+    {
+      "site_id": "W-04",
+      "crew_id": "C",
+      "date": "2018-06-07",
+      "state": "scheduled",
+      "days_late": 0,
+      "value_usd": 65.05538980109073
+    },
+    {
+      "site_id": "W-05",
+      "crew_id": "C",
+      "date": "2018-06-08",
+      "state": "scheduled",
+      "days_late": 0,
+      "value_usd": 63.94390741279432
+    },
+    {
+      "site_id": "W-06",
+      "crew_id": "C",
+      "date": "2018-06-11",
+      "state": "scheduled",
+      "days_late": 0,
+      "value_usd": 62.990420422056786
+    },
+    {
+      "site_id": "W-07",
+      "crew_id": "C",
+      "date": "2018-06-12",
+      "state": "scheduled",
+      "days_late": 0,
+      "value_usd": 62.797377416239605
+    },
+    {
+      "site_id": "W-08",
+      "crew_id": "C",
+      "date": "2018-06-13",
+      "state": "scheduled",
+      "days_late": 0,
+      "value_usd": 61.864116690650974
+    },
+    {
+      "site_id": "W-09",
+      "crew_id": "C",
+      "date": "2018-06-14",
+      "state": "scheduled",
+      "days_late": 0,
+      "value_usd": 61.645364081094186
+    },
+    {
+      "site_id": "W-10",
+      "crew_id": "C",
+      "date": "2018-06-13",
+      "state": "scheduled",
+      "days_late": 0,
+      "value_usd": 61.864116690650974
+    }
+  ],
+  "unscheduled": [],
+  "crew_days": [
+    {
+      "crew_id": "A",
+      "date": "2018-06-04",
+      "cluster_id": "N",
+      "onsite_min": 180,
+      "travel_min": 60,
+      "available_min": 480
+    },
+    {
+      "crew_id": "A",
+      "date": "2018-06-05",
+      "cluster_id": "N",
+      "onsite_min": 240,
+      "travel_min": 60,
+      "available_min": 480
+    },
+    {
+      "crew_id": "A",
+      "date": "2018-06-06",
+      "cluster_id": "N",
+      "onsite_min": 210,
+      "travel_min": 60,
+      "available_min": 480
+    },
+    {
+      "crew_id": "A",
+      "date": "2018-06-07",
+      "cluster_id": "N",
+      "onsite_min": 240,
+      "travel_min": 60,
+      "available_min": 480
+    },
+    {
+      "crew_id": "A",
+      "date": "2018-06-08",
+      "cluster_id": "N",
+      "onsite_min": 420,
+      "travel_min": 60,
+      "available_min": 480
+    },
+    {
+      "crew_id": "A",
+      "date": "2018-06-11",
+      "cluster_id": null,
+      "onsite_min": 0,
+      "travel_min": 0,
+      "available_min": 480
+    },
+    {
+      "crew_id": "A",
+      "date": "2018-06-12",
+      "cluster_id": "N",
+      "onsite_min": 240,
+      "travel_min": 60,
+      "available_min": 480
+    },
+    {
+      "crew_id": "A",
+      "date": "2018-06-13",
+      "cluster_id": "N",
+      "onsite_min": 420,
+      "travel_min": 60,
+      "available_min": 480
+    },
+    {
+      "crew_id": "A",
+      "date": "2018-06-14",
+      "cluster_id": "S",
+      "onsite_min": 240,
+      "travel_min": 45,
+      "available_min": 480
+    },
+    {
+      "crew_id": "A",
+      "date": "2018-06-15",
+      "cluster_id": null,
+      "onsite_min": 0,
+      "travel_min": 0,
+      "available_min": 480
+    },
+    {
+      "crew_id": "B",
+      "date": "2018-06-04",
+      "cluster_id": "S",
+      "onsite_min": 420,
+      "travel_min": 45,
+      "available_min": 480
+    },
+    {
+      "crew_id": "B",
+      "date": "2018-06-05",
+      "cluster_id": "S",
+      "onsite_min": 240,
+      "travel_min": 45,
+      "available_min": 480
+    },
+    {
+      "crew_id": "B",
+      "date": "2018-06-06",
+      "cluster_id": null,
+      "onsite_min": 0,
+      "travel_min": 0,
+      "available_min": 480
+    },
+    {
+      "crew_id": "B",
+      "date": "2018-06-07",
+      "cluster_id": "S",
+      "onsite_min": 240,
+      "travel_min": 45,
+      "available_min": 480
+    },
+    {
+      "crew_id": "B",
+      "date": "2018-06-08",
+      "cluster_id": "S",
+      "onsite_min": 240,
+      "travel_min": 45,
+      "available_min": 480
+    },
+    {
+      "crew_id": "B",
+      "date": "2018-06-11",
+      "cluster_id": null,
+      "onsite_min": 0,
+      "travel_min": 0,
+      "available_min": 480
+    },
+    {
+      "crew_id": "B",
+      "date": "2018-06-12",
+      "cluster_id": "S",
+      "onsite_min": 390,
+      "travel_min": 45,
+      "available_min": 480
+    },
+    {
+      "crew_id": "B",
+      "date": "2018-06-13",
+      "cluster_id": "S",
+      "onsite_min": 210,
+      "travel_min": 45,
+      "available_min": 480
+    },
+    {
+      "crew_id": "B",
+      "date": "2018-06-14",
+      "cluster_id": "N",
+      "onsite_min": 210,
+      "travel_min": 60,
+      "available_min": 480
+    },
+    {
+      "crew_id": "B",
+      "date": "2018-06-15",
+      "cluster_id": null,
+      "onsite_min": 0,
+      "travel_min": 0,
+      "available_min": 480
+    },
+    {
+      "crew_id": "C",
+      "date": "2018-06-04",
+      "cluster_id": "W",
+      "onsite_min": 390,
+      "travel_min": 50,
+      "available_min": 480
+    },
+    {
+      "crew_id": "C",
+      "date": "2018-06-05",
+      "cluster_id": "S",
+      "onsite_min": 240,
+      "travel_min": 45,
+      "available_min": 480
+    },
+    {
+      "crew_id": "C",
+      "date": "2018-06-06",
+      "cluster_id": null,
+      "onsite_min": 0,
+      "travel_min": 0,
+      "available_min": 480
+    },
+    {
+      "crew_id": "C",
+      "date": "2018-06-07",
+      "cluster_id": "W",
+      "onsite_min": 360,
+      "travel_min": 50,
+      "available_min": 480
+    },
+    {
+      "crew_id": "C",
+      "date": "2018-06-08",
+      "cluster_id": "W",
+      "onsite_min": 180,
+      "travel_min": 50,
+      "available_min": 480
+    },
+    {
+      "crew_id": "C",
+      "date": "2018-06-11",
+      "cluster_id": "W",
+      "onsite_min": 180,
+      "travel_min": 50,
+      "available_min": 480
+    },
+    {
+      "crew_id": "C",
+      "date": "2018-06-12",
+      "cluster_id": "W",
+      "onsite_min": 180,
+      "travel_min": 50,
+      "available_min": 480
+    },
+    {
+      "crew_id": "C",
+      "date": "2018-06-13",
+      "cluster_id": "W",
+      "onsite_min": 420,
+      "travel_min": 50,
+      "available_min": 480
+    },
+    {
+      "crew_id": "C",
+      "date": "2018-06-14",
+      "cluster_id": "W",
+      "onsite_min": 240,
+      "travel_min": 50,
+      "available_min": 480
+    },
+    {
+      "crew_id": "C",
+      "date": "2018-06-15",
+      "cluster_id": null,
+      "onsite_min": 0,
+      "travel_min": 0,
+      "available_min": 480
+    }
+  ],
+  "objective": {
+    "jobs_on_time": 30,
+    "jobs_late": 0,
+    "jobs_unscheduled": 0,
+    "jobs_blocked": 0,
+    "total_delay_days": 0,
+    "operating_value_usd": 1998.3905024270603,
+    "changed_installs": 13,
+    "travel_allowance_min": 1190,
+    "crew_utilization": 0.5222,
+    "value_distinguishes_choices": true
+  },
+  "validation": {
+    "checked": true,
+    "valid": true,
+    "issues": [],
+    "validator": "independent-v1"
+  },
+  "input_issues": [],
+  "assumptions": [
+    {
+      "key": "synthetic_inputs",
+      "text": "All inputs in this scenario are synthetic.",
+      "kind": "synthetic"
+    },
+    {
+      "key": "travel_allowance",
+      "text": "Travel is a fixed allowance per active crew-day and cluster, not a routed drive time.",
+      "kind": "assumed"
+    }
+  ],
+  "solve_ms": 405
+}

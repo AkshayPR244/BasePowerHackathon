@@ -89,10 +89,10 @@
     "crew_days": [],
     "objective": null,
     "validation": {
-      "checked": false,
-      "valid": false,
+      "checked": true,
+      "valid": true,
       "issues": [],
-      "validator": "stub"
+      "validator": "independent-v1:no-incumbent-shape"
     },
     "input_issues": [],
     "assumptions": [

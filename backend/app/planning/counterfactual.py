@@ -61,8 +61,16 @@ def _summary(req: CounterfactualRequest, result: PlanResult, diff: PlanDiff, fea
     ]
     o = result.objective
     parts = [f"{lead} is feasible."]
+    displaced = [
+        c.site_id
+        for c in diff.changes
+        if c.after_state == JobState.late and c.before_state != JobState.late
+    ]
     if back:
         parts.append(f"{', '.join(back)} {'is' if len(back) == 1 else 'are'} back on time.")
+    if displaced:
+        verb = "becomes" if len(displaced) == 1 else "become"
+        parts.append(f"{', '.join(displaced)} {verb} late instead.")
     if o and o.jobs_late == 0 and o.jobs_unscheduled == o.jobs_blocked:
         parts.append("No job is late.")
     elif o:

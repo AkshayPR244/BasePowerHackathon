@@ -24,6 +24,18 @@ ADD_C_MON = {
     "skills": ["install"],
     "allowed_clusters": ["N"],
 }
+LATE_SHIPMENT = {
+    "kind": "delay_inventory",
+    "configuration_id": "B13",
+    "from_date": "2018-06-07",
+    "to_date": "2018-06-11",
+}
+STANDARD_RECOVERY = {
+    "scenario_id": "standard",
+    "revision": 1,
+    "mode": "recovery",
+    "edits": [LATE_SHIPMENT],
+}
 PLANS = {
     "plan_tiny_strict": {"scenario_id": "tiny", "revision": 0, "mode": "strict", "edits": []},
     "plan_tiny_strict_remove_a_mon": {
@@ -38,6 +50,9 @@ PLANS = {
         "mode": "recovery",
         "edits": [REMOVE_A_MON],
     },
+    "plan_standard_strict": {"scenario_id": "standard", "revision": 0, "mode": "strict"},
+    "plan_standard_edf": {"scenario_id": "standard", "revision": 0, "algorithm": "baseline_edf"},
+    "plan_standard_recovery_late_shipment": STANDARD_RECOVERY,
 }
 
 
@@ -80,6 +95,24 @@ def main():
                 "intervention": edit,
             }
             record(index, name, "POST", "/api/plans/counterfactual", body)
+
+    base, rec = plans["plan_standard_strict"], plans["plan_standard_recovery_late_shipment"]
+    if base and rec:
+        record(
+            index,
+            "compare_standard_strict_vs_late_shipment",
+            "POST",
+            "/api/plans/compare",
+            {"before": base, "after": rec},
+        )
+        late = [a["site_id"] for a in rec["assignments"] if a["state"] == "late"]
+        if late:
+            body = {
+                "request": STANDARD_RECOVERY,
+                "base": rec,
+                "intervention": {"kind": "force_include", "site_id": late[0]},
+            }
+            record(index, "cf_standard_force_first_late", "POST", "/api/plans/counterfactual", body)
 
     (OUT / "index.json").write_text(json.dumps(index, indent=2) + "\n", encoding="utf-8")
 

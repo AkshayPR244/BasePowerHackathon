@@ -1,5 +1,16 @@
 [
   {
+    "scenario_id": "standard",
+    "name": "Standard synthetic recovery benchmark",
+    "scenario_hash": "e4afa3aec2d8b2c4788490dec5648708045ebb7532bb1a6bc51de3cfd8b045d5",
+    "planning_start": "2018-06-04",
+    "planning_end": "2018-06-15",
+    "n_sites": 30,
+    "n_crews": 3,
+    "n_crew_days": 30,
+    "synthetic": true
+  },
+  {
     "scenario_id": "tiny",
     "name": "Tiny hand-built check",
     "scenario_hash": "34fef406b07ac6d7e2cb486e804f01766bf33b1221e00eabd13b4ced8a516281",

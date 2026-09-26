@@ -49,6 +49,6 @@ def run_baseline(scenario: Scenario, req: PlanRequest, forced, values, policy) -
         else f"{late} late, {uns} not scheduled."
     )
     msg = f"{_LABEL[req.algorithm]}. {outcome} A greedy rule, not an optimum."
-    if req.mode == Mode.strict:
+    if req.mode == Mode.strict and (late or uns):
         msg += " Baselines may miss deadlines, so they report in recovery terms."
     return result.model_copy(update={"message": msg})

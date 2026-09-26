@@ -46,7 +46,7 @@
       "value": 0.0,
       "bound": 0.0,
       "gap": 0.0,
-      "elapsed_ms": 0
+      "elapsed_ms": 16
     },
     {
       "name": "travel",
@@ -164,10 +164,10 @@
     "value_distinguishes_choices": false
   },
   "validation": {
-    "checked": false,
-    "valid": false,
+    "checked": true,
+    "valid": true,
     "issues": [],
-    "validator": "stub"
+    "validator": "independent-v1"
   },
   "input_issues": [],
   "assumptions": [
@@ -187,5 +187,5 @@
       "kind": "assumed"
     }
   ],
-  "solve_ms": 0
+  "solve_ms": 16
 }

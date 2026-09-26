@@ -1,7 +1,7 @@
-import pytest
 from fastapi.testclient import TestClient
 
 from app.api.main import app
+from app.contracts.enums import JobState, PlanStatus
 from app.contracts.models import PlanResult
 from tests.lane_b.conftest import REMOVE_A_MON, deferred, expected, slots
 
@@ -53,6 +53,48 @@ def test_unknown_scenario_is_404():
     assert r.json()["code"] == "unknown_scenario"
 
 
-@pytest.mark.skip(reason="The standard fixture comes from Lane A. See lanes/A-data/NEEDS.md.")
-def test_standard():
-    pass
+LATE_SHIPMENT = {
+    "kind": "delay_inventory",
+    "configuration_id": "B13",
+    "from_date": "2018-06-07",
+    "to_date": "2018-06-11",
+}
+STANDARD_RECOVERY = {
+    "scenario_id": "standard",
+    "revision": 1,
+    "mode": "recovery",
+    "edits": [LATE_SHIPMENT],
+}
+
+
+def test_standard_every_endpoint():
+    assert client.get("/api/scenarios/standard").status_code == 200
+    base = _post({"scenario_id": "standard", "revision": 0})
+    assert base.status == PlanStatus.optimal
+    assert base.validation.checked and base.validation.valid
+    assert base.objective.value_distinguishes_choices
+
+    rec = _post(STANDARD_RECOVERY)
+    assert rec.status in (PlanStatus.optimal, PlanStatus.feasible)
+    assert rec.validation.checked and rec.validation.valid
+    assert rec.objective.jobs_late > 0  # the late shipment breaks commitments
+
+    edf = _post({"scenario_id": "standard", "revision": 0, "algorithm": "baseline_edf"})
+    assert edf.validation.valid
+
+    diff = client.post(
+        "/api/plans/compare",
+        json={"before": base.model_dump(mode="json"), "after": rec.model_dump(mode="json")},
+    )
+    assert diff.status_code == 200
+    assert diff.json()["summary"]["newly_late"] == rec.objective.jobs_late
+
+    late = next(a.site_id for a in rec.assignments if a.state == JobState.late)
+    body = {
+        "request": STANDARD_RECOVERY,
+        "base": rec.model_dump(mode="json"),
+        "intervention": {"kind": "force_include", "site_id": late},
+    }
+    cf = client.post("/api/plans/counterfactual", json=body)
+    assert cf.status_code == 200
+    assert cf.json()["result"]["validation"]["valid"] is True

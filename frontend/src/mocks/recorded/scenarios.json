@@ -1,0 +1,13 @@
+[
+  {
+    "scenario_id": "tiny",
+    "name": "Tiny hand-built check",
+    "scenario_hash": "34fef406b07ac6d7e2cb486e804f01766bf33b1221e00eabd13b4ced8a516281",
+    "planning_start": "2018-06-04",
+    "planning_end": "2018-06-06",
+    "n_sites": 6,
+    "n_crews": 2,
+    "n_crew_days": 6,
+    "synthetic": true
+  }
+]

@@ -1,0 +1,2121 @@
+{
+  "components": {
+    "schemas": {
+      "AddCrewDay": {
+        "additionalProperties": false,
+        "properties": {
+          "allowed_clusters": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Allowed Clusters",
+            "type": "array"
+          },
+          "available_min": {
+            "description": "Integer minutes",
+            "minimum": 0.0,
+            "title": "Available Min",
+            "type": "integer"
+          },
+          "crew_id": {
+            "minLength": 1,
+            "title": "Crew Id",
+            "type": "string"
+          },
+          "date": {
+            "format": "date",
+            "title": "Date",
+            "type": "string"
+          },
+          "kind": {
+            "const": "add_crew_day",
+            "default": "add_crew_day",
+            "title": "Kind",
+            "type": "string"
+          },
+          "skills": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Skills",
+            "type": "array"
+          }
+        },
+        "required": [
+          "crew_id",
+          "date",
+          "available_min",
+          "skills",
+          "allowed_clusters"
+        ],
+        "title": "AddCrewDay",
+        "type": "object"
+      },
+      "Algorithm": {
+        "enum": [
+          "cpsat",
+          "baseline_edf",
+          "baseline_nearest_cluster"
+        ],
+        "title": "Algorithm",
+        "type": "string"
+      },
+      "ApiError": {
+        "additionalProperties": false,
+        "properties": {
+          "code": {
+            "title": "Code",
+            "type": "string"
+          },
+          "input_issues": {
+            "default": [],
+            "items": {
+              "$ref": "#/components/schemas/InputIssue"
+            },
+            "title": "Input Issues",
+            "type": "array"
+          },
+          "message": {
+            "title": "Message",
+            "type": "string"
+          }
+        },
+        "required": [
+          "code",
+          "message"
+        ],
+        "title": "ApiError",
+        "type": "object"
+      },
+      "Assignment": {
+        "additionalProperties": false,
+        "properties": {
+          "crew_id": {
+            "minLength": 1,
+            "title": "Crew Id",
+            "type": "string"
+          },
+          "date": {
+            "format": "date",
+            "title": "Date",
+            "type": "string"
+          },
+          "days_late": {
+            "default": 0,
+            "description": "Whole days",
+            "minimum": 0.0,
+            "title": "Days Late",
+            "type": "integer"
+          },
+          "site_id": {
+            "minLength": 1,
+            "title": "Site Id",
+            "type": "string"
+          },
+          "state": {
+            "$ref": "#/components/schemas/JobState"
+          },
+          "value_usd": {
+            "default": 0.0,
+            "description": "Value, USD",
+            "title": "Value Usd",
+            "type": "number"
+          }
+        },
+        "required": [
+          "site_id",
+          "crew_id",
+          "date",
+          "state"
+        ],
+        "title": "Assignment",
+        "type": "object"
+      },
+      "Assumption": {
+        "additionalProperties": false,
+        "properties": {
+          "key": {
+            "title": "Key",
+            "type": "string"
+          },
+          "kind": {
+            "$ref": "#/components/schemas/DataKind"
+          },
+          "text": {
+            "title": "Text",
+            "type": "string"
+          }
+        },
+        "required": [
+          "key",
+          "text",
+          "kind"
+        ],
+        "title": "Assumption",
+        "type": "object"
+      },
+      "BatteryConfig": {
+        "additionalProperties": false,
+        "properties": {
+          "capacity_kwh": {
+            "description": "Energy, kWh",
+            "title": "Capacity Kwh",
+            "type": "number"
+          },
+          "charge_limit_kw": {
+            "description": "Power, kW",
+            "minimum": 0.0,
+            "title": "Charge Limit Kw",
+            "type": "number"
+          },
+          "configuration_id": {
+            "minLength": 1,
+            "title": "Configuration Id",
+            "type": "string"
+          },
+          "discharge_limit_kw": {
+            "description": "Power, kW",
+            "minimum": 0.0,
+            "title": "Discharge Limit Kw",
+            "type": "number"
+          },
+          "eta_charge": {
+            "maximum": 1.0,
+            "minimum": 0.0,
+            "title": "Eta Charge",
+            "type": "number"
+          },
+          "eta_discharge": {
+            "maximum": 1.0,
+            "minimum": 0.0,
+            "title": "Eta Discharge",
+            "type": "number"
+          },
+          "reserve_kwh": {
+            "description": "Energy, kWh",
+            "title": "Reserve Kwh",
+            "type": "number"
+          }
+        },
+        "required": [
+          "configuration_id",
+          "capacity_kwh",
+          "reserve_kwh",
+          "charge_limit_kw",
+          "discharge_limit_kw",
+          "eta_charge",
+          "eta_discharge"
+        ],
+        "title": "BatteryConfig",
+        "type": "object"
+      },
+      "ChangeKind": {
+        "enum": [
+          "added",
+          "removed",
+          "moved",
+          "state_changed"
+        ],
+        "title": "ChangeKind",
+        "type": "string"
+      },
+      "ChangeReadyDate": {
+        "additionalProperties": false,
+        "properties": {
+          "kind": {
+            "const": "change_ready_date",
+            "default": "change_ready_date",
+            "title": "Kind",
+            "type": "string"
+          },
+          "ready_date": {
+            "format": "date",
+            "title": "Ready Date",
+            "type": "string"
+          },
+          "site_id": {
+            "minLength": 1,
+            "title": "Site Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "site_id",
+          "ready_date"
+        ],
+        "title": "ChangeReadyDate",
+        "type": "object"
+      },
+      "Cluster": {
+        "additionalProperties": false,
+        "properties": {
+          "cluster_id": {
+            "minLength": 1,
+            "title": "Cluster Id",
+            "type": "string"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "outline": {
+            "description": "Closed ring of (lon, lat)",
+            "items": {
+              "maxItems": 2,
+              "minItems": 2,
+              "prefixItems": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "number"
+                }
+              ],
+              "type": "array"
+            },
+            "title": "Outline",
+            "type": "array"
+          },
+          "travel_allowance_min": {
+            "description": "Integer minutes",
+            "minimum": 0.0,
+            "title": "Travel Allowance Min",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "cluster_id",
+          "name",
+          "travel_allowance_min",
+          "outline"
+        ],
+        "title": "Cluster",
+        "type": "object"
+      },
+      "CompareRequest": {
+        "additionalProperties": false,
+        "properties": {
+          "after": {
+            "$ref": "#/components/schemas/PlanResult"
+          },
+          "before": {
+            "$ref": "#/components/schemas/PlanResult"
+          }
+        },
+        "required": [
+          "before",
+          "after"
+        ],
+        "title": "CompareRequest",
+        "type": "object"
+      },
+      "CounterfactualRequest": {
+        "additionalProperties": false,
+        "properties": {
+          "base": {
+            "$ref": "#/components/schemas/PlanResult"
+          },
+          "intervention": {
+            "discriminator": {
+              "mapping": {
+                "add_crew_day": "#/components/schemas/AddCrewDay",
+                "change_ready_date": "#/components/schemas/ChangeReadyDate",
+                "delay_inventory": "#/components/schemas/DelayInventory",
+                "force_include": "#/components/schemas/ForceInclude",
+                "remove_crew_day": "#/components/schemas/RemoveCrewDay"
+              },
+              "propertyName": "kind"
+            },
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/RemoveCrewDay"
+              },
+              {
+                "$ref": "#/components/schemas/AddCrewDay"
+              },
+              {
+                "$ref": "#/components/schemas/DelayInventory"
+              },
+              {
+                "$ref": "#/components/schemas/ChangeReadyDate"
+              },
+              {
+                "$ref": "#/components/schemas/ForceInclude"
+              }
+            ],
+            "title": "Intervention"
+          },
+          "request": {
+            "$ref": "#/components/schemas/PlanRequest",
+            "description": "The request that produced base"
+          }
+        },
+        "required": [
+          "request",
+          "base",
+          "intervention"
+        ],
+        "title": "CounterfactualRequest",
+        "type": "object"
+      },
+      "CounterfactualResult": {
+        "additionalProperties": false,
+        "properties": {
+          "diff": {
+            "$ref": "#/components/schemas/PlanDiff"
+          },
+          "feasible": {
+            "title": "Feasible",
+            "type": "boolean"
+          },
+          "intervention": {
+            "discriminator": {
+              "mapping": {
+                "add_crew_day": "#/components/schemas/AddCrewDay",
+                "change_ready_date": "#/components/schemas/ChangeReadyDate",
+                "delay_inventory": "#/components/schemas/DelayInventory",
+                "force_include": "#/components/schemas/ForceInclude",
+                "remove_crew_day": "#/components/schemas/RemoveCrewDay"
+              },
+              "propertyName": "kind"
+            },
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/RemoveCrewDay"
+              },
+              {
+                "$ref": "#/components/schemas/AddCrewDay"
+              },
+              {
+                "$ref": "#/components/schemas/DelayInventory"
+              },
+              {
+                "$ref": "#/components/schemas/ChangeReadyDate"
+              },
+              {
+                "$ref": "#/components/schemas/ForceInclude"
+              }
+            ],
+            "title": "Intervention"
+          },
+          "result": {
+            "$ref": "#/components/schemas/PlanResult"
+          },
+          "summary": {
+            "title": "Summary",
+            "type": "string"
+          }
+        },
+        "required": [
+          "intervention",
+          "feasible",
+          "result",
+          "diff",
+          "summary"
+        ],
+        "title": "CounterfactualResult",
+        "type": "object"
+      },
+      "CrewDay": {
+        "additionalProperties": false,
+        "properties": {
+          "allowed_clusters": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Allowed Clusters",
+            "type": "array"
+          },
+          "available_min": {
+            "description": "Integer minutes",
+            "minimum": 0.0,
+            "title": "Available Min",
+            "type": "integer"
+          },
+          "crew_id": {
+            "minLength": 1,
+            "title": "Crew Id",
+            "type": "string"
+          },
+          "date": {
+            "format": "date",
+            "title": "Date",
+            "type": "string"
+          },
+          "skills": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Skills",
+            "type": "array"
+          }
+        },
+        "required": [
+          "crew_id",
+          "date",
+          "available_min",
+          "skills",
+          "allowed_clusters"
+        ],
+        "title": "CrewDay",
+        "type": "object"
+      },
+      "CrewDayUsage": {
+        "additionalProperties": false,
+        "properties": {
+          "available_min": {
+            "description": "Integer minutes",
+            "minimum": 0.0,
+            "title": "Available Min",
+            "type": "integer"
+          },
+          "cluster_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Cluster Id"
+          },
+          "crew_id": {
+            "minLength": 1,
+            "title": "Crew Id",
+            "type": "string"
+          },
+          "date": {
+            "format": "date",
+            "title": "Date",
+            "type": "string"
+          },
+          "onsite_min": {
+            "description": "Integer minutes",
+            "minimum": 0.0,
+            "title": "Onsite Min",
+            "type": "integer"
+          },
+          "travel_min": {
+            "description": "Integer minutes",
+            "minimum": 0.0,
+            "title": "Travel Min",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "crew_id",
+          "date",
+          "cluster_id",
+          "onsite_min",
+          "travel_min",
+          "available_min"
+        ],
+        "title": "CrewDayUsage",
+        "type": "object"
+      },
+      "DataKind": {
+        "enum": [
+          "observed",
+          "modeled",
+          "derived",
+          "assumed",
+          "synthetic"
+        ],
+        "title": "DataKind",
+        "type": "string"
+      },
+      "DelayInventory": {
+        "additionalProperties": false,
+        "properties": {
+          "configuration_id": {
+            "minLength": 1,
+            "title": "Configuration Id",
+            "type": "string"
+          },
+          "from_date": {
+            "format": "date",
+            "title": "From Date",
+            "type": "string"
+          },
+          "kind": {
+            "const": "delay_inventory",
+            "default": "delay_inventory",
+            "title": "Kind",
+            "type": "string"
+          },
+          "quantity": {
+            "anyOf": [
+              {
+                "minimum": 0.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "None moves the whole receipt",
+            "title": "Quantity"
+          },
+          "to_date": {
+            "format": "date",
+            "title": "To Date",
+            "type": "string"
+          }
+        },
+        "required": [
+          "configuration_id",
+          "from_date",
+          "to_date"
+        ],
+        "title": "DelayInventory",
+        "type": "object"
+      },
+      "DiffSummary": {
+        "additionalProperties": false,
+        "properties": {
+          "added": {
+            "title": "Added",
+            "type": "integer"
+          },
+          "moved": {
+            "title": "Moved",
+            "type": "integer"
+          },
+          "newly_late": {
+            "title": "Newly Late",
+            "type": "integer"
+          },
+          "removed": {
+            "title": "Removed",
+            "type": "integer"
+          },
+          "travel_delta_min": {
+            "title": "Travel Delta Min",
+            "type": "integer"
+          },
+          "value_delta_usd": {
+            "description": "Value, USD",
+            "title": "Value Delta Usd",
+            "type": "number"
+          }
+        },
+        "required": [
+          "moved",
+          "added",
+          "removed",
+          "newly_late",
+          "value_delta_usd",
+          "travel_delta_min"
+        ],
+        "title": "DiffSummary",
+        "type": "object"
+      },
+      "ForceInclude": {
+        "additionalProperties": false,
+        "properties": {
+          "kind": {
+            "const": "force_include",
+            "default": "force_include",
+            "title": "Kind",
+            "type": "string"
+          },
+          "site_id": {
+            "minLength": 1,
+            "title": "Site Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "site_id"
+        ],
+        "title": "ForceInclude",
+        "type": "object"
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "title": "Detail",
+            "type": "array"
+          }
+        },
+        "title": "HTTPValidationError",
+        "type": "object"
+      },
+      "InputIssue": {
+        "additionalProperties": false,
+        "properties": {
+          "code": {
+            "$ref": "#/components/schemas/InputIssueCode"
+          },
+          "file": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "File"
+          },
+          "message": {
+            "title": "Message",
+            "type": "string"
+          },
+          "row": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Row"
+          }
+        },
+        "required": [
+          "code",
+          "message"
+        ],
+        "title": "InputIssue",
+        "type": "object"
+      },
+      "InputIssueCode": {
+        "enum": [
+          "DUPLICATE_ID",
+          "UNKNOWN_REFERENCE",
+          "BAD_VALUE",
+          "DATE_ORDER",
+          "DUPLICATE_PLANNED_INSTALL",
+          "CONTRADICTORY_LOCKS",
+          "MISSING_INTERVAL",
+          "MISSING_FILE"
+        ],
+        "title": "InputIssueCode",
+        "type": "string"
+      },
+      "InventoryReceipt": {
+        "additionalProperties": false,
+        "properties": {
+          "available_date": {
+            "format": "date",
+            "title": "Available Date",
+            "type": "string"
+          },
+          "configuration_id": {
+            "minLength": 1,
+            "title": "Configuration Id",
+            "type": "string"
+          },
+          "quantity": {
+            "description": "Incoming units on this date, not a balance",
+            "minimum": 0.0,
+            "title": "Quantity",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "configuration_id",
+          "available_date",
+          "quantity"
+        ],
+        "title": "InventoryReceipt",
+        "type": "object"
+      },
+      "JobState": {
+        "enum": [
+          "scheduled",
+          "locked",
+          "late",
+          "unscheduled",
+          "blocked"
+        ],
+        "title": "JobState",
+        "type": "string"
+      },
+      "Mode": {
+        "enum": [
+          "strict",
+          "recovery"
+        ],
+        "title": "Mode",
+        "type": "string"
+      },
+      "ObjectiveComponents": {
+        "additionalProperties": false,
+        "properties": {
+          "changed_installs": {
+            "title": "Changed Installs",
+            "type": "integer"
+          },
+          "crew_utilization": {
+            "maximum": 1.0,
+            "minimum": 0.0,
+            "title": "Crew Utilization",
+            "type": "number"
+          },
+          "jobs_blocked": {
+            "title": "Jobs Blocked",
+            "type": "integer"
+          },
+          "jobs_late": {
+            "title": "Jobs Late",
+            "type": "integer"
+          },
+          "jobs_on_time": {
+            "title": "Jobs On Time",
+            "type": "integer"
+          },
+          "jobs_unscheduled": {
+            "description": "Includes blocked jobs",
+            "title": "Jobs Unscheduled",
+            "type": "integer"
+          },
+          "operating_value_usd": {
+            "description": "Value, USD",
+            "title": "Operating Value Usd",
+            "type": "number"
+          },
+          "total_delay_days": {
+            "description": "Sum of days late over assigned jobs",
+            "minimum": 0.0,
+            "title": "Total Delay Days",
+            "type": "integer"
+          },
+          "travel_allowance_min": {
+            "description": "Integer minutes",
+            "minimum": 0.0,
+            "title": "Travel Allowance Min",
+            "type": "integer"
+          },
+          "value_distinguishes_choices": {
+            "title": "Value Distinguishes Choices",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "jobs_on_time",
+          "jobs_late",
+          "jobs_unscheduled",
+          "jobs_blocked",
+          "total_delay_days",
+          "operating_value_usd",
+          "changed_installs",
+          "travel_allowance_min",
+          "crew_utilization",
+          "value_distinguishes_choices"
+        ],
+        "title": "ObjectiveComponents",
+        "type": "object"
+      },
+      "ObjectivePolicy": {
+        "enum": [
+          "value_aware",
+          "deadline_travel_only"
+        ],
+        "title": "ObjectivePolicy",
+        "type": "string"
+      },
+      "PlanChange": {
+        "additionalProperties": false,
+        "properties": {
+          "after": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/Slot"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "after_state": {
+            "$ref": "#/components/schemas/JobState"
+          },
+          "before": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/Slot"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "before_state": {
+            "$ref": "#/components/schemas/JobState"
+          },
+          "kind": {
+            "$ref": "#/components/schemas/ChangeKind"
+          },
+          "note": {
+            "title": "Note",
+            "type": "string"
+          },
+          "site_id": {
+            "minLength": 1,
+            "title": "Site Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "site_id",
+          "kind",
+          "before",
+          "after",
+          "before_state",
+          "after_state",
+          "note"
+        ],
+        "title": "PlanChange",
+        "type": "object"
+      },
+      "PlanDiff": {
+        "additionalProperties": false,
+        "properties": {
+          "after_plan_id": {
+            "minLength": 1,
+            "title": "After Plan Id",
+            "type": "string"
+          },
+          "before_plan_id": {
+            "minLength": 1,
+            "title": "Before Plan Id",
+            "type": "string"
+          },
+          "changes": {
+            "items": {
+              "$ref": "#/components/schemas/PlanChange"
+            },
+            "title": "Changes",
+            "type": "array"
+          },
+          "headline": {
+            "title": "Headline",
+            "type": "string"
+          },
+          "summary": {
+            "$ref": "#/components/schemas/DiffSummary"
+          }
+        },
+        "required": [
+          "before_plan_id",
+          "after_plan_id",
+          "changes",
+          "summary",
+          "headline"
+        ],
+        "title": "PlanDiff",
+        "type": "object"
+      },
+      "PlanRequest": {
+        "additionalProperties": false,
+        "properties": {
+          "algorithm": {
+            "$ref": "#/components/schemas/Algorithm",
+            "default": "cpsat"
+          },
+          "edits": {
+            "default": [],
+            "items": {
+              "discriminator": {
+                "mapping": {
+                  "add_crew_day": "#/components/schemas/AddCrewDay",
+                  "change_ready_date": "#/components/schemas/ChangeReadyDate",
+                  "delay_inventory": "#/components/schemas/DelayInventory",
+                  "force_include": "#/components/schemas/ForceInclude",
+                  "remove_crew_day": "#/components/schemas/RemoveCrewDay"
+                },
+                "propertyName": "kind"
+              },
+              "oneOf": [
+                {
+                  "$ref": "#/components/schemas/RemoveCrewDay"
+                },
+                {
+                  "$ref": "#/components/schemas/AddCrewDay"
+                },
+                {
+                  "$ref": "#/components/schemas/DelayInventory"
+                },
+                {
+                  "$ref": "#/components/schemas/ChangeReadyDate"
+                },
+                {
+                  "$ref": "#/components/schemas/ForceInclude"
+                }
+              ]
+            },
+            "title": "Edits",
+            "type": "array"
+          },
+          "mode": {
+            "$ref": "#/components/schemas/Mode",
+            "default": "strict"
+          },
+          "objective_policy": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ObjectivePolicy"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "revision": {
+            "description": "Client edit counter, echoed in the result",
+            "minimum": 0.0,
+            "title": "Revision",
+            "type": "integer"
+          },
+          "scenario_id": {
+            "minLength": 1,
+            "title": "Scenario Id",
+            "type": "string"
+          },
+          "time_limit_s": {
+            "anyOf": [
+              {
+                "exclusiveMinimum": 0.0,
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Time Limit S"
+          }
+        },
+        "required": [
+          "scenario_id",
+          "revision"
+        ],
+        "title": "PlanRequest",
+        "type": "object"
+      },
+      "PlanResult": {
+        "additionalProperties": false,
+        "properties": {
+          "algorithm": {
+            "$ref": "#/components/schemas/Algorithm"
+          },
+          "assignments": {
+            "items": {
+              "$ref": "#/components/schemas/Assignment"
+            },
+            "title": "Assignments",
+            "type": "array"
+          },
+          "assumptions": {
+            "items": {
+              "$ref": "#/components/schemas/Assumption"
+            },
+            "title": "Assumptions",
+            "type": "array"
+          },
+          "crew_days": {
+            "items": {
+              "$ref": "#/components/schemas/CrewDayUsage"
+            },
+            "title": "Crew Days",
+            "type": "array"
+          },
+          "edits": {
+            "items": {
+              "discriminator": {
+                "mapping": {
+                  "add_crew_day": "#/components/schemas/AddCrewDay",
+                  "change_ready_date": "#/components/schemas/ChangeReadyDate",
+                  "delay_inventory": "#/components/schemas/DelayInventory",
+                  "force_include": "#/components/schemas/ForceInclude",
+                  "remove_crew_day": "#/components/schemas/RemoveCrewDay"
+                },
+                "propertyName": "kind"
+              },
+              "oneOf": [
+                {
+                  "$ref": "#/components/schemas/RemoveCrewDay"
+                },
+                {
+                  "$ref": "#/components/schemas/AddCrewDay"
+                },
+                {
+                  "$ref": "#/components/schemas/DelayInventory"
+                },
+                {
+                  "$ref": "#/components/schemas/ChangeReadyDate"
+                },
+                {
+                  "$ref": "#/components/schemas/ForceInclude"
+                }
+              ]
+            },
+            "title": "Edits",
+            "type": "array"
+          },
+          "input_issues": {
+            "default": [],
+            "items": {
+              "$ref": "#/components/schemas/InputIssue"
+            },
+            "title": "Input Issues",
+            "type": "array"
+          },
+          "message": {
+            "description": "One or two plain sentences for the operator",
+            "title": "Message",
+            "type": "string"
+          },
+          "mode": {
+            "$ref": "#/components/schemas/Mode"
+          },
+          "objective": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ObjectiveComponents"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "objective_policy": {
+            "$ref": "#/components/schemas/ObjectivePolicy"
+          },
+          "plan_id": {
+            "minLength": 1,
+            "title": "Plan Id",
+            "type": "string"
+          },
+          "revision": {
+            "title": "Revision",
+            "type": "integer"
+          },
+          "scenario_hash": {
+            "title": "Scenario Hash",
+            "type": "string"
+          },
+          "scenario_id": {
+            "minLength": 1,
+            "title": "Scenario Id",
+            "type": "string"
+          },
+          "solve_ms": {
+            "minimum": 0.0,
+            "title": "Solve Ms",
+            "type": "integer"
+          },
+          "stages": {
+            "items": {
+              "$ref": "#/components/schemas/StageMeta"
+            },
+            "title": "Stages",
+            "type": "array"
+          },
+          "status": {
+            "$ref": "#/components/schemas/PlanStatus"
+          },
+          "unscheduled": {
+            "items": {
+              "$ref": "#/components/schemas/UnscheduledJob"
+            },
+            "title": "Unscheduled",
+            "type": "array"
+          },
+          "validation": {
+            "$ref": "#/components/schemas/ValidationReport"
+          }
+        },
+        "required": [
+          "plan_id",
+          "scenario_id",
+          "scenario_hash",
+          "revision",
+          "mode",
+          "algorithm",
+          "objective_policy",
+          "edits",
+          "status",
+          "message",
+          "stages",
+          "assignments",
+          "unscheduled",
+          "crew_days",
+          "objective",
+          "validation",
+          "assumptions",
+          "solve_ms"
+        ],
+        "title": "PlanResult",
+        "type": "object"
+      },
+      "PlanStatus": {
+        "enum": [
+          "optimal",
+          "feasible",
+          "infeasible",
+          "timeout_no_incumbent",
+          "invalid_input"
+        ],
+        "title": "PlanStatus",
+        "type": "string"
+      },
+      "PlannedInstall": {
+        "additionalProperties": false,
+        "description": "One row of the current installation plan that a disruption may force to change.",
+        "properties": {
+          "crew_id": {
+            "minLength": 1,
+            "title": "Crew Id",
+            "type": "string"
+          },
+          "date": {
+            "format": "date",
+            "title": "Date",
+            "type": "string"
+          },
+          "locked": {
+            "title": "Locked",
+            "type": "boolean"
+          },
+          "site_id": {
+            "minLength": 1,
+            "title": "Site Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "site_id",
+          "crew_id",
+          "date",
+          "locked"
+        ],
+        "title": "PlannedInstall",
+        "type": "object"
+      },
+      "ProvenanceNote": {
+        "additionalProperties": false,
+        "properties": {
+          "input": {
+            "description": "File or field this note covers, e.g. sites.csv:deadline",
+            "title": "Input",
+            "type": "string"
+          },
+          "kind": {
+            "$ref": "#/components/schemas/DataKind"
+          },
+          "manifest_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Manifest Id"
+          },
+          "source": {
+            "title": "Source",
+            "type": "string"
+          }
+        },
+        "required": [
+          "input",
+          "kind",
+          "source"
+        ],
+        "title": "ProvenanceNote",
+        "type": "object"
+      },
+      "ReasonCode": {
+        "enum": [
+          "NOT_READY",
+          "SKILL_MISMATCH",
+          "CLUSTER_NOT_ALLOWED",
+          "NO_LEGAL_DATE",
+          "NO_INVENTORY",
+          "CAPACITY",
+          "LOCK_CONFLICT",
+          "DEADLINE_BEFORE_READY"
+        ],
+        "title": "ReasonCode",
+        "type": "string"
+      },
+      "RemoveCrewDay": {
+        "additionalProperties": false,
+        "properties": {
+          "crew_id": {
+            "minLength": 1,
+            "title": "Crew Id",
+            "type": "string"
+          },
+          "date": {
+            "format": "date",
+            "title": "Date",
+            "type": "string"
+          },
+          "kind": {
+            "const": "remove_crew_day",
+            "default": "remove_crew_day",
+            "title": "Kind",
+            "type": "string"
+          }
+        },
+        "required": [
+          "crew_id",
+          "date"
+        ],
+        "title": "RemoveCrewDay",
+        "type": "object"
+      },
+      "Scenario": {
+        "additionalProperties": false,
+        "properties": {
+          "clusters": {
+            "items": {
+              "$ref": "#/components/schemas/Cluster"
+            },
+            "title": "Clusters",
+            "type": "array"
+          },
+          "config": {
+            "$ref": "#/components/schemas/ScenarioConfig"
+          },
+          "crew_days": {
+            "items": {
+              "$ref": "#/components/schemas/CrewDay"
+            },
+            "title": "Crew Days",
+            "type": "array"
+          },
+          "current_plan": {
+            "items": {
+              "$ref": "#/components/schemas/PlannedInstall"
+            },
+            "title": "Current Plan",
+            "type": "array"
+          },
+          "inventory": {
+            "items": {
+              "$ref": "#/components/schemas/InventoryReceipt"
+            },
+            "title": "Inventory",
+            "type": "array"
+          },
+          "revision": {
+            "default": 0,
+            "minimum": 0.0,
+            "title": "Revision",
+            "type": "integer"
+          },
+          "scenario_hash": {
+            "title": "Scenario Hash",
+            "type": "string"
+          },
+          "scenario_id": {
+            "minLength": 1,
+            "title": "Scenario Id",
+            "type": "string"
+          },
+          "sites": {
+            "items": {
+              "$ref": "#/components/schemas/Site"
+            },
+            "title": "Sites",
+            "type": "array"
+          }
+        },
+        "required": [
+          "scenario_id",
+          "scenario_hash",
+          "config",
+          "clusters",
+          "sites",
+          "crew_days",
+          "inventory",
+          "current_plan"
+        ],
+        "title": "Scenario",
+        "type": "object"
+      },
+      "ScenarioConfig": {
+        "additionalProperties": false,
+        "properties": {
+          "batteries": {
+            "items": {
+              "$ref": "#/components/schemas/BatteryConfig"
+            },
+            "title": "Batteries",
+            "type": "array"
+          },
+          "description": {
+            "title": "Description",
+            "type": "string"
+          },
+          "evaluation_end": {
+            "format": "date",
+            "title": "Evaluation End",
+            "type": "string"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "num_workers": {
+            "default": 8,
+            "minimum": 1.0,
+            "title": "Num Workers",
+            "type": "integer"
+          },
+          "objective_policy": {
+            "$ref": "#/components/schemas/ObjectivePolicy",
+            "default": "value_aware"
+          },
+          "planning_end": {
+            "format": "date",
+            "title": "Planning End",
+            "type": "string"
+          },
+          "planning_start": {
+            "format": "date",
+            "title": "Planning Start",
+            "type": "string"
+          },
+          "provenance": {
+            "items": {
+              "$ref": "#/components/schemas/ProvenanceNote"
+            },
+            "title": "Provenance",
+            "type": "array"
+          },
+          "qualification_lag_days": {
+            "default": 0,
+            "description": "Whole days",
+            "minimum": 0.0,
+            "title": "Qualification Lag Days",
+            "type": "integer"
+          },
+          "random_seed": {
+            "default": 0,
+            "title": "Random Seed",
+            "type": "integer"
+          },
+          "solve_time_limit_s": {
+            "default": 15.0,
+            "exclusiveMinimum": 0.0,
+            "title": "Solve Time Limit S",
+            "type": "number"
+          },
+          "synthetic": {
+            "title": "Synthetic",
+            "type": "boolean"
+          },
+          "timezone": {
+            "default": "America/Chicago",
+            "title": "Timezone",
+            "type": "string"
+          },
+          "unscheduled_penalty_days": {
+            "description": "Whole days",
+            "minimum": 0.0,
+            "title": "Unscheduled Penalty Days",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "name",
+          "description",
+          "planning_start",
+          "planning_end",
+          "evaluation_end",
+          "unscheduled_penalty_days",
+          "batteries",
+          "synthetic",
+          "provenance"
+        ],
+        "title": "ScenarioConfig",
+        "type": "object"
+      },
+      "ScenarioSummary": {
+        "additionalProperties": false,
+        "properties": {
+          "n_crew_days": {
+            "title": "N Crew Days",
+            "type": "integer"
+          },
+          "n_crews": {
+            "title": "N Crews",
+            "type": "integer"
+          },
+          "n_sites": {
+            "title": "N Sites",
+            "type": "integer"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "planning_end": {
+            "format": "date",
+            "title": "Planning End",
+            "type": "string"
+          },
+          "planning_start": {
+            "format": "date",
+            "title": "Planning Start",
+            "type": "string"
+          },
+          "scenario_hash": {
+            "title": "Scenario Hash",
+            "type": "string"
+          },
+          "scenario_id": {
+            "minLength": 1,
+            "title": "Scenario Id",
+            "type": "string"
+          },
+          "synthetic": {
+            "title": "Synthetic",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "scenario_id",
+          "name",
+          "scenario_hash",
+          "planning_start",
+          "planning_end",
+          "n_sites",
+          "n_crews",
+          "n_crew_days",
+          "synthetic"
+        ],
+        "title": "ScenarioSummary",
+        "type": "object"
+      },
+      "Site": {
+        "additionalProperties": false,
+        "properties": {
+          "cluster_id": {
+            "minLength": 1,
+            "title": "Cluster Id",
+            "type": "string"
+          },
+          "configuration_id": {
+            "minLength": 1,
+            "title": "Configuration Id",
+            "type": "string"
+          },
+          "deadline": {
+            "format": "date",
+            "title": "Deadline",
+            "type": "string"
+          },
+          "duration_min": {
+            "description": "Integer minutes",
+            "minimum": 0.0,
+            "title": "Duration Min",
+            "type": "integer"
+          },
+          "lat": {
+            "title": "Lat",
+            "type": "number"
+          },
+          "load_zone": {
+            "minLength": 1,
+            "title": "Load Zone",
+            "type": "string"
+          },
+          "lon": {
+            "title": "Lon",
+            "type": "number"
+          },
+          "profile_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Profile Id"
+          },
+          "program_id": {
+            "minLength": 1,
+            "title": "Program Id",
+            "type": "string"
+          },
+          "ready_date": {
+            "format": "date",
+            "title": "Ready Date",
+            "type": "string"
+          },
+          "required_skill": {
+            "minLength": 1,
+            "title": "Required Skill",
+            "type": "string"
+          },
+          "site_id": {
+            "minLength": 1,
+            "title": "Site Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "site_id",
+          "cluster_id",
+          "program_id",
+          "ready_date",
+          "deadline",
+          "duration_min",
+          "required_skill",
+          "configuration_id",
+          "load_zone",
+          "lon",
+          "lat"
+        ],
+        "title": "Site",
+        "type": "object"
+      },
+      "Slot": {
+        "additionalProperties": false,
+        "properties": {
+          "crew_id": {
+            "minLength": 1,
+            "title": "Crew Id",
+            "type": "string"
+          },
+          "date": {
+            "format": "date",
+            "title": "Date",
+            "type": "string"
+          }
+        },
+        "required": [
+          "crew_id",
+          "date"
+        ],
+        "title": "Slot",
+        "type": "object"
+      },
+      "StageMeta": {
+        "additionalProperties": false,
+        "properties": {
+          "bound": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Bound"
+          },
+          "elapsed_ms": {
+            "minimum": 0.0,
+            "title": "Elapsed Ms",
+            "type": "integer"
+          },
+          "gap": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Gap"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "status": {
+            "$ref": "#/components/schemas/StageStatus"
+          },
+          "value": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Value"
+          }
+        },
+        "required": [
+          "name",
+          "status",
+          "elapsed_ms"
+        ],
+        "title": "StageMeta",
+        "type": "object"
+      },
+      "StageStatus": {
+        "enum": [
+          "optimal",
+          "feasible",
+          "infeasible",
+          "timeout_no_incumbent",
+          "skipped"
+        ],
+        "title": "StageStatus",
+        "type": "string"
+      },
+      "UnscheduledJob": {
+        "additionalProperties": false,
+        "properties": {
+          "detail": {
+            "title": "Detail",
+            "type": "string"
+          },
+          "reasons": {
+            "items": {
+              "$ref": "#/components/schemas/ReasonCode"
+            },
+            "title": "Reasons",
+            "type": "array"
+          },
+          "site_id": {
+            "minLength": 1,
+            "title": "Site Id",
+            "type": "string"
+          },
+          "state": {
+            "$ref": "#/components/schemas/JobState"
+          }
+        },
+        "required": [
+          "site_id",
+          "state",
+          "reasons",
+          "detail"
+        ],
+        "title": "UnscheduledJob",
+        "type": "object"
+      },
+      "ValidationError": {
+        "properties": {
+          "ctx": {
+            "title": "Context",
+            "type": "object"
+          },
+          "input": {
+            "title": "Input"
+          },
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "title": "Location",
+            "type": "array"
+          },
+          "msg": {
+            "title": "Message",
+            "type": "string"
+          },
+          "type": {
+            "title": "Error Type",
+            "type": "string"
+          }
+        },
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError",
+        "type": "object"
+      },
+      "ValidationIssue": {
+        "additionalProperties": false,
+        "properties": {
+          "code": {
+            "$ref": "#/components/schemas/ViolationCode"
+          },
+          "crew_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Crew Id"
+          },
+          "date": {
+            "anyOf": [
+              {
+                "format": "date",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Date"
+          },
+          "message": {
+            "title": "Message",
+            "type": "string"
+          },
+          "site_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Site Id"
+          }
+        },
+        "required": [
+          "code",
+          "message"
+        ],
+        "title": "ValidationIssue",
+        "type": "object"
+      },
+      "ValidationReport": {
+        "additionalProperties": false,
+        "properties": {
+          "checked": {
+            "description": "False until the independent validator ran",
+            "title": "Checked",
+            "type": "boolean"
+          },
+          "issues": {
+            "default": [],
+            "items": {
+              "$ref": "#/components/schemas/ValidationIssue"
+            },
+            "title": "Issues",
+            "type": "array"
+          },
+          "valid": {
+            "title": "Valid",
+            "type": "boolean"
+          },
+          "validator": {
+            "title": "Validator",
+            "type": "string"
+          }
+        },
+        "required": [
+          "checked",
+          "valid",
+          "validator"
+        ],
+        "title": "ValidationReport",
+        "type": "object"
+      },
+      "ViolationCode": {
+        "enum": [
+          "UNKNOWN_SITE",
+          "DUPLICATE_ASSIGNMENT",
+          "NO_CREW_DAY",
+          "BEFORE_READY",
+          "AFTER_DEADLINE",
+          "MISSING_JOB",
+          "SKILL",
+          "CLUSTER_NOT_ALLOWED",
+          "MULTIPLE_CLUSTERS",
+          "CAPACITY",
+          "INVENTORY",
+          "LOCK_BROKEN",
+          "STATE_MISMATCH",
+          "OBJECTIVE_MISMATCH"
+        ],
+        "title": "ViolationCode",
+        "type": "string"
+      }
+    }
+  },
+  "info": {
+    "description": "Plan and disruption in, best recovery and its impact out.",
+    "title": "Rollout Planner API",
+    "version": "1.0.0"
+  },
+  "openapi": "3.1.0",
+  "paths": {
+    "/api/health": {
+      "get": {
+        "operationId": "health_api_health_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": {
+                    "type": "string"
+                  },
+                  "title": "Response Health Api Health Get",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Health"
+      }
+    },
+    "/api/plans": {
+      "post": {
+        "operationId": "create_plan_api_plans_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PlanRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PlanResult"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            },
+            "description": "Unknown scenario"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            },
+            "description": "Scenario files are invalid"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            },
+            "description": "The planner produced a plan that failed validation"
+          }
+        },
+        "summary": "Create Plan"
+      }
+    },
+    "/api/plans/compare": {
+      "post": {
+        "operationId": "compare_plans_api_plans_compare_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CompareRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PlanDiff"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Compare Plans"
+      }
+    },
+    "/api/plans/counterfactual": {
+      "post": {
+        "operationId": "run_counterfactual_api_plans_counterfactual_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CounterfactualRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CounterfactualResult"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            },
+            "description": "Unknown scenario"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            },
+            "description": "Scenario files are invalid"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            },
+            "description": "The planner produced a plan that failed validation"
+          }
+        },
+        "summary": "Run Counterfactual"
+      }
+    },
+    "/api/scenarios": {
+      "get": {
+        "operationId": "list_scenarios_api_scenarios_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/ScenarioSummary"
+                  },
+                  "title": "Response List Scenarios Api Scenarios Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "List Scenarios"
+      }
+    },
+    "/api/scenarios/{scenario_id}": {
+      "get": {
+        "operationId": "get_scenario_api_scenarios__scenario_id__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "scenario_id",
+            "required": true,
+            "schema": {
+              "title": "Scenario Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Scenario"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            },
+            "description": "Unknown scenario"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            },
+            "description": "Scenario files are invalid"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            },
+            "description": "The planner produced a plan that failed validation"
+          }
+        },
+        "summary": "Get Scenario"
+      }
+    }
+  }
+}

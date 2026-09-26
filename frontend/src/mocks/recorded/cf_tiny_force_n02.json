@@ -1,0 +1,132 @@
+{
+  "intervention": {
+    "kind": "force_include",
+    "site_id": "N-02"
+  },
+  "feasible": false,
+  "result": {
+    "plan_id": "tiny-r1-recovery-46899cfd",
+    "scenario_id": "tiny",
+    "scenario_hash": "46899cfd62e04fab7912e980d932295852fe1a7ce860ebb4bb34b958ae10ec22",
+    "revision": 1,
+    "mode": "recovery",
+    "algorithm": "cpsat",
+    "objective_policy": "value_aware",
+    "edits": [
+      {
+        "kind": "remove_crew_day",
+        "crew_id": "A",
+        "date": "2018-06-04"
+      },
+      {
+        "kind": "force_include",
+        "site_id": "N-02"
+      }
+    ],
+    "status": "infeasible",
+    "message": "N-02 cannot finish by its deadline. N-02 is due Mon 4 Jun. No crew that serves N works on or before that day.",
+    "stages": [
+      {
+        "name": "jobs_late_or_unscheduled",
+        "status": "infeasible",
+        "value": null,
+        "bound": null,
+        "gap": null,
+        "elapsed_ms": 0
+      },
+      {
+        "name": "total_delay",
+        "status": "skipped",
+        "value": null,
+        "bound": null,
+        "gap": null,
+        "elapsed_ms": 0
+      },
+      {
+        "name": "operating_value",
+        "status": "skipped",
+        "value": null,
+        "bound": null,
+        "gap": null,
+        "elapsed_ms": 0
+      },
+      {
+        "name": "changed_installs",
+        "status": "skipped",
+        "value": null,
+        "bound": null,
+        "gap": null,
+        "elapsed_ms": 0
+      },
+      {
+        "name": "travel",
+        "status": "skipped",
+        "value": null,
+        "bound": null,
+        "gap": null,
+        "elapsed_ms": 0
+      }
+    ],
+    "assignments": [],
+    "unscheduled": [
+      {
+        "site_id": "N-02",
+        "state": "unscheduled",
+        "reasons": [
+          "NO_LEGAL_DATE"
+        ],
+        "detail": "N-02 is due Mon 4 Jun. No crew that serves N works on or before that day."
+      },
+      {
+        "site_id": "S-03",
+        "state": "blocked",
+        "reasons": [
+          "SKILL_MISMATCH"
+        ],
+        "detail": "S-03 needs skill panel_upgrade. No crew has it."
+      }
+    ],
+    "crew_days": [],
+    "objective": null,
+    "validation": {
+      "checked": false,
+      "valid": false,
+      "issues": [],
+      "validator": "stub"
+    },
+    "input_issues": [],
+    "assumptions": [
+      {
+        "key": "synthetic_inputs",
+        "text": "All inputs in this scenario are synthetic.",
+        "kind": "synthetic"
+      },
+      {
+        "key": "travel_allowance",
+        "text": "Travel is a fixed allowance per active crew-day and cluster, not a routed drive time.",
+        "kind": "assumed"
+      },
+      {
+        "key": "equal_values",
+        "text": "All site values are equal, so energy value did not change any choice.",
+        "kind": "assumed"
+      }
+    ],
+    "solve_ms": 0
+  },
+  "diff": {
+    "before_plan_id": "tiny-r1-recovery-a27dc71d",
+    "after_plan_id": "tiny-r1-recovery-46899cfd",
+    "changes": [],
+    "summary": {
+      "moved": 0,
+      "added": 0,
+      "removed": 0,
+      "newly_late": 0,
+      "value_delta_usd": 0.0,
+      "travel_delta_min": 0
+    },
+    "headline": "No change. The intervention is infeasible."
+  },
+  "summary": "Including N-02 by its deadline is infeasible. N-02 is due Mon 4 Jun. No crew that serves N works on or before that day."
+}

@@ -1,6 +1,6 @@
 """Record API responses for MSW. Run from backend/ via `make mocks`.
 
-Uses the in-process app, so it records whatever the API serves: fixture responses first, the planner once Lane B lands.
+Uses the in-process app, so it records whatever the planner returns today.
 """
 
 import json

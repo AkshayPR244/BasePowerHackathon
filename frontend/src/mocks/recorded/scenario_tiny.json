@@ -1,0 +1,278 @@
+{
+  "scenario_id": "tiny",
+  "scenario_hash": "34fef406b07ac6d7e2cb486e804f01766bf33b1221e00eabd13b4ced8a516281",
+  "revision": 0,
+  "config": {
+    "name": "Tiny hand-built check",
+    "description": "6 jobs, 2 crews, 3 days, 2 clusters. Hand-built to test the full loop. All inputs are synthetic.",
+    "timezone": "America/Chicago",
+    "planning_start": "2018-06-04",
+    "planning_end": "2018-06-06",
+    "evaluation_end": "2018-07-29",
+    "qualification_lag_days": 0,
+    "unscheduled_penalty_days": 10,
+    "objective_policy": "value_aware",
+    "solve_time_limit_s": 5.0,
+    "random_seed": 0,
+    "num_workers": 1,
+    "batteries": [
+      {
+        "configuration_id": "B13",
+        "capacity_kwh": 13.5,
+        "reserve_kwh": 1.35,
+        "charge_limit_kw": 5.0,
+        "discharge_limit_kw": 5.0,
+        "eta_charge": 0.95,
+        "eta_discharge": 0.95
+      }
+    ],
+    "synthetic": true,
+    "provenance": [
+      {
+        "input": "all files",
+        "kind": "synthetic",
+        "source": "Hand-built for tests. Not real parcels, crews, or inventory.",
+        "manifest_id": null
+      }
+    ]
+  },
+  "clusters": [
+    {
+      "cluster_id": "N",
+      "name": "North",
+      "travel_allowance_min": 60,
+      "outline": [
+        [
+          -95.425,
+          29.79
+        ],
+        [
+          -95.39,
+          29.788
+        ],
+        [
+          -95.385,
+          29.818
+        ],
+        [
+          -95.42,
+          29.822
+        ],
+        [
+          -95.425,
+          29.79
+        ]
+      ]
+    },
+    {
+      "cluster_id": "S",
+      "name": "South",
+      "travel_allowance_min": 45,
+      "outline": [
+        [
+          -95.39,
+          29.668
+        ],
+        [
+          -95.352,
+          29.67
+        ],
+        [
+          -95.35,
+          29.695
+        ],
+        [
+          -95.385,
+          29.699
+        ],
+        [
+          -95.39,
+          29.668
+        ]
+      ]
+    }
+  ],
+  "sites": [
+    {
+      "site_id": "N-01",
+      "cluster_id": "N",
+      "program_id": "P1",
+      "ready_date": "2018-06-04",
+      "deadline": "2018-06-06",
+      "duration_min": 180,
+      "required_skill": "install",
+      "configuration_id": "B13",
+      "load_zone": "LZ_HOUSTON",
+      "profile_id": null,
+      "lon": -95.412,
+      "lat": 29.812
+    },
+    {
+      "site_id": "N-02",
+      "cluster_id": "N",
+      "program_id": "P1",
+      "ready_date": "2018-06-04",
+      "deadline": "2018-06-04",
+      "duration_min": 180,
+      "required_skill": "install",
+      "configuration_id": "B13",
+      "load_zone": "LZ_HOUSTON",
+      "profile_id": null,
+      "lon": -95.398,
+      "lat": 29.806
+    },
+    {
+      "site_id": "N-03",
+      "cluster_id": "N",
+      "program_id": "P1",
+      "ready_date": "2018-06-05",
+      "deadline": "2018-06-06",
+      "duration_min": 240,
+      "required_skill": "install",
+      "configuration_id": "B13",
+      "load_zone": "LZ_HOUSTON",
+      "profile_id": null,
+      "lon": -95.405,
+      "lat": 29.797
+    },
+    {
+      "site_id": "S-01",
+      "cluster_id": "S",
+      "program_id": "P1",
+      "ready_date": "2018-06-04",
+      "deadline": "2018-06-06",
+      "duration_min": 180,
+      "required_skill": "install",
+      "configuration_id": "B13",
+      "load_zone": "LZ_HOUSTON",
+      "profile_id": null,
+      "lon": -95.371,
+      "lat": 29.689
+    },
+    {
+      "site_id": "S-02",
+      "cluster_id": "S",
+      "program_id": "P1",
+      "ready_date": "2018-06-04",
+      "deadline": "2018-06-05",
+      "duration_min": 240,
+      "required_skill": "install",
+      "configuration_id": "B13",
+      "load_zone": "LZ_HOUSTON",
+      "profile_id": null,
+      "lon": -95.36,
+      "lat": 29.681
+    },
+    {
+      "site_id": "S-03",
+      "cluster_id": "S",
+      "program_id": "P1",
+      "ready_date": "2018-06-04",
+      "deadline": "2018-06-06",
+      "duration_min": 180,
+      "required_skill": "panel_upgrade",
+      "configuration_id": "B13",
+      "load_zone": "LZ_HOUSTON",
+      "profile_id": null,
+      "lon": -95.378,
+      "lat": 29.676
+    }
+  ],
+  "crew_days": [
+    {
+      "crew_id": "A",
+      "date": "2018-06-04",
+      "available_min": 480,
+      "skills": [
+        "install"
+      ],
+      "allowed_clusters": [
+        "N",
+        "S"
+      ]
+    },
+    {
+      "crew_id": "A",
+      "date": "2018-06-05",
+      "available_min": 480,
+      "skills": [
+        "install"
+      ],
+      "allowed_clusters": [
+        "N",
+        "S"
+      ]
+    },
+    {
+      "crew_id": "A",
+      "date": "2018-06-06",
+      "available_min": 480,
+      "skills": [
+        "install"
+      ],
+      "allowed_clusters": [
+        "N",
+        "S"
+      ]
+    },
+    {
+      "crew_id": "B",
+      "date": "2018-06-04",
+      "available_min": 480,
+      "skills": [
+        "install"
+      ],
+      "allowed_clusters": [
+        "S"
+      ]
+    },
+    {
+      "crew_id": "B",
+      "date": "2018-06-05",
+      "available_min": 480,
+      "skills": [
+        "install"
+      ],
+      "allowed_clusters": [
+        "S"
+      ]
+    },
+    {
+      "crew_id": "B",
+      "date": "2018-06-06",
+      "available_min": 480,
+      "skills": [
+        "install"
+      ],
+      "allowed_clusters": [
+        "S"
+      ]
+    }
+  ],
+  "inventory": [
+    {
+      "configuration_id": "B13",
+      "available_date": "2018-06-04",
+      "quantity": 3
+    },
+    {
+      "configuration_id": "B13",
+      "available_date": "2018-06-05",
+      "quantity": 2
+    }
+  ],
+  "current_plan": [
+    {
+      "site_id": "N-01",
+      "crew_id": "A",
+      "date": "2018-06-05",
+      "locked": true
+    },
+    {
+      "site_id": "S-01",
+      "crew_id": "B",
+      "date": "2018-06-04",
+      "locked": false
+    }
+  ]
+}

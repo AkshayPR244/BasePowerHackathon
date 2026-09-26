@@ -1,0 +1,45 @@
+{
+  "before_plan_id": "tiny-r0-strict-34fef406",
+  "after_plan_id": "tiny-r1-recovery-a27dc71d",
+  "changes": [
+    {
+      "site_id": "N-02",
+      "kind": "moved",
+      "before": {
+        "crew_id": "A",
+        "date": "2018-06-04"
+      },
+      "after": {
+        "crew_id": "A",
+        "date": "2018-06-05"
+      },
+      "before_state": "scheduled",
+      "after_state": "late",
+      "note": "N-02 moves from Crew A Mon 4 Jun to Crew A Tue 5 Jun. 1 day late."
+    },
+    {
+      "site_id": "N-03",
+      "kind": "moved",
+      "before": {
+        "crew_id": "A",
+        "date": "2018-06-05"
+      },
+      "after": {
+        "crew_id": "A",
+        "date": "2018-06-06"
+      },
+      "before_state": "scheduled",
+      "after_state": "scheduled",
+      "note": "N-03 moves from Crew A Tue 5 Jun to Crew A Wed 6 Jun."
+    }
+  ],
+  "summary": {
+    "moved": 2,
+    "added": 0,
+    "removed": 0,
+    "newly_late": 1,
+    "value_delta_usd": 0.0,
+    "travel_delta_min": 0
+  },
+  "headline": "2 jobs move. 1 misses its deadline by 1 day."
+}

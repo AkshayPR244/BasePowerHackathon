@@ -7,7 +7,7 @@
 - Setup: `cd backend && uv sync`; frontend tools use Node 24 and pnpm 11.25.
 - Read: BRIEF.md, feature_list.json, docs/CONTRACTS.md (Lane R implementation notes), app/recovery/, and evidence.json.
 - Check: `cd backend && uv run ruff check app/recovery app/baselines app/planning tests/lane_r && uv run pytest -q tests/lane_r tests/lane_b tests/contract`.
-- Next: C integrates the live recovery response and H completes frontend hardening; requests are in their NEEDS.md files.
+- Next: integration fixes R-19 to R-24 from the 2026-09-26 integration pass (freeze the past, deadlines_recovered, temporary crew after a storm day, about 2 s interactive, reproducible options, human dates). R-19 first.
 
 ## Completed
 

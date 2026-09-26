@@ -1,6 +1,8 @@
 """FastAPI app. Endpoints: docs/CONTRACTS.md and SPEC section 11."""
 
 import asyncio
+import logging
+import uuid
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI, Request, Response
@@ -81,9 +83,22 @@ async def _api_error(_: Request, exc: ApiException) -> JSONResponse:
     return _json(exc.status, exc.error)
 
 
+log = logging.getLogger("rollout.api")
+
+
+def _server_error(code: str, exc: Exception) -> JSONResponse:
+    """Log the details server-side. The client gets a generic message and a request ID."""
+    request_id = uuid.uuid4().hex[:12]
+    log.error("request %s failed with %s", request_id, code, exc_info=exc)
+    message = f"The server could not complete this request. Request ID: {request_id}."
+    response = _json(500, ApiError(code=code, message=message))
+    response.headers["X-Request-ID"] = request_id
+    return response
+
+
 @app.exception_handler(InvalidPlanError)
 async def _invalid_plan(_: Request, exc: InvalidPlanError) -> JSONResponse:
-    return _json(500, ApiError(code="invalid_plan", message=str(exc)))
+    return _server_error("invalid_plan", exc)
 
 
 @app.exception_handler(RequestValidationError)
@@ -106,7 +121,7 @@ async def _http_error(_: Request, exc: StarletteHTTPException) -> JSONResponse:
 
 @app.exception_handler(Exception)
 async def _unexpected(_: Request, exc: Exception) -> JSONResponse:
-    return _json(500, ApiError(code="internal_error", message=f"{type(exc).__name__}: {exc}"))
+    return _server_error("internal_error", exc)
 
 
 def _scenario(scenario_id: str) -> Scenario:

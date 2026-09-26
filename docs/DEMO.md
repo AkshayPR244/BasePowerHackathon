@@ -1,6 +1,6 @@
 # Demo script (3 minutes)
 
-Rollout Planner is a planning and recovery analysis tool for residential battery installers. It takes an installation plan plus a disruption (crew out, late shipment, slipped approval), finds the best recovery, and explains what is at risk and why.
+Rollout Planner is a planning and recovery analysis tool for residential battery installers. It takes an installation plan plus a disruption (a crew out, reduced capacity, a readiness change, or an appointment change), finds the best recovery, and explains what is at risk and why.
 
 Source: SPEC section 14. Status: planned. Every step depends on lane work. Rehearse on the build you will show and fix this script to match what the app really does.
 

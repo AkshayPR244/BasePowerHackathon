@@ -28,6 +28,7 @@ from app.planning.lexicographic import Stage, solve_stages
 from app.planning.model import Eligibility, build, eligibility
 from app.planning.result import build_result, no_legal_date_jobs
 from app.validate import validate_plan
+from app.valuation import value_table as valuation
 
 STRICT_STAGES = [
     Stage("operating_value", maximize=True),
@@ -47,15 +48,19 @@ class InvalidPlanError(RuntimeError):
     """The validator rejected a plan the planner produced. This is a bug, never a result."""
 
 
-def site_values(scenario: Scenario) -> tuple[dict[tuple[str, dt.date], float], int]:
-    """Values from Lane A's table, and how many rows were unresolved (counted as $0)."""
+def site_values(scenario: Scenario) -> tuple[dict[tuple[str, dt.date], float], str | None]:
+    """Values from Lane A's table, plus a note when the table could not be used."""
     try:
-        from app.valuation.value_table import value_table  # type: ignore[import-not-found]
-    except ImportError:
-        return {}, 0
-    rows = value_table(scenario)
-    ok = {(r.site_id, r.install_date): r.value_usd for r in rows if r.solver_status == "optimal"}
-    return ok, len(rows) - len(ok)
+        rows = valuation.value_table(scenario)
+    except ValueError as e:
+        return {}, f"Energy values are unavailable ({e}). All values count as $0."
+    usable = [r for r in rows if r.solver_status in ("optimal", "assumed_zero")]
+    values = {(r.site_id, r.install_date): r.value_usd for r in usable}
+    missing = len(rows) - len(usable)
+    note = (
+        f"{missing} site-date values had no solved valuation and count as $0." if missing else None
+    )
+    return values, note
 
 
 def plan(base: Scenario, req: PlanRequest) -> PlanResult:
@@ -63,7 +68,7 @@ def plan(base: Scenario, req: PlanRequest) -> PlanResult:
     policy = req.objective_policy or base.config.objective_policy
     edited = apply_edits(base, req.edits)
     scenario = edited.scenario
-    values, unresolved = site_values(base)
+    values, value_note = site_values(base)
     common = dict(
         mode=req.mode,
         algorithm=req.algorithm,
@@ -94,14 +99,8 @@ def plan(base: Scenario, req: PlanRequest) -> PlanResult:
     else:
         result = _solve(scenario, req, edited.forced, values, policy, common)
     notes = list(result.assumptions)
-    if unresolved:
-        notes.append(
-            Assumption(
-                key="unresolved_values",
-                text=f"{unresolved} site-date values had no solved valuation and count as $0.",
-                kind=DataKind.assumed,
-            )
-        )
+    if value_note:
+        notes.append(Assumption(key="unresolved_values", text=value_note, kind=DataKind.assumed))
     if policy == ObjectivePolicy.deadline_travel_only and values:
         notes.append(
             Assumption(
@@ -198,7 +197,7 @@ def _solve(scenario, req, forced, values, policy, common) -> PlanResult:
         seed=scenario.config.random_seed,
         workers=scenario.config.num_workers,
     )
-    metas = _merge_skipped(stages, lex.stages)
+    metas = [_in_usd(m) for m in _merge_skipped(stages, lex.stages)]
 
     if lex.values is None:
         status = (
@@ -269,6 +268,14 @@ def _infeasible_stages(stages: list[Stage]) -> list[StageMeta]:
     return [StageMeta(name=stages[0].name, status=StageStatus.infeasible, elapsed_ms=0)] + [
         StageMeta(name=s.name, status=StageStatus.skipped, elapsed_ms=0) for s in stages[1:]
     ]
+
+
+def _in_usd(m: StageMeta) -> StageMeta:
+    """The model counts value in cents. Report the stage in USD."""
+    if m.name != "operating_value" or m.value is None:
+        return m
+    bound = None if m.bound is None else m.bound / 100
+    return m.model_copy(update={"value": m.value / 100, "bound": bound})
 
 
 def _merge_skipped(stages: list[Stage], metas: list[StageMeta]) -> list[StageMeta]:

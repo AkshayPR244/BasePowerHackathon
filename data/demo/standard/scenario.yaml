@@ -1,0 +1,41 @@
+name: Standard synthetic recovery benchmark
+description: 30 synthetic jobs, 3 clusters, 3 crews and 10 working days.
+timezone: America/Chicago
+planning_start: 2018-06-04
+planning_end: 2018-06-15
+evaluation_end: 2018-07-29
+qualification_lag_days: 0
+unscheduled_penalty_days: 30
+objective_policy: value_aware
+solve_time_limit_s: 15
+random_seed: 42
+num_workers: 1
+synthetic: true
+travel_allowance_min:
+  N: 60
+  S: 45
+  W: 50
+batteries:
+- configuration_id: B13
+  capacity_kwh: 13.5
+  reserve_kwh: 1.35
+  charge_limit_kw: 5.0
+  discharge_limit_kw: 5.0
+  eta_charge: 0.95
+  eta_discharge: 0.95
+provenance:
+- input: all operational and geometry files
+  kind: synthetic
+  source: Seeded benchmark generator v1, seed 42. Not customers.
+- input: prices.parquet
+  kind: observed
+  source: https://www.ercot.com/misdownload/servlets/mirDownload?doclookupId=642564849
+  manifest_id: ercot_np6_785_2018
+- input: loads.parquet
+  kind: modeled
+  source: https://oedi-data-lake.s3.amazonaws.com/nrel-pds-building-stock/end-use-load-profiles-for-us-building-stock/2025/resstock_amy2018_release_1/timeseries_individual_buildings/by_state/upgrade=0/state=TX/100-0.parquet
+  manifest_id: resstock_amy2018_tx_100
+- input: sites.csv:profile_id
+  kind: modeled
+  source: https://oedi-data-lake.s3.amazonaws.com/nrel-pds-building-stock/end-use-load-profiles-for-us-building-stock/2025/resstock_amy2018_release_1/timeseries_individual_buildings/by_state/upgrade=0/state=TX/100-0.parquet
+  manifest_id: resstock_amy2018_tx_100

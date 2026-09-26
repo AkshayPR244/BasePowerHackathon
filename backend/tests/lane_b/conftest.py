@@ -20,10 +20,45 @@ from app.contracts.models import (
     Scenario,
     ScenarioConfig,
     Site,
+    ValueTableRow,
 )
+from app.valuation import value_table as valuation
 
 EXPECTED = Path(__file__).resolve().parents[3] / "data" / "demo" / "tiny" / "expected"
 REMOVE_A_MON = RemoveCrewDay(crew_id="A", date=dt.date(2018, 6, 4))
+
+
+@pytest.fixture(autouse=True)
+def synthetic_values(monkeypatch):
+    """One value table for the planner and the validator on in-memory test scenarios.
+
+    Set synthetic_values[scenario_id] = f(site_id, date) -> USD. The default is $0.
+    """
+    real = valuation.value_table
+    table: dict = {}
+
+    def fake(scenario, **kw):
+        if not scenario.scenario_id.startswith("test-"):
+            return real(scenario, **kw)
+        f = table.get(scenario.scenario_id)
+        start, end = scenario.config.planning_start, scenario.config.planning_end
+        days = [start + dt.timedelta(days=i) for i in range((end - start).days + 1)]
+        return [
+            ValueTableRow(
+                site_id=s.site_id,
+                install_date=d,
+                commissioning_utc=dt.datetime.combine(d, dt.time(), dt.UTC),
+                value_usd=f(s.site_id, d) if f else 0.0,
+                solver_status="optimal" if f else "assumed_zero",
+                kind="synthetic",
+                input_hash="test",
+            )
+            for s in scenario.sites
+            for d in days
+        ]
+
+    monkeypatch.setattr(valuation, "value_table", fake)
+    return table
 
 
 @pytest.fixture(scope="session")

@@ -181,7 +181,7 @@ def build_result(
         jobs_unscheduled=len(unscheduled),
         jobs_blocked=len(elig.blocked),
         total_delay_days=sum(a.days_late for a in assignments),
-        operating_value_usd=round(sum(a.value_usd for a in assignments), 2),
+        operating_value_usd=sum(a.value_usd for a in assignments),
         changed_installs=sum(
             1
             for p in unlocked

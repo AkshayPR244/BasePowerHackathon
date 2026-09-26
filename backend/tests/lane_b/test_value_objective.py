@@ -11,15 +11,9 @@ from app.planning import solve
 from tests.lane_b.conftest import make_scenario
 
 
-def _earlier_is_better(scenario, unresolved=0):
+def _earlier_is_better(scenario):
     start = scenario.config.planning_start
-    days = sorted({c.date for c in scenario.crew_days})
-    values = {
-        (s.site_id, d): round(120.0 - 7.5 * (d - start).days + (hash(s.site_id) % 5), 2)
-        for s in scenario.sites
-        for d in days
-    }
-    return lambda _s: (values, unresolved)
+    return lambda sid, d: round(120.0 - 7.5 * (d - start).days + int(sid[1:]) % 5, 2)
 
 
 @pytest.fixture
@@ -27,8 +21,8 @@ def scenario():
     return make_scenario(n_jobs=24, n_crews=3, n_days=8, seed=21, stock=40)
 
 
-def test_value_aware_beats_deadline_travel_only(monkeypatch, scenario):
-    monkeypatch.setattr(solve, "site_values", _earlier_is_better(scenario))
+def test_value_aware_beats_deadline_travel_only(synthetic_values, scenario):
+    synthetic_values[scenario.scenario_id] = _earlier_is_better(scenario)
     req = PlanRequest(scenario_id=scenario.scenario_id, revision=0, mode=Mode.recovery)
     aware = solve.plan(scenario, req)
     blind = solve.plan(
@@ -43,8 +37,8 @@ def test_value_aware_beats_deadline_travel_only(monkeypatch, scenario):
     assert any(a.key == "revalued" for a in blind.assumptions)
 
 
-def test_values_flow_into_assignments(monkeypatch, scenario):
-    monkeypatch.setattr(solve, "site_values", _earlier_is_better(scenario))
+def test_values_flow_into_assignments(synthetic_values, scenario):
+    synthetic_values[scenario.scenario_id] = _earlier_is_better(scenario)
     r = solve.plan(
         scenario, PlanRequest(scenario_id=scenario.scenario_id, revision=0, mode=Mode.recovery)
     )
@@ -53,7 +47,8 @@ def test_values_flow_into_assignments(monkeypatch, scenario):
 
 
 def test_unresolved_values_are_labeled(monkeypatch, scenario):
-    monkeypatch.setattr(solve, "site_values", _earlier_is_better(scenario, unresolved=3))
+    note = "3 site-date values had no solved valuation and count as $0."
+    monkeypatch.setattr(solve, "site_values", lambda _s: ({}, note))
     r = solve.plan(
         scenario, PlanRequest(scenario_id=scenario.scenario_id, revision=0, mode=Mode.recovery)
     )

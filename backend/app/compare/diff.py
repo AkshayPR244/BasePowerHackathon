@@ -57,9 +57,7 @@ def diff_plans(before: PlanResult, after: PlanResult) -> PlanDiff:
         newly_late=sum(
             1 for c in changes if c.after_state == JobState.late and c.before_state != JobState.late
         ),
-        value_delta_usd=round(oa.operating_value_usd - ob.operating_value_usd, 2)
-        if ob and oa
-        else 0.0,
+        value_delta_usd=oa.operating_value_usd - ob.operating_value_usd if ob and oa else 0.0,
         travel_delta_min=(oa.travel_allowance_min - ob.travel_allowance_min) if ob and oa else 0,
     )
     return PlanDiff(

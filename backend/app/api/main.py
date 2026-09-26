@@ -6,7 +6,7 @@ from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
-from app.api.scenarios import load_scenario, scenario_ids, summarize
+from app.api.scenarios import ScenarioLoadError, load_scenario, scenario_ids, summarize
 from app.compare.diff import diff_plans
 from app.contracts.models import (
     ApiError,
@@ -43,8 +43,9 @@ ERRORS = {
 
 
 class ApiException(Exception):
-    def __init__(self, status: int, code: str, message: str):
-        self.status, self.error = status, ApiError(code=code, message=message)
+    def __init__(self, status: int, code: str, message: str, issues=()):
+        self.status = status
+        self.error = ApiError(code=code, message=message, input_issues=list(issues))
 
 
 @app.exception_handler(ApiException)
@@ -63,6 +64,10 @@ def _scenario(scenario_id: str) -> Scenario:
         raise ApiException(404, "unknown_scenario", f"No scenario named {scenario_id}.")
     try:
         return load_scenario(scenario_id)
+    except ScenarioLoadError as e:
+        raise ApiException(
+            422, "invalid_input", f"Scenario {scenario_id} has input errors.", e.issues
+        ) from e
     except (ValueError, KeyError, OSError) as e:
         raise ApiException(422, "invalid_input", f"Scenario {scenario_id} did not load: {e}") from e
 

@@ -1,0 +1,18 @@
+{
+  "dataset_id": "standard_real_sites_geojson",
+  "kind": "observed",
+  "source_url": "https://mycity2.houstontx.gov/pubgis02/rest/services/PDD/HCAD_Parcels/MapServer/0",
+  "release": "HCAD layer; bounded current snapshot",
+  "retrieved_at": "2026-09-26T05:33:12.338825Z",
+  "covered_start": null,
+  "covered_end": null,
+  "license_notes": "Unknown, not redistributed. Observed scenario files are local and ignored.",
+  "sha256": "04252177b42769379379f20856c56ac2d1c379b955ce3c8100c29e72b9ecb67a",
+  "transformation": "Three bounded A1 parcel queries, ten candidates per cluster. Seeded ID hashes; all original properties discarded.",
+  "row_count": 30,
+  "fields": {
+    "geometry": "observed",
+    "site_id": "derived",
+    "cluster_id": "assumed"
+  }
+}

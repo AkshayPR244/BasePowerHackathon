@@ -94,7 +94,7 @@ for a in scenario.current_plan:
 
 ## 6. Lexicographic stages with one time budget
 
-Recovery stages (SPEC section 7): late-or-unscheduled count, aggregate delay (unscheduled use `unscheduled_penalty_days`), operating value (maximize), `changed_installs`, travel. Strict stages: value, `changed_installs`, travel.
+Recovery stages: late-or-unscheduled count, aggregate delay (unscheduled use `unscheduled_penalty_days`), `changed_installs`, operating value (maximize), travel. Strict stages: `changed_installs`, value, travel. This order differs from SPEC section 7 on purpose (see docs/DECISIONS.md). A hidden `canonical` stage runs last to make parallel solves reproducible.
 
 ```python
 import time

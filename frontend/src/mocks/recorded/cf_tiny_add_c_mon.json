@@ -59,7 +59,7 @@
         "elapsed_ms": 0
       },
       {
-        "name": "operating_value",
+        "name": "changed_installs",
         "status": "optimal",
         "value": 0.0,
         "bound": 0.0,
@@ -67,7 +67,7 @@
         "elapsed_ms": 0
       },
       {
-        "name": "changed_installs",
+        "name": "operating_value",
         "status": "optimal",
         "value": 0.0,
         "bound": 0.0,
@@ -221,7 +221,7 @@
         "kind": "assumed"
       }
     ],
-    "solve_ms": 0
+    "solve_ms": 15
   },
   "diff": {
     "before_plan_id": "tiny-r1-recovery-a27dc71d",

@@ -30,17 +30,18 @@ from app.planning.result import build_result, no_legal_date_jobs
 from app.validate import validate_plan
 from app.valuation import value_table as valuation
 
+# Value is a tie-breaker: a recovery tool should not move customers for small modeled value.
 STRICT_STAGES = [
-    Stage("operating_value", maximize=True),
     Stage("changed_installs"),
+    Stage("operating_value", maximize=True),
     Stage("travel"),
     Stage("canonical", max_s=2.0),
 ]
 RECOVERY_STAGES = [
     Stage("jobs_late_or_unscheduled"),
     Stage("total_delay"),
-    Stage("operating_value", maximize=True),
     Stage("changed_installs"),
+    Stage("operating_value", maximize=True),
     Stage("travel"),
     Stage("canonical", max_s=2.0),
 ]

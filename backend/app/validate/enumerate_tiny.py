@@ -128,7 +128,7 @@ def enumerate_tiny(
             if scenario.config.objective_policy == "value_aware"
             else ()
         )
-        key = (*prefix, *value_key, changes, travel_minutes)
+        key = (*prefix, changes, *value_key, travel_minutes)
         if best is not None and key > best.key:
             continue
         if best is not None and key == best.key:

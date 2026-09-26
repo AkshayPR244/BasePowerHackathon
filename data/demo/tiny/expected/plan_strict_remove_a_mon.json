@@ -17,7 +17,7 @@
   "message": "No plan meets every deadline. N-02 is due Mon 4 Jun, and Crew A is the only North crew. Crew A is out that day. Try recovery mode.",
   "stages": [
     {
-      "name": "operating_value",
+      "name": "changed_installs",
       "status": "infeasible",
       "value": null,
       "bound": null,
@@ -25,7 +25,7 @@
       "elapsed_ms": 0
     },
     {
-      "name": "changed_installs",
+      "name": "operating_value",
       "status": "skipped",
       "value": null,
       "bound": null,

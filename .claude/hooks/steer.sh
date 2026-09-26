@@ -14,9 +14,9 @@ input="$(cat)"
 agent=$(printf '%s' "$input" | "$py" -c 'import json,sys; d=json.load(sys.stdin); print(d.get("agent_type") or "")' 2>/dev/null)
 branch=$(git -C "$root" branch --show-current 2>/dev/null)
 case "$agent:$branch" in
-  lane-a-data:*|*:lane/a-data) lane_file="$root/lanes/A-data/STEER.md" ;;
-  lane-b-planning:*|*:lane/b-planning) lane_file="$root/lanes/B-planning/STEER.md" ;;
-  lane-c-ui:*|*:lane/c-ui) lane_file="$root/lanes/C-ui/STEER.md" ;;
+  *:lane/R-engine) lane_file="$root/lanes/R-engine/STEER.md" ;;
+  *:lane/C-canvas) lane_file="$root/lanes/C-canvas/STEER.md" ;;
+  *:lane/W-evidence) lane_file="$root/lanes/W-evidence/STEER.md" ;;
   *) lane_file="" ;;
 esac
 

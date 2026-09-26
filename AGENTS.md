@@ -1,6 +1,6 @@
 # Rollout Planner · agent rules
 
-A planning and recovery analysis tool for residential battery installers. Input: an installation plan plus a disruption. Output: the best recovery, the commitments at risk, and why. It is not booking or appointment-picking. Use these words everywhere: plan, disruption, recovery, commitments, risk, impact, explanation.
+Rollout Planner is a deterministic disruption-recovery planner for installation operations. It shows what broke, how the disruption cascades through the current plan, what feasible recovery actions exist, what each costs or saves relative to doing nothing, and lets the operations manager review, test changes, and approve. Product rules, vocabulary, and scope: `CLAUDE.md`, "Product (read first)".
 
 Hackathon build. About 40 hours. Three lanes build in parallel. Spec: `docs/SPEC.md`. Decisions: `docs/DECISIONS.md`.
 
@@ -18,16 +18,18 @@ Hackathon build. About 40 hours. Three lanes build in parallel. Spec: `docs/SPEC
 
 | Lane | Branch | Owns | Must not edit |
 |---|---|---|---|
-| A · Data, valuation, truth | `lane/a-data` | `backend/app/{data,valuation,validate}`, `backend/tests/{lane_a,contract}`, `data/` except `data/demo/tiny/expected/` | planning, api, frontend |
-| B · Planning and API | `lane/b-planning` | `backend/app/{planning,baselines,compare,api}`, `backend/tests/lane_b`, `scripts/{export_openapi,record_mocks}.py`, `contracts/openapi.json`, `frontend/src/mocks/recorded/` | data, valuation, validate, frontend source |
-| C · UI | `lane/c-ui` | `frontend/` except `src/api/generated.ts` and `src/mocks/recorded/`, `scripts/gen_types.sh` | backend, data |
+| R · Recovery engine | `lane/R-engine` | `backend/app/recovery/`, `backend/app/baselines/`, `backend/app/planning/` (performance and edit handling), `backend/tests/lane_r/`, the `/api/recovery/*` handlers, economic entries in `config.parameters` | frontend, `backend/app/replay/`, `data/weather/`, docs |
+| C · Recovery Canvas | `lane/C-canvas` | `frontend/` except `src/views/season/`, `src/api/generated.ts`, `src/mocks/recorded/` | backend, data, docs |
+| W · Weather evidence and trust | `lane/W-evidence` | `backend/app/replay/`, `data/weather/`, `data/demo/cases/`, `frontend/src/views/season/`, `docs/`, `README.md`, exception handlers in `backend/app/api/main.py`, `scripts/freeze.sh`, `scripts/record_mocks.py`, `backend/tests/lane_w/`, the `/api/storms`, `/api/cases`, `/api/season-replay` handlers | `backend/app/recovery/`, `backend/app/planning/`, the rest of `frontend/` |
+
+Lanes A, B, and C from the first build day are archived in `lanes/_archive/`. Read them for history only.
 
 Shared and frozen: `backend/app/contracts/` and the generated files `contracts/openapi.json` and `frontend/src/api/generated.ts`. Change them only through `docs/CONTRACTS.md`. The tiny expected results in `data/demo/tiny/expected/` are ground truth. Do not edit them to make a test pass.
 Each lane's full brief: `lanes/<lane>/BRIEF.md`. Its checklist: `lanes/<lane>/feature_list.json`.
 
 ## Continue from here
 
-Every session, any agent, starts the same way. There is no init script.
+Every session, any agent, starts the same way. The full ritual is in `CLAUDE.md`, "Workflow (today's build)".
 
 1. Open `lanes/<lane>/PROGRESS.md` and do what its "Continue from here" block says.
 2. That block names the branch, the setup and check commands, what to read, and the next item.
@@ -36,7 +38,7 @@ Every session, any agent, starts the same way. There is no init script.
 ## Done means
 
 - The item's `acceptance` command passes, or its evidence file exists and you opened it.
-- `make check-<lane>` passes.
+- The lane check in `lanes/<lane>/BRIEF.md` passes.
 - Then set `"passes": true`, update `PROGRESS.md`, and commit.
 
 ## Commits and merges

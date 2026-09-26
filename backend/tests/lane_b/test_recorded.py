@@ -6,11 +6,17 @@ from pathlib import Path
 import pytest
 
 from app.contracts.models import (
+    ApproveResult,
+    Case,
     CounterfactualResult,
     PlanDiff,
     PlanResult,
+    RecoveryOption,
+    RecoveryOptionsResult,
     Scenario,
     ScenarioSummary,
+    SeasonReplay,
+    StormEvent,
 )
 from tests.lane_b.conftest import expected, frozen
 
@@ -20,7 +26,12 @@ MODELS = {
     "compare_": PlanDiff,
     "cf_": CounterfactualResult,
     "scenario_": Scenario,
+    "recovery_options_": RecoveryOptionsResult,
+    "recovery_evaluate_": RecoveryOption,
+    "recovery_approve_": ApproveResult,
+    "season_replay": SeasonReplay,
 }
+LISTS = {"scenarios": ScenarioSummary, "storms": StormEvent, "cases": Case}
 INDEX = json.loads((RECORDED / "index.json").read_text("utf-8"))
 
 
@@ -39,8 +50,8 @@ def test_index_covers_every_endpoint():
 @pytest.mark.parametrize("entry", INDEX, ids=lambda e: e["name"])
 def test_recording_parses(entry):
     text = (RECORDED / f"{entry['name']}.json").read_text("utf-8")
-    if entry["name"] == "scenarios":
-        [ScenarioSummary.model_validate(s) for s in json.loads(text)]
+    if entry["name"] in LISTS:
+        [LISTS[entry["name"]].model_validate(x) for x in json.loads(text)]
         return
     model = next(m for p, m in MODELS.items() if entry["name"].startswith(p))
     model.model_validate_json(text)

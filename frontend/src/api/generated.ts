@@ -4,6 +4,23 @@
  */
 
 export interface paths {
+    "/api/cases": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Cases */
+        get: operations["list_cases_api_cases_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/health": {
         parameters: {
             query?: never;
@@ -75,6 +92,57 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/recovery/approve": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Recovery Approve */
+        post: operations["recovery_approve_api_recovery_approve_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/recovery/evaluate": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Recovery Evaluate */
+        post: operations["recovery_evaluate_api_recovery_evaluate_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/recovery/options": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Recovery Options */
+        post: operations["recovery_options_api_recovery_options_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/scenarios": {
         parameters: {
             query?: never;
@@ -101,6 +169,40 @@ export interface paths {
         };
         /** Get Scenario */
         get: operations["get_scenario_api_scenarios__scenario_id__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/season-replay": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Season Replay */
+        get: operations["season_replay_api_season_replay_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/storms": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Storms */
+        get: operations["list_storms_api_storms_get"];
         put?: never;
         post?: never;
         delete?: never;
@@ -153,6 +255,26 @@ export interface components {
             input_issues: components["schemas"]["InputIssue"][];
             /** Message */
             message: string;
+        };
+        /** ApproveRequest */
+        ApproveRequest: {
+            option: components["schemas"]["RecoveryOption"];
+            /** Revision */
+            revision: number;
+            /** Scenario Id */
+            scenario_id: string;
+        };
+        /** ApproveResult */
+        ApproveResult: {
+            /** New Current Plan */
+            new_current_plan: components["schemas"]["PlannedInstall"][];
+            /**
+             * Stub
+             * @default false
+             */
+            stub: boolean;
+            /** Summary */
+            summary: string;
         };
         /** Assignment */
         Assignment: {
@@ -223,6 +345,72 @@ export interface components {
             reserve_kwh: number;
         };
         /**
+         * CascadeKind
+         * @enum {string}
+         */
+        CascadeKind: "disruption" | "direct" | "pushed" | "commitment";
+        /**
+         * CascadeStep
+         * @description disruption -> directly affected visits -> battery days pushed -> commitments missed.
+         */
+        CascadeStep: {
+            /** Job Ids */
+            job_ids: string[];
+            kind: components["schemas"]["CascadeKind"];
+            /** Label */
+            label: string;
+        };
+        /** Case */
+        Case: {
+            /** Case Id */
+            case_id: string;
+            /**
+             * Date
+             * Format: date
+             */
+            date: string;
+            /** Disruption */
+            disruption: (components["schemas"]["RemoveCrewDay"] | components["schemas"]["AddCrewDay"] | components["schemas"]["DelayInventory"] | components["schemas"]["ChangeReadyDate"] | components["schemas"]["ForceInclude"] | components["schemas"]["ReduceCrewDay"] | components["schemas"]["ChangeAppointment"] | components["schemas"]["ExtendCrewDay"] | components["schemas"]["PinVisit"] | components["schemas"]["MoveVisit"])[];
+            /**
+             * Modeled Rule
+             * @description The modeled weather-to-disruption rule applied
+             */
+            modeled_rule: string;
+            /** Name */
+            name: string;
+            /** Provenance */
+            provenance: components["schemas"]["ProvenanceNote"][];
+            /** Storm Event Id */
+            storm_event_id?: string | null;
+            /**
+             * Stub
+             * @default false
+             */
+            stub: boolean;
+            /** Summary */
+            summary: string;
+        };
+        /**
+         * ChangeAppointment
+         * @description Disruption: the customer can only host this visit inside the new window.
+         */
+        ChangeAppointment: {
+            /**
+             * Available From
+             * Format: date
+             */
+            available_from: string;
+            /** Available To */
+            available_to?: string | null;
+            /** Job Id */
+            job_id: string;
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            kind: "change_appointment";
+        };
+        /**
          * ChangeKind
          * @enum {string}
          */
@@ -271,7 +459,7 @@ export interface components {
         CounterfactualRequest: {
             base: components["schemas"]["PlanResult"];
             /** Intervention */
-            intervention: components["schemas"]["RemoveCrewDay"] | components["schemas"]["AddCrewDay"] | components["schemas"]["DelayInventory"] | components["schemas"]["ChangeReadyDate"] | components["schemas"]["ForceInclude"];
+            intervention: components["schemas"]["RemoveCrewDay"] | components["schemas"]["AddCrewDay"] | components["schemas"]["DelayInventory"] | components["schemas"]["ChangeReadyDate"] | components["schemas"]["ForceInclude"] | components["schemas"]["ReduceCrewDay"] | components["schemas"]["ChangeAppointment"] | components["schemas"]["ExtendCrewDay"] | components["schemas"]["PinVisit"] | components["schemas"]["MoveVisit"];
             /** @description The request that produced base */
             request: components["schemas"]["PlanRequest"];
         };
@@ -281,7 +469,7 @@ export interface components {
             /** Feasible */
             feasible: boolean;
             /** Intervention */
-            intervention: components["schemas"]["RemoveCrewDay"] | components["schemas"]["AddCrewDay"] | components["schemas"]["DelayInventory"] | components["schemas"]["ChangeReadyDate"] | components["schemas"]["ForceInclude"];
+            intervention: components["schemas"]["RemoveCrewDay"] | components["schemas"]["AddCrewDay"] | components["schemas"]["DelayInventory"] | components["schemas"]["ChangeReadyDate"] | components["schemas"]["ForceInclude"] | components["schemas"]["ReduceCrewDay"] | components["schemas"]["ChangeAppointment"] | components["schemas"]["ExtendCrewDay"] | components["schemas"]["PinVisit"] | components["schemas"]["MoveVisit"];
             result: components["schemas"]["PlanResult"];
             /** Summary */
             summary: string;
@@ -331,6 +519,20 @@ export interface components {
              * @description Integer minutes
              */
             travel_min: number;
+        };
+        /** CrewLoad */
+        CrewLoad: {
+            /** After */
+            after: number;
+            /** Before */
+            before: number;
+            /** Crew Id */
+            crew_id: string;
+            /**
+             * Date
+             * Format: date
+             */
+            date: string;
         };
         /**
          * DataKind
@@ -382,6 +584,94 @@ export interface components {
              */
             value_delta_usd: number;
         };
+        /** EconomicAssumption */
+        EconomicAssumption: {
+            /** Editable */
+            editable: boolean;
+            /** Key */
+            key: string;
+            kind: components["schemas"]["DataKind"];
+            /** Source */
+            source: string;
+            /** Unit */
+            unit: string;
+            /** Value */
+            value: number;
+        };
+        /**
+         * EconomicKind
+         * @enum {string}
+         */
+        EconomicKind: "labor" | "value" | "penalty" | "other";
+        /** EconomicLine */
+        EconomicLine: {
+            /**
+             * Amount Usd
+             * @description Positive is a cost, negative is a saving
+             */
+            amount_usd: number;
+            /**
+             * Basis
+             * @description How the amount was computed, with its sources
+             */
+            basis: string;
+            kind: components["schemas"]["EconomicKind"];
+            /** Label */
+            label: string;
+        };
+        /**
+         * EvaluateRequest
+         * @description Any manual change (knock out, stretch, drag, pin). Returns an option of kind custom.
+         */
+        EvaluateRequest: {
+            /** Current Plan */
+            current_plan?: components["schemas"]["PlannedInstall"][] | null;
+            /** Disruption */
+            disruption: (components["schemas"]["RemoveCrewDay"] | components["schemas"]["AddCrewDay"] | components["schemas"]["DelayInventory"] | components["schemas"]["ChangeReadyDate"] | components["schemas"]["ForceInclude"] | components["schemas"]["ReduceCrewDay"] | components["schemas"]["ChangeAppointment"] | components["schemas"]["ExtendCrewDay"] | components["schemas"]["PinVisit"] | components["schemas"]["MoveVisit"])[];
+            /**
+             * Interactive
+             * @default true
+             */
+            interactive: boolean;
+            /** Interventions */
+            interventions: (components["schemas"]["RemoveCrewDay"] | components["schemas"]["AddCrewDay"] | components["schemas"]["DelayInventory"] | components["schemas"]["ChangeReadyDate"] | components["schemas"]["ForceInclude"] | components["schemas"]["ReduceCrewDay"] | components["schemas"]["ChangeAppointment"] | components["schemas"]["ExtendCrewDay"] | components["schemas"]["PinVisit"] | components["schemas"]["MoveVisit"])[];
+            /** Revision */
+            revision: number;
+            /** Scenario Id */
+            scenario_id: string;
+        };
+        /** Explanation */
+        Explanation: {
+            /** Constraint */
+            constraint: string;
+            /** Job Id */
+            job_id: string;
+            /** Text */
+            text: string;
+        };
+        /**
+         * ExtendCrewDay
+         * @description Intervention: overtime. The crew-day gets extra minutes.
+         */
+        ExtendCrewDay: {
+            /** Crew Id */
+            crew_id: string;
+            /**
+             * Date
+             * Format: date
+             */
+            date: string;
+            /**
+             * Extra Min
+             * @description Integer minutes
+             */
+            extra_min: number;
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            kind: "extend_crew_day";
+        };
         /** ForceInclude */
         ForceInclude: {
             /**
@@ -391,6 +681,22 @@ export interface components {
             kind: "force_include";
             /** Site Id */
             site_id: string;
+        };
+        /** ImpactAnalysis */
+        ImpactAnalysis: {
+            /** Affected Job Ids */
+            affected_job_ids: string[];
+            /** Cascade */
+            cascade: components["schemas"]["CascadeStep"][];
+            /** Deadlines At Risk */
+            deadlines_at_risk: number;
+            /** Headline */
+            headline: string;
+            /**
+             * Lost Capacity Min
+             * @description Integer minutes
+             */
+            lost_capacity_min: number;
         };
         /** InputIssue */
         InputIssue: {
@@ -432,6 +738,26 @@ export interface components {
          * @enum {string}
          */
         Mode: "strict" | "recovery";
+        /**
+         * MoveVisit
+         * @description Intervention: put this visit on a chosen crew-day and keep it there.
+         */
+        MoveVisit: {
+            /** Crew Id */
+            crew_id: string;
+            /**
+             * Date
+             * Format: date
+             */
+            date: string;
+            /** Job Id */
+            job_id: string;
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            kind: "move_visit";
+        };
         /** ObjectiveComponents */
         ObjectiveComponents: {
             /** Changed Installs */
@@ -483,6 +809,11 @@ export interface components {
          */
         ObjectivePolicy: "value_aware" | "deadline_travel_only";
         /**
+         * OptionKind
+         * @enum {string}
+         */
+        OptionKind: "no_action" | "rebalance" | "overtime" | "temporary_capacity" | "custom";
+        /**
          * Parameter
          * @description One operational number the model uses, with where it came from.
          */
@@ -504,6 +835,19 @@ export interface components {
             unit: string;
             /** Value */
             value: number | string;
+        };
+        /**
+         * PinVisit
+         * @description Intervention: keep this visit on its current crew-day.
+         */
+        PinVisit: {
+            /** Job Id */
+            job_id: string;
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            kind: "pin_visit";
         };
         /** PlanChange */
         PlanChange: {
@@ -540,7 +884,7 @@ export interface components {
              * Edits
              * @default []
              */
-            edits: (components["schemas"]["RemoveCrewDay"] | components["schemas"]["AddCrewDay"] | components["schemas"]["DelayInventory"] | components["schemas"]["ChangeReadyDate"] | components["schemas"]["ForceInclude"])[];
+            edits: (components["schemas"]["RemoveCrewDay"] | components["schemas"]["AddCrewDay"] | components["schemas"]["DelayInventory"] | components["schemas"]["ChangeReadyDate"] | components["schemas"]["ForceInclude"] | components["schemas"]["ReduceCrewDay"] | components["schemas"]["ChangeAppointment"] | components["schemas"]["ExtendCrewDay"] | components["schemas"]["PinVisit"] | components["schemas"]["MoveVisit"])[];
             /** @default strict */
             mode: components["schemas"]["Mode"];
             objective_policy?: components["schemas"]["ObjectivePolicy"] | null;
@@ -564,7 +908,7 @@ export interface components {
             /** Crew Days */
             crew_days: components["schemas"]["CrewDayUsage"][];
             /** Edits */
-            edits: (components["schemas"]["RemoveCrewDay"] | components["schemas"]["AddCrewDay"] | components["schemas"]["DelayInventory"] | components["schemas"]["ChangeReadyDate"] | components["schemas"]["ForceInclude"])[];
+            edits: (components["schemas"]["RemoveCrewDay"] | components["schemas"]["AddCrewDay"] | components["schemas"]["DelayInventory"] | components["schemas"]["ChangeReadyDate"] | components["schemas"]["ForceInclude"] | components["schemas"]["ReduceCrewDay"] | components["schemas"]["ChangeAppointment"] | components["schemas"]["ExtendCrewDay"] | components["schemas"]["PinVisit"] | components["schemas"]["MoveVisit"])[];
             /**
              * Input Issues
              * @default []
@@ -640,6 +984,151 @@ export interface components {
          * @enum {string}
          */
         ReasonCode: "NOT_READY" | "SKILL_MISMATCH" | "CLUSTER_NOT_ALLOWED" | "NO_LEGAL_DATE" | "NO_INVENTORY" | "CAPACITY" | "LOCK_CONFLICT" | "DEADLINE_BEFORE_READY";
+        /** RecoveryCounts */
+        RecoveryCounts: {
+            /** Customers To Reschedule */
+            customers_to_reschedule: number;
+            /** Deadlines Missed */
+            deadlines_missed: number;
+            /**
+             * Deadlines Recovered
+             * @description Deadlines this option saves vs no action
+             */
+            deadlines_recovered: number;
+            /**
+             * Delay Days
+             * @description Whole days
+             */
+            delay_days: number;
+            /** Unscheduled */
+            unscheduled: number;
+            /** Visits Moved */
+            visits_moved: number;
+        };
+        /** RecoveryEconomics */
+        RecoveryEconomics: {
+            /**
+             * Advantage Vs No Action Usd
+             * @description No-action net impact minus this one
+             */
+            advantage_vs_no_action_usd: number;
+            /** Cost Per Deadline Recovered Usd */
+            cost_per_deadline_recovered_usd?: number | null;
+            /** Lines */
+            lines: components["schemas"]["EconomicLine"][];
+            /**
+             * Net Impact Usd
+             * @description Modeled cost of this option vs the original plan
+             */
+            net_impact_usd: number;
+        };
+        /** RecoveryOption */
+        RecoveryOption: {
+            /**
+             * Action Label
+             * @description A business action, e.g. "Crew IB +2h overtime"
+             */
+            action_label: string;
+            counts: components["schemas"]["RecoveryCounts"];
+            /** Crew Load */
+            crew_load: components["schemas"]["CrewLoad"][];
+            diff_vs_no_action: components["schemas"]["PlanDiff"] | null;
+            diff_vs_original: components["schemas"]["PlanDiff"];
+            economics: components["schemas"]["RecoveryEconomics"];
+            /** Explanations */
+            explanations: components["schemas"]["Explanation"][];
+            /** Intervention Edits */
+            intervention_edits: (components["schemas"]["RemoveCrewDay"] | components["schemas"]["AddCrewDay"] | components["schemas"]["DelayInventory"] | components["schemas"]["ChangeReadyDate"] | components["schemas"]["ForceInclude"] | components["schemas"]["ReduceCrewDay"] | components["schemas"]["ChangeAppointment"] | components["schemas"]["ExtendCrewDay"] | components["schemas"]["PinVisit"] | components["schemas"]["MoveVisit"])[];
+            kind: components["schemas"]["OptionKind"];
+            /**
+             * Lowest Modeled Cost
+             * @default false
+             */
+            lowest_modeled_cost: boolean;
+            /** Option Id */
+            option_id: string;
+            /**
+             * Overtime Min
+             * @description Integer minutes
+             * @default 0
+             */
+            overtime_min: number;
+            /** Proven Optimal */
+            proven_optimal: boolean;
+            result: components["schemas"]["PlanResult"];
+            status: components["schemas"]["PlanStatus"];
+            /**
+             * Stub
+             * @default false
+             */
+            stub: boolean;
+        };
+        /** RecoveryOptionsRequest */
+        RecoveryOptionsRequest: {
+            /**
+             * Current Plan
+             * @description None uses the scenario's current plan
+             */
+            current_plan?: components["schemas"]["PlannedInstall"][] | null;
+            /** Disruption */
+            disruption: (components["schemas"]["RemoveCrewDay"] | components["schemas"]["AddCrewDay"] | components["schemas"]["DelayInventory"] | components["schemas"]["ChangeReadyDate"] | components["schemas"]["ForceInclude"] | components["schemas"]["ReduceCrewDay"] | components["schemas"]["ChangeAppointment"] | components["schemas"]["ExtendCrewDay"] | components["schemas"]["PinVisit"] | components["schemas"]["MoveVisit"])[];
+            /** Economics Overrides */
+            economics_overrides?: {
+                [key: string]: number;
+            } | null;
+            /**
+             * Interactive
+             * @default false
+             */
+            interactive: boolean;
+            /** Revision */
+            revision: number;
+            /** Scenario Id */
+            scenario_id: string;
+        };
+        /** RecoveryOptionsResult */
+        RecoveryOptionsResult: {
+            /** Assumptions */
+            assumptions: components["schemas"]["Assumption"][];
+            /** Economic Assumptions */
+            economic_assumptions: components["schemas"]["EconomicAssumption"][];
+            impact: components["schemas"]["ImpactAnalysis"];
+            no_action: components["schemas"]["RecoveryOption"];
+            /** Options */
+            options: components["schemas"]["RecoveryOption"][];
+            /** Revision */
+            revision: number;
+            /** Scenario Hash */
+            scenario_hash: string;
+            /**
+             * Stub
+             * @default false
+             */
+            stub: boolean;
+        };
+        /**
+         * ReduceCrewDay
+         * @description Disruption: reduced capacity. The crew-day keeps only available_min.
+         */
+        ReduceCrewDay: {
+            /**
+             * Available Min
+             * @description Integer minutes
+             */
+            available_min: number;
+            /** Crew Id */
+            crew_id: string;
+            /**
+             * Date
+             * Format: date
+             */
+            date: string;
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            kind: "reduce_crew_day";
+        };
         /** RemoveCrewDay */
         RemoveCrewDay: {
             /** Crew Id */
@@ -777,6 +1266,64 @@ export interface components {
             /** Synthetic */
             synthetic: boolean;
         };
+        /** SeasonReplay */
+        SeasonReplay: {
+            /** Events */
+            events: components["schemas"]["SeasonReplayEvent"][];
+            /** Replay Id */
+            replay_id: string;
+            /** Stress Tests */
+            stress_tests?: components["schemas"]["StressTest"][] | null;
+            /**
+             * Stub
+             * @default false
+             */
+            stub: boolean;
+            totals: components["schemas"]["SeasonTotals"];
+        };
+        /** SeasonReplayEvent */
+        SeasonReplayEvent: {
+            /** Case Id */
+            case_id: string;
+            chosen_option_kind: components["schemas"]["OptionKind"];
+            no_action: components["schemas"]["RecoveryCounts"];
+            /**
+             * No Action Net Impact Usd
+             * @description Value, USD
+             */
+            no_action_net_impact_usd: number;
+            recovery: components["schemas"]["RecoveryCounts"];
+            /**
+             * Recovery Net Impact Usd
+             * @description Value, USD
+             */
+            recovery_net_impact_usd: number;
+            /** Solve Ms */
+            solve_ms: number;
+        };
+        /** SeasonTotals */
+        SeasonTotals: {
+            /** Deadline Misses No Action */
+            deadline_misses_no_action: number;
+            /** Deadline Misses Recovery */
+            deadline_misses_recovery: number;
+            /** Deadlines Recovered */
+            deadlines_recovered: number;
+            /** Events Replayed */
+            events_replayed: number;
+            /** Median Solve Ms */
+            median_solve_ms: number;
+            /**
+             * Modeled Cost No Action Usd
+             * @description Value, USD
+             */
+            modeled_cost_no_action_usd: number;
+            /**
+             * Modeled Cost Recovery Usd
+             * @description Value, USD
+             */
+            modeled_cost_recovery_usd: number;
+        };
         /** Site */
         Site: {
             /** Cluster Id */
@@ -848,6 +1395,44 @@ export interface components {
          * @enum {string}
          */
         StageStatus: "optimal" | "feasible" | "infeasible" | "timeout_no_incumbent" | "skipped";
+        /** StormEvent */
+        StormEvent: {
+            /**
+             * Date
+             * Format: date
+             */
+            date: string;
+            /** Event Id */
+            event_id: string;
+            /** Max Wind Kmh */
+            max_wind_kmh: number;
+            /**
+             * Rainfall Mm
+             * @description Work hours, 08:00-17:00 local
+             */
+            rainfall_mm: number;
+            /** Source */
+            source: string;
+            /**
+             * Stub
+             * @default false
+             */
+            stub: boolean;
+            /** Thunder Hours */
+            thunder_hours: number;
+        };
+        /** StressTest */
+        StressTest: {
+            /**
+             * Advantage Usd
+             * @description Value, USD
+             */
+            advantage_usd: number;
+            /** Deadlines Recovered */
+            deadlines_recovered: number;
+            /** Variant */
+            variant: string;
+        };
         /** UnscheduledJob */
         UnscheduledJob: {
             /** Detail */
@@ -951,6 +1536,26 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
+    list_cases_api_cases_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Case"][];
+                };
+            };
+        };
+    };
     health_api_health_get: {
         parameters: {
             query?: never;
@@ -1153,6 +1758,186 @@ export interface operations {
             };
         };
     };
+    recovery_approve_api_recovery_approve_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ApproveRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApproveResult"];
+                };
+            };
+            /** @description The request is valid JSON but makes no sense */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Unknown scenario or path */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description The request or the scenario files are invalid */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description The planner produced a plan that failed validation */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    recovery_evaluate_api_recovery_evaluate_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["EvaluateRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RecoveryOption"];
+                };
+            };
+            /** @description The request is valid JSON but makes no sense */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Unknown scenario or path */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description The request or the scenario files are invalid */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description The planner produced a plan that failed validation */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    recovery_options_api_recovery_options_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RecoveryOptionsRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RecoveryOptionsResult"];
+                };
+            };
+            /** @description The request is valid JSON but makes no sense */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Unknown scenario or path */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description The request or the scenario files are invalid */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description The planner produced a plan that failed validation */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
     list_scenarios_api_scenarios_get: {
         parameters: {
             query?: never;
@@ -1227,6 +2012,46 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    season_replay_api_season_replay_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SeasonReplay"];
+                };
+            };
+        };
+    };
+    list_storms_api_storms_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["StormEvent"][];
                 };
             };
         };

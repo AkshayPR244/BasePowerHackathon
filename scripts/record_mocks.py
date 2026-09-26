@@ -128,6 +128,35 @@ def main():
             }
             record(index, "cf_standard_force_first_late", "POST", "/api/plans/counterfactual", body)
 
+    storm = [
+        {"kind": "remove_crew_day", "crew_id": c, "date": "2018-06-14"} for c in ("IA", "IB", "BA")
+    ]
+    options = record(
+        index,
+        "recovery_options_standard_storm",
+        "POST",
+        "/api/recovery/options",
+        {"scenario_id": "standard", "revision": 1, "disruption": storm, "interactive": False},
+    )
+    record(
+        index,
+        "recovery_evaluate_standard_storm",
+        "POST",
+        "/api/recovery/evaluate",
+        {"scenario_id": "standard", "revision": 2, "disruption": storm, "interventions": []},
+    )
+    if options:
+        record(
+            index,
+            "recovery_approve_standard_storm",
+            "POST",
+            "/api/recovery/approve",
+            {"scenario_id": "standard", "revision": 1, "option": options["options"][0]},
+        )
+    record(index, "storms", "GET", "/api/storms")
+    record(index, "cases", "GET", "/api/cases")
+    record(index, "season_replay", "GET", "/api/season-replay")
+
     (OUT / "index.json").write_text(
         json.dumps(index, indent=2) + "\n", encoding="utf-8", newline="\n"
     )

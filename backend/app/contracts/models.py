@@ -5,12 +5,15 @@ from pydantic import BaseModel, ConfigDict, Field
 
 from app.contracts.enums import (
     Algorithm,
+    CascadeKind,
     ChangeKind,
     DataKind,
+    EconomicKind,
     InputIssueCode,
     JobState,
     Mode,
     ObjectivePolicy,
+    OptionKind,
     PlanStatus,
     ReasonCode,
     StageStatus,
@@ -212,8 +215,63 @@ class ForceInclude(Contract):
     site_id: Id
 
 
+class ReduceCrewDay(Contract):
+    """Disruption: reduced capacity. The crew-day keeps only available_min."""
+
+    kind: Literal["reduce_crew_day"] = "reduce_crew_day"
+    crew_id: Id
+    date: dt.date
+    available_min: Minutes
+
+
+class ChangeAppointment(Contract):
+    """Disruption: the customer can only host this visit inside the new window."""
+
+    kind: Literal["change_appointment"] = "change_appointment"
+    job_id: Id
+    available_from: dt.date
+    available_to: dt.date | None = None
+
+
+class ExtendCrewDay(Contract):
+    """Intervention: overtime. The crew-day gets extra minutes."""
+
+    kind: Literal["extend_crew_day"] = "extend_crew_day"
+    crew_id: Id
+    date: dt.date
+    extra_min: Minutes
+
+
+class PinVisit(Contract):
+    """Intervention: keep this visit on its current crew-day."""
+
+    kind: Literal["pin_visit"] = "pin_visit"
+    job_id: Id
+
+
+class MoveVisit(Contract):
+    """Intervention: put this visit on a chosen crew-day and keep it there."""
+
+    kind: Literal["move_visit"] = "move_visit"
+    job_id: Id
+    crew_id: Id
+    date: dt.date
+
+
+# Disruptions: remove_crew_day (crew unavailable), reduce_crew_day, change_ready_date,
+# change_appointment, delay_inventory. Interventions: add_crew_day (temporary capacity),
+# extend_crew_day (overtime), pin_visit, move_visit, force_include.
 Edit = Annotated[
-    RemoveCrewDay | AddCrewDay | DelayInventory | ChangeReadyDate | ForceInclude,
+    RemoveCrewDay
+    | AddCrewDay
+    | DelayInventory
+    | ChangeReadyDate
+    | ForceInclude
+    | ReduceCrewDay
+    | ChangeAppointment
+    | ExtendCrewDay
+    | PinVisit
+    | MoveVisit,
     Field(discriminator="kind"),
 ]
 
@@ -425,3 +483,187 @@ class Manifest(Contract):
     transformation: str
     row_count: int
     fields: dict[str, DataKind]
+
+
+# --- Recovery, storms, and season replay (contract 1.2; stubbed until lanes R and W land) ---
+
+
+class RecoveryCounts(Contract):
+    deadlines_missed: int
+    deadlines_recovered: int = Field(description="Deadlines this option saves vs no action")
+    delay_days: Days
+    visits_moved: int
+    customers_to_reschedule: int
+    unscheduled: int
+
+
+class EconomicLine(Contract):
+    label: str
+    amount_usd: Usd = Field(description="Positive is a cost, negative is a saving")
+    kind: EconomicKind
+    basis: str = Field(description="How the amount was computed, with its sources")
+
+
+class RecoveryEconomics(Contract):
+    net_impact_usd: Usd = Field(description="Modeled cost of this option vs the original plan")
+    advantage_vs_no_action_usd: Usd = Field(description="No-action net impact minus this one")
+    cost_per_deadline_recovered_usd: Usd | None = None
+    lines: list[EconomicLine]
+
+
+class Explanation(Contract):
+    job_id: str
+    text: str
+    constraint: str
+
+
+class CrewLoad(Contract):
+    crew_id: Id
+    date: dt.date
+    before: Fraction
+    after: Fraction
+
+
+class RecoveryOption(Contract):
+    option_id: Id
+    kind: OptionKind
+    action_label: str = Field(description='A business action, e.g. "Crew IB +2h overtime"')
+    intervention_edits: list[Edit]
+    status: PlanStatus
+    proven_optimal: bool
+    result: PlanResult
+    diff_vs_original: PlanDiff
+    diff_vs_no_action: PlanDiff | None
+    counts: RecoveryCounts
+    economics: RecoveryEconomics
+    overtime_min: Minutes = 0
+    explanations: list[Explanation]
+    crew_load: list[CrewLoad]
+    lowest_modeled_cost: bool = False
+    stub: bool = False
+
+
+class CascadeStep(Contract):
+    """disruption -> directly affected visits -> battery days pushed -> commitments missed."""
+
+    kind: CascadeKind
+    label: str
+    job_ids: list[str]
+
+
+class ImpactAnalysis(Contract):
+    headline: str
+    affected_job_ids: list[str]
+    lost_capacity_min: Minutes
+    cascade: list[CascadeStep]
+    deadlines_at_risk: int
+
+
+class EconomicAssumption(Contract):
+    key: str
+    value: float
+    unit: str
+    kind: DataKind
+    source: str
+    editable: bool
+
+
+class RecoveryOptionsRequest(Contract):
+    scenario_id: Id
+    revision: int = Field(ge=0)
+    current_plan: list[PlannedInstall] | None = Field(
+        default=None, description="None uses the scenario's current plan"
+    )
+    disruption: list[Edit]
+    economics_overrides: dict[str, float] | None = None
+    interactive: bool = False
+
+
+class RecoveryOptionsResult(Contract):
+    revision: int
+    scenario_hash: str
+    impact: ImpactAnalysis
+    no_action: RecoveryOption
+    options: list[RecoveryOption]
+    economic_assumptions: list[EconomicAssumption]
+    assumptions: list[Assumption]
+    stub: bool = False
+
+
+class EvaluateRequest(Contract):
+    """Any manual change (knock out, stretch, drag, pin). Returns an option of kind custom."""
+
+    scenario_id: Id
+    revision: int = Field(ge=0)
+    current_plan: list[PlannedInstall] | None = None
+    disruption: list[Edit]
+    interventions: list[Edit]
+    interactive: bool = True
+
+
+class ApproveRequest(Contract):
+    scenario_id: Id
+    revision: int = Field(ge=0)
+    option: RecoveryOption
+
+
+class ApproveResult(Contract):
+    new_current_plan: list[PlannedInstall]
+    summary: str
+    stub: bool = False
+
+
+class StormEvent(Contract):
+    event_id: Id
+    date: dt.date
+    rainfall_mm: float = Field(ge=0, description="Work hours, 08:00-17:00 local")
+    max_wind_kmh: float = Field(ge=0)
+    thunder_hours: int = Field(ge=0)
+    source: str
+    stub: bool = False
+
+
+class Case(Contract):
+    case_id: Id
+    name: str
+    date: dt.date
+    summary: str
+    storm_event_id: str | None = None
+    disruption: list[Edit]
+    modeled_rule: str = Field(description="The modeled weather-to-disruption rule applied")
+    provenance: list[ProvenanceNote]
+    stub: bool = False
+
+
+class SeasonReplayEvent(Contract):
+    case_id: Id
+    no_action: RecoveryCounts
+    no_action_net_impact_usd: Usd
+    recovery: RecoveryCounts
+    recovery_net_impact_usd: Usd
+    chosen_option_kind: OptionKind
+    solve_ms: int = Field(ge=0)
+
+
+class SeasonTotals(Contract):
+    events_replayed: int
+    deadline_misses_no_action: int
+    deadline_misses_recovery: int
+    deadlines_recovered: int
+    modeled_cost_no_action_usd: Usd
+    modeled_cost_recovery_usd: Usd
+    median_solve_ms: int
+
+
+class StressTest(Contract):
+    variant: str
+    deadlines_recovered: int
+    advantage_usd: Usd
+
+
+class SeasonReplay(Contract):
+    replay_id: Id
+    events: list[SeasonReplayEvent]
+    totals: SeasonTotals
+    stress_tests: list[StressTest] | None = None
+    stub: bool = False

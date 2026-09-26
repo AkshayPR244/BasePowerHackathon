@@ -3,7 +3,7 @@
 import asyncio
 from contextlib import asynccontextmanager
 
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, Request, Response
 from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
@@ -14,17 +14,28 @@ from app.api.scenarios import ScenarioLoadError, load_scenario, scenario_ids, su
 from app.compare.diff import diff_plans
 from app.contracts.models import (
     ApiError,
+    ApproveRequest,
+    ApproveResult,
+    Case,
     CompareRequest,
     CounterfactualRequest,
     CounterfactualResult,
+    EvaluateRequest,
     PlanDiff,
     PlanRequest,
     PlanResult,
+    RecoveryOption,
+    RecoveryOptionsRequest,
+    RecoveryOptionsResult,
     Scenario,
     ScenarioSummary,
+    SeasonReplay,
+    StormEvent,
 )
 from app.planning.counterfactual import counterfactual
 from app.planning.solve import InvalidPlanError, plan
+from app.recovery import service as recovery
+from app.replay import service as replay
 
 
 @asynccontextmanager
@@ -142,3 +153,72 @@ def compare_plans(req: CompareRequest) -> PlanDiff:
 @app.post("/api/plans/counterfactual", responses=ERRORS)
 async def run_counterfactual(req: CounterfactualRequest) -> CounterfactualResult:
     return await asyncio.to_thread(counterfactual, _scenario(req.request.scenario_id), req)
+
+
+# Stubbed seams. Each response sets X-Rollout-Stub while any part is still a stub.
+
+
+def _mark(response: Response, stub: bool) -> None:
+    if stub:
+        response.headers["X-Rollout-Stub"] = "true"
+
+
+@app.post("/api/recovery/options", responses=ERRORS)
+async def recovery_options(
+    req: RecoveryOptionsRequest, response: Response
+) -> RecoveryOptionsResult:
+    s = _scenario(req.scenario_id)
+    out = await asyncio.to_thread(
+        recovery.recover,
+        s,
+        req.disruption,
+        req.current_plan,
+        req.economics_overrides,
+        req.interactive,
+    )
+    _mark(response, out.stub)
+    return out.model_copy(update={"revision": req.revision})
+
+
+@app.post("/api/recovery/evaluate", responses=ERRORS)
+async def recovery_evaluate(req: EvaluateRequest, response: Response) -> RecoveryOption:
+    s = _scenario(req.scenario_id)
+    out = await asyncio.to_thread(
+        recovery.evaluate,
+        s,
+        req.disruption,
+        req.interventions,
+        req.current_plan,
+        None,
+        req.interactive,
+    )
+    _mark(response, out.stub)
+    return out
+
+
+@app.post("/api/recovery/approve", responses=ERRORS)
+def recovery_approve(req: ApproveRequest, response: Response) -> ApproveResult:
+    out = recovery.approve(_scenario(req.scenario_id), req.option)
+    _mark(response, out.stub)
+    return out
+
+
+@app.get("/api/storms")
+def list_storms(response: Response) -> list[StormEvent]:
+    out = replay.storms()
+    _mark(response, any(x.stub for x in out))
+    return out
+
+
+@app.get("/api/cases")
+def list_cases(response: Response) -> list[Case]:
+    out = replay.cases()
+    _mark(response, any(x.stub for x in out))
+    return out
+
+
+@app.get("/api/season-replay")
+def season_replay(response: Response) -> SeasonReplay:
+    out = replay.season_replay()
+    _mark(response, out.stub)
+    return out

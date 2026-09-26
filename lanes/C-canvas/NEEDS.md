@@ -8,3 +8,4 @@
 - ApproveResult adds effective_scenario to preserve temporary crew availability/bookings for export. HTTP approval chaining is deferred; do not feed just the approved bookings back to an unchanged roster.
 - Appointment windows remain in result.edits and must be retained if future approval chaining is added.
 - P1 follow-up: overtime and temporary-capacity cards are optional. The engine omits paid capacity that does not improve operational outcomes beyond both no action and rebalance; render the returned list rather than expecting all action kinds.
+- Lane H: fix the H-04 stale `Not validated` expectation in `frontend/src/lib/export.test.ts`. C left that H-owned test unchanged; it is the remaining known full-frontend unit failure.

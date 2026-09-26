@@ -4,14 +4,20 @@ export function SiteMap({
   scenario,
   plan,
   selected,
+  affectedJobIds = [],
   onSelect,
 }: {
   scenario: Scenario;
   plan: Plan | null;
   selected: string | null;
+  affectedJobIds?: string[];
   onSelect: (id: string) => void;
 }) {
   const sites = scenario.sites.filter((s) => s.lon != null && s.lat != null);
+  const affected = (siteId: string) =>
+    affectedJobIds.some(
+      (jobId) => jobId === siteId || jobId.startsWith(`${siteId}-`),
+    );
   const coords = [
     ...sites.map((s) => [s.lon!, s.lat!]),
     ...scenario.clusters.flatMap((c) => c.outline ?? []),
@@ -66,12 +72,13 @@ export function SiteMap({
               plan?.assignments.find((a) => a.site_id === s.site_id)?.state ??
               plan?.unscheduled.find((u) => u.site_id === s.site_id)?.state ??
               "unscheduled";
+            const isAffected = affected(s.site_id);
             return (
               <g
                 key={s.site_id}
                 role="button"
                 tabIndex={0}
-                aria-label={`Select ${s.site_id}, ${state}`}
+                aria-label={`Select ${s.site_id}, ${state}${isAffected ? ", affected by disruption" : ""}`}
                 onClick={() => onSelect(s.site_id)}
                 onKeyDown={(e) => {
                   if (e.key === "Enter" || e.key === " ") {
@@ -79,7 +86,7 @@ export function SiteMap({
                     onSelect(s.site_id);
                   }
                 }}
-                className={`map-point status-${state} ${selected === s.site_id ? "selected" : ""}`}
+                className={`map-point status-${state} ${selected === s.site_id ? "selected" : ""} ${isAffected ? "affected" : ""}`}
                 transform={`translate(${x(s.lon!)},${y(s.lat!)})`}
               >
                 <title>
@@ -111,6 +118,31 @@ export function SiteMap({
           })}
         </div>
       </div>
+      {affectedJobIds.length > 0 && (
+        <div
+          className="affected-inset"
+          data-testid="affected-map-inset"
+          aria-label="Affected homes by cluster"
+        >
+          <span className="eyebrow">Affected homes by cluster</span>
+          {scenario.clusters.map((cluster) => {
+            const homes = scenario.sites.filter(
+              (site) =>
+                site.cluster_id === cluster.cluster_id &&
+                affected(site.site_id),
+            );
+            return (
+              <div className="affected-cluster" key={cluster.cluster_id}>
+                <strong>{cluster.name}</strong>
+                <span>{homes.length} affected homes</span>
+                <small>
+                  {homes.map((site) => site.site_id).join(" · ") || "None"}
+                </small>
+              </div>
+            );
+          })}
+        </div>
+      )}
     </section>
   );
 }

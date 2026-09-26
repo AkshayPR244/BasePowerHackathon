@@ -24,17 +24,12 @@ ADD_C_MON = {
     "skills": ["install"],
     "allowed_clusters": ["N"],
 }
-LATE_SHIPMENT = {
-    "kind": "delay_inventory",
-    "configuration_id": "B13",
-    "from_date": "2018-06-07",
-    "to_date": "2018-06-11",
-}
+BATTERY_CREW_OUT = {"kind": "remove_crew_day", "crew_id": "BA", "date": "2018-06-07"}
 STANDARD_RECOVERY = {
     "scenario_id": "standard",
     "revision": 1,
     "mode": "recovery",
-    "edits": [LATE_SHIPMENT],
+    "edits": [BATTERY_CREW_OUT],
 }
 PLANS = {
     "plan_tiny_strict": {"scenario_id": "tiny", "revision": 0, "mode": "strict", "edits": []},
@@ -52,19 +47,13 @@ PLANS = {
     },
     "plan_standard_strict": {"scenario_id": "standard", "revision": 0, "mode": "strict"},
     "plan_standard_edf": {"scenario_id": "standard", "revision": 0, "algorithm": "baseline_edf"},
-    "plan_standard_recovery_late_shipment": STANDARD_RECOVERY,
     "plan_standard_recovery_install_crew_out": {
         "scenario_id": "standard",
         "revision": 1,
         "mode": "recovery",
         "edits": [{"kind": "remove_crew_day", "crew_id": "IA", "date": "2018-06-07"}],
     },
-    "plan_standard_recovery_battery_crew_out": {
-        "scenario_id": "standard",
-        "revision": 1,
-        "mode": "recovery",
-        "edits": [{"kind": "remove_crew_day", "crew_id": "BA", "date": "2018-06-07"}],
-    },
+    "plan_standard_recovery_battery_crew_out": STANDARD_RECOVERY,
     "plan_tiny_two_visit_strict": {"scenario_id": "tiny_two_visit", "revision": 0},
 }
 
@@ -110,11 +99,11 @@ def main():
             }
             record(index, name, "POST", "/api/plans/counterfactual", body)
 
-    base, rec = plans["plan_standard_strict"], plans["plan_standard_recovery_late_shipment"]
+    base, rec = plans["plan_standard_strict"], plans["plan_standard_recovery_battery_crew_out"]
     if base and rec:
         record(
             index,
-            "compare_standard_strict_vs_late_shipment",
+            "compare_standard_strict_vs_battery_crew_out",
             "POST",
             "/api/plans/compare",
             {"before": base, "after": rec},

@@ -1,128 +1,26 @@
 [
-  {
-    "id": "R-00",
-    "priority": "P0",
-    "title": "DONE on main: standard two-visit scenario, CP-SAT planner (strict and recovery), validator on every plan, EDF and nearest-cluster baselines, compare and counterfactual endpoints (PRs #2, #4, #6, #7)",
-    "acceptance": "make check-b",
-    "passes": true
-  },
-  {
-    "id": "R-01",
-    "priority": "P0",
-    "title": "No action as a first-class RecoveryOption: repair rule moves each displaced visit to its own crew's next open slot, nothing else moves, precedence holds, validated",
-    "acceptance": "cd backend && uv run pytest tests/lane_r/test_no_action.py -q",
-    "passes": true
-  },
-  {
-    "id": "R-02a",
-    "priority": "P0",
-    "title": "DONE on main: disruption edits remove_crew_day (crew unavailable) and change_ready_date (readiness change)",
-    "acceptance": "cd backend && uv run pytest tests/lane_b/test_edits.py -q",
-    "passes": true
-  },
-  {
-    "id": "R-02b",
-    "priority": "P0",
-    "title": "Disruption edit reduce_crew_day: crew-day keeps only available_min",
-    "acceptance": "cd backend && uv run pytest tests/lane_r/test_edits.py -q -k reduce",
-    "passes": true
-  },
-  {
-    "id": "R-02c",
-    "priority": "P0",
-    "title": "Disruption edit change_appointment: the visit may only land between available_from and available_to",
-    "acceptance": "cd backend && uv run pytest tests/lane_r/test_edits.py -q -k appointment",
-    "passes": true
-  },
-  {
-    "id": "R-03a",
-    "priority": "P0",
-    "title": "Intervention edit extend_crew_day (overtime) adds extra_min to one crew-day",
-    "acceptance": "cd backend && uv run pytest tests/lane_r/test_edits.py -q -k extend",
-    "passes": true
-  },
-  {
-    "id": "R-03b",
-    "priority": "P0",
-    "title": "Intervention edits pin_visit (keep the visit in its current slot) and move_visit (place and lock the visit)",
-    "acceptance": "cd backend && uv run pytest tests/lane_r/test_edits.py -q -k \"pin or move\"",
-    "passes": true
-  },
-  {
-    "id": "R-04",
-    "priority": "P0",
-    "title": "recover(): no action, rebalance, overtime (search over affected crew-days), temporary capacity, each solved, validated, and labeled as an action",
-    "acceptance": "cd backend && uv run pytest tests/lane_r/test_recover.py -q",
-    "passes": true
-  },
-  {
-    "id": "R-05",
-    "priority": "P0",
-    "title": "Impact analysis: affected visits, lost capacity minutes, cascade install -> battery day -> deadline, deadlines at risk, one-sentence headline",
-    "acceptance": "cd backend && uv run pytest tests/lane_r/test_impact.py -q",
-    "passes": true
-  },
-  {
-    "id": "R-06",
-    "priority": "P0",
-    "title": "Economics: net impact and advantage vs no action, basis lines, deadlines recovered, cost per deadline recovered, BLS-cited wage x 1.5 overtime, temporary crew-day cost, tagged assumptions, penalty off by default",
-    "acceptance": "cd backend && uv run pytest tests/lane_r/test_economics.py -q",
-    "passes": true
-  },
-  {
-    "id": "R-07",
-    "priority": "P0",
-    "title": "POST /api/recovery/options and /evaluate return real results with stub=false and no X-Rollout-Stub header",
-    "acceptance": "cd backend && uv run pytest tests/lane_r/test_api.py -q",
-    "passes": true
-  },
-  {
-    "id": "R-08",
-    "priority": "P1",
-    "title": "Interactive mode: about 2 s budget, warm start from the current plan, Best found label when not proven, cache by scenario hash plus edits. Measure battery crew BA out Thu 7 Jun in both modes",
-    "acceptance": "cd backend && uv run pytest tests/lane_r/test_interactive.py -q",
-    "passes": true
-  },
-  {
-    "id": "R-09",
-    "priority": "P1",
-    "title": "Pin semantics report what protecting a visit costs vs the unpinned option",
-    "acceptance": "cd backend && uv run pytest tests/lane_r/test_pin_cost.py -q",
-    "passes": true
-  },
-  {
-    "id": "R-10",
-    "priority": "P1",
-    "title": "POST /api/recovery/approve returns the chosen option as the new current plan, which loads and validates",
-    "acceptance": "cd backend && uv run pytest tests/lane_r/test_approve.py -q",
-    "passes": true
-  },
-  {
-    "id": "R-11",
-    "priority": "P1",
-    "title": "One plain-sentence explanation per changed visit, naming the constraint",
-    "acceptance": "cd backend && uv run pytest tests/lane_r/test_explain.py -q",
-    "passes": true
-  },
-  {
-    "id": "R-12",
-    "priority": "P1",
-    "title": "lowest_modeled_cost flag on exactly one option, never labeled Recommended",
-    "acceptance": "cd backend && uv run pytest tests/lane_r/test_recover.py -q -k lowest",
-    "passes": true
-  },
-  {
-    "id": "R-13",
-    "priority": "P2",
-    "title": "Per-crew load before and after (crew_load) on every option",
-    "acceptance": "cd backend && uv run pytest tests/lane_r/test_recover.py -q -k crew_load",
-    "passes": true
-  },
-  {
-    "id": "R-14",
-    "priority": "P2",
-    "title": "Customer reschedule as an intervention",
-    "acceptance": "cd backend && uv run pytest tests/lane_r/test_edits.py -q -k reschedule",
-    "passes": true
-  }
+  {"id": "R-00", "priority": "P0", "title": "DONE on main: standard two-visit scenario, CP-SAT planner (strict and recovery), validator on every plan, EDF and nearest-cluster baselines, compare and counterfactual endpoints (PRs #2, #4, #6, #7)", "acceptance": "make check-b", "passes": true},
+  {"id": "R-01", "priority": "P0", "title": "No action as a first-class RecoveryOption: repair rule moves each displaced visit to its own crew's next open slot, nothing else moves, precedence holds, validated", "acceptance": "cd backend && uv run pytest tests/lane_r/test_no_action.py -q", "passes": true},
+  {"id": "R-02a", "priority": "P0", "title": "DONE on main: disruption edits remove_crew_day (crew unavailable) and change_ready_date (readiness change)", "acceptance": "cd backend && uv run pytest tests/lane_b/test_edits.py -q", "passes": true},
+  {"id": "R-02b", "priority": "P0", "title": "Disruption edit reduce_crew_day: crew-day keeps only available_min", "acceptance": "cd backend && uv run pytest tests/lane_r/test_edits.py -q -k reduce", "passes": true},
+  {"id": "R-02c", "priority": "P0", "title": "Disruption edit change_appointment: the visit may only land between available_from and available_to", "acceptance": "cd backend && uv run pytest tests/lane_r/test_edits.py -q -k appointment", "passes": true},
+  {"id": "R-03a", "priority": "P0", "title": "Intervention edit extend_crew_day (overtime) adds extra_min to one crew-day", "acceptance": "cd backend && uv run pytest tests/lane_r/test_edits.py -q -k extend", "passes": true},
+  {"id": "R-03b", "priority": "P0", "title": "Intervention edits pin_visit (keep the visit in its current slot) and move_visit (place and lock the visit)", "acceptance": "cd backend && uv run pytest tests/lane_r/test_edits.py -q -k \"pin or move\"", "passes": true},
+  {"id": "R-04", "priority": "P0", "title": "recover(): no action, rebalance, overtime (search over affected crew-days), temporary capacity, each solved, validated, and labeled as an action", "acceptance": "cd backend && uv run pytest tests/lane_r/test_recover.py -q", "passes": true},
+  {"id": "R-05", "priority": "P0", "title": "Impact analysis: affected visits, lost capacity minutes, cascade install -> battery day -> deadline, deadlines at risk, one-sentence headline", "acceptance": "cd backend && uv run pytest tests/lane_r/test_impact.py -q", "passes": true},
+  {"id": "R-06", "priority": "P0", "title": "Economics: net impact and advantage vs no action, basis lines, deadlines recovered, cost per deadline recovered, BLS-cited wage x 1.5 overtime, temporary crew-day cost, tagged assumptions, penalty off by default", "acceptance": "cd backend && uv run pytest tests/lane_r/test_economics.py -q", "passes": true},
+  {"id": "R-07", "priority": "P0", "title": "POST /api/recovery/options and /evaluate return real results with stub=false and no X-Rollout-Stub header", "acceptance": "cd backend && uv run pytest tests/lane_r/test_api.py -q", "passes": true},
+  {"id": "R-08", "priority": "P1", "title": "Interactive mode: about 2 s budget, warm start from the current plan, Best found label when not proven, cache by scenario hash plus edits. Measure battery crew BA out Thu 7 Jun in both modes", "acceptance": "cd backend && uv run pytest tests/lane_r/test_interactive.py -q", "passes": true},
+  {"id": "R-09", "priority": "P1", "title": "Pin semantics report what protecting a visit costs vs the unpinned option", "acceptance": "cd backend && uv run pytest tests/lane_r/test_pin_cost.py -q", "passes": true},
+  {"id": "R-10", "priority": "P1", "title": "POST /api/recovery/approve returns the chosen option as the new current plan, which loads and validates", "acceptance": "cd backend && uv run pytest tests/lane_r/test_approve.py -q", "passes": true},
+  {"id": "R-11", "priority": "P1", "title": "One plain-sentence explanation per changed visit, naming the constraint", "acceptance": "cd backend && uv run pytest tests/lane_r/test_explain.py -q", "passes": true},
+  {"id": "R-12", "priority": "P1", "title": "lowest_modeled_cost flag on exactly one option, never labeled Recommended", "acceptance": "cd backend && uv run pytest tests/lane_r/test_recover.py -q -k lowest", "passes": true},
+  {"id": "R-13", "priority": "P2", "title": "Per-crew load before and after (crew_load) on every option", "acceptance": "cd backend && uv run pytest tests/lane_r/test_recover.py -q -k crew_load", "passes": true},
+  {"id": "R-14", "priority": "P2", "title": "Customer reschedule as an intervention", "acceptance": "cd backend && uv run pytest tests/lane_r/test_edits.py -q -k reschedule", "passes": true},
+  {"id": "R-19", "priority": "P0", "title": "Freeze the past: treat the earliest disruption date as now and lock every current-plan visit before it. No option may move a visit dated before the disruption. Found in integration: storm 14 Jun rebalance moved visits dated 5-13 Jun (42 visits, 29 customers live).", "acceptance": "cd backend && uv run pytest tests/lane_r/test_integration_fixes.py -q -k freeze_past", "passes": false},
+  {"id": "R-20", "priority": "P0", "title": "deadlines_recovered = no-action deadlines missed minus this option's deadlines missed (never above no-action misses). Found: storm rebalance missed 4 of 7 but reported 7 recovered.", "acceptance": "cd backend && uv run pytest tests/lane_r/test_integration_fixes.py -q -k recovered", "passes": false},
+  {"id": "R-21", "priority": "P0", "title": "Temporary capacity never lands on a day the disruption removed for every crew (a storm day). Offer it on the next business day. Found: 'Add Crew TEMP-BA on 2018-06-14' for the 14 Jun storm.", "acceptance": "cd backend && uv run pytest tests/lane_r/test_integration_fixes.py -q -k temporary_after_storm", "passes": false},
+  {"id": "R-22", "priority": "P0", "title": "Interactive options and evaluate answer in about 2 s on standard (measured 7-9 s; full runs 18-31 s). Label results best found when not proven.", "acceptance": "cd backend && uv run pytest tests/lane_r/test_integration_fixes.py -q -k interactive_budget", "passes": false},
+  {"id": "R-23", "priority": "P1", "title": "Reproducible options: the same request returns the same plans on every run (deterministic work limit or fixed seed and workers where the budget binds). Found: re-recording flipped rebalance from optimal (25 visits) to feasible (42 visits). Unblocks H-07.", "acceptance": "cd backend && uv run pytest tests/lane_r/test_integration_fixes.py -q -k reproducible", "passes": false},
+  {"id": "R-24", "priority": "P1", "title": "Action labels use human dates ('Thu 14 Jun'), not ISO dates ('2018-06-14').", "acceptance": "cd backend && uv run pytest tests/lane_r/test_integration_fixes.py -q -k labels", "passes": false}
 ]

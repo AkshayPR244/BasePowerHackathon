@@ -1,6 +1,6 @@
 # Contracts
 
-Rollout Planner is a planning and recovery analysis tool for residential battery installers. It takes an installation plan plus a disruption (crew out, late shipment, slipped approval), finds the best recovery, and explains what is at risk and why.
+Rollout Planner is a planning and recovery analysis tool for residential battery installers. It takes an installation plan plus a disruption (a crew out, reduced capacity, a readiness change, or an appointment change), finds the best recovery, and explains what is at risk and why.
 
 The Pydantic models in `backend/app/contracts/` are the only definition of shared types. OpenAPI and TypeScript types are generated from them. Nobody hand-writes shared types.
 

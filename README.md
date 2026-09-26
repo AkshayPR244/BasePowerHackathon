@@ -1,6 +1,6 @@
 # Rollout Planner
 
-A planning and recovery analysis tool for residential battery installers like Base. It takes an installation plan plus a disruption (crew out, late shipment, slipped approval), finds the best recovery, and explains which commitments are at risk and why.
+A planning and recovery analysis tool for residential battery installers like Base. It takes an installation plan plus a disruption (a crew out, reduced capacity, a readiness change, or an appointment change), finds the best recovery, and explains which commitments are at risk and why.
 
 It is not a customer booking tool. It does not pick appointments or send anything to customers.
 
@@ -29,7 +29,7 @@ Try the API without the UI:
 ```bash
 make api
 curl -s localhost:8000/api/scenarios
-curl -s -X POST localhost:8000/api/plans -H 'content-type: application/json'   -d '{"scenario_id":"standard","revision":1,"mode":"recovery","edits":[{"kind":"delay_inventory","configuration_id":"B13","from_date":"2018-06-07","to_date":"2018-06-11"}]}'
+curl -s -X POST localhost:8000/api/recovery/options -H 'content-type: application/json'   -d '{"scenario_id":"standard","revision":1,"disruption":[{"kind":"remove_crew_day","crew_id":"BA","date":"2018-06-07"}]}'
 ```
 
 Every error is an `ApiError` with `code` and `message`. The first cold start builds the standard value table in the background, which took 46 s on the test laptop.

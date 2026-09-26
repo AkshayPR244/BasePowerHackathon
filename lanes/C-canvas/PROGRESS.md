@@ -8,7 +8,7 @@ Any agent or person can pick this up cold. Rewrite this block before you stop.
 - **Setup:** `cd frontend && pnpm install`
 - **Check:** `cd frontend && pnpm typecheck && pnpm test && pnpm build`
 - **Read first:** `AGENTS.md`, `CLAUDE.md` ("Product (read first)"), `lanes/C-canvas/BRIEF.md`, `docs/DESIGN.md`, `docs/CONTRACTS.md` (recovery shapes), `frontend/src/mocks/recorded/index.json`, `.claude/skills/design-system/SKILL.md`
-- **Next:** No unchecked C feature items remain. Commit and push the C work, then request team/evaluator review.
+- **Next:** layout pass C-17 to C-21 from the 2026-09-26 integration pass (canvas first, open on the disruption week, disruption bar matches the analysis, fewer arcs, no-lowest case). C-17 first.
 - **Then:** the next item in `lanes/C-canvas/feature_list.json` with `"passes": false`, highest priority first.
 
 ## Done

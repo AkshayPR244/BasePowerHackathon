@@ -1,0 +1,20 @@
+{
+  "check": "make check-a",
+  "tests_passed": 101,
+  "standard_price_rows": 5376,
+  "standard_value_rows": 360,
+  "standard_first_valuation_seconds": 21.221,
+  "standard_cached_valuation_seconds": 0.001,
+  "hcad_sample_parcels": 30,
+  "timing_scope": "Local laptop, observed LZ_HOUSTON 2018 prices, unrestricted-export model; preparation is separate from replanning.",
+  "resstock_profile_rows": 5376,
+  "load_limited_first_value_usd": 79.38727005020861,
+  "unrestricted_first_value_usd": 82.06228806428324,
+  "standard_current_plan_validation": {
+    "checked": true,
+    "valid": true,
+    "issues": [],
+    "validator": "independent-v1"
+  },
+  "load_limited_preparation_seconds": 29.675
+}

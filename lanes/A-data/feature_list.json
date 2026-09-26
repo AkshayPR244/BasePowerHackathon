@@ -1,20 +1,128 @@
 [
-  {"id": "A-01", "priority": "P0", "title": "Scenario loader: data/demo/tiny into contract models via app.data.load.load_scenario, plus a validate_plan stub with the final signature", "acceptance": "cd backend && uv run pytest tests/lane_a/test_load.py -q", "passes": false},
-  {"id": "A-02", "priority": "P0", "title": "Contract tests: tiny scenario and every data/demo/tiny/expected/*.json round-trip through the models, and expected scenario_hash values match the loader", "acceptance": "cd backend && uv run pytest tests/contract/test_fixtures_roundtrip.py -q", "passes": false},
-  {"id": "A-03", "priority": "P0", "title": "Boundary test: app/validate never imports app.planning or app.baselines, app/contracts imports no lane code", "acceptance": "cd backend && uv run pytest tests/contract/test_boundaries.py -q", "passes": false},
-  {"id": "A-04", "priority": "P0", "title": "Validator recomputes capacity, cluster, skill, readiness, deadline, inventory, and locks from assignments and sets checked=true", "acceptance": "cd backend && uv run pytest tests/lane_a/test_validator.py -q", "passes": false},
-  {"id": "A-05", "priority": "P0", "title": "Validator passes every expected tiny plan with zero issues and flags one deliberately broken plan per ViolationCode", "acceptance": "cd backend && uv run pytest tests/lane_a/test_validator.py -q -k \"expected or broken\"", "passes": false},
-  {"id": "A-06", "priority": "P0", "title": "Validator recomputes ObjectiveComponents and flags OBJECTIVE_MISMATCH", "acceptance": "cd backend && uv run pytest tests/lane_a/test_validator.py -q -k objective", "passes": false},
-  {"id": "A-07", "priority": "P0", "title": "Tiny enumerator reproduces expected objectives for strict, strict infeasible, and recovery with Crew A out Monday", "acceptance": "cd backend && uv run pytest tests/lane_a/test_enumerate_tiny.py -q", "passes": false},
-  {"id": "A-08", "priority": "P0", "title": "Input validation returns structured InputIssues for duplicate IDs, unknown references, bad values, date order, duplicate planned installs", "acceptance": "cd backend && uv run pytest tests/lane_a/test_validate_inputs.py -q", "passes": false},
-  {"id": "A-09", "priority": "P0", "title": "Ready date after deadline loads as a valid scenario. Contradictory hard locks surface as CONTRADICTORY_LOCKS and are never dropped", "acceptance": "cd backend && uv run pytest tests/lane_a/test_validate_inputs.py -q -k \"ready_after_deadline or contradictory_locks\"", "passes": false},
-  {"id": "A-10", "priority": "P0", "title": "Synthetic standard scenario: 30 jobs, 3 clusters, 3 crews, 10 working days, fixed seed, labeled synthetic, byte-identical reruns, loads through load_scenario", "acceptance": "cd backend && uv run pytest tests/lane_a/test_generate_standard.py -q", "passes": false},
-  {"id": "A-11", "priority": "P1", "title": "Manifest writer: source URL, release, retrieval date, covered dates, license, sha256, transformation, row count, field kinds", "acceptance": "cd backend && uv run pytest tests/lane_a/test_manifest.py -q", "passes": false},
-  {"id": "A-12", "priority": "P1", "title": "ERCOT NP6-785-ER 2018 load-zone prices to prices.parquet in UTC, interval-ending and DST handled, no filled gaps, manifest written", "acceptance": "cd backend && uv run pytest tests/lane_a/test_prepare_ercot.py -q && test -f ../data/manifests/ercot_np6_785_2018.json", "passes": false},
-  {"id": "A-13", "priority": "P1", "title": "Battery MILP: energy conservation and boundary energy equal to reserve", "acceptance": "cd backend && uv run pytest tests/lane_a/test_battery.py -q -k \"conservation or boundary\"", "passes": false},
-  {"id": "A-14", "priority": "P1", "title": "Battery MILP: power limits, no simultaneous charge and discharge, negative prices", "acceptance": "cd backend && uv run pytest tests/lane_a/test_battery.py -q -k \"limits or simultaneous or negative\"", "passes": false},
-  {"id": "A-15", "priority": "P1", "title": "Value table value(site_id, install_date) with solver status per row. Identical sites in one zone get identical same-date values", "acceptance": "cd backend && uv run pytest tests/lane_a/test_value_table.py -q", "passes": false},
-  {"id": "A-16", "priority": "P1", "title": "Value table cached by input hash under data/cache. A second call runs no solves", "acceptance": "cd backend && uv run pytest tests/lane_a/test_value_table.py -q -k cache", "passes": false},
-  {"id": "A-17", "priority": "P2", "title": "HCAD bounded GeoJSON query to a standard_real scenario, anonymized IDs, no owner names or addresses, manifest written", "acceptance": "cd backend && uv run pytest tests/lane_a/test_prepare_hcad.py -q && test -f ../data/manifests/hcad_parcels.json", "passes": false},
-  {"id": "A-18", "priority": "P2", "title": "Load-limited valuation sensitivity with ResStock profiles, labeled modeled", "acceptance": "cd backend && uv run pytest tests/lane_a/test_battery.py -q -k load_limited", "passes": false}
+  {
+    "id": "A-01",
+    "priority": "P0",
+    "title": "Scenario loader: data/demo/tiny into contract models via app.data.load.load_scenario, plus a validate_plan stub with the final signature",
+    "acceptance": "cd backend && uv run pytest tests/lane_a/test_load.py -q",
+    "passes": true
+  },
+  {
+    "id": "A-02",
+    "priority": "P0",
+    "title": "Contract tests: tiny scenario and every data/demo/tiny/expected/*.json round-trip through the models, and expected scenario_hash values match the loader",
+    "acceptance": "cd backend && uv run pytest tests/contract/test_fixtures_roundtrip.py -q",
+    "passes": true
+  },
+  {
+    "id": "A-03",
+    "priority": "P0",
+    "title": "Boundary test: app/validate never imports app.planning or app.baselines, app/contracts imports no lane code",
+    "acceptance": "cd backend && uv run pytest tests/contract/test_boundaries.py -q",
+    "passes": true
+  },
+  {
+    "id": "A-04",
+    "priority": "P0",
+    "title": "Validator recomputes capacity, cluster, skill, readiness, deadline, inventory, and locks from assignments and sets checked=true",
+    "acceptance": "cd backend && uv run pytest tests/lane_a/test_validator.py -q",
+    "passes": true
+  },
+  {
+    "id": "A-05",
+    "priority": "P0",
+    "title": "Validator passes every expected tiny plan with zero issues and flags one deliberately broken plan per ViolationCode",
+    "acceptance": "cd backend && uv run pytest tests/lane_a/test_validator.py -q -k \"expected or broken\"",
+    "passes": true
+  },
+  {
+    "id": "A-06",
+    "priority": "P0",
+    "title": "Validator recomputes ObjectiveComponents and flags OBJECTIVE_MISMATCH",
+    "acceptance": "cd backend && uv run pytest tests/lane_a/test_validator.py -q -k objective",
+    "passes": true
+  },
+  {
+    "id": "A-07",
+    "priority": "P0",
+    "title": "Tiny enumerator reproduces expected objectives for strict, strict infeasible, and recovery with Crew A out Monday",
+    "acceptance": "cd backend && uv run pytest tests/lane_a/test_enumerate_tiny.py -q",
+    "passes": true
+  },
+  {
+    "id": "A-08",
+    "priority": "P0",
+    "title": "Input validation returns structured InputIssues for duplicate IDs, unknown references, bad values, date order, duplicate planned installs",
+    "acceptance": "cd backend && uv run pytest tests/lane_a/test_validate_inputs.py -q",
+    "passes": true
+  },
+  {
+    "id": "A-09",
+    "priority": "P0",
+    "title": "Ready date after deadline loads as a valid scenario. Contradictory hard locks surface as CONTRADICTORY_LOCKS and are never dropped",
+    "acceptance": "cd backend && uv run pytest tests/lane_a/test_validate_inputs.py -q -k \"ready_after_deadline or contradictory_locks\"",
+    "passes": true
+  },
+  {
+    "id": "A-10",
+    "priority": "P0",
+    "title": "Synthetic standard scenario: 30 jobs, 3 clusters, 3 crews, 10 working days, fixed seed, labeled synthetic, byte-identical reruns, loads through load_scenario",
+    "acceptance": "cd backend && uv run pytest tests/lane_a/test_generate_standard.py -q",
+    "passes": true
+  },
+  {
+    "id": "A-11",
+    "priority": "P1",
+    "title": "Manifest writer: source URL, release, retrieval date, covered dates, license, sha256, transformation, row count, field kinds",
+    "acceptance": "cd backend && uv run pytest tests/lane_a/test_manifest.py -q",
+    "passes": true
+  },
+  {
+    "id": "A-12",
+    "priority": "P1",
+    "title": "ERCOT NP6-785-ER 2018 load-zone prices to prices.parquet in UTC, interval-ending and DST handled, no filled gaps, manifest written",
+    "acceptance": "cd backend && uv run pytest tests/lane_a/test_prepare_ercot.py -q && test -f ../data/manifests/ercot_np6_785_2018.json",
+    "passes": true
+  },
+  {
+    "id": "A-13",
+    "priority": "P1",
+    "title": "Battery MILP: energy conservation and boundary energy equal to reserve",
+    "acceptance": "cd backend && uv run pytest tests/lane_a/test_battery.py -q -k \"conservation or boundary\"",
+    "passes": true
+  },
+  {
+    "id": "A-14",
+    "priority": "P1",
+    "title": "Battery MILP: power limits, no simultaneous charge and discharge, negative prices",
+    "acceptance": "cd backend && uv run pytest tests/lane_a/test_battery.py -q -k \"limits or simultaneous or negative\"",
+    "passes": true
+  },
+  {
+    "id": "A-15",
+    "priority": "P1",
+    "title": "Value table value(site_id, install_date) with solver status per row. Identical sites in one zone get identical same-date values",
+    "acceptance": "cd backend && uv run pytest tests/lane_a/test_value_table.py -q",
+    "passes": true
+  },
+  {
+    "id": "A-16",
+    "priority": "P1",
+    "title": "Value table cached by input hash under data/cache. A second call runs no solves",
+    "acceptance": "cd backend && uv run pytest tests/lane_a/test_value_table.py -q -k cache",
+    "passes": true
+  },
+  {
+    "id": "A-17",
+    "priority": "P2",
+    "title": "HCAD bounded GeoJSON query to a standard_real scenario, anonymized IDs, no owner names or addresses, manifest written",
+    "acceptance": "cd backend && uv run pytest tests/lane_a/test_prepare_hcad.py -q && test -f ../data/manifests/hcad_parcels.json",
+    "passes": true
+  },
+  {
+    "id": "A-18",
+    "priority": "P2",
+    "title": "Load-limited valuation sensitivity with ResStock profiles, labeled modeled",
+    "acceptance": "cd backend && uv run pytest tests/lane_a/test_battery.py -q -k load_limited",
+    "passes": true
+  }
 ]

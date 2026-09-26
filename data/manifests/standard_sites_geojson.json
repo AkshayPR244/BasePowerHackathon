@@ -1,0 +1,16 @@
+{
+  "dataset_id": "standard_sites_geojson",
+  "kind": "synthetic",
+  "source_url": null,
+  "release": "generator-v1-seed-42",
+  "retrieved_at": null,
+  "covered_start": "2018-06-04",
+  "covered_end": "2018-06-15",
+  "license_notes": "Synthetic benchmark data; repository MIT license.",
+  "sha256": "fa70912658714c93cbedcdbd53b22d2b2ca31b6e1ff69202bbda5cd47f269d68",
+  "transformation": "Seeded synthetic operational and geometry inputs; no real customers.",
+  "row_count": 30,
+  "fields": {
+    "geometry": "synthetic"
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "dataset_id": "resstock_amy2018_tx_100",
+  "kind": "modeled",
+  "source_url": "https://oedi-data-lake.s3.amazonaws.com/nrel-pds-building-stock/end-use-load-profiles-for-us-building-stock/2025/resstock_amy2018_release_1/timeseries_individual_buildings/by_state/upgrade=0/state=TX/100-0.parquet",
+  "release": "ResStock 2025 release 1; AMY 2018; Texas baseline building model 100",
+  "retrieved_at": "2026-09-26T05:40:57.789443Z",
+  "covered_start": "2018-06-04",
+  "covered_end": "2018-07-29",
+  "license_notes": "ResStock license from the AWS public data registry; retained in data/LICENSE_RESSTOCK.md. Source model unmodified; data subset and units derived.",
+  "sha256": "a3210ca295d2113e7183d2e852057f4f9045977827623a9b05cf9485143bcd91",
+  "transformation": "Fixed EST interval ends to UTC starts; quarter-hour kWh divided by 0.25 to kW. One Texas archetype assigned to all synthetic sites for sensitivity; not measured household demand. No gaps filled.",
+  "row_count": 5376,
+  "fields": {
+    "timestamp_utc": "derived",
+    "interval_hours": "derived",
+    "profile_id": "modeled",
+    "load_kw": "modeled"
+  }
+}

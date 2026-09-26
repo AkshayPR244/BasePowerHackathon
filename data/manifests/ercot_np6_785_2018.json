@@ -1,0 +1,19 @@
+{
+  "dataset_id": "ercot_np6_785_2018",
+  "kind": "observed",
+  "source_url": "https://www.ercot.com/misdownload/servlets/mirDownload?doclookupId=642564849",
+  "release": "NP6-785-ER RTMLZHBSPP_2018; published 2019-01-01",
+  "retrieved_at": "2026-09-26T05:24:36.192495Z",
+  "covered_start": "2018-06-04",
+  "covered_end": "2018-07-29",
+  "license_notes": "ERCOT Terms of Use section 5 permits public raw data in compilations and analyses. Source: https://www.ercot.com/help/terms (checked 2026-09-26).",
+  "sha256": "8505d0e283432af03a7b71eaf603ed34fca6caae590d4695b75096a0cf781e1c",
+  "transformation": "Filter LZ settlement-point type, requested zones and dates; convert Chicago times to UTC interval starts using the repeated-hour flag; reject gaps.",
+  "row_count": 5376,
+  "fields": {
+    "timestamp_utc": "derived",
+    "interval_hours": "derived",
+    "load_zone": "observed",
+    "price_usd_mwh": "observed"
+  }
+}

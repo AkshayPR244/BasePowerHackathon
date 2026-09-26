@@ -1,0 +1,16 @@
+{
+  "dataset_id": "standard_scenario_yaml",
+  "kind": "synthetic",
+  "source_url": null,
+  "release": "generator-v1-seed-42",
+  "retrieved_at": null,
+  "covered_start": "2018-06-04",
+  "covered_end": "2018-06-15",
+  "license_notes": "Synthetic benchmark data; repository MIT license.",
+  "sha256": "145222ffba11f2d66c91407a3f8c8bcab0340a01bc1c7d8c705e2e6828847790",
+  "transformation": "Seeded synthetic operational and geometry inputs; no real customers.",
+  "row_count": 1,
+  "fields": {
+    "config": "synthetic"
+  }
+}

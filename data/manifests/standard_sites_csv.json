@@ -1,0 +1,25 @@
+{
+  "dataset_id": "standard_sites_csv",
+  "kind": "synthetic",
+  "source_url": null,
+  "release": "generator-v1-seed-42",
+  "retrieved_at": null,
+  "covered_start": "2018-06-04",
+  "covered_end": "2018-06-15",
+  "license_notes": "Synthetic benchmark data; repository MIT license.",
+  "sha256": "5da6567ad96429bfd50644aef569a0b743837188383db2f9e8dfffe0b7ddf05c",
+  "transformation": "Seeded synthetic operational and geometry inputs; no real customers.",
+  "row_count": 30,
+  "fields": {
+    "site_id": "synthetic",
+    "cluster_id": "synthetic",
+    "program_id": "synthetic",
+    "ready_date": "synthetic",
+    "deadline": "synthetic",
+    "duration_min": "synthetic",
+    "required_skill": "synthetic",
+    "configuration_id": "synthetic",
+    "load_zone": "synthetic",
+    "profile_id": "synthetic"
+  }
+}

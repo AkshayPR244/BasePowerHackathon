@@ -1,0 +1,19 @@
+{
+  "dataset_id": "standard_real_current_plan_csv",
+  "kind": "synthetic",
+  "source_url": null,
+  "release": "generator-v1-seed-42",
+  "retrieved_at": null,
+  "covered_start": "2018-06-04",
+  "covered_end": "2018-06-15",
+  "license_notes": "Synthetic benchmark data; repository MIT license.",
+  "sha256": "7c93230f2924a16fb75abc9aecfa7b380d476f6ab0959b1a78cd7b3b4efc34f7",
+  "transformation": "Seeded synthetic inputs; no real customers.",
+  "row_count": 30,
+  "fields": {
+    "site_id": "synthetic",
+    "crew_id": "synthetic",
+    "date": "synthetic",
+    "locked": "synthetic"
+  }
+}

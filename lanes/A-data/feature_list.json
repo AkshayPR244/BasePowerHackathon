@@ -67,56 +67,56 @@
     "priority": "P0",
     "title": "Synthetic standard scenario: 30 jobs, 3 clusters, 3 crews, 10 working days, fixed seed, labeled synthetic, byte-identical reruns, loads through load_scenario",
     "acceptance": "cd backend && uv run pytest tests/lane_a/test_generate_standard.py -q",
-    "passes": false
+    "passes": true
   },
   {
     "id": "A-11",
     "priority": "P1",
     "title": "Manifest writer: source URL, release, retrieval date, covered dates, license, sha256, transformation, row count, field kinds",
     "acceptance": "cd backend && uv run pytest tests/lane_a/test_manifest.py -q",
-    "passes": false
+    "passes": true
   },
   {
     "id": "A-12",
     "priority": "P1",
     "title": "ERCOT NP6-785-ER 2018 load-zone prices to prices.parquet in UTC, interval-ending and DST handled, no filled gaps, manifest written",
     "acceptance": "cd backend && uv run pytest tests/lane_a/test_prepare_ercot.py -q && test -f ../data/manifests/ercot_np6_785_2018.json",
-    "passes": false
+    "passes": true
   },
   {
     "id": "A-13",
     "priority": "P1",
     "title": "Battery MILP: energy conservation and boundary energy equal to reserve",
     "acceptance": "cd backend && uv run pytest tests/lane_a/test_battery.py -q -k \"conservation or boundary\"",
-    "passes": false
+    "passes": true
   },
   {
     "id": "A-14",
     "priority": "P1",
     "title": "Battery MILP: power limits, no simultaneous charge and discharge, negative prices",
     "acceptance": "cd backend && uv run pytest tests/lane_a/test_battery.py -q -k \"limits or simultaneous or negative\"",
-    "passes": false
+    "passes": true
   },
   {
     "id": "A-15",
     "priority": "P1",
     "title": "Value table value(site_id, install_date) with solver status per row. Identical sites in one zone get identical same-date values",
     "acceptance": "cd backend && uv run pytest tests/lane_a/test_value_table.py -q",
-    "passes": false
+    "passes": true
   },
   {
     "id": "A-16",
     "priority": "P1",
     "title": "Value table cached by input hash under data/cache. A second call runs no solves",
     "acceptance": "cd backend && uv run pytest tests/lane_a/test_value_table.py -q -k cache",
-    "passes": false
+    "passes": true
   },
   {
     "id": "A-17",
     "priority": "P2",
     "title": "HCAD bounded GeoJSON query to a standard_real scenario, anonymized IDs, no owner names or addresses, manifest written",
     "acceptance": "cd backend && uv run pytest tests/lane_a/test_prepare_hcad.py -q && test -f ../data/manifests/hcad_parcels.json",
-    "passes": false
+    "passes": true
   },
   {
     "id": "A-18",

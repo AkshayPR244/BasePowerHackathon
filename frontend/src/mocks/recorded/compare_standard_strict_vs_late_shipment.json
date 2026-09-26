@@ -1,0 +1,255 @@
+{
+  "before_plan_id": "standard-r0-strict-e4afa3ae",
+  "after_plan_id": "standard-r1-recovery-785cfba2",
+  "changes": [
+    {
+      "site_id": "N-04",
+      "kind": "moved",
+      "before": {
+        "crew_id": "A",
+        "date": "2018-06-07"
+      },
+      "after": {
+        "crew_id": "A",
+        "date": "2018-06-13"
+      },
+      "before_state": "scheduled",
+      "after_state": "late",
+      "note": "N-04 moves from Crew A Thu 7 Jun to Crew A Wed 13 Jun. 5 days late."
+    },
+    {
+      "site_id": "N-05",
+      "kind": "moved",
+      "before": {
+        "crew_id": "A",
+        "date": "2018-06-08"
+      },
+      "after": {
+        "crew_id": "B",
+        "date": "2018-06-12"
+      },
+      "before_state": "scheduled",
+      "after_state": "scheduled",
+      "note": "N-05 moves from Crew A Fri 8 Jun to Crew B Tue 12 Jun."
+    },
+    {
+      "site_id": "N-06",
+      "kind": "moved",
+      "before": {
+        "crew_id": "A",
+        "date": "2018-06-08"
+      },
+      "after": {
+        "crew_id": "B",
+        "date": "2018-06-12"
+      },
+      "before_state": "scheduled",
+      "after_state": "scheduled",
+      "note": "N-06 moves from Crew A Fri 8 Jun to Crew B Tue 12 Jun."
+    },
+    {
+      "site_id": "N-08",
+      "kind": "moved",
+      "before": {
+        "crew_id": "A",
+        "date": "2018-06-13"
+      },
+      "after": {
+        "crew_id": "A",
+        "date": "2018-06-14"
+      },
+      "before_state": "scheduled",
+      "after_state": "scheduled",
+      "note": "N-08 moves from Crew A Wed 13 Jun to Crew A Thu 14 Jun."
+    },
+    {
+      "site_id": "N-10",
+      "kind": "moved",
+      "before": {
+        "crew_id": "B",
+        "date": "2018-06-14"
+      },
+      "after": {
+        "crew_id": "A",
+        "date": "2018-06-15"
+      },
+      "before_state": "scheduled",
+      "after_state": "scheduled",
+      "note": "N-10 moves from Crew B Thu 14 Jun to Crew A Fri 15 Jun."
+    },
+    {
+      "site_id": "S-05",
+      "kind": "moved",
+      "before": {
+        "crew_id": "B",
+        "date": "2018-06-08"
+      },
+      "after": {
+        "crew_id": "A",
+        "date": "2018-06-11"
+      },
+      "before_state": "scheduled",
+      "after_state": "scheduled",
+      "note": "S-05 moves from Crew B Fri 8 Jun to Crew A Mon 11 Jun."
+    },
+    {
+      "site_id": "S-06",
+      "kind": "moved",
+      "before": {
+        "crew_id": "B",
+        "date": "2018-06-07"
+      },
+      "after": {
+        "crew_id": "B",
+        "date": "2018-06-11"
+      },
+      "before_state": "scheduled",
+      "after_state": "scheduled",
+      "note": "S-06 moves from Crew B Thu 7 Jun to Crew B Mon 11 Jun."
+    },
+    {
+      "site_id": "S-07",
+      "kind": "moved",
+      "before": {
+        "crew_id": "B",
+        "date": "2018-06-12"
+      },
+      "after": {
+        "crew_id": "B",
+        "date": "2018-06-13"
+      },
+      "before_state": "scheduled",
+      "after_state": "scheduled",
+      "note": "S-07 moves from Crew B Tue 12 Jun to Crew B Wed 13 Jun."
+    },
+    {
+      "site_id": "S-08",
+      "kind": "moved",
+      "before": {
+        "crew_id": "B",
+        "date": "2018-06-12"
+      },
+      "after": {
+        "crew_id": "B",
+        "date": "2018-06-13"
+      },
+      "before_state": "scheduled",
+      "after_state": "scheduled",
+      "note": "S-08 moves from Crew B Tue 12 Jun to Crew B Wed 13 Jun."
+    },
+    {
+      "site_id": "S-09",
+      "kind": "moved",
+      "before": {
+        "crew_id": "B",
+        "date": "2018-06-13"
+      },
+      "after": {
+        "crew_id": "B",
+        "date": "2018-06-14"
+      },
+      "before_state": "scheduled",
+      "after_state": "scheduled",
+      "note": "S-09 moves from Crew B Wed 13 Jun to Crew B Thu 14 Jun."
+    },
+    {
+      "site_id": "S-10",
+      "kind": "moved",
+      "before": {
+        "crew_id": "A",
+        "date": "2018-06-14"
+      },
+      "after": {
+        "crew_id": "B",
+        "date": "2018-06-15"
+      },
+      "before_state": "scheduled",
+      "after_state": "scheduled",
+      "note": "S-10 moves from Crew A Thu 14 Jun to Crew B Fri 15 Jun."
+    },
+    {
+      "site_id": "W-03",
+      "kind": "moved",
+      "before": {
+        "crew_id": "C",
+        "date": "2018-06-07"
+      },
+      "after": {
+        "crew_id": "C",
+        "date": "2018-06-12"
+      },
+      "before_state": "scheduled",
+      "after_state": "late",
+      "note": "W-03 moves from Crew C Thu 7 Jun to Crew C Tue 12 Jun. 4 days late."
+    },
+    {
+      "site_id": "W-04",
+      "kind": "moved",
+      "before": {
+        "crew_id": "C",
+        "date": "2018-06-07"
+      },
+      "after": {
+        "crew_id": "C",
+        "date": "2018-06-11"
+      },
+      "before_state": "scheduled",
+      "after_state": "late",
+      "note": "W-04 moves from Crew C Thu 7 Jun to Crew C Mon 11 Jun. 4 days late."
+    },
+    {
+      "site_id": "W-05",
+      "kind": "moved",
+      "before": {
+        "crew_id": "C",
+        "date": "2018-06-08"
+      },
+      "after": {
+        "crew_id": "C",
+        "date": "2018-06-12"
+      },
+      "before_state": "scheduled",
+      "after_state": "scheduled",
+      "note": "W-05 moves from Crew C Fri 8 Jun to Crew C Tue 12 Jun."
+    },
+    {
+      "site_id": "W-07",
+      "kind": "moved",
+      "before": {
+        "crew_id": "C",
+        "date": "2018-06-12"
+      },
+      "after": {
+        "crew_id": "C",
+        "date": "2018-06-13"
+      },
+      "before_state": "scheduled",
+      "after_state": "scheduled",
+      "note": "W-07 moves from Crew C Tue 12 Jun to Crew C Wed 13 Jun."
+    },
+    {
+      "site_id": "W-10",
+      "kind": "moved",
+      "before": {
+        "crew_id": "C",
+        "date": "2018-06-13"
+      },
+      "after": {
+        "crew_id": "C",
+        "date": "2018-06-15"
+      },
+      "before_state": "scheduled",
+      "after_state": "scheduled",
+      "note": "W-10 moves from Crew C Wed 13 Jun to Crew C Fri 15 Jun."
+    }
+  ],
+  "summary": {
+    "moved": 16,
+    "added": 0,
+    "removed": 0,
+    "newly_late": 3,
+    "value_delta_usd": -19.130048826904385,
+    "travel_delta_min": -50
+  },
+  "headline": "16 jobs move. 3 miss their deadlines."
+}

@@ -1,0 +1,177 @@
+{
+  "plan_id": "tiny-r0-strict-34fef406",
+  "scenario_id": "tiny",
+  "scenario_hash": "34fef406b07ac6d7e2cb486e804f01766bf33b1221e00eabd13b4ced8a516281",
+  "revision": 0,
+  "mode": "strict",
+  "algorithm": "cpsat",
+  "objective_policy": "value_aware",
+  "edits": [],
+  "status": "optimal",
+  "message": "All 5 schedulable jobs meet their deadlines. Blocked: S-03 needs skill panel_upgrade. No crew has it.",
+  "stages": [
+    {
+      "name": "operating_value",
+      "status": "optimal",
+      "value": 0.0,
+      "bound": 0.0,
+      "gap": 0.0,
+      "elapsed_ms": 0
+    },
+    {
+      "name": "changed_installs",
+      "status": "optimal",
+      "value": 0.0,
+      "bound": 0.0,
+      "gap": 0.0,
+      "elapsed_ms": 0
+    },
+    {
+      "name": "travel",
+      "status": "optimal",
+      "value": 165.0,
+      "bound": 165.0,
+      "gap": 0.0,
+      "elapsed_ms": 0
+    }
+  ],
+  "assignments": [
+    {
+      "site_id": "N-01",
+      "crew_id": "A",
+      "date": "2018-06-05",
+      "state": "locked",
+      "days_late": 0,
+      "value_usd": 0.0
+    },
+    {
+      "site_id": "N-02",
+      "crew_id": "A",
+      "date": "2018-06-04",
+      "state": "scheduled",
+      "days_late": 0,
+      "value_usd": 0.0
+    },
+    {
+      "site_id": "N-03",
+      "crew_id": "A",
+      "date": "2018-06-05",
+      "state": "scheduled",
+      "days_late": 0,
+      "value_usd": 0.0
+    },
+    {
+      "site_id": "S-01",
+      "crew_id": "B",
+      "date": "2018-06-04",
+      "state": "scheduled",
+      "days_late": 0,
+      "value_usd": 0.0
+    },
+    {
+      "site_id": "S-02",
+      "crew_id": "B",
+      "date": "2018-06-04",
+      "state": "scheduled",
+      "days_late": 0,
+      "value_usd": 0.0
+    }
+  ],
+  "unscheduled": [
+    {
+      "site_id": "S-03",
+      "state": "blocked",
+      "reasons": [
+        "SKILL_MISMATCH"
+      ],
+      "detail": "S-03 needs skill panel_upgrade. No crew has it."
+    }
+  ],
+  "crew_days": [
+    {
+      "crew_id": "A",
+      "date": "2018-06-04",
+      "cluster_id": "N",
+      "onsite_min": 180,
+      "travel_min": 60,
+      "available_min": 480
+    },
+    {
+      "crew_id": "A",
+      "date": "2018-06-05",
+      "cluster_id": "N",
+      "onsite_min": 420,
+      "travel_min": 60,
+      "available_min": 480
+    },
+    {
+      "crew_id": "A",
+      "date": "2018-06-06",
+      "cluster_id": null,
+      "onsite_min": 0,
+      "travel_min": 0,
+      "available_min": 480
+    },
+    {
+      "crew_id": "B",
+      "date": "2018-06-04",
+      "cluster_id": "S",
+      "onsite_min": 420,
+      "travel_min": 45,
+      "available_min": 480
+    },
+    {
+      "crew_id": "B",
+      "date": "2018-06-05",
+      "cluster_id": null,
+      "onsite_min": 0,
+      "travel_min": 0,
+      "available_min": 480
+    },
+    {
+      "crew_id": "B",
+      "date": "2018-06-06",
+      "cluster_id": null,
+      "onsite_min": 0,
+      "travel_min": 0,
+      "available_min": 480
+    }
+  ],
+  "objective": {
+    "jobs_on_time": 5,
+    "jobs_late": 0,
+    "jobs_unscheduled": 1,
+    "jobs_blocked": 1,
+    "total_delay_days": 0,
+    "operating_value_usd": 0.0,
+    "changed_installs": 0,
+    "travel_allowance_min": 165,
+    "crew_utilization": 0.4115,
+    "value_distinguishes_choices": false
+  },
+  "validation": {
+    "checked": true,
+    "valid": true,
+    "issues": [],
+    "validator": "independent-v1"
+  },
+  "input_issues": [],
+  "assumptions": [
+    {
+      "key": "synthetic_inputs",
+      "text": "All inputs in this scenario are synthetic.",
+      "kind": "synthetic"
+    },
+    {
+      "key": "travel_allowance",
+      "text": "Travel is a fixed allowance per active crew-day and cluster, not a routed drive time.",
+      "kind": "assumed"
+    },
+    {
+      "key": "equal_values",
+      "text": "All site values are equal, so energy value did not change any choice.",
+      "kind": "assumed"
+    }
+  ],
+  "solve_ms": 0
+}

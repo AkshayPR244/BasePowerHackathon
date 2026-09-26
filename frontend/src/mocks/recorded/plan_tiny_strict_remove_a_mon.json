@@ -1,0 +1,90 @@
+{
+  "plan_id": "tiny-r1-strict-a27dc71d",
+  "scenario_id": "tiny",
+  "scenario_hash": "a27dc71dfc21b758497c528329be9487804cc0cb8d5dfe159b233c44ac605a4c",
+  "revision": 1,
+  "mode": "strict",
+  "algorithm": "cpsat",
+  "objective_policy": "value_aware",
+  "edits": [
+    {
+      "kind": "remove_crew_day",
+      "crew_id": "A",
+      "date": "2018-06-04"
+    }
+  ],
+  "status": "infeasible",
+  "message": "No plan meets every deadline. N-02 is due Mon 4 Jun. No crew that serves N works on or before that day. Try recovery mode.",
+  "stages": [
+    {
+      "name": "operating_value",
+      "status": "infeasible",
+      "value": null,
+      "bound": null,
+      "gap": null,
+      "elapsed_ms": 0
+    },
+    {
+      "name": "changed_installs",
+      "status": "skipped",
+      "value": null,
+      "bound": null,
+      "gap": null,
+      "elapsed_ms": 0
+    },
+    {
+      "name": "travel",
+      "status": "skipped",
+      "value": null,
+      "bound": null,
+      "gap": null,
+      "elapsed_ms": 0
+    }
+  ],
+  "assignments": [],
+  "unscheduled": [
+    {
+      "site_id": "N-02",
+      "state": "unscheduled",
+      "reasons": [
+        "NO_LEGAL_DATE"
+      ],
+      "detail": "N-02 is due Mon 4 Jun. No crew that serves N works on or before that day."
+    },
+    {
+      "site_id": "S-03",
+      "state": "blocked",
+      "reasons": [
+        "SKILL_MISMATCH"
+      ],
+      "detail": "S-03 needs skill panel_upgrade. No crew has it."
+    }
+  ],
+  "crew_days": [],
+  "objective": null,
+  "validation": {
+    "checked": true,
+    "valid": true,
+    "issues": [],
+    "validator": "independent-v1:no-incumbent-shape"
+  },
+  "input_issues": [],
+  "assumptions": [
+    {
+      "key": "synthetic_inputs",
+      "text": "All inputs in this scenario are synthetic.",
+      "kind": "synthetic"
+    },
+    {
+      "key": "travel_allowance",
+      "text": "Travel is a fixed allowance per active crew-day and cluster, not a routed drive time.",
+      "kind": "assumed"
+    },
+    {
+      "key": "equal_values",
+      "text": "All site values are equal, so energy value did not change any choice.",
+      "kind": "assumed"
+    }
+  ],
+  "solve_ms": 0
+}

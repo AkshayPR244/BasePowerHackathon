@@ -1,0 +1,1153 @@
+{
+  "scenario_id": "standard",
+  "scenario_hash": "e4afa3aec2d8b2c4788490dec5648708045ebb7532bb1a6bc51de3cfd8b045d5",
+  "revision": 0,
+  "config": {
+    "name": "Standard synthetic recovery benchmark",
+    "description": "30 synthetic jobs, 3 clusters, 3 crews and 10 working days.",
+    "timezone": "America/Chicago",
+    "planning_start": "2018-06-04",
+    "planning_end": "2018-06-15",
+    "evaluation_end": "2018-07-29",
+    "qualification_lag_days": 0,
+    "unscheduled_penalty_days": 30,
+    "objective_policy": "value_aware",
+    "solve_time_limit_s": 15.0,
+    "random_seed": 42,
+    "num_workers": 1,
+    "batteries": [
+      {
+        "configuration_id": "B13",
+        "capacity_kwh": 13.5,
+        "reserve_kwh": 1.35,
+        "charge_limit_kw": 5.0,
+        "discharge_limit_kw": 5.0,
+        "eta_charge": 0.95,
+        "eta_discharge": 0.95
+      }
+    ],
+    "synthetic": true,
+    "provenance": [
+      {
+        "input": "all operational and geometry files",
+        "kind": "synthetic",
+        "source": "Seeded benchmark generator v1, seed 42. Not customers.",
+        "manifest_id": null
+      },
+      {
+        "input": "prices.parquet",
+        "kind": "observed",
+        "source": "https://www.ercot.com/misdownload/servlets/mirDownload?doclookupId=642564849",
+        "manifest_id": "ercot_np6_785_2018"
+      },
+      {
+        "input": "loads.parquet",
+        "kind": "modeled",
+        "source": "https://oedi-data-lake.s3.amazonaws.com/nrel-pds-building-stock/end-use-load-profiles-for-us-building-stock/2025/resstock_amy2018_release_1/timeseries_individual_buildings/by_state/upgrade=0/state=TX/100-0.parquet",
+        "manifest_id": "resstock_amy2018_tx_100"
+      },
+      {
+        "input": "sites.csv:profile_id",
+        "kind": "modeled",
+        "source": "https://oedi-data-lake.s3.amazonaws.com/nrel-pds-building-stock/end-use-load-profiles-for-us-building-stock/2025/resstock_amy2018_release_1/timeseries_individual_buildings/by_state/upgrade=0/state=TX/100-0.parquet",
+        "manifest_id": "resstock_amy2018_tx_100"
+      }
+    ]
+  },
+  "clusters": [
+    {
+      "cluster_id": "N",
+      "name": "N",
+      "travel_allowance_min": 60,
+      "outline": [
+        [
+          -95.415,
+          29.795
+        ],
+        [
+          -95.385,
+          29.795
+        ],
+        [
+          -95.385,
+          29.825
+        ],
+        [
+          -95.415,
+          29.825
+        ],
+        [
+          -95.415,
+          29.795
+        ]
+      ]
+    },
+    {
+      "cluster_id": "S",
+      "name": "S",
+      "travel_allowance_min": 45,
+      "outline": [
+        [
+          -95.385,
+          29.665
+        ],
+        [
+          -95.355,
+          29.665
+        ],
+        [
+          -95.355,
+          29.695
+        ],
+        [
+          -95.385,
+          29.695
+        ],
+        [
+          -95.385,
+          29.665
+        ]
+      ]
+    },
+    {
+      "cluster_id": "W",
+      "name": "W",
+      "travel_allowance_min": 50,
+      "outline": [
+        [
+          -95.505,
+          29.735
+        ],
+        [
+          -95.475,
+          29.735
+        ],
+        [
+          -95.475,
+          29.765
+        ],
+        [
+          -95.505,
+          29.765
+        ],
+        [
+          -95.505,
+          29.735
+        ]
+      ]
+    }
+  ],
+  "sites": [
+    {
+      "site_id": "N-01",
+      "cluster_id": "N",
+      "program_id": "P1",
+      "ready_date": "2018-06-04",
+      "deadline": "2018-06-04",
+      "duration_min": 180,
+      "required_skill": "install",
+      "configuration_id": "B13",
+      "load_zone": "LZ_HOUSTON",
+      "profile_id": "resstock-2025-1-amy2018-tx-100",
+      "lon": -95.395169,
+      "lat": 29.804898
+    },
+    {
+      "site_id": "S-01",
+      "cluster_id": "S",
+      "program_id": "P1",
+      "ready_date": "2018-06-04",
+      "deadline": "2018-06-06",
+      "duration_min": 180,
+      "required_skill": "install",
+      "configuration_id": "B13",
+      "load_zone": "LZ_HOUSTON",
+      "profile_id": "resstock-2025-1-amy2018-tx-100",
+      "lon": -95.366466,
+      "lat": 29.687844
+    },
+    {
+      "site_id": "W-01",
+      "cluster_id": "W",
+      "program_id": "P1",
+      "ready_date": "2018-06-04",
+      "deadline": "2018-06-06",
+      "duration_min": 210,
+      "required_skill": "install",
+      "configuration_id": "B13",
+      "load_zone": "LZ_HOUSTON",
+      "profile_id": "resstock-2025-1-amy2018-tx-100",
+      "lon": -95.499364,
+      "lat": 29.741874
+    },
+    {
+      "site_id": "N-02",
+      "cluster_id": "N",
+      "program_id": "P1",
+      "ready_date": "2018-06-05",
+      "deadline": "2018-06-07",
+      "duration_min": 240,
+      "required_skill": "install",
+      "configuration_id": "B13",
+      "load_zone": "LZ_HOUSTON",
+      "profile_id": "resstock-2025-1-amy2018-tx-100",
+      "lon": -95.409469,
+      "lat": 29.803977
+    },
+    {
+      "site_id": "S-02",
+      "cluster_id": "S",
+      "program_id": "P1",
+      "ready_date": "2018-06-04",
+      "deadline": "2018-06-07",
+      "duration_min": 240,
+      "required_skill": "install",
+      "configuration_id": "B13",
+      "load_zone": "LZ_HOUSTON",
+      "profile_id": "resstock-2025-1-amy2018-tx-100",
+      "lon": -95.37161,
+      "lat": 29.678984
+    },
+    {
+      "site_id": "W-02",
+      "cluster_id": "W",
+      "program_id": "P1",
+      "ready_date": "2018-06-04",
+      "deadline": "2018-06-05",
+      "duration_min": 180,
+      "required_skill": "install",
+      "configuration_id": "B13",
+      "load_zone": "LZ_HOUSTON",
+      "profile_id": "resstock-2025-1-amy2018-tx-100",
+      "lon": -95.486037,
+      "lat": 29.746805
+    },
+    {
+      "site_id": "N-03",
+      "cluster_id": "N",
+      "program_id": "P1",
+      "ready_date": "2018-06-06",
+      "deadline": "2018-06-06",
+      "duration_min": 210,
+      "required_skill": "install",
+      "configuration_id": "B13",
+      "load_zone": "LZ_HOUSTON",
+      "profile_id": "resstock-2025-1-amy2018-tx-100",
+      "lon": -95.407956,
+      "lat": 29.807599
+    },
+    {
+      "site_id": "S-03",
+      "cluster_id": "S",
+      "program_id": "P1",
+      "ready_date": "2018-06-05",
+      "deadline": "2018-06-07",
+      "duration_min": 240,
+      "required_skill": "install",
+      "configuration_id": "B13",
+      "load_zone": "LZ_HOUSTON",
+      "profile_id": "resstock-2025-1-amy2018-tx-100",
+      "lon": -95.37471,
+      "lat": 29.670869
+    },
+    {
+      "site_id": "W-03",
+      "cluster_id": "W",
+      "program_id": "P1",
+      "ready_date": "2018-06-05",
+      "deadline": "2018-06-08",
+      "duration_min": 180,
+      "required_skill": "install",
+      "configuration_id": "B13",
+      "load_zone": "LZ_HOUSTON",
+      "profile_id": "resstock-2025-1-amy2018-tx-100",
+      "lon": -95.480538,
+      "lat": 29.747571
+    },
+    {
+      "site_id": "N-04",
+      "cluster_id": "N",
+      "program_id": "P1",
+      "ready_date": "2018-06-05",
+      "deadline": "2018-06-08",
+      "duration_min": 240,
+      "required_skill": "install",
+      "configuration_id": "B13",
+      "load_zone": "LZ_HOUSTON",
+      "profile_id": "resstock-2025-1-amy2018-tx-100",
+      "lon": -95.39763,
+      "lat": 29.817234
+    },
+    {
+      "site_id": "S-04",
+      "cluster_id": "S",
+      "program_id": "P1",
+      "ready_date": "2018-06-05",
+      "deadline": "2018-06-07",
+      "duration_min": 240,
+      "required_skill": "install",
+      "configuration_id": "B13",
+      "load_zone": "LZ_HOUSTON",
+      "profile_id": "resstock-2025-1-amy2018-tx-100",
+      "lon": -95.378609,
+      "lat": 29.683225
+    },
+    {
+      "site_id": "W-04",
+      "cluster_id": "W",
+      "program_id": "P1",
+      "ready_date": "2018-06-06",
+      "deadline": "2018-06-07",
+      "duration_min": 180,
+      "required_skill": "install",
+      "configuration_id": "B13",
+      "load_zone": "LZ_HOUSTON",
+      "profile_id": "resstock-2025-1-amy2018-tx-100",
+      "lon": -95.48267,
+      "lat": 29.747603
+    },
+    {
+      "site_id": "N-05",
+      "cluster_id": "N",
+      "program_id": "P1",
+      "ready_date": "2018-06-07",
+      "deadline": "2018-06-12",
+      "duration_min": 210,
+      "required_skill": "install",
+      "configuration_id": "B13",
+      "load_zone": "LZ_HOUSTON",
+      "profile_id": "resstock-2025-1-amy2018-tx-100",
+      "lon": -95.406747,
+      "lat": 29.807105
+    },
+    {
+      "site_id": "S-05",
+      "cluster_id": "S",
+      "program_id": "P1",
+      "ready_date": "2018-06-06",
+      "deadline": "2018-06-11",
+      "duration_min": 240,
+      "required_skill": "install",
+      "configuration_id": "B13",
+      "load_zone": "LZ_HOUSTON",
+      "profile_id": "resstock-2025-1-amy2018-tx-100",
+      "lon": -95.361267,
+      "lat": 29.682961
+    },
+    {
+      "site_id": "W-05",
+      "cluster_id": "W",
+      "program_id": "P1",
+      "ready_date": "2018-06-06",
+      "deadline": "2018-06-12",
+      "duration_min": 180,
+      "required_skill": "install",
+      "configuration_id": "B13",
+      "load_zone": "LZ_HOUSTON",
+      "profile_id": "resstock-2025-1-amy2018-tx-100",
+      "lon": -95.489317,
+      "lat": 29.744896
+    },
+    {
+      "site_id": "N-06",
+      "cluster_id": "N",
+      "program_id": "P1",
+      "ready_date": "2018-06-08",
+      "deadline": "2018-06-12",
+      "duration_min": 210,
+      "required_skill": "install",
+      "configuration_id": "B13",
+      "load_zone": "LZ_HOUSTON",
+      "profile_id": "resstock-2025-1-amy2018-tx-100",
+      "lon": -95.39021,
+      "lat": 29.8128
+    },
+    {
+      "site_id": "S-06",
+      "cluster_id": "S",
+      "program_id": "P1",
+      "ready_date": "2018-06-07",
+      "deadline": "2018-06-11",
+      "duration_min": 240,
+      "required_skill": "install",
+      "configuration_id": "B13",
+      "load_zone": "LZ_HOUSTON",
+      "profile_id": "resstock-2025-1-amy2018-tx-100",
+      "lon": -95.373514,
+      "lat": 29.685366
+    },
+    {
+      "site_id": "W-06",
+      "cluster_id": "W",
+      "program_id": "P1",
+      "ready_date": "2018-06-11",
+      "deadline": "2018-06-11",
+      "duration_min": 180,
+      "required_skill": "install",
+      "configuration_id": "B13",
+      "load_zone": "LZ_HOUSTON",
+      "profile_id": "resstock-2025-1-amy2018-tx-100",
+      "lon": -95.483899,
+      "lat": 29.748023
+    },
+    {
+      "site_id": "N-07",
+      "cluster_id": "N",
+      "program_id": "P1",
+      "ready_date": "2018-06-12",
+      "deadline": "2018-06-12",
+      "duration_min": 240,
+      "required_skill": "install",
+      "configuration_id": "B13",
+      "load_zone": "LZ_HOUSTON",
+      "profile_id": "resstock-2025-1-amy2018-tx-100",
+      "lon": -95.392473,
+      "lat": 29.806294
+    },
+    {
+      "site_id": "S-07",
+      "cluster_id": "S",
+      "program_id": "P1",
+      "ready_date": "2018-06-08",
+      "deadline": "2018-06-13",
+      "duration_min": 210,
+      "required_skill": "install",
+      "configuration_id": "B13",
+      "load_zone": "LZ_HOUSTON",
+      "profile_id": "resstock-2025-1-amy2018-tx-100",
+      "lon": -95.362306,
+      "lat": 29.682857
+    },
+    {
+      "site_id": "W-07",
+      "cluster_id": "W",
+      "program_id": "P1",
+      "ready_date": "2018-06-12",
+      "deadline": "2018-06-13",
+      "duration_min": 180,
+      "required_skill": "install",
+      "configuration_id": "B13",
+      "load_zone": "LZ_HOUSTON",
+      "profile_id": "resstock-2025-1-amy2018-tx-100",
+      "lon": -95.495067,
+      "lat": 29.751227
+    },
+    {
+      "site_id": "N-08",
+      "cluster_id": "N",
+      "program_id": "P1",
+      "ready_date": "2018-06-12",
+      "deadline": "2018-06-15",
+      "duration_min": 240,
+      "required_skill": "install",
+      "configuration_id": "B13",
+      "load_zone": "LZ_HOUSTON",
+      "profile_id": "resstock-2025-1-amy2018-tx-100",
+      "lon": -95.401431,
+      "lat": 29.811671
+    },
+    {
+      "site_id": "S-08",
+      "cluster_id": "S",
+      "program_id": "P1",
+      "ready_date": "2018-06-12",
+      "deadline": "2018-06-13",
+      "duration_min": 180,
+      "required_skill": "install",
+      "configuration_id": "B13",
+      "load_zone": "LZ_HOUSTON",
+      "profile_id": "resstock-2025-1-amy2018-tx-100",
+      "lon": -95.369809,
+      "lat": 29.671818
+    },
+    {
+      "site_id": "W-08",
+      "cluster_id": "W",
+      "program_id": "P1",
+      "ready_date": "2018-06-13",
+      "deadline": "2018-06-13",
+      "duration_min": 180,
+      "required_skill": "install",
+      "configuration_id": "B13",
+      "load_zone": "LZ_HOUSTON",
+      "profile_id": "resstock-2025-1-amy2018-tx-100",
+      "lon": -95.487451,
+      "lat": 29.755842
+    },
+    {
+      "site_id": "N-09",
+      "cluster_id": "N",
+      "program_id": "P1",
+      "ready_date": "2018-06-13",
+      "deadline": "2018-06-15",
+      "duration_min": 180,
+      "required_skill": "install",
+      "configuration_id": "B13",
+      "load_zone": "LZ_HOUSTON",
+      "profile_id": "resstock-2025-1-amy2018-tx-100",
+      "lon": -95.402305,
+      "lat": 29.811918
+    },
+    {
+      "site_id": "S-09",
+      "cluster_id": "S",
+      "program_id": "P1",
+      "ready_date": "2018-06-13",
+      "deadline": "2018-06-15",
+      "duration_min": 210,
+      "required_skill": "install",
+      "configuration_id": "B13",
+      "load_zone": "LZ_HOUSTON",
+      "profile_id": "resstock-2025-1-amy2018-tx-100",
+      "lon": -95.360578,
+      "lat": 29.687216
+    },
+    {
+      "site_id": "W-09",
+      "cluster_id": "W",
+      "program_id": "P1",
+      "ready_date": "2018-06-14",
+      "deadline": "2018-06-15",
+      "duration_min": 240,
+      "required_skill": "install",
+      "configuration_id": "B13",
+      "load_zone": "LZ_HOUSTON",
+      "profile_id": "resstock-2025-1-amy2018-tx-100",
+      "lon": -95.497709,
+      "lat": 29.757696
+    },
+    {
+      "site_id": "N-10",
+      "cluster_id": "N",
+      "program_id": "P1",
+      "ready_date": "2018-06-14",
+      "deadline": "2018-06-15",
+      "duration_min": 210,
+      "required_skill": "install",
+      "configuration_id": "B13",
+      "load_zone": "LZ_HOUSTON",
+      "profile_id": "resstock-2025-1-amy2018-tx-100",
+      "lon": -95.407769,
+      "lat": 29.808695
+    },
+    {
+      "site_id": "S-10",
+      "cluster_id": "S",
+      "program_id": "P1",
+      "ready_date": "2018-06-14",
+      "deadline": "2018-06-15",
+      "duration_min": 240,
+      "required_skill": "install",
+      "configuration_id": "B13",
+      "load_zone": "LZ_HOUSTON",
+      "profile_id": "resstock-2025-1-amy2018-tx-100",
+      "lon": -95.362483,
+      "lat": 29.675268
+    },
+    {
+      "site_id": "W-10",
+      "cluster_id": "W",
+      "program_id": "P1",
+      "ready_date": "2018-06-13",
+      "deadline": "2018-06-15",
+      "duration_min": 240,
+      "required_skill": "install",
+      "configuration_id": "B13",
+      "load_zone": "LZ_HOUSTON",
+      "profile_id": "resstock-2025-1-amy2018-tx-100",
+      "lon": -95.481747,
+      "lat": 29.75741
+    }
+  ],
+  "crew_days": [
+    {
+      "crew_id": "A",
+      "date": "2018-06-04",
+      "available_min": 480,
+      "skills": [
+        "install"
+      ],
+      "allowed_clusters": [
+        "N",
+        "S",
+        "W"
+      ]
+    },
+    {
+      "crew_id": "A",
+      "date": "2018-06-05",
+      "available_min": 480,
+      "skills": [
+        "install"
+      ],
+      "allowed_clusters": [
+        "N",
+        "S",
+        "W"
+      ]
+    },
+    {
+      "crew_id": "A",
+      "date": "2018-06-06",
+      "available_min": 480,
+      "skills": [
+        "install"
+      ],
+      "allowed_clusters": [
+        "N",
+        "S",
+        "W"
+      ]
+    },
+    {
+      "crew_id": "A",
+      "date": "2018-06-07",
+      "available_min": 480,
+      "skills": [
+        "install"
+      ],
+      "allowed_clusters": [
+        "N",
+        "S",
+        "W"
+      ]
+    },
+    {
+      "crew_id": "A",
+      "date": "2018-06-08",
+      "available_min": 480,
+      "skills": [
+        "install"
+      ],
+      "allowed_clusters": [
+        "N",
+        "S",
+        "W"
+      ]
+    },
+    {
+      "crew_id": "A",
+      "date": "2018-06-11",
+      "available_min": 480,
+      "skills": [
+        "install"
+      ],
+      "allowed_clusters": [
+        "N",
+        "S",
+        "W"
+      ]
+    },
+    {
+      "crew_id": "A",
+      "date": "2018-06-12",
+      "available_min": 480,
+      "skills": [
+        "install"
+      ],
+      "allowed_clusters": [
+        "N",
+        "S",
+        "W"
+      ]
+    },
+    {
+      "crew_id": "A",
+      "date": "2018-06-13",
+      "available_min": 480,
+      "skills": [
+        "install"
+      ],
+      "allowed_clusters": [
+        "N",
+        "S",
+        "W"
+      ]
+    },
+    {
+      "crew_id": "A",
+      "date": "2018-06-14",
+      "available_min": 480,
+      "skills": [
+        "install"
+      ],
+      "allowed_clusters": [
+        "N",
+        "S",
+        "W"
+      ]
+    },
+    {
+      "crew_id": "A",
+      "date": "2018-06-15",
+      "available_min": 480,
+      "skills": [
+        "install"
+      ],
+      "allowed_clusters": [
+        "N",
+        "S",
+        "W"
+      ]
+    },
+    {
+      "crew_id": "B",
+      "date": "2018-06-04",
+      "available_min": 480,
+      "skills": [
+        "install"
+      ],
+      "allowed_clusters": [
+        "N",
+        "S",
+        "W"
+      ]
+    },
+    {
+      "crew_id": "B",
+      "date": "2018-06-05",
+      "available_min": 480,
+      "skills": [
+        "install"
+      ],
+      "allowed_clusters": [
+        "N",
+        "S",
+        "W"
+      ]
+    },
+    {
+      "crew_id": "B",
+      "date": "2018-06-06",
+      "available_min": 480,
+      "skills": [
+        "install"
+      ],
+      "allowed_clusters": [
+        "N",
+        "S",
+        "W"
+      ]
+    },
+    {
+      "crew_id": "B",
+      "date": "2018-06-07",
+      "available_min": 480,
+      "skills": [
+        "install"
+      ],
+      "allowed_clusters": [
+        "N",
+        "S",
+        "W"
+      ]
+    },
+    {
+      "crew_id": "B",
+      "date": "2018-06-08",
+      "available_min": 480,
+      "skills": [
+        "install"
+      ],
+      "allowed_clusters": [
+        "N",
+        "S",
+        "W"
+      ]
+    },
+    {
+      "crew_id": "B",
+      "date": "2018-06-11",
+      "available_min": 480,
+      "skills": [
+        "install"
+      ],
+      "allowed_clusters": [
+        "N",
+        "S",
+        "W"
+      ]
+    },
+    {
+      "crew_id": "B",
+      "date": "2018-06-12",
+      "available_min": 480,
+      "skills": [
+        "install"
+      ],
+      "allowed_clusters": [
+        "N",
+        "S",
+        "W"
+      ]
+    },
+    {
+      "crew_id": "B",
+      "date": "2018-06-13",
+      "available_min": 480,
+      "skills": [
+        "install"
+      ],
+      "allowed_clusters": [
+        "N",
+        "S",
+        "W"
+      ]
+    },
+    {
+      "crew_id": "B",
+      "date": "2018-06-14",
+      "available_min": 480,
+      "skills": [
+        "install"
+      ],
+      "allowed_clusters": [
+        "N",
+        "S",
+        "W"
+      ]
+    },
+    {
+      "crew_id": "B",
+      "date": "2018-06-15",
+      "available_min": 480,
+      "skills": [
+        "install"
+      ],
+      "allowed_clusters": [
+        "N",
+        "S",
+        "W"
+      ]
+    },
+    {
+      "crew_id": "C",
+      "date": "2018-06-04",
+      "available_min": 480,
+      "skills": [
+        "install"
+      ],
+      "allowed_clusters": [
+        "N",
+        "S",
+        "W"
+      ]
+    },
+    {
+      "crew_id": "C",
+      "date": "2018-06-05",
+      "available_min": 480,
+      "skills": [
+        "install"
+      ],
+      "allowed_clusters": [
+        "N",
+        "S",
+        "W"
+      ]
+    },
+    {
+      "crew_id": "C",
+      "date": "2018-06-06",
+      "available_min": 480,
+      "skills": [
+        "install"
+      ],
+      "allowed_clusters": [
+        "N",
+        "S",
+        "W"
+      ]
+    },
+    {
+      "crew_id": "C",
+      "date": "2018-06-07",
+      "available_min": 480,
+      "skills": [
+        "install"
+      ],
+      "allowed_clusters": [
+        "N",
+        "S",
+        "W"
+      ]
+    },
+    {
+      "crew_id": "C",
+      "date": "2018-06-08",
+      "available_min": 480,
+      "skills": [
+        "install"
+      ],
+      "allowed_clusters": [
+        "N",
+        "S",
+        "W"
+      ]
+    },
+    {
+      "crew_id": "C",
+      "date": "2018-06-11",
+      "available_min": 480,
+      "skills": [
+        "install"
+      ],
+      "allowed_clusters": [
+        "N",
+        "S",
+        "W"
+      ]
+    },
+    {
+      "crew_id": "C",
+      "date": "2018-06-12",
+      "available_min": 480,
+      "skills": [
+        "install"
+      ],
+      "allowed_clusters": [
+        "N",
+        "S",
+        "W"
+      ]
+    },
+    {
+      "crew_id": "C",
+      "date": "2018-06-13",
+      "available_min": 480,
+      "skills": [
+        "install"
+      ],
+      "allowed_clusters": [
+        "N",
+        "S",
+        "W"
+      ]
+    },
+    {
+      "crew_id": "C",
+      "date": "2018-06-14",
+      "available_min": 480,
+      "skills": [
+        "install"
+      ],
+      "allowed_clusters": [
+        "N",
+        "S",
+        "W"
+      ]
+    },
+    {
+      "crew_id": "C",
+      "date": "2018-06-15",
+      "available_min": 480,
+      "skills": [
+        "install"
+      ],
+      "allowed_clusters": [
+        "N",
+        "S",
+        "W"
+      ]
+    }
+  ],
+  "inventory": [
+    {
+      "configuration_id": "B13",
+      "available_date": "2018-06-04",
+      "quantity": 9
+    },
+    {
+      "configuration_id": "B13",
+      "available_date": "2018-06-07",
+      "quantity": 9
+    },
+    {
+      "configuration_id": "B13",
+      "available_date": "2018-06-12",
+      "quantity": 12
+    }
+  ],
+  "current_plan": [
+    {
+      "site_id": "N-01",
+      "crew_id": "A",
+      "date": "2018-06-04",
+      "locked": true
+    },
+    {
+      "site_id": "S-01",
+      "crew_id": "B",
+      "date": "2018-06-04",
+      "locked": true
+    },
+    {
+      "site_id": "W-01",
+      "crew_id": "C",
+      "date": "2018-06-04",
+      "locked": true
+    },
+    {
+      "site_id": "N-02",
+      "crew_id": "A",
+      "date": "2018-06-05",
+      "locked": false
+    },
+    {
+      "site_id": "S-02",
+      "crew_id": "B",
+      "date": "2018-06-05",
+      "locked": false
+    },
+    {
+      "site_id": "W-02",
+      "crew_id": "C",
+      "date": "2018-06-05",
+      "locked": false
+    },
+    {
+      "site_id": "N-03",
+      "crew_id": "A",
+      "date": "2018-06-06",
+      "locked": false
+    },
+    {
+      "site_id": "S-03",
+      "crew_id": "B",
+      "date": "2018-06-06",
+      "locked": false
+    },
+    {
+      "site_id": "W-03",
+      "crew_id": "C",
+      "date": "2018-06-06",
+      "locked": false
+    },
+    {
+      "site_id": "N-04",
+      "crew_id": "A",
+      "date": "2018-06-07",
+      "locked": false
+    },
+    {
+      "site_id": "S-04",
+      "crew_id": "B",
+      "date": "2018-06-07",
+      "locked": false
+    },
+    {
+      "site_id": "W-04",
+      "crew_id": "C",
+      "date": "2018-06-07",
+      "locked": false
+    },
+    {
+      "site_id": "N-05",
+      "crew_id": "A",
+      "date": "2018-06-08",
+      "locked": false
+    },
+    {
+      "site_id": "S-05",
+      "crew_id": "B",
+      "date": "2018-06-08",
+      "locked": false
+    },
+    {
+      "site_id": "W-05",
+      "crew_id": "C",
+      "date": "2018-06-08",
+      "locked": false
+    },
+    {
+      "site_id": "N-06",
+      "crew_id": "A",
+      "date": "2018-06-11",
+      "locked": false
+    },
+    {
+      "site_id": "S-06",
+      "crew_id": "B",
+      "date": "2018-06-11",
+      "locked": false
+    },
+    {
+      "site_id": "W-06",
+      "crew_id": "C",
+      "date": "2018-06-11",
+      "locked": false
+    },
+    {
+      "site_id": "N-07",
+      "crew_id": "A",
+      "date": "2018-06-12",
+      "locked": false
+    },
+    {
+      "site_id": "S-07",
+      "crew_id": "B",
+      "date": "2018-06-12",
+      "locked": false
+    },
+    {
+      "site_id": "W-07",
+      "crew_id": "C",
+      "date": "2018-06-12",
+      "locked": false
+    },
+    {
+      "site_id": "N-08",
+      "crew_id": "A",
+      "date": "2018-06-13",
+      "locked": false
+    },
+    {
+      "site_id": "S-08",
+      "crew_id": "B",
+      "date": "2018-06-13",
+      "locked": false
+    },
+    {
+      "site_id": "W-08",
+      "crew_id": "C",
+      "date": "2018-06-13",
+      "locked": false
+    },
+    {
+      "site_id": "N-09",
+      "crew_id": "A",
+      "date": "2018-06-14",
+      "locked": false
+    },
+    {
+      "site_id": "S-09",
+      "crew_id": "B",
+      "date": "2018-06-14",
+      "locked": false
+    },
+    {
+      "site_id": "W-09",
+      "crew_id": "C",
+      "date": "2018-06-14",
+      "locked": false
+    },
+    {
+      "site_id": "N-10",
+      "crew_id": "A",
+      "date": "2018-06-15",
+      "locked": false
+    },
+    {
+      "site_id": "S-10",
+      "crew_id": "B",
+      "date": "2018-06-15",
+      "locked": false
+    },
+    {
+      "site_id": "W-10",
+      "crew_id": "C",
+      "date": "2018-06-15",
+      "locked": false
+    }
+  ]
+}

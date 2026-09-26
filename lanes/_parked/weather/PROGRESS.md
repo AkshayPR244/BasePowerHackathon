@@ -1,5 +1,7 @@
 # Lane W · Weather evidence and trust · progress
 
+> **PARKED (nice to have).** Revisit when R-engine and C-canvas P0 items pass. Nothing here blocks the demo.
+
 ## Continue from here
 
 Any agent or person can pick this up cold. Rewrite this block before you stop.

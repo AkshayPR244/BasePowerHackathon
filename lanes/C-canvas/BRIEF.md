@@ -1,34 +1,37 @@
 # Lane C · Recovery Canvas
 
 ## Mission
-Rollout Planner is a deterministic disruption-recovery planner for installation operations. It shows what broke, how the disruption cascades through the current plan, what feasible recovery actions exist, what each costs or saves relative to doing nothing, and lets the operations manager review, test changes, and approve. R is the product, W is the evidence, C is the experience.
+Rollout Planner is a deterministic disruption-recovery planner for installation operations. It shows what broke, how the disruption cascades through the current plan, what feasible recovery actions exist, what each costs or saves relative to doing nothing, and lets the operations manager review, test changes, and approve. R is the product, C is the experience, H makes it demo-safe. Weather replay is a parked nice-to-have (`lanes/_parked/weather`).
 
 Lane C builds the Recovery Canvas: one screen where the operations manager sees the disruption, follows the cascade through the plan, compares recovery actions against doing nothing, tests a change by hand, and approves. The plan lanes are the hero.
 
 ## Current state
 - Done on `main` (PR #5): Vite + React + TS workspace with tokens, fonts, status system, MSW on recorded mocks, header, metrics, crew calendar, SVG map, deferred list, inspector, compare panel, export. It runs the tiny single-visit flow. Frontend e2e: 4 of 5 pass. `e2e/shell.spec.ts` and `src/lib/export.test.ts` fail on a stale "Not validated" expectation (plans are validated now).
-- Frozen in this scaffold: recovery contracts in `frontend/src/api/generated.ts`, and recorded mocks for `/api/recovery/options`, `/evaluate`, `/approve`, `/api/storms`, `/api/cases`, `/api/season-replay` in `frontend/src/mocks/recorded/` (stub payloads carry `stub: true`).
+- Frozen in this scaffold: recovery contracts in `frontend/src/api/generated.ts`, and recorded mocks for `/api/recovery/options`, `/evaluate`, `/approve` in `frontend/src/mocks/recorded/` (stub payloads carry `stub: true`). The storm, case, and season-replay mocks exist too, but weather is parked.
 - Two-visit data: `assignments` hold two entries per `site_id` for `standard`. Key visits by `job_id ?? site_id`. See `docs/CONTRACTS.md`, "Two visits per home".
 
 ## Owns
-- `frontend/` except `frontend/src/views/season/` (Lane W), `frontend/src/api/generated.ts` (generated), and `frontend/src/mocks/recorded/` (recorded)
+- `frontend/` except the paths below
 - `lanes/C-canvas/`
 
 ## Must not touch
-- `frontend/src/views/season/` (Lane W's Storm Season view)
+- Lane H's paths: the rest of `frontend/e2e/` and test files, `frontend/src/api/client.ts`, `frontend/src/mocks/handlers.ts`, `frontend/playwright.config.ts`. Ask H through `lanes/H-hardening/NEEDS.md`.
+- C does own its feature tests: `frontend/e2e/canvas*.spec.ts` and test files colocated with C's components, views, and state. C proves its own items with them.
 - `frontend/src/api/generated.ts` by hand (run `make types`)
 - `frontend/src/mocks/recorded/` by hand (run `make mocks`)
 - `backend/`, `data/`, `docs/`, `contracts/`
+- There is no season view in scope. Weather is parked.
 
 ## Consumes
 - `docs/DESIGN.md` (follow it exactly), `docs/CONTRACTS.md` (recovery shapes), `CLAUDE.md` ("Product (read first)" for vocabulary).
 - Recorded mocks until the hour-4 sync, then the live API for one flow.
-- `RecoveryOptionsResult` (impact, no_action, options), `RecoveryOption`, `ImpactAnalysis`, `ApproveResult`, `Case`.
+- `RecoveryOptionsResult` (impact, no_action, options), `RecoveryOption`, `ImpactAnalysis`, `ApproveResult`.
+- Lane H's `client.ts` (errors, `isStub`, revision guard) and its requests in `lanes/C-canvas/NEEDS.md`.
 
 ## Provides
 - The Recovery Canvas as the default view.
-- A route or callback that opens a `Case` in the canvas, so Lane W's season view can link to it.
-- Playwright specs and screenshots in `frontend/e2e/screenshots/`.
+- Stable `data-testid` hooks on the disruption bar, cascade steps, option cards, and Approve, so Lane H can write e2e specs.
+- Screenshots for each item (H owns the spec files. C may ask H for a spec or add screenshots through H's specs).
 
 ## Files to create (suggested)
 | Path | Purpose |
@@ -40,12 +43,11 @@ Lane C builds the Recovery Canvas: one screen where the operations manager sees 
 | `src/components/OptionCard.tsx` | Action label, net impact, advantage vs no action, deadlines, customers to reschedule, overtime, "Lowest modeled cost" |
 | `src/components/OptionPanel.tsx` | Plain-sentence changes, pinned headline numbers, Approve with a confirm summary |
 | `src/state/recovery.ts` | Selected option, disruption, interventions, revision |
-| `e2e/canvas.spec.ts` | Flow with screenshots |
 
 ## Scope
 
 ### P0
-1. **Hygiene**: fix the stale "Not validated" expectations in `src/lib/export.test.ts` and `e2e/shell.spec.ts`. Plans are validated now.
+1. **Two-visit rendering**: the current workspace renders `standard`, where `assignments` hold two entries per `site_id`. Key visits by `job_id ?? site_id`. The stale "Not validated" tests belong to Lane H (H-04).
 2. **Disruption bar**: one sentence (`impact.headline`) plus visits affected, deadlines at risk, and the no-action cost.
 3. **Cascade strip**: the steps from `impact.cascade` (disruption → direct → pushed → commitment). Clicking a step highlights its visits in the lanes.
 4. **Plan lanes as the hero**: crews as rows, days as columns, install crews above the battery crew. Install → battery-day arcs. Hatched lost capacity. Diff overlays: moved visits ghost from the old cell and slide to the new one, unchanged visits fade.
@@ -64,12 +66,12 @@ Lane C builds the Recovery Canvas: one screen where the operations manager sees 
 13. Dark mode polish.
 
 ## Design rules
-Follow `docs/DESIGN.md`: warm paper, ink, one signal-orange accent, IBM Plex, status as shape + label + color, motion only to explain change, numbers right-aligned with tabular figures. Stub payloads (`stub: true`) show a visible "Stub data" label.
+Follow `docs/DESIGN.md`: warm paper, ink, one signal-orange accent, IBM Plex, status as shape + label + color, motion only to explain change, numbers right-aligned with tabular figures. Stub payloads (`stub: true`, exposed as `isStub` by H's `client.ts`) show a visible "Stub data" label.
 
 ## Definition of done
-- The canvas renders the recorded `recovery_options` mock for `standard` with battery crew BA out Thu 7 Jun: disruption bar, cascade, lanes with diff overlay, four option cards, the selected-option panel, and approve.
+- The canvas renders the recorded `recovery_options_standard_storm` mock (the 14 Jun 2018 storm case on `standard`): disruption bar, cascade, lanes with diff overlay, four option cards, the selected-option panel, and approve.
 - After the hour-4 sync, one flow runs against the live API.
-- Playwright: load → pick an option → inspect changes → approve, with screenshots.
+- Playwright (spec owned by H): load → pick an option → inspect changes → approve, with screenshots.
 - Lane check passes (below).
 
 ## Lane check

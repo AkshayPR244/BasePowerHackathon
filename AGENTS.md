@@ -18,11 +18,11 @@ Hackathon build. About 40 hours. Three lanes build in parallel. Spec: `docs/SPEC
 
 | Lane | Branch | Owns | Must not edit |
 |---|---|---|---|
-| R · Recovery engine | `lane/R-engine` | `backend/app/recovery/`, `backend/app/baselines/`, `backend/app/planning/` (performance and edit handling), `backend/tests/lane_r/`, the `/api/recovery/*` handlers, economic entries in `config.parameters` | frontend, `backend/app/replay/`, `data/weather/`, docs |
-| C · Recovery Canvas | `lane/C-canvas` | `frontend/` except `src/views/season/`, `src/api/generated.ts`, `src/mocks/recorded/` | backend, data, docs |
-| W · Weather evidence and trust | `lane/W-evidence` | `backend/app/replay/`, `data/weather/`, `data/demo/cases/`, `frontend/src/views/season/`, `docs/`, `README.md`, exception handlers in `backend/app/api/main.py`, `scripts/freeze.sh`, `scripts/record_mocks.py`, `backend/tests/lane_w/`, the `/api/storms`, `/api/cases`, `/api/season-replay` handlers | `backend/app/recovery/`, `backend/app/planning/`, the rest of `frontend/` |
+| R · Recovery engine | `lane/R-engine` | `backend/app/recovery/`, `backend/app/baselines/`, `backend/app/planning/` (performance and edit handling), `backend/tests/lane_r/`, the `/api/recovery/*` handlers, economic entries in `config.parameters` | frontend, `backend/app/replay/`, `data/weather/`, docs except additive `docs/CONTRACTS.md` entries |
+| C · Recovery Canvas | `lane/C-canvas` | `frontend/` except Lane H's paths, `src/api/generated.ts`, `src/mocks/recorded/` | backend, data, docs, Lane H's paths |
+| H · UI hardening | `lane/H-hardening` | `frontend/e2e/` (except C's `canvas*.spec.ts`), test infrastructure, `frontend/src/api/client.ts`, `frontend/src/mocks/handlers.ts`, `frontend/playwright.config.ts`, exception handlers in `backend/app/api/main.py`, `backend/tests/lane_h/`, `scripts/{record_mocks,build_stubs}.py`, `scripts/freeze.sh`, `README.md`, `docs/DEMO.md`, `docs/FIRST_PRINCIPLES.md`, `docs/STATUS_START.md` | `backend/app/recovery/`, `backend/app/planning/`, C's components, views, state, and design |
 
-Lanes A, B, and C from the first build day are archived in `lanes/_archive/`. Read them for history only.
+Lanes A, B, and C from the first build day are archived in `lanes/_archive/`. Read them for history only. Weather (storms, cases, season replay) is a parked nice-to-have in `lanes/_parked/weather`. Its stub endpoints stay frozen.
 
 Shared and frozen: `backend/app/contracts/` and the generated files `contracts/openapi.json` and `frontend/src/api/generated.ts`. Change them only through `docs/CONTRACTS.md`. The tiny expected results in `data/demo/tiny/expected/` are ground truth. Do not edit them to make a test pass.
 Each lane's full brief: `lanes/<lane>/BRIEF.md`. Its checklist: `lanes/<lane>/feature_list.json`.

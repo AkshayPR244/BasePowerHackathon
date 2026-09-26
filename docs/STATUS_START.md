@@ -1,6 +1,12 @@
 # Status at the start of the recovery build (2026-09-27)
 
-Inventory of `main` before lanes R-engine, C-canvas, and W-evidence start. Measured this session unless marked UNVERIFIED.
+Inventory of `main` before lanes R-engine, C-canvas, and H-hardening start. Measured this session unless marked UNVERIFIED.
+
+## Scope change (2026-09-27)
+
+- Weather moved to a parked nice-to-have (`lanes/_parked/weather`). Revisit it when R-engine and C-canvas P0 items pass.
+- The third lane is H-hardening: make the recovery flow demo-safe and trustworthy.
+- The weather stubs stay frozen: `GET /api/storms`, `/api/cases`, `/api/season-replay` and `backend/app/replay/`.
 
 ## Last night's lanes
 
@@ -63,18 +69,16 @@ The R-recovery, W-weather, and H-hardening scaffold was reverted before any comm
   - evaluate, approve
   - interactive mode (the battery-crew-out case takes about 9.7 s today)
 - **Recovery Canvas UI (lane C).** The current UI is the day 1 workspace. It has never rendered two-visit data (UNVERIFIED).
-- **Weather evidence (lane W):**
-  - weather dataset and manifest
-  - cases for every storm
-  - the season replay through `recover()`
-  - stress tests
-  - `docs/REPLAY_RESULTS.md`, `docs/FIRST_PRINCIPLES.md`, README limitations
-- **Known defects:**
+- **Hardening (lane H):** `docs/FIRST_PRINCIPLES.md`, README limitations, the freeze script, the live-API e2e.
+- **Known defects (lane H):**
   - The 500 handler returns exception text to the client (`backend/app/api/main.py`, `_unexpected`).
   - The late-shipment example is still in README, `docs/DEMO.md`, `docs/CONTRACTS.md`, `scripts/record_mocks.py`, and the recorded mocks.
   - `frontend/src/lib/export.test.ts` and `e2e/shell.spec.ts` still expect "Not validated".
-- **Data to verify:** 4 Jul 2018 METAR rainfall sums to 145 mm in work hours. Lane W checks it before use. It is a holiday, so no crew works that day anyway.
+## Parked (nice to have)
+
+- Weather: the dataset and manifest, cases for every storm, the season replay through `recover()`, stress tests, `docs/REPLAY_RESULTS.md`.
+- Data to verify if weather returns: 4 Jul 2018 METAR rainfall sums to 145 mm in work hours. It is a holiday, so no crew works that day anyway.
 
 ## Checks at scaffold time
 
-`make check-contracts`, `make check-a`, and `make check-b` pass. Frontend typecheck and build pass. Frontend unit tests: 1 known failure, the stale "Not validated" test, assigned to C-01.
+`make check-contracts`, `make check-a`, and `make check-b` pass. Frontend typecheck and build pass. Frontend unit tests: 1 known failure, the stale "Not validated" test, assigned to H-04.

@@ -16,7 +16,7 @@ branch=$(git -C "$root" branch --show-current 2>/dev/null)
 case "$agent:$branch" in
   *:lane/R-engine) lane_file="$root/lanes/R-engine/STEER.md" ;;
   *:lane/C-canvas) lane_file="$root/lanes/C-canvas/STEER.md" ;;
-  *:lane/W-evidence) lane_file="$root/lanes/W-evidence/STEER.md" ;;
+  *:lane/H-hardening) lane_file="$root/lanes/H-hardening/STEER.md" ;;
   *) lane_file="" ;;
 esac
 

@@ -2,7 +2,7 @@
 
 ## Product (read first)
 
-Rollout Planner is a deterministic disruption-recovery planner for installation operations. It shows what broke, how the disruption cascades through the current plan, what feasible recovery actions exist, what each costs or saves relative to doing nothing, and lets the operations manager review, test changes, and approve. R is the product, W is the evidence, C is the experience.
+Rollout Planner is a deterministic disruption-recovery planner for installation operations. It shows what broke, how the disruption cascades through the current plan, what feasible recovery actions exist, what each costs or saves relative to doing nothing, and lets the operations manager review, test changes, and approve. R is the product, C is the experience, H makes it demo-safe. Weather replay is a parked nice-to-have (`lanes/_parked/weather`).
 
 **Flow:** current plan → known disruption → impact analysis → recovery options (no action, rebalance, overtime, temporary capacity) → solve + validate each → economic and operational comparison → human review (inspect, pin, drag, test) → approve → updated plan.
 
@@ -12,7 +12,7 @@ Rollout Planner is a deterministic disruption-recovery planner for installation 
 - Options are business actions, such as "Crew IB +2h overtime". Never "Plan 3".
 - The cheapest option is labeled "Lowest modeled cost". Never "Recommended".
 
-**Weather wording:** "This replay applies a modeled operational disruption to a real historical storm." Never imply a storm actually stopped any company's crews.
+**Weather wording** (applies only if weather returns from `lanes/_parked/weather`): "This replay applies a modeled operational disruption to a real historical storm." Never imply a storm actually stopped any company's crews.
 
 **Out of scope:** routing, intra-day job order, travel miles, storm movement on a map, forecasting, probabilities, stochastic optimization, live feeds or APIs, autonomous approval, LLM explanations, chat UI.
 
@@ -22,11 +22,11 @@ Rollout Planner is a deterministic disruption-recovery planner for installation 
 |---|---|---|
 | R-engine | `lane/R-engine` | The recovery engine: impact, options, economics, evaluate, approve |
 | C-canvas | `lane/C-canvas` | The Recovery Canvas: disruption bar, cascade, plan lanes, option cards, approve |
-| W-evidence | `lane/W-evidence` | Real storm catalog, season replay, stress tests, trust fixes, docs |
+| H-hardening | `lane/H-hardening` | Demo-safe and trustworthy: live API wiring, error, stub, and validation honesty, e2e, accessibility, freeze script, demo docs |
 
-Launch a lane: `git switch lane/R-engine` (or `lane/C-canvas`, `lane/W-evidence`), then tell the agent: "Read AGENTS.md and CLAUDE.md, then lanes/R-engine/PROGRESS.md, and continue from there."
+Launch a lane: `git switch lane/R-engine` (or `lane/C-canvas`, `lane/H-hardening`), then tell the agent: "Read AGENTS.md and CLAUDE.md, then lanes/R-engine/PROGRESS.md, and continue from there."
 
-Old lanes A, B, and C live in `lanes/_archive/`.
+Old lanes A, B, and C live in `lanes/_archive/`. Weather is a parked nice-to-have in `lanes/_parked/weather`. Revisit it when R-engine and C-canvas P0 items pass.
 
 ## Workflow (today's build)
 
@@ -51,9 +51,9 @@ Old lanes A, B, and C live in `lanes/_archive/`.
 **Timeline**
 - Hour 0: seams frozen (this scaffold).
 - Hours 1 to 4: build on recorded mocks and stubs.
-- Hour 4 sync: Lane C swaps one flow to the live API. Lane W swaps the stub for the real `recover()`.
+- Hour 4 sync: Lane C swaps one flow to the live API. Lane H runs the live e2e.
 - Hours 4 to 8: finish P0, push P1.
-- Then a 2-hour joint integration: merge R, then W, then C. Run the full flow on a real storm day. Run the freeze script. Record the demo.
+- Then a 2-hour joint integration: merge R, then H, then C. Run the full flow on the storm case. Run the freeze script. Record the demo.
 - During sleep, agents open PRs only and never merge.
 
 ## Claude Code extras
@@ -72,4 +72,4 @@ One session can run all three lanes with generic subagents.
 2. Give each one the same instruction: "Read AGENTS.md and CLAUDE.md. Continue from lanes/<lane>/PROGRESS.md."
 3. Do not relay code between lanes. Lanes coordinate only through the files named in `AGENTS.md`.
 4. When a lane reports an item done, run the `evaluator` subagent on it. On NEEDS_WORK, send the findings back to that lane.
-5. Loop until the P0 items pass or the operator stops you. Merge in the order R, W, C.
+5. Loop until the P0 items pass or the operator stops you. Merge in the order R, H, C.

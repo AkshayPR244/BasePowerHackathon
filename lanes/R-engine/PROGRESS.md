@@ -8,7 +8,7 @@ Any agent or person can pick this up cold. Rewrite this block before you stop.
 - **Setup:** `cd backend && uv sync`
 - **Check:** `cd backend && uv run ruff check app/recovery app/baselines app/planning tests/lane_r && uv run pytest -q tests/lane_r tests/lane_b tests/contract`
 - **Read first:** `AGENTS.md`, `CLAUDE.md` ("Product (read first)"), `lanes/R-engine/BRIEF.md`, `docs/CONTRACTS.md` (recovery shapes), `backend/app/recovery/service.py` (stub), `backend/app/planning/solve.py`, `.claude/skills/ops-optimization/SKILL.md`
-- **Next:** R-01, no action as a first-class `RecoveryOption` via the repair rule. Merge it early: Lane W needs it.
+- **Next:** R-01, no action as a first-class `RecoveryOption` via the repair rule. Merge it early: C and H need it.
 - **Then:** the next item in `lanes/R-engine/feature_list.json` with `"passes": false`, highest priority first.
 
 ## Done

@@ -36,10 +36,10 @@ Every error is an `ApiError` with `code` and `message`. The first cold start bui
 
 ## Start a lane
 
-Three lanes build in parallel: R-engine (recovery engine), C-canvas (recovery UI), and W-evidence (weather evidence and trust). Each teammate runs one lane in their own clone or worktree, with any coding agent or by hand. The rules live in `AGENTS.md` and `CLAUDE.md`. Each lane's state and next step live in `lanes/<lane>/PROGRESS.md`.
+Three lanes build in parallel: R-engine (recovery engine), C-canvas (recovery canvas UI), and H-hardening (makes the flow demo-safe: errors, stub and validation honesty, e2e, freeze script). Weather replay is a parked nice-to-have (`lanes/_parked/weather`). Each teammate runs one lane in their own clone or worktree, with any coding agent or by hand. The rules live in `AGENTS.md` and `CLAUDE.md`. Each lane's state and next step live in `lanes/<lane>/PROGRESS.md`.
 
 ```bash
-git switch lane/R-engine      # or lane/C-canvas, lane/W-evidence
+git switch lane/R-engine      # or lane/C-canvas, lane/H-hardening
 ./lanes/R-engine/init.sh
 ```
 

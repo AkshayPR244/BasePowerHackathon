@@ -1,7 +1,7 @@
 # Lane R · Recovery engine
 
 ## Mission
-Rollout Planner is a deterministic disruption-recovery planner for installation operations. It shows what broke, how the disruption cascades through the current plan, what feasible recovery actions exist, what each costs or saves relative to doing nothing, and lets the operations manager review, test changes, and approve. R is the product, W is the evidence, C is the experience.
+Rollout Planner is a deterministic disruption-recovery planner for installation operations. It shows what broke, how the disruption cascades through the current plan, what feasible recovery actions exist, what each costs or saves relative to doing nothing, and lets the operations manager review, test changes, and approve. R is the product, C is the experience, H makes it demo-safe. Weather replay is a parked nice-to-have (`lanes/_parked/weather`).
 
 Lane R builds the product: given the current plan and a known disruption, return the impact, the no-action outcome, and a short list of feasible recovery actions. Each action is solved, validated, priced, and labeled as a business action ("Crew IB +2h overtime"). The operator can test any manual change and approve an option.
 
@@ -22,16 +22,16 @@ Lane R builds the product: given the current plan and a known disruption, return
 ## Must not touch
 - `backend/app/contracts/` except additive, logged changes (see `docs/CONTRACTS.md`)
 - `backend/app/validate/` (independent validator: call it, never change it to make a plan pass)
-- `backend/app/replay/`, `data/weather/`, `data/demo/cases/` (Lane W)
-- `frontend/` (Lane C, and Lane W's season view)
-- `docs/`, `README.md` (Lane W)
+- `backend/app/replay/`, `data/weather/`, `data/demo/cases/` (parked weather stubs)
+- `frontend/` (Lanes C and H)
+- `docs/`, `README.md` (Lane H), except `docs/CONTRACTS.md` entries for additive contract changes
 
 ## Consumes
 - `app.planning.solve.plan`, `app.validate.validate_plan`, `app.valuation.value_table`, `app.compare.diff.diff_plans`.
 - The frozen contracts: `RecoveryOption`, `RecoveryOptionsResult`, `ImpactAnalysis`, `RecoveryCounts`, `RecoveryEconomics`, `EconomicLine`, `EconomicAssumption`, `Explanation`, `CrewLoad`, `ApproveResult`, and the edits `ReduceCrewDay`, `ChangeAppointment`, `ExtendCrewDay`, `PinVisit`, `MoveVisit`.
 
 ## Provides
-- `backend/app/recovery/service.py`: `recover(scenario, disruption, current_plan=None, economics=None, interactive=False) -> RecoveryOptionsResult`, `evaluate(scenario, disruption, interventions, current_plan=None, economics=None, interactive=True) -> RecoveryOption`, `approve(scenario, option) -> ApproveResult`. Lane W calls `recover()` from the season replay. Keep the signatures.
+- `backend/app/recovery/service.py`: `recover(scenario, disruption, current_plan=None, economics=None, interactive=False) -> RecoveryOptionsResult`, `evaluate(scenario, disruption, interventions, current_plan=None, economics=None, interactive=True) -> RecoveryOption`, `approve(scenario, option) -> ApproveResult`. Keep the signatures. A parked weather replay may call `recover()` later.
 - `POST /api/recovery/options`, `/evaluate`, `/approve` with `stub=false`.
 
 ## Files to create
@@ -86,5 +86,5 @@ Never cut no action, validation, or the economics basis lines.
 ## Working rules
 - Branch `lane/R-engine`. Pull `origin/main` at session start.
 - One PR per feature item. Merge only after the checks and an evaluator PASS. Never push to `main`. Never merge your own PR overnight.
-- Merge your P0 items early. Lane W swaps its stub for your `recover()` at the hour-4 sync.
+- Merge your P0 items early. At the hour-4 sync, C swaps one flow to your live endpoints and H runs the live e2e.
 - Update `lanes/R-engine/PROGRESS.md` after every item. Write requests to other lanes in `lanes/<their lane>/NEEDS.md`.

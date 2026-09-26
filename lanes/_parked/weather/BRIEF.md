@@ -1,7 +1,11 @@
 # Lane W · Weather evidence and trust
 
+> **PARKED (nice to have).** Revisit when R-engine and C-canvas P0 items pass. Nothing here blocks the demo.
+
+> The stub endpoints `GET /api/storms`, `GET /api/cases`, `GET /api/season-replay` and the stub service `backend/app/replay/` stay frozen as they are. They return `stub: true`. No lane owns them until weather returns. There is no `init.sh` on purpose, so nobody launches this lane by accident.
+
 ## Mission
-Rollout Planner is a deterministic disruption-recovery planner for installation operations. It shows what broke, how the disruption cascades through the current plan, what feasible recovery actions exist, what each costs or saves relative to doing nothing, and lets the operations manager review, test changes, and approve. R is the product, W is the evidence, C is the experience.
+Rollout Planner is a deterministic disruption-recovery planner for installation operations. It shows what broke, how the disruption cascades through the current plan, what feasible recovery actions exist, what each costs or saves relative to doing nothing, and lets the operations manager review, test changes, and approve. R is the product, C is the experience, H makes it demo-safe. Weather replay is a parked nice-to-have (`lanes/_parked/weather`).
 
 Lane W produces the evidence. It turns real Houston Hobby storm observations into modeled disruptions, replays the whole June–July 2018 season through the recovery engine, compares no action against recovery, and stress-tests the result. It also owns trust: honest wording, error handling, docs, and the freeze script.
 

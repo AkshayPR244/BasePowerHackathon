@@ -137,13 +137,13 @@ Until lane R lands them, the unimplemented edits return `status: invalid_input` 
 - `POST /api/recovery/evaluate`: `EvaluateRequest {scenario_id, revision, current_plan?, disruption, interventions, interactive}` returns one `RecoveryOption` of kind `custom`. Use it for knock-out, overtime stretch, drag, and pin.
 - `POST /api/recovery/approve`: `ApproveRequest {scenario_id, revision, option}` returns `ApproveResult {new_current_plan, summary, stub}`.
 
-**Weather evidence**
+**Weather evidence** (parked nice-to-have: these endpoints stay frozen stubs until weather returns)
 - `GET /api/storms` returns `StormEvent[] {event_id, date, rainfall_mm, max_wind_kmh, thunder_hours, source, stub}`. Observed at Houston Hobby.
 - `GET /api/cases` returns `Case[] {case_id, name, date, summary, storm_event_id?, disruption, modeled_rule, provenance, stub}`. The disruption is modeled. Say "This replay applies a modeled operational disruption to a real historical storm."
 - `GET /api/season-replay` returns `SeasonReplay {replay_id, events[], totals, stress_tests?, stub}`. Each `SeasonReplayEvent` compares no action with the recovery engine for one case.
 
 **Python seams**
-- `app.recovery.service.recover(scenario, disruption, current_plan=None, economics=None, interactive=False) -> RecoveryOptionsResult`, plus `evaluate(...)` and `approve(...)`. Lane W calls `recover()` for the season replay.
+- `app.recovery.service.recover(scenario, disruption, current_plan=None, economics=None, interactive=False) -> RecoveryOptionsResult`, plus `evaluate(...)` and `approve(...)`. A parked weather replay may call `recover()` later.
 - `app.replay.service.storms()`, `cases()`, `season_replay()`.
 
 **Stubs.** Until lanes R and W replace them, these return fixtures from `backend/app/recovery/fixtures/` and `backend/app/replay/fixtures/`, built by `scripts/build_stubs.py`. The fixtures use real planner results on `standard` for the 14 Jun 2018 storm case, with earliest-deadline-first standing in for no action. Economics and explanations are placeholders. Storm events are real observations. Every stub payload has `stub: true`, and the endpoint sets the header `X-Rollout-Stub: true`. The UI shows a stub label while `stub` is true.

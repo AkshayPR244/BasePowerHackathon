@@ -119,16 +119,13 @@ def _delay(
         )
     rest = [r for r in inventory if r not in hits]
     if total - moved:
-        rest.append(
-            InventoryReceipt(
-                configuration_id=e.configuration_id,
-                available_date=e.from_date,
-                quantity=total - moved,
-            )
-        )
-    rest.append(
-        InventoryReceipt(
-            configuration_id=e.configuration_id, available_date=e.to_date, quantity=moved
-        )
-    )
+        rest.append(hits[0].model_copy(update={"quantity": total - moved}))
+    merged: dict = {}
+    for r in [*rest, hits[0].model_copy(update={"available_date": e.to_date, "quantity": moved})]:
+        key = (r.configuration_id, r.available_date)
+        merged[key] = merged.get(key, 0) + r.quantity
+    rest = [
+        InventoryReceipt(configuration_id=cfg, available_date=d, quantity=q)
+        for (cfg, d), q in merged.items()
+    ]
     return rest, None

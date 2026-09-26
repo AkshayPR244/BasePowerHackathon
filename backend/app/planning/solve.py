@@ -5,6 +5,7 @@ import time
 
 from app.contracts.enums import (
     Algorithm,
+    DataKind,
     JobState,
     Mode,
     ObjectivePolicy,
@@ -12,9 +13,17 @@ from app.contracts.enums import (
     ReasonCode,
     StageStatus,
 )
-from app.contracts.models import PlanRequest, PlanResult, Scenario, StageMeta, UnscheduledJob
+from app.contracts.models import (
+    Assumption,
+    PlanRequest,
+    PlanResult,
+    Scenario,
+    StageMeta,
+    UnscheduledJob,
+)
 from app.planning import explain
 from app.planning.edits import apply_edits
+from app.planning.infeasibility import conflicting_jobs
 from app.planning.lexicographic import Stage, solve_stages
 from app.planning.model import Eligibility, build, eligibility
 from app.planning.result import build_result, no_legal_date_jobs
@@ -38,9 +47,15 @@ class InvalidPlanError(RuntimeError):
     """The validator rejected a plan the planner produced. This is a bug, never a result."""
 
 
-def site_values(scenario: Scenario) -> dict[tuple[str, dt.date], float]:
-    # TODO(lane-b, B-17): read Lane A's value table. Equal (zero) values until then.
-    return {}
+def site_values(scenario: Scenario) -> tuple[dict[tuple[str, dt.date], float], int]:
+    """Values from Lane A's table, and how many rows were unresolved (counted as $0)."""
+    try:
+        from app.valuation.value_table import value_table  # type: ignore[import-not-found]
+    except ImportError:
+        return {}, 0
+    rows = value_table(scenario)
+    ok = {(r.site_id, r.install_date): r.value_usd for r in rows if r.solver_status == "optimal"}
+    return ok, len(rows) - len(ok)
 
 
 def plan(base: Scenario, req: PlanRequest) -> PlanResult:
@@ -48,7 +63,7 @@ def plan(base: Scenario, req: PlanRequest) -> PlanResult:
     policy = req.objective_policy or base.config.objective_policy
     edited = apply_edits(base, req.edits)
     scenario = edited.scenario
-    values = site_values(scenario)
+    values, unresolved = site_values(base)
     common = dict(
         mode=req.mode,
         algorithm=req.algorithm,
@@ -78,7 +93,26 @@ def plan(base: Scenario, req: PlanRequest) -> PlanResult:
         result = run_baseline(scenario, req, edited.forced, values, policy)
     else:
         result = _solve(scenario, req, edited.forced, values, policy, common)
-    result = result.model_copy(update={"solve_ms": int((time.monotonic() - t0) * 1000)})
+    notes = list(result.assumptions)
+    if unresolved:
+        notes.append(
+            Assumption(
+                key="unresolved_values",
+                text=f"{unresolved} site-date values had no solved valuation and count as $0.",
+                kind=DataKind.assumed,
+            )
+        )
+    if policy == ObjectivePolicy.deadline_travel_only and values:
+        notes.append(
+            Assumption(
+                key="revalued",
+                text="This plan ignored energy value. Its value is recomputed with the same table.",
+                kind=DataKind.derived,
+            )
+        )
+    result = result.model_copy(
+        update={"solve_ms": int((time.monotonic() - t0) * 1000), "assumptions": notes}
+    )
     return _validated(scenario, result)
 
 
@@ -172,13 +206,33 @@ def _solve(scenario, req, forced, values, policy, common) -> PlanResult:
             if lex.stages[0].status == StageStatus.infeasible
             else PlanStatus.timeout_no_incumbent
         )
+        extra: list[UnscheduledJob] = []
         if status == PlanStatus.timeout_no_incumbent:
             msg = f"No plan found within {budget:g} s. This does not prove none exists."
-        elif mode == Mode.strict:
+        elif mode == Mode.strict or forced:
             msg = (
                 "No plan meets every deadline with this crew capacity and inventory. "
                 "Try recovery mode."
             )
+            core = conflicting_jobs(scenario, forced if mode == Mode.recovery else set(), budget)
+            if core:
+                if mode == Mode.recovery:
+                    core = [sid for sid in core if sid in forced] or core
+                ids = ", ".join(core)
+                detail = (
+                    f"{ids} cannot all finish by their deadlines "
+                    "with the crews and inventory available."
+                )
+                msg = f"No plan meets every deadline. {detail} Try recovery mode."
+                extra = [
+                    UnscheduledJob(
+                        site_id=sid,
+                        state=JobState.unscheduled,
+                        reasons=[ReasonCode.CAPACITY],
+                        detail=detail,
+                    )
+                    for sid in core
+                ]
         else:
             msg = "No recovery plan fits the locked installs, crews, and inventory."
         return build_result(
@@ -188,6 +242,7 @@ def _solve(scenario, req, forced, values, policy, common) -> PlanResult:
             status=status,
             stages=metas,
             message=msg,
+            extra_unscheduled=extra,
             **common,
         )
 

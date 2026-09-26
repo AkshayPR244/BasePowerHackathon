@@ -130,6 +130,17 @@ def build(
             trav = sum(travel[k] * y[c.crew_id, c.date, k] for k in ks)
             m.add(onsite + trav <= c.available_min)
 
+    # Redundant cut: active crew-days in a cluster must hold all its assigned minutes.
+    # It tightens the travel bound a lot. Every feasible plan satisfies it.
+    avail = {(c.crew_id, c.date): c.available_min for c in scenario.crew_days}
+    for k in sorted({sites[sid].cluster_id for sid in elig.options}):
+        room = [(avail[r, d] - travel[kk]) * yk for (r, d, kk), yk in y.items() if kk == k]
+        work = [
+            sites[sid].duration_min * a for sid, a in assigned.items() if sites[sid].cluster_id == k
+        ]
+        if room and work:
+            m.add(sum(room) >= sum(work))
+
     days = sorted({c.date for c in scenario.crew_days})
     configs = sorted({s.configuration_id for s in scenario.sites})
     for cfg in configs:

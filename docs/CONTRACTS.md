@@ -192,3 +192,25 @@ Rename, remove, type or unit change, new required field, or changed meaning of a
 | `compare_strict_vs_recovery.json` | Diff of the two plans above |
 | `counterfactual_force_n02.json` | Intervention: force N-02 by deadline on the recovery plan. Infeasible |
 | `counterfactual_add_c_mon.json` | Intervention: add Crew C (North) on Mon 4 Jun. All schedulable jobs on time |
+
+### Lane R implementation notes (2026-09-27)
+
+`EvaluateRequest.economics_overrides` is optional and uses the same keys as `/options`.
+Recovery request revisions are carried through the service and approval checks.
+Approval accepts only an unchanged live option issued by this server at the supplied revision,
+revalidates its assignments, and returns bookings; it does not persist a global shared plan.
+Options expire from a bounded in-process registry (128 options); re-evaluate after restart/expiry.
+For Python reuse, carry forward the returned effective scenario and applicable edit history.
+Appointment windows are visit-specific: enforced in eligibility and checked again at output.
+Overtime is capped at 120 additional minutes per crew-day by default; overrides may lower that cap.
+All costs are incremental to the supplied current plan. Existing roster labor is assumed fixed.
+
+`ApproveResult.effective_scenario` preserves approved crew availability and current bookings.
+The HTTP API still loads named scenarios and does not persist approval sessions. Do not send only
+`new_current_plan` back against an unchanged roster after adding capacity. Python callers can reuse
+the effective scenario; HTTP approval chaining is deferred. Appointment windows remain in the
+approved option's edit history and must be reapplied to future analyses.
+
+Recovery action lists may omit overtime/temporary capacity when the bounded search finds no
+validated operational improvement over both no action and rebalance. Render returned options;
+do not assume all three action kinds are present. Cost or option IDs alone do not establish benefit.

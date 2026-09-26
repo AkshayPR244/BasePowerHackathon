@@ -1,49 +1,446 @@
-"""Recovery engine seam. Lane R owns it. Lane W calls recover() for the season replay.
+"""Live deterministic recovery orchestration. No network or autonomous approval."""
 
-STUB: returns fixture output built by scripts/build_stubs.py until lane R implements these.
-Every stub payload carries stub=true.
-"""
+import hashlib
+import json
+import threading
+import time
+from collections import OrderedDict
 
-from pathlib import Path
-
+from app.contracts.hashing import scenario_hash
 from app.contracts.models import (
+    AddCrewDay,
     ApproveResult,
-    Edit,
+    Assumption,
+    ExtendCrewDay,
+    Parameter,
     PlannedInstall,
-    RecoveryOption,
+    PlanRequest,
     RecoveryOptionsResult,
-    Scenario,
 )
+from app.contracts.visits import all_jobs, job_of_row, jobs_of
+from app.planning.edits import apply_edits, appointment_windows
+from app.planning.solve import InvalidPlanError, _validated, plan
+from app.recovery.economics import DEFAULTS, assumptions
+from app.recovery.impact import analyze
+from app.recovery.options import FEASIBLE, rank, wrap
+from app.recovery.repair import current_result, repair, result_for
 
-FIXTURES = Path(__file__).parent / "fixtures"
+_lock = threading.RLock()
+_cache = OrderedDict()
+_issued = OrderedDict()
+_LIMIT = 128
 
 
-def recover(
-    scenario: Scenario,
-    disruption: list[Edit],
-    current_plan: list[PlannedInstall] | None = None,
-    economics: dict[str, float] | None = None,
-    interactive: bool = False,
-) -> RecoveryOptionsResult:
-    """Impact, no action, and the recovery options for one disruption."""
-    # TODO(lane-r): replace the stub.
-    return RecoveryOptionsResult.model_validate_json((FIXTURES / "options.json").read_text("utf-8"))
+def _remember(table, key, value):
+    with _lock:
+        table[key] = value
+        table.move_to_end(key)
+        while len(table) > _LIMIT:
+            table.popitem(last=False)
+
+
+def _prepare(scenario, current_plan, economics):
+    configured = {p.name: float(p.value) for p in scenario.config.parameters if p.name in DEFAULTS}
+    rates = assumptions({**configured, **(economics or {})})
+    base = scenario.model_copy(deep=True)
+    if current_plan is not None:
+        base.current_plan = list(current_plan)
+    # Same configured cap is used by edit validation and candidate generation.
+    cap = next(a for a in rates if a.key == "max_overtime_min")
+    base.config.parameters = [p for p in base.config.parameters if p.name != cap.key] + [
+        Parameter(
+            name=cap.key, value=cap.value, unit=cap.unit, kind=cap.kind, derivation=cap.source
+        )
+    ]
+    base.scenario_hash = scenario_hash(base)
+    try:
+        original = current_result(base)
+    except InvalidPlanError as exc:
+        raise ValueError("The supplied current plan is not feasible: " + str(exc)) from exc
+    return base, original, rates
+
+
+def _check_edits(base, edits):
+    applied = apply_edits(base, edits)
+    if applied.issues:
+        raise ValueError(" ".join(i.message for i in applied.issues))
+    return applied.scenario
+
+
+def _issue(base, option, source_hash):
+    # Include the full supplied current plan and revision; never trust client approval payloads.
+    _remember(
+        _issued,
+        option.option_id,
+        (base.model_copy(deep=True), option.model_copy(deep=True), source_hash),
+    )
+    return option
+
+
+def _solve(base, edits, budget):
+    result = plan(
+        base,
+        PlanRequest(
+            scenario_id=base.scenario_id,
+            revision=base.revision,
+            edits=list(edits),
+            mode="recovery",
+            time_limit_s=max(0.02, budget),
+        ),
+    )
+    if result.status == "timeout_no_incumbent":
+        # A time limit is not a feasibility proof. Try a deterministic, independently
+        # checked incumbent, first restoring original bookings onto like-for-like added capacity.
+        effective = _check_edits(base, edits)
+        jobs = all_jobs(base)
+        by_site = {s.site_id: jobs_of(s) for s in base.sites}
+        available = {(c.crew_id, c.date) for c in effective.crew_days}
+        placed = {}
+        for row in base.current_plan:
+            jid = job_of_row(row, by_site)
+            slot = (row.crew_id, row.date)
+            if slot not in available:
+                job = jobs[jid]
+                site = next(s for s in base.sites if s.site_id == job.site_id)
+                replacement = next(
+                    (
+                        e
+                        for e in edits
+                        if isinstance(e, AddCrewDay)
+                        and e.date == row.date
+                        and job.required_skill in e.skills
+                        and site.cluster_id in e.allowed_clusters
+                    ),
+                    None,
+                )
+                if replacement is not None:
+                    slot = (replacement.crew_id, replacement.date)
+            placed[jid] = slot
+        try:
+            result = result_for(
+                effective,
+                placed,
+                edits,
+                "Deterministic capacity-restoration incumbent; not proven optimal.",
+            )
+        except InvalidPlanError:
+            try:
+                candidate = repair(base, edits)
+                if candidate.status in FEASIBLE:
+                    result = candidate
+            except InvalidPlanError:
+                pass  # Keep the truthful timeout when no checked incumbent is available.
+    if result.status == "feasible":
+        result.message = "Best found within the solve budget. " + result.message
+    return result
+
+
+def _candidates(base, disruption, cap, original, no_action):
+    edited = _check_edits(base, disruption)
+    jobs = all_jobs(base)
+    sites = {s.site_id: s for s in edited.sites}
+    by_site = {s.site_id: jobs_of(s) for s in base.sites}
+    after = {job_of_row(a, by_site): (a.crew_id, a.date) for a in no_action.assignments}
+    windows = appointment_windows(disruption)
+    demands = set()
+    for row in original.assignments:
+        jid = job_of_row(row, by_site)
+        if after.get(jid) == (row.crew_id, row.date):
+            continue
+        job, site = jobs[jid], sites[row.site_id]
+        first = max(row.date, site.ready_date)
+        window = windows.get(jid)
+        if window:
+            first = max(first, window[0])
+        # Capacity before the delayed receipt cannot serve the displaced battery visits.
+        if job.final:
+            for edit in disruption:
+                if (
+                    edit.kind == "delay_inventory"
+                    and edit.configuration_id == site.configuration_id
+                ):
+                    if edit.from_date <= row.date < edit.to_date:
+                        first = max(first, edit.to_date)
+        demands.add((first, job.required_skill, site.cluster_id, window[1] if window else None))
+
+    # Match capacity to displaced visits, not an arbitrary crew or the edit's shape.
+    # Date-first ordering gives different skills/clusters a chance before later dates.
+    days = sorted({c.date for c in base.crew_days})
+    templates = sorted(base.crew_days, key=lambda c: (c.date, c.crew_id))
+    existing = sorted(edited.crew_days, key=lambda c: (c.date, c.crew_id))
+    ot, temporary = [], []
+    seen_ot, seen_temp = set(), set()
+    ids = {c.crew_id for c in base.crew_days}
+    for day in days:
+        for first, skill, cluster, last in sorted(
+            demands, key=lambda d: (d[0], d[1], d[2], str(d[3]))
+        ):
+            if day < first or (last and day > last):
+                continue
+            if cap:
+                for c in existing:
+                    key = (c.crew_id, day)
+                    if (
+                        c.date == day
+                        and c.available_min > 0
+                        and skill in c.skills
+                        and cluster in c.allowed_clusters
+                        and key not in seen_ot
+                    ):
+                        seen_ot.add(key)
+                        ot.append([ExtendCrewDay(crew_id=c.crew_id, date=day, extra_min=int(cap))])
+            for c in templates:
+                key = (tuple(sorted(c.skills)), tuple(sorted(c.allowed_clusters)), day)
+                if (
+                    c.available_min <= 0
+                    or skill not in c.skills
+                    or cluster not in c.allowed_clusters
+                    or key in seen_temp
+                ):
+                    continue
+                seen_temp.add(key)
+                name = "TEMP-" + c.crew_id
+                while name in ids:
+                    name += "-R"
+                temporary.append(
+                    [
+                        AddCrewDay(
+                            crew_id=name,
+                            date=day,
+                            available_min=c.available_min,
+                            skills=c.skills,
+                            allowed_clusters=c.allowed_clusters,
+                        )
+                    ]
+                )
+    # Bounded search, not an exhaustive intervention optimum.
+    return ot[:4], temporary[:4]
+
+
+def recover(scenario, disruption, current_plan=None, economics=None, interactive=False):
+    source_hash = scenario_hash(scenario)
+    base, original, rates = _prepare(scenario, current_plan, economics)
+    if any(
+        e.kind
+        not in {
+            "remove_crew_day",
+            "reduce_crew_day",
+            "change_ready_date",
+            "change_appointment",
+            "delay_inventory",
+        }
+        for e in disruption
+    ):
+        raise ValueError(
+            "Disruptions must describe lost resources or changed readiness/appointments."
+        )
+    _check_edits(base, disruption)
+    from app.valuation.value_table import value_table
+
+    valuation_keys = sorted({row.input_hash for row in value_table(base)})
+    key = hashlib.sha256(
+        json.dumps(
+            [
+                base.model_dump(mode="json"),
+                [e.model_dump(mode="json") for e in disruption],
+                economics,
+                interactive,
+                valuation_keys,
+            ],
+            sort_keys=True,
+        ).encode()
+    ).hexdigest()
+    with _lock:
+        hit = _cache.get(key)
+        if hit is not None:
+            for option in [hit.no_action, *hit.options]:
+                _issue(base, option, source_hash)
+            return hit.model_copy(deep=True)
+    no_action = wrap(
+        "no_action",
+        "Keep original crews; wait for their next open slot",
+        original,
+        repair(base, disruption),
+        [],
+        rates,
+    )
+    t0 = time.monotonic()
+    budget = 1.2 if interactive else base.config.solve_time_limit_s
+    rebalance = wrap(
+        "rebalance",
+        "Rebalance existing crews",
+        original,
+        _solve(base, disruption, budget / 3),
+        [],
+        rates,
+        no_action,
+    )
+    cap = next(a.value for a in rates if a.key == "max_overtime_min")
+    ot, temporary = _candidates(base, disruption, cap, original, no_action.result)
+    options = [rebalance]
+    baseline = min([no_action, rebalance], key=rank)
+    for kind, candidates in [("overtime", ot), ("temporary_capacity", temporary)]:
+        best = None
+        # Reserve at least one solve for each action kind in interactive mode.
+        limit = 1 if interactive else len(candidates)
+        for interventions in candidates[:limit]:
+            left = max(0.02, budget - (time.monotonic() - t0))
+            result = _solve(
+                base, [*disruption, *interventions], min(left, budget / (3 * max(1, limit)))
+            )
+            e = interventions[0]
+            label = (
+                f"Crew {e.crew_id} +{e.extra_min / 60:g}h overtime on {e.date}"
+                if kind == "overtime"
+                else f"Add Crew {e.crew_id} on {e.date}"
+            )
+            candidate = wrap(kind, label, original, result, interventions, rates, no_action)
+            # Paid capacity must improve operational outcomes beyond doing nothing
+            # or simply rebalancing. Cost and arbitrary IDs cannot establish benefit.
+            if candidate.status not in FEASIBLE or not candidate.result.validation.valid:
+                continue
+            if baseline.status in FEASIBLE and rank(candidate)[:-2] >= rank(baseline)[:-2]:
+                continue
+            if best is None or rank(candidate) < rank(best):
+                best = candidate
+        if best is not None:
+            options.append(best)
+    choices = [
+        o for o in [no_action, *options] if o.status in FEASIBLE and o.result.validation.valid
+    ]
+    if choices:
+        min(
+            choices, key=lambda o: (o.economics.net_impact_usd, o.option_id)
+        ).lowest_modeled_cost = True
+    out = RecoveryOptionsResult(
+        revision=base.revision,
+        scenario_hash=base.scenario_hash,
+        impact=analyze(base, disruption, original, no_action.result),
+        no_action=no_action,
+        options=options,
+        economic_assumptions=rates,
+        assumptions=[
+            Assumption(
+                key="candidate_search",
+                kind="assumed",
+                text="Deterministic bounded candidate search: up to four overtime and "
+                "four temporary crew-days (one each in interactive mode). Lowest "
+                "modeled cost applies only to returned feasible options, including "
+                "no action. Cold valuation preparation is outside the solve budget.",
+            )
+        ],
+        stub=False,
+    )
+    for option in [no_action, *options]:
+        _issue(base, option, source_hash)
+    _remember(_cache, key, out.model_copy(deep=True))
+    return out
 
 
 def evaluate(
-    scenario: Scenario,
-    disruption: list[Edit],
-    interventions: list[Edit],
-    current_plan: list[PlannedInstall] | None = None,
-    economics: dict[str, float] | None = None,
-    interactive: bool = True,
-) -> RecoveryOption:
-    """One manual change, as a RecoveryOption of kind custom."""
-    # TODO(lane-r): replace the stub.
-    return RecoveryOption.model_validate_json((FIXTURES / "evaluate.json").read_text("utf-8"))
+    scenario, disruption, interventions, current_plan=None, economics=None, interactive=True
+):
+    source_hash = scenario_hash(scenario)
+    base, original, rates = _prepare(scenario, current_plan, economics)
+    if any(
+        e.kind
+        not in {
+            "remove_crew_day",
+            "reduce_crew_day",
+            "change_ready_date",
+            "change_appointment",
+            "delay_inventory",
+        }
+        for e in disruption
+    ):
+        raise ValueError("Use intervention edits for added capacity and manual assignments.")
+    _check_edits(base, [*disruption, *interventions])
+    no_action = wrap(
+        "no_action", "Keep original crews", original, repair(base, disruption), [], rates
+    )
+    result = _solve(
+        base, [*disruption, *interventions], 2 if interactive else base.config.solve_time_limit_s
+    )
+    option = wrap(
+        "custom",
+        "Evaluate manual recovery changes",
+        original,
+        result,
+        interventions,
+        rates,
+        no_action,
+    )
+    pins = [e for e in interventions if e.kind == "pin_visit"]
+    if pins and option.status in FEASIBLE:
+        unpinned = [e for e in interventions if e.kind != "pin_visit"]
+        alternate = wrap(
+            "custom",
+            "Without new pins",
+            original,
+            _solve(
+                base, [*disruption, *unpinned], 2 if interactive else base.config.solve_time_limit_s
+            ),
+            unpinned,
+            rates,
+            no_action,
+        )
+        if alternate.status in FEASIBLE:
+            from app.contracts.models import Explanation
+
+            delta = round(option.economics.net_impact_usd - alternate.economics.net_impact_usd, 2)
+            option.explanations.extend(
+                Explanation(
+                    job_id=e.job_id,
+                    constraint="pin_visit",
+                    text=f"Protecting this set of visits changes modeled cost by ${delta:.2f} "
+                    f"vs the computed unpinned option; this is not a proven minimum "
+                    f"protection cost.",
+                )
+                for e in pins
+            )
+    return _issue(base, option, source_hash)
 
 
-def approve(scenario: Scenario, option: RecoveryOption) -> ApproveResult:
-    """The chosen option becomes the new current plan."""
-    # TODO(lane-r): replace the stub.
-    return ApproveResult.model_validate_json((FIXTURES / "approve.json").read_text("utf-8"))
+def approve(scenario, option):
+    with _lock:
+        saved = _issued.get(option.option_id)
+    if saved is None:
+        raise ValueError(
+            "Option expired or was not issued by this server. Re-evaluate before approval."
+        )
+    base, issued, source_hash = saved
+    if (
+        source_hash != scenario_hash(scenario)
+        or base.scenario_id != scenario.scenario_id
+        or issued.result.revision != scenario.revision
+        or option != issued
+    ):
+        raise ValueError("Option or revision does not match the evaluated recovery. Re-evaluate.")
+    if issued.stub or issued.status not in FEASIBLE or not issued.result.validation.valid:
+        raise ValueError("Only a feasible, independently validated live option can be approved.")
+    # Reapply authoritative edits and revalidate rather than trusting validation flags.
+    effective = _check_edits(base, issued.result.edits)
+    _validated(effective, issued.result)
+    by_site = {s.site_id: jobs_of(s) for s in effective.sites}
+    locks = {job_of_row(p, by_site) for p in effective.current_plan if p.locked}
+    rows = [
+        PlannedInstall(
+            site_id=a.site_id,
+            job_id=a.job_id,
+            crew_id=a.crew_id,
+            date=a.date,
+            locked=(a.job_id or a.site_id) in locks,
+        )
+        for a in issued.result.assignments
+    ]
+    approved_scenario = effective.model_copy(update={"current_plan": rows})
+    approved_scenario.scenario_hash = scenario_hash(approved_scenario)
+    current_result(approved_scenario)
+    return ApproveResult(
+        new_current_plan=rows,
+        effective_scenario=approved_scenario,
+        summary="Recovery approved for this analysis. "
+        "The returned effective scenario preserves resource changes and bookings; "
+        "no customers were contacted. API sessions do not persist approved scenarios.",
+        stub=False,
+    )

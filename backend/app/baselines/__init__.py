@@ -6,6 +6,7 @@ from app.baselines.edf import edf
 from app.baselines.nearest_cluster import nearest_cluster
 from app.contracts.enums import Algorithm, Mode, PlanStatus, StageStatus
 from app.contracts.models import PlanRequest, PlanResult, Scenario, StageMeta
+from app.planning.edits import restrict_appointments
 from app.planning.model import eligibility
 from app.planning.result import build_result, locked_job_slots
 
@@ -17,7 +18,7 @@ _LABEL = {
 
 
 def run_baseline(scenario: Scenario, req: PlanRequest, forced, values, policy) -> PlanResult:
-    elig = eligibility(scenario, Mode.recovery, set())
+    elig = restrict_appointments(eligibility(scenario, Mode.recovery, set()), req.edits)
     locks = {
         jid: slot
         for jid, slot in locked_job_slots(scenario).items()

@@ -115,6 +115,16 @@
       "ApproveResult": {
         "additionalProperties": false,
         "properties": {
+          "effective_scenario": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/Scenario"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
           "new_current_plan": {
             "items": {
               "$ref": "#/components/schemas/PlannedInstall"
@@ -1111,6 +1121,20 @@
             },
             "title": "Disruption",
             "type": "array"
+          },
+          "economics_overrides": {
+            "anyOf": [
+              {
+                "additionalProperties": {
+                  "type": "number"
+                },
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Economics Overrides"
           },
           "interactive": {
             "default": true,

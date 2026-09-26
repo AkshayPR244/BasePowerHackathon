@@ -16,7 +16,7 @@
       "value": null,
       "bound": null,
       "gap": null,
-      "elapsed_ms": 16
+      "elapsed_ms": 7
     }
   ],
   "assignments": [
@@ -1176,5 +1176,5 @@
       "kind": "assumed"
     }
   ],
-  "solve_ms": 250
+  "solve_ms": 204
 }

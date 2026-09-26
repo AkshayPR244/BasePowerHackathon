@@ -27,7 +27,6 @@ _STATUS = {
     cp_model.OPTIMAL: StageStatus.optimal,
     cp_model.FEASIBLE: StageStatus.feasible,
     cp_model.INFEASIBLE: StageStatus.infeasible,
-    cp_model.MODEL_INVALID: StageStatus.infeasible,
     cp_model.UNKNOWN: StageStatus.timeout_no_incumbent,
 }
 
@@ -91,6 +90,8 @@ def solve_stages(
         t0 = time.monotonic()
         code = solver.solve(model)
         elapsed = int((time.monotonic() - t0) * 1000)
+        if code == cp_model.MODEL_INVALID:
+            raise RuntimeError("CP-SAT rejected the generated model: " + model.validate())
         status = _STATUS[code]
 
         if status in (StageStatus.infeasible, StageStatus.timeout_no_incumbent):

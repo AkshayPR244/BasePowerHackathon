@@ -23,7 +23,7 @@ from app.contracts.models import (
 )
 from app.contracts.visits import job_of_row, jobs_of
 from app.planning import explain
-from app.planning.edits import apply_edits
+from app.planning.edits import apply_edits, appointment_windows, restrict_appointments
 from app.planning.infeasibility import conflicting_jobs
 from app.planning.lexicographic import Stage, solve_stages
 from app.planning.model import Eligibility, build, eligibility
@@ -121,9 +121,14 @@ def plan(base: Scenario, req: PlanRequest) -> PlanResult:
 
 def _validated(scenario: Scenario, result: PlanResult) -> PlanResult:
     report = validate_plan(scenario, result)
-    if report.checked and not report.valid and result.assignments:
+    if report.checked and not report.valid:
         issues = "; ".join(i.message for i in report.issues)
         raise InvalidPlanError(f"Plan {result.plan_id} failed validation: {issues}")
+    windows = appointment_windows(result.edits)
+    for a in result.assignments:
+        if (bounds := windows.get(a.job_id or a.site_id)) is not None:
+            if a.date < bounds[0] or (bounds[1] is not None and a.date > bounds[1]):
+                raise InvalidPlanError("Visit violates the requested appointment window.")
     return result.model_copy(update={"validation": report})
 
 
@@ -133,10 +138,12 @@ def _stage_list(mode: Mode, policy: ObjectivePolicy) -> list[Stage]:
 
 def _solve(scenario, req, forced, values, policy, common) -> PlanResult:
     mode = req.mode
-    elig = eligibility(scenario, mode, forced)
+    elig = restrict_appointments(eligibility(scenario, mode, forced), req.edits)
     stages = _stage_list(mode, policy)
 
-    missing = no_legal_date_jobs(scenario, elig)
+    missing = [
+        u for u in no_legal_date_jobs(scenario, elig) if mode == Mode.strict or u.site_id in forced
+    ]
     if missing:
         ids = ", ".join(u.site_id for u in missing)
         lead = (

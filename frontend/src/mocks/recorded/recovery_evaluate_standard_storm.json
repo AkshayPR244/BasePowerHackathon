@@ -1,30 +1,15 @@
 {
-  "option_id": "custom",
+  "option_id": "custom-816fd0006b35467f",
   "kind": "custom",
-  "action_label": "Temporary battery crew BT Fri 15 Jun",
-  "intervention_edits": [
-    {
-      "kind": "add_crew_day",
-      "crew_id": "BT",
-      "date": "2018-06-15",
-      "available_min": 480,
-      "skills": [
-        "battery"
-      ],
-      "allowed_clusters": [
-        "N",
-        "S",
-        "W"
-      ]
-    }
-  ],
+  "action_label": "Evaluate manual recovery changes",
+  "intervention_edits": [],
   "status": "feasible",
   "proven_optimal": false,
   "result": {
-    "plan_id": "standard-r1-recovery-f1dc6769",
+    "plan_id": "standard-r2-recovery-85518efc",
     "scenario_id": "standard",
-    "scenario_hash": "f1dc6769c5b88dd4a91aea05abe41a17dea9bdde4103dce8a0ecf87a69ff727c",
-    "revision": 1,
+    "scenario_hash": "85518efcee4c12b86cc28fe23c296b73186964202ccec52f536d839ed9e43b05",
+    "revision": 2,
     "mode": "recovery",
     "algorithm": "cpsat",
     "objective_policy": "value_aware",
@@ -43,64 +28,50 @@
         "kind": "remove_crew_day",
         "crew_id": "BA",
         "date": "2018-06-14"
-      },
-      {
-        "kind": "add_crew_day",
-        "crew_id": "BT",
-        "date": "2018-06-15",
-        "available_min": 480,
-        "skills": [
-          "battery"
-        ],
-        "allowed_clusters": [
-          "N",
-          "S",
-          "W"
-        ]
       }
     ],
     "status": "feasible",
-    "message": "Crew IA is out Thu 14 Jun. Crew IB is out Thu 14 Jun. Crew BA is out Thu 14 Jun. Crew BT is added on Fri 15 Jun. 1 job not scheduled. 49 visits move, so 35 customers need a new date. The time limit ended before the solver proved this plan is the best.",
+    "message": "Best found within the solve budget. Crew IA is out Thu 14 Jun. Crew IB is out Thu 14 Jun. Crew BA is out Thu 14 Jun. 4 jobs not scheduled. 25 visits move, so 18 customers need a new date. The time limit ended before the solver proved this plan is the best.",
     "stages": [
       {
         "name": "jobs_late_or_unscheduled",
         "status": "optimal",
-        "value": 1.0,
-        "bound": 1.0,
+        "value": 4.0,
+        "bound": 4.0,
         "gap": 0.0,
-        "elapsed_ms": 702
+        "elapsed_ms": 366
       },
       {
         "name": "total_delay",
         "status": "optimal",
-        "value": 30.0,
-        "bound": 30.0,
+        "value": 120.0,
+        "bound": 120.0,
         "gap": 0.0,
-        "elapsed_ms": 593
+        "elapsed_ms": 276
       },
       {
         "name": "changed_installs",
         "status": "optimal",
-        "value": 49.0,
-        "bound": 49.0,
+        "value": 25.0,
+        "bound": 25.0,
         "gap": 0.0,
-        "elapsed_ms": 6358
+        "elapsed_ms": 216
       },
       {
         "name": "operating_value",
-        "status": "feasible",
-        "value": 4048.89,
-        "bound": 4143.02,
-        "gap": 0.023248347077841087,
-        "elapsed_ms": 3702
+        "status": "optimal",
+        "value": 3782.62,
+        "bound": 3782.62,
+        "gap": 0.0,
+        "elapsed_ms": 452
       },
       {
         "name": "travel",
         "status": "feasible",
-        "value": 897.0,
-        "bound": 831.0,
-        "gap": 0.07357859531772576,
-        "elapsed_ms": 1844
+        "value": 831.0,
+        "bound": 771.0,
+        "gap": 0.07220216606498195,
+        "elapsed_ms": 341
       }
     ],
     "assignments": [
@@ -117,17 +88,17 @@
       {
         "site_id": "N-01",
         "crew_id": "BA",
-        "date": "2018-06-07",
+        "date": "2018-06-05",
         "state": "scheduled",
         "days_late": 0,
-        "value_usd": 94.49075274012043,
+        "value_usd": 95.87358655551603,
         "job_id": "N-01-B",
         "visit_type": "battery_day"
       },
       {
         "site_id": "N-02",
         "crew_id": "IB",
-        "date": "2018-06-08",
+        "date": "2018-06-12",
         "state": "scheduled",
         "days_late": 0,
         "value_usd": 0.0,
@@ -136,11 +107,11 @@
       },
       {
         "site_id": "N-02",
-        "crew_id": "BT",
-        "date": "2018-06-15",
+        "crew_id": "BA",
+        "date": "2018-06-13",
         "state": "scheduled",
         "days_late": 0,
-        "value_usd": 89.3039064063406,
+        "value_usd": 90.30207467654311,
         "job_id": "N-02-B",
         "visit_type": "battery_day"
       },
@@ -157,10 +128,10 @@
       {
         "site_id": "N-03",
         "crew_id": "BA",
-        "date": "2018-06-07",
+        "date": "2018-06-05",
         "state": "scheduled",
         "days_late": 0,
-        "value_usd": 94.49075274012043,
+        "value_usd": 95.87358655551603,
         "job_id": "N-03-B",
         "visit_type": "battery_day"
       },
@@ -186,8 +157,8 @@
       },
       {
         "site_id": "N-05",
-        "crew_id": "IB",
-        "date": "2018-06-12",
+        "crew_id": "IA",
+        "date": "2018-06-08",
         "state": "scheduled",
         "days_late": 0,
         "value_usd": 0.0,
@@ -197,10 +168,10 @@
       {
         "site_id": "N-05",
         "crew_id": "BA",
-        "date": "2018-06-13",
+        "date": "2018-06-11",
         "state": "scheduled",
         "days_late": 0,
-        "value_usd": 90.30207467654311,
+        "value_usd": 92.01481278027819,
         "job_id": "N-05-B",
         "visit_type": "battery_day"
       },
@@ -237,17 +208,17 @@
       {
         "site_id": "N-07",
         "crew_id": "BA",
-        "date": "2018-06-07",
+        "date": "2018-06-11",
         "state": "scheduled",
         "days_late": 0,
-        "value_usd": 94.49075274012043,
+        "value_usd": 92.01481278027819,
         "job_id": "N-07-B",
         "visit_type": "battery_day"
       },
       {
         "site_id": "N-08",
         "crew_id": "IB",
-        "date": "2018-06-12",
+        "date": "2018-06-08",
         "state": "scheduled",
         "days_late": 0,
         "value_usd": 0.0,
@@ -257,10 +228,10 @@
       {
         "site_id": "N-08",
         "crew_id": "BA",
-        "date": "2018-06-13",
+        "date": "2018-06-11",
         "state": "scheduled",
         "days_late": 0,
-        "value_usd": 90.30207467654311,
+        "value_usd": 92.01481278027819,
         "job_id": "N-08-B",
         "visit_type": "battery_day"
       },
@@ -277,10 +248,10 @@
       {
         "site_id": "N-09",
         "crew_id": "BA",
-        "date": "2018-06-07",
+        "date": "2018-06-05",
         "state": "scheduled",
         "days_late": 0,
-        "value_usd": 94.49075274012043,
+        "value_usd": 95.87358655551603,
         "job_id": "N-09-B",
         "visit_type": "battery_day"
       },
@@ -297,10 +268,10 @@
       {
         "site_id": "N-10",
         "crew_id": "BA",
-        "date": "2018-06-07",
+        "date": "2018-06-13",
         "state": "scheduled",
         "days_late": 0,
-        "value_usd": 94.49075274012043,
+        "value_usd": 90.30207467654311,
         "job_id": "N-10-B",
         "visit_type": "battery_day"
       },
@@ -327,7 +298,7 @@
       {
         "site_id": "N-12",
         "crew_id": "IA",
-        "date": "2018-06-13",
+        "date": "2018-06-08",
         "state": "scheduled",
         "days_late": 0,
         "value_usd": 0.0,
@@ -336,11 +307,11 @@
       },
       {
         "site_id": "N-12",
-        "crew_id": "BT",
-        "date": "2018-06-15",
+        "crew_id": "BA",
+        "date": "2018-06-11",
         "state": "scheduled",
         "days_late": 0,
-        "value_usd": 89.3039064063406,
+        "value_usd": 92.01481278027819,
         "job_id": "N-12-B",
         "visit_type": "battery_day"
       },
@@ -367,7 +338,7 @@
       {
         "site_id": "N-14",
         "crew_id": "IA",
-        "date": "2018-06-13",
+        "date": "2018-06-08",
         "state": "scheduled",
         "days_late": 0,
         "value_usd": 0.0,
@@ -376,18 +347,18 @@
       },
       {
         "site_id": "N-14",
-        "crew_id": "BT",
-        "date": "2018-06-15",
+        "crew_id": "BA",
+        "date": "2018-06-11",
         "state": "scheduled",
         "days_late": 0,
-        "value_usd": 89.3039064063406,
+        "value_usd": 92.01481278027819,
         "job_id": "N-14-B",
         "visit_type": "battery_day"
       },
       {
         "site_id": "N-15",
-        "crew_id": "IA",
-        "date": "2018-06-13",
+        "crew_id": "IB",
+        "date": "2018-06-12",
         "state": "scheduled",
         "days_late": 0,
         "value_usd": 0.0,
@@ -396,11 +367,11 @@
       },
       {
         "site_id": "N-15",
-        "crew_id": "BT",
-        "date": "2018-06-15",
+        "crew_id": "BA",
+        "date": "2018-06-13",
         "state": "scheduled",
         "days_late": 0,
-        "value_usd": 89.3039064063406,
+        "value_usd": 90.30207467654311,
         "job_id": "N-15-B",
         "visit_type": "battery_day"
       },
@@ -426,8 +397,8 @@
       },
       {
         "site_id": "S-02",
-        "crew_id": "IA",
-        "date": "2018-06-11",
+        "crew_id": "IB",
+        "date": "2018-06-07",
         "state": "scheduled",
         "days_late": 0,
         "value_usd": 0.0,
@@ -446,8 +417,8 @@
       },
       {
         "site_id": "S-03",
-        "crew_id": "IB",
-        "date": "2018-06-07",
+        "crew_id": "IA",
+        "date": "2018-06-11",
         "state": "scheduled",
         "days_late": 0,
         "value_usd": 0.0,
@@ -457,10 +428,10 @@
       {
         "site_id": "S-03",
         "crew_id": "BA",
-        "date": "2018-06-08",
+        "date": "2018-06-12",
         "state": "scheduled",
         "days_late": 0,
-        "value_usd": 93.23169979972167,
+        "value_usd": 91.81681541029651,
         "job_id": "S-03-B",
         "visit_type": "battery_day"
       },
@@ -477,17 +448,17 @@
       {
         "site_id": "S-04",
         "crew_id": "BA",
-        "date": "2018-06-05",
+        "date": "2018-06-06",
         "state": "scheduled",
         "days_late": 0,
-        "value_usd": 95.87358655551603,
+        "value_usd": 95.23750522307856,
         "job_id": "S-04-B",
         "visit_type": "battery_day"
       },
       {
         "site_id": "S-05",
         "crew_id": "IB",
-        "date": "2018-06-11",
+        "date": "2018-06-05",
         "state": "scheduled",
         "days_late": 0,
         "value_usd": 0.0,
@@ -497,17 +468,17 @@
       {
         "site_id": "S-05",
         "crew_id": "BA",
-        "date": "2018-06-12",
+        "date": "2018-06-08",
         "state": "scheduled",
         "days_late": 0,
-        "value_usd": 91.81681541029651,
+        "value_usd": 93.23169979972167,
         "job_id": "S-05-B",
         "visit_type": "battery_day"
       },
       {
         "site_id": "S-06",
         "crew_id": "IB",
-        "date": "2018-06-11",
+        "date": "2018-06-07",
         "state": "scheduled",
         "days_late": 0,
         "value_usd": 0.0,
@@ -557,10 +528,10 @@
       {
         "site_id": "S-08",
         "crew_id": "BA",
-        "date": "2018-06-05",
+        "date": "2018-06-06",
         "state": "scheduled",
         "days_late": 0,
-        "value_usd": 95.87358655551603,
+        "value_usd": 95.23750522307856,
         "job_id": "S-08-B",
         "visit_type": "battery_day"
       },
@@ -645,9 +616,29 @@
         "visit_type": "battery_day"
       },
       {
+        "site_id": "S-13",
+        "crew_id": "IB",
+        "date": "2018-06-05",
+        "state": "scheduled",
+        "days_late": 0,
+        "value_usd": 0.0,
+        "job_id": "S-13-I",
+        "visit_type": "install"
+      },
+      {
+        "site_id": "S-13",
+        "crew_id": "BA",
+        "date": "2018-06-06",
+        "state": "scheduled",
+        "days_late": 0,
+        "value_usd": 95.23750522307856,
+        "job_id": "S-13-B",
+        "visit_type": "battery_day"
+      },
+      {
         "site_id": "S-14",
         "crew_id": "IB",
-        "date": "2018-06-07",
+        "date": "2018-06-05",
         "state": "scheduled",
         "days_late": 0,
         "value_usd": 0.0,
@@ -707,7 +698,7 @@
       {
         "site_id": "W-02",
         "crew_id": "IA",
-        "date": "2018-06-08",
+        "date": "2018-06-13",
         "state": "scheduled",
         "days_late": 0,
         "value_usd": 0.0,
@@ -737,17 +728,17 @@
       {
         "site_id": "W-03",
         "crew_id": "BA",
-        "date": "2018-06-06",
+        "date": "2018-06-07",
         "state": "scheduled",
         "days_late": 0,
-        "value_usd": 95.23750522307856,
+        "value_usd": 94.49075274012043,
         "job_id": "W-03-B",
         "visit_type": "battery_day"
       },
       {
         "site_id": "W-04",
-        "crew_id": "IA",
-        "date": "2018-06-08",
+        "crew_id": "IB",
+        "date": "2018-06-11",
         "state": "scheduled",
         "days_late": 0,
         "value_usd": 0.0,
@@ -765,29 +756,9 @@
         "visit_type": "battery_day"
       },
       {
-        "site_id": "W-05",
-        "crew_id": "IA",
-        "date": "2018-06-08",
-        "state": "scheduled",
-        "days_late": 0,
-        "value_usd": 0.0,
-        "job_id": "W-05-I",
-        "visit_type": "install"
-      },
-      {
-        "site_id": "W-05",
-        "crew_id": "BA",
-        "date": "2018-06-11",
-        "state": "scheduled",
-        "days_late": 0,
-        "value_usd": 92.01481278027819,
-        "job_id": "W-05-B",
-        "visit_type": "battery_day"
-      },
-      {
         "site_id": "W-06",
         "crew_id": "IB",
-        "date": "2018-06-13",
+        "date": "2018-06-11",
         "state": "scheduled",
         "days_late": 0,
         "value_usd": 0.0,
@@ -817,32 +788,22 @@
       {
         "site_id": "W-07",
         "crew_id": "BA",
-        "date": "2018-06-06",
+        "date": "2018-06-07",
         "state": "scheduled",
         "days_late": 0,
-        "value_usd": 95.23750522307856,
+        "value_usd": 94.49075274012043,
         "job_id": "W-07-B",
         "visit_type": "battery_day"
       },
       {
         "site_id": "W-08",
-        "crew_id": "IA",
-        "date": "2018-06-06",
+        "crew_id": "IB",
+        "date": "2018-06-11",
         "state": "scheduled",
         "days_late": 0,
         "value_usd": 0.0,
         "job_id": "W-08-I",
         "visit_type": "install"
-      },
-      {
-        "site_id": "W-08",
-        "crew_id": "BA",
-        "date": "2018-06-11",
-        "state": "scheduled",
-        "days_late": 0,
-        "value_usd": 92.01481278027819,
-        "job_id": "W-08-B",
-        "visit_type": "battery_day"
       },
       {
         "site_id": "W-09",
@@ -857,10 +818,10 @@
       {
         "site_id": "W-09",
         "crew_id": "BA",
-        "date": "2018-06-11",
+        "date": "2018-06-07",
         "state": "scheduled",
         "days_late": 0,
-        "value_usd": 92.01481278027819,
+        "value_usd": 94.49075274012043,
         "job_id": "W-09-B",
         "visit_type": "battery_day"
       },
@@ -877,10 +838,10 @@
       {
         "site_id": "W-10",
         "crew_id": "BA",
-        "date": "2018-06-11",
+        "date": "2018-06-07",
         "state": "scheduled",
         "days_late": 0,
-        "value_usd": 92.01481278027819,
+        "value_usd": 94.49075274012043,
         "job_id": "W-10-B",
         "visit_type": "battery_day"
       },
@@ -905,26 +866,6 @@
         "visit_type": "battery_day"
       },
       {
-        "site_id": "W-12",
-        "crew_id": "IB",
-        "date": "2018-06-05",
-        "state": "scheduled",
-        "days_late": 0,
-        "value_usd": 0.0,
-        "job_id": "W-12-I",
-        "visit_type": "install"
-      },
-      {
-        "site_id": "W-12",
-        "crew_id": "BA",
-        "date": "2018-06-06",
-        "state": "scheduled",
-        "days_late": 0,
-        "value_usd": 95.23750522307856,
-        "job_id": "W-12-B",
-        "visit_type": "battery_day"
-      },
-      {
         "site_id": "W-13",
         "crew_id": "IA",
         "date": "2018-06-05",
@@ -933,16 +874,6 @@
         "value_usd": 0.0,
         "job_id": "W-13-I",
         "visit_type": "install"
-      },
-      {
-        "site_id": "W-13",
-        "crew_id": "BA",
-        "date": "2018-06-06",
-        "state": "scheduled",
-        "days_late": 0,
-        "value_usd": 95.23750522307856,
-        "job_id": "W-13-B",
-        "visit_type": "battery_day"
       },
       {
         "site_id": "W-14",
@@ -977,55 +908,87 @@
       {
         "site_id": "W-15",
         "crew_id": "BA",
-        "date": "2018-06-11",
+        "date": "2018-06-07",
         "state": "scheduled",
         "days_late": 0,
-        "value_usd": 92.01481278027819,
+        "value_usd": 94.49075274012043,
         "job_id": "W-15-B",
         "visit_type": "battery_day"
       }
     ],
     "unscheduled": [
       {
-        "site_id": "S-13",
+        "site_id": "W-05",
         "state": "unscheduled",
         "reasons": [],
-        "detail": "S-13 battery day is not in the best recovery. No single hard blocker applies. Force it in to see what it displaces.",
-        "job_id": "S-13-B",
+        "detail": "W-05 battery day is not in the best recovery. No single hard blocker applies. Force it in to see what it displaces.",
+        "job_id": "W-05-B",
         "visit_type": "battery_day"
       },
       {
-        "site_id": "S-13",
+        "site_id": "W-05",
         "state": "unscheduled",
         "reasons": [],
-        "detail": "S-13 install is not in the best recovery. No single hard blocker applies. Force it in to see what it displaces.",
-        "job_id": "S-13-I",
+        "detail": "W-05 install is not in the best recovery. No single hard blocker applies. Force it in to see what it displaces.",
+        "job_id": "W-05-I",
         "visit_type": "install"
+      },
+      {
+        "site_id": "W-08",
+        "state": "unscheduled",
+        "reasons": [],
+        "detail": "W-08 battery day is not in the best recovery. No single hard blocker applies. Force it in to see what it displaces.",
+        "job_id": "W-08-B",
+        "visit_type": "battery_day"
+      },
+      {
+        "site_id": "W-12",
+        "state": "unscheduled",
+        "reasons": [],
+        "detail": "W-12 battery day is not in the best recovery. No single hard blocker applies. Force it in to see what it displaces.",
+        "job_id": "W-12-B",
+        "visit_type": "battery_day"
+      },
+      {
+        "site_id": "W-12",
+        "state": "unscheduled",
+        "reasons": [],
+        "detail": "W-12 install is not in the best recovery. No single hard blocker applies. Force it in to see what it displaces.",
+        "job_id": "W-12-I",
+        "visit_type": "install"
+      },
+      {
+        "site_id": "W-13",
+        "state": "unscheduled",
+        "reasons": [],
+        "detail": "W-13 battery day is not in the best recovery. No single hard blocker applies. Force it in to see what it displaces.",
+        "job_id": "W-13-B",
+        "visit_type": "battery_day"
       }
     ],
     "crew_days": [
       {
         "crew_id": "BA",
         "date": "2018-06-05",
-        "cluster_id": "S",
-        "onsite_min": 165,
-        "travel_min": 41,
+        "cluster_id": "N",
+        "onsite_min": 240,
+        "travel_min": 34,
         "available_min": 480
       },
       {
         "crew_id": "BA",
         "date": "2018-06-06",
-        "cluster_id": "W",
-        "onsite_min": 330,
-        "travel_min": 33,
+        "cluster_id": "S",
+        "onsite_min": 255,
+        "travel_min": 41,
         "available_min": 480
       },
       {
         "crew_id": "BA",
         "date": "2018-06-07",
-        "cluster_id": "N",
+        "cluster_id": "W",
         "onsite_min": 390,
-        "travel_min": 34,
+        "travel_min": 33,
         "available_min": 480
       },
       {
@@ -1039,9 +1002,9 @@
       {
         "crew_id": "BA",
         "date": "2018-06-11",
-        "cluster_id": "W",
+        "cluster_id": "N",
         "onsite_min": 420,
-        "travel_min": 33,
+        "travel_min": 34,
         "available_min": 480
       },
       {
@@ -1069,14 +1032,6 @@
         "available_min": 480
       },
       {
-        "crew_id": "BT",
-        "date": "2018-06-15",
-        "cluster_id": "N",
-        "onsite_min": 270,
-        "travel_min": 34,
-        "available_min": 480
-      },
-      {
         "crew_id": "IA",
         "date": "2018-06-04",
         "cluster_id": "N",
@@ -1096,7 +1051,7 @@
         "crew_id": "IA",
         "date": "2018-06-06",
         "cluster_id": "W",
-        "onsite_min": 420,
+        "onsite_min": 330,
         "travel_min": 33,
         "available_min": 480
       },
@@ -1111,9 +1066,9 @@
       {
         "crew_id": "IA",
         "date": "2018-06-08",
-        "cluster_id": "W",
+        "cluster_id": "N",
         "onsite_min": 420,
-        "travel_min": 33,
+        "travel_min": 34,
         "available_min": 480
       },
       {
@@ -1135,9 +1090,9 @@
       {
         "crew_id": "IA",
         "date": "2018-06-13",
-        "cluster_id": "N",
-        "onsite_min": 420,
-        "travel_min": 34,
+        "cluster_id": "W",
+        "onsite_min": 150,
+        "travel_min": 33,
         "available_min": 480
       },
       {
@@ -1159,9 +1114,9 @@
       {
         "crew_id": "IB",
         "date": "2018-06-05",
-        "cluster_id": "W",
-        "onsite_min": 120,
-        "travel_min": 33,
+        "cluster_id": "S",
+        "onsite_min": 420,
+        "travel_min": 41,
         "available_min": 480
       },
       {
@@ -1191,9 +1146,9 @@
       {
         "crew_id": "IB",
         "date": "2018-06-11",
-        "cluster_id": "S",
-        "onsite_min": 330,
-        "travel_min": 41,
+        "cluster_id": "W",
+        "onsite_min": 420,
+        "travel_min": 33,
         "available_min": 480
       },
       {
@@ -1207,9 +1162,9 @@
       {
         "crew_id": "IB",
         "date": "2018-06-13",
-        "cluster_id": "W",
-        "onsite_min": 180,
-        "travel_min": 33,
+        "cluster_id": null,
+        "onsite_min": 0,
+        "travel_min": 0,
         "available_min": 480
       },
       {
@@ -1222,18 +1177,18 @@
       }
     ],
     "objective": {
-      "jobs_on_time": 44,
+      "jobs_on_time": 41,
       "jobs_late": 0,
-      "jobs_unscheduled": 1,
+      "jobs_unscheduled": 4,
       "jobs_blocked": 0,
       "total_delay_days": 0,
-      "operating_value_usd": 4048.952740598688,
-      "changed_installs": 49,
-      "travel_allowance_min": 897,
-      "crew_utilization": 0.766,
+      "operating_value_usd": 3782.6752709823063,
+      "changed_installs": 25,
+      "travel_allowance_min": 831,
+      "crew_utilization": 0.7565,
       "value_distinguishes_choices": true,
-      "visits_moved": 49,
-      "customers_to_reschedule": 35
+      "visits_moved": 25,
+      "customers_to_reschedule": 18
     },
     "validation": {
       "checked": true,
@@ -1254,65 +1209,14 @@
         "kind": "assumed"
       }
     ],
-    "solve_ms": 15375
+    "solve_ms": 2089
   },
   "diff_vs_original": {
-    "before_plan_id": "standard-r0-strict-cb4ff456",
-    "after_plan_id": "standard-r1-recovery-f1dc6769",
+    "before_plan_id": "standard-r2-recovery-3debd604",
+    "after_plan_id": "standard-r2-recovery-85518efc",
     "changes": [
       {
-        "site_id": "N-01",
-        "kind": "moved",
-        "before": {
-          "crew_id": "BA",
-          "date": "2018-06-05"
-        },
-        "after": {
-          "crew_id": "BA",
-          "date": "2018-06-07"
-        },
-        "before_state": "scheduled",
-        "after_state": "scheduled",
-        "note": "N-01 battery day moves from Crew BA Tue 5 Jun to Crew BA Thu 7 Jun.",
-        "job_id": "N-01-B",
-        "visit_type": "battery_day"
-      },
-      {
         "site_id": "N-02",
-        "kind": "moved",
-        "before": {
-          "crew_id": "BA",
-          "date": "2018-06-11"
-        },
-        "after": {
-          "crew_id": "BT",
-          "date": "2018-06-15"
-        },
-        "before_state": "scheduled",
-        "after_state": "scheduled",
-        "note": "N-02 battery day moves from Crew BA Mon 11 Jun to Crew BT Fri 15 Jun.",
-        "job_id": "N-02-B",
-        "visit_type": "battery_day"
-      },
-      {
-        "site_id": "N-03",
-        "kind": "moved",
-        "before": {
-          "crew_id": "BA",
-          "date": "2018-06-05"
-        },
-        "after": {
-          "crew_id": "BA",
-          "date": "2018-06-07"
-        },
-        "before_state": "scheduled",
-        "after_state": "scheduled",
-        "note": "N-03 battery day moves from Crew BA Tue 5 Jun to Crew BA Thu 7 Jun.",
-        "job_id": "N-03-B",
-        "visit_type": "battery_day"
-      },
-      {
-        "site_id": "N-05",
         "kind": "moved",
         "before": {
           "crew_id": "BA",
@@ -1324,15 +1228,15 @@
         },
         "before_state": "scheduled",
         "after_state": "scheduled",
-        "note": "N-05 battery day moves from Crew BA Mon 11 Jun to Crew BA Wed 13 Jun.",
-        "job_id": "N-05-B",
+        "note": "N-02 battery day moves from Crew BA Mon 11 Jun to Crew BA Wed 13 Jun.",
+        "job_id": "N-02-B",
         "visit_type": "battery_day"
       },
       {
-        "site_id": "N-05",
+        "site_id": "N-02",
         "kind": "moved",
         "before": {
-          "crew_id": "IA",
+          "crew_id": "IB",
           "date": "2018-06-08"
         },
         "after": {
@@ -1341,43 +1245,43 @@
         },
         "before_state": "scheduled",
         "after_state": "scheduled",
-        "note": "N-05 install moves from Crew IA Fri 8 Jun to Crew IB Tue 12 Jun.",
-        "job_id": "N-05-I",
+        "note": "N-02 install moves from Crew IB Fri 8 Jun to Crew IB Tue 12 Jun.",
+        "job_id": "N-02-I",
         "visit_type": "install"
       },
       {
-        "site_id": "N-07",
+        "site_id": "N-08",
         "kind": "moved",
         "before": {
+          "crew_id": "BA",
+          "date": "2018-06-13"
+        },
+        "after": {
           "crew_id": "BA",
           "date": "2018-06-11"
         },
-        "after": {
-          "crew_id": "BA",
-          "date": "2018-06-07"
-        },
         "before_state": "scheduled",
         "after_state": "scheduled",
-        "note": "N-07 battery day moves from Crew BA Mon 11 Jun to Crew BA Thu 7 Jun.",
-        "job_id": "N-07-B",
+        "note": "N-08 battery day moves from Crew BA Wed 13 Jun to Crew BA Mon 11 Jun.",
+        "job_id": "N-08-B",
         "visit_type": "battery_day"
       },
       {
-        "site_id": "N-09",
+        "site_id": "N-08",
         "kind": "moved",
         "before": {
-          "crew_id": "BA",
-          "date": "2018-06-05"
+          "crew_id": "IB",
+          "date": "2018-06-12"
         },
         "after": {
-          "crew_id": "BA",
-          "date": "2018-06-07"
+          "crew_id": "IB",
+          "date": "2018-06-08"
         },
         "before_state": "scheduled",
         "after_state": "scheduled",
-        "note": "N-09 battery day moves from Crew BA Tue 5 Jun to Crew BA Thu 7 Jun.",
-        "job_id": "N-09-B",
-        "visit_type": "battery_day"
+        "note": "N-08 install moves from Crew IB Tue 12 Jun to Crew IB Fri 8 Jun.",
+        "job_id": "N-08-I",
+        "visit_type": "install"
       },
       {
         "site_id": "N-10",
@@ -1388,11 +1292,11 @@
         },
         "after": {
           "crew_id": "BA",
-          "date": "2018-06-07"
+          "date": "2018-06-13"
         },
         "before_state": "scheduled",
         "after_state": "scheduled",
-        "note": "N-10 battery day moves from Crew BA Mon 11 Jun to Crew BA Thu 7 Jun.",
+        "note": "N-10 battery day moves from Crew BA Mon 11 Jun to Crew BA Wed 13 Jun.",
         "job_id": "N-10-B",
         "visit_type": "battery_day"
       },
@@ -1404,31 +1308,14 @@
           "date": "2018-06-13"
         },
         "after": {
-          "crew_id": "BT",
-          "date": "2018-06-15"
+          "crew_id": "BA",
+          "date": "2018-06-11"
         },
         "before_state": "scheduled",
         "after_state": "scheduled",
-        "note": "N-12 battery day moves from Crew BA Wed 13 Jun to Crew BT Fri 15 Jun.",
+        "note": "N-12 battery day moves from Crew BA Wed 13 Jun to Crew BA Mon 11 Jun.",
         "job_id": "N-12-B",
         "visit_type": "battery_day"
-      },
-      {
-        "site_id": "N-12",
-        "kind": "moved",
-        "before": {
-          "crew_id": "IA",
-          "date": "2018-06-08"
-        },
-        "after": {
-          "crew_id": "IA",
-          "date": "2018-06-13"
-        },
-        "before_state": "scheduled",
-        "after_state": "scheduled",
-        "note": "N-12 install moves from Crew IA Fri 8 Jun to Crew IA Wed 13 Jun.",
-        "job_id": "N-12-I",
-        "visit_type": "install"
       },
       {
         "site_id": "N-13",
@@ -1448,74 +1335,6 @@
         "visit_type": "battery_day"
       },
       {
-        "site_id": "N-14",
-        "kind": "moved",
-        "before": {
-          "crew_id": "BA",
-          "date": "2018-06-11"
-        },
-        "after": {
-          "crew_id": "BT",
-          "date": "2018-06-15"
-        },
-        "before_state": "scheduled",
-        "after_state": "scheduled",
-        "note": "N-14 battery day moves from Crew BA Mon 11 Jun to Crew BT Fri 15 Jun.",
-        "job_id": "N-14-B",
-        "visit_type": "battery_day"
-      },
-      {
-        "site_id": "N-14",
-        "kind": "moved",
-        "before": {
-          "crew_id": "IA",
-          "date": "2018-06-08"
-        },
-        "after": {
-          "crew_id": "IA",
-          "date": "2018-06-13"
-        },
-        "before_state": "scheduled",
-        "after_state": "scheduled",
-        "note": "N-14 install moves from Crew IA Fri 8 Jun to Crew IA Wed 13 Jun.",
-        "job_id": "N-14-I",
-        "visit_type": "install"
-      },
-      {
-        "site_id": "N-15",
-        "kind": "moved",
-        "before": {
-          "crew_id": "BA",
-          "date": "2018-06-13"
-        },
-        "after": {
-          "crew_id": "BT",
-          "date": "2018-06-15"
-        },
-        "before_state": "scheduled",
-        "after_state": "scheduled",
-        "note": "N-15 battery day moves from Crew BA Wed 13 Jun to Crew BT Fri 15 Jun.",
-        "job_id": "N-15-B",
-        "visit_type": "battery_day"
-      },
-      {
-        "site_id": "N-15",
-        "kind": "moved",
-        "before": {
-          "crew_id": "IB",
-          "date": "2018-06-12"
-        },
-        "after": {
-          "crew_id": "IA",
-          "date": "2018-06-13"
-        },
-        "before_state": "scheduled",
-        "after_state": "scheduled",
-        "note": "N-15 install moves from Crew IB Tue 12 Jun to Crew IA Wed 13 Jun.",
-        "job_id": "N-15-I",
-        "visit_type": "install"
-      },
-      {
         "site_id": "S-02",
         "kind": "moved",
         "before": {
@@ -1533,23 +1352,6 @@
         "visit_type": "battery_day"
       },
       {
-        "site_id": "S-02",
-        "kind": "moved",
-        "before": {
-          "crew_id": "IB",
-          "date": "2018-06-07"
-        },
-        "after": {
-          "crew_id": "IA",
-          "date": "2018-06-11"
-        },
-        "before_state": "scheduled",
-        "after_state": "scheduled",
-        "note": "S-02 install moves from Crew IB Thu 7 Jun to Crew IA Mon 11 Jun.",
-        "job_id": "S-02-I",
-        "visit_type": "install"
-      },
-      {
         "site_id": "S-03",
         "kind": "moved",
         "before": {
@@ -1558,11 +1360,11 @@
         },
         "after": {
           "crew_id": "BA",
-          "date": "2018-06-08"
+          "date": "2018-06-12"
         },
         "before_state": "scheduled",
         "after_state": "scheduled",
-        "note": "S-03 battery day moves from Crew BA Thu 14 Jun to Crew BA Fri 8 Jun.",
+        "note": "S-03 battery day moves from Crew BA Thu 14 Jun to Crew BA Tue 12 Jun.",
         "job_id": "S-03-B",
         "visit_type": "battery_day"
       },
@@ -1574,64 +1376,13 @@
           "date": "2018-06-13"
         },
         "after": {
-          "crew_id": "IB",
-          "date": "2018-06-07"
-        },
-        "before_state": "scheduled",
-        "after_state": "scheduled",
-        "note": "S-03 install moves from Crew IB Wed 13 Jun to Crew IB Thu 7 Jun.",
-        "job_id": "S-03-I",
-        "visit_type": "install"
-      },
-      {
-        "site_id": "S-04",
-        "kind": "moved",
-        "before": {
-          "crew_id": "BA",
-          "date": "2018-06-06"
-        },
-        "after": {
-          "crew_id": "BA",
-          "date": "2018-06-05"
-        },
-        "before_state": "scheduled",
-        "after_state": "scheduled",
-        "note": "S-04 battery day moves from Crew BA Wed 6 Jun to Crew BA Tue 5 Jun.",
-        "job_id": "S-04-B",
-        "visit_type": "battery_day"
-      },
-      {
-        "site_id": "S-05",
-        "kind": "moved",
-        "before": {
-          "crew_id": "BA",
-          "date": "2018-06-08"
-        },
-        "after": {
-          "crew_id": "BA",
-          "date": "2018-06-12"
-        },
-        "before_state": "scheduled",
-        "after_state": "scheduled",
-        "note": "S-05 battery day moves from Crew BA Fri 8 Jun to Crew BA Tue 12 Jun.",
-        "job_id": "S-05-B",
-        "visit_type": "battery_day"
-      },
-      {
-        "site_id": "S-05",
-        "kind": "moved",
-        "before": {
-          "crew_id": "IB",
-          "date": "2018-06-05"
-        },
-        "after": {
-          "crew_id": "IB",
+          "crew_id": "IA",
           "date": "2018-06-11"
         },
         "before_state": "scheduled",
         "after_state": "scheduled",
-        "note": "S-05 install moves from Crew IB Tue 5 Jun to Crew IB Mon 11 Jun.",
-        "job_id": "S-05-I",
+        "note": "S-03 install moves from Crew IB Wed 13 Jun to Crew IA Mon 11 Jun.",
+        "job_id": "S-03-I",
         "visit_type": "install"
       },
       {
@@ -1650,23 +1401,6 @@
         "note": "S-06 battery day moves from Crew BA Thu 14 Jun to Crew BA Tue 12 Jun.",
         "job_id": "S-06-B",
         "visit_type": "battery_day"
-      },
-      {
-        "site_id": "S-06",
-        "kind": "moved",
-        "before": {
-          "crew_id": "IB",
-          "date": "2018-06-07"
-        },
-        "after": {
-          "crew_id": "IB",
-          "date": "2018-06-11"
-        },
-        "before_state": "scheduled",
-        "after_state": "scheduled",
-        "note": "S-06 install moves from Crew IB Thu 7 Jun to Crew IB Mon 11 Jun.",
-        "job_id": "S-06-I",
-        "visit_type": "install"
       },
       {
         "site_id": "S-07",
@@ -1701,23 +1435,6 @@
         "note": "S-07 install moves from Crew IB Wed 13 Jun to Crew IA Mon 11 Jun.",
         "job_id": "S-07-I",
         "visit_type": "install"
-      },
-      {
-        "site_id": "S-08",
-        "kind": "moved",
-        "before": {
-          "crew_id": "BA",
-          "date": "2018-06-06"
-        },
-        "after": {
-          "crew_id": "BA",
-          "date": "2018-06-05"
-        },
-        "before_state": "scheduled",
-        "after_state": "scheduled",
-        "note": "S-08 battery day moves from Crew BA Wed 6 Jun to Crew BA Tue 5 Jun.",
-        "job_id": "S-08-B",
-        "visit_type": "battery_day"
       },
       {
         "site_id": "S-09",
@@ -1788,51 +1505,6 @@
         "visit_type": "battery_day"
       },
       {
-        "site_id": "S-13",
-        "kind": "removed",
-        "before": {
-          "crew_id": "BA",
-          "date": "2018-06-06"
-        },
-        "after": null,
-        "before_state": "scheduled",
-        "after_state": "unscheduled",
-        "note": "S-13 battery day is no longer scheduled.",
-        "job_id": "S-13-B",
-        "visit_type": "battery_day"
-      },
-      {
-        "site_id": "S-13",
-        "kind": "removed",
-        "before": {
-          "crew_id": "IB",
-          "date": "2018-06-05"
-        },
-        "after": null,
-        "before_state": "scheduled",
-        "after_state": "unscheduled",
-        "note": "S-13 install is no longer scheduled.",
-        "job_id": "S-13-I",
-        "visit_type": "install"
-      },
-      {
-        "site_id": "S-14",
-        "kind": "moved",
-        "before": {
-          "crew_id": "IB",
-          "date": "2018-06-05"
-        },
-        "after": {
-          "crew_id": "IB",
-          "date": "2018-06-07"
-        },
-        "before_state": "scheduled",
-        "after_state": "scheduled",
-        "note": "S-14 install moves from Crew IB Tue 5 Jun to Crew IB Thu 7 Jun.",
-        "job_id": "S-14-I",
-        "visit_type": "install"
-      },
-      {
         "site_id": "W-02",
         "kind": "moved",
         "before": {
@@ -1841,97 +1513,40 @@
         },
         "after": {
           "crew_id": "IA",
-          "date": "2018-06-08"
+          "date": "2018-06-13"
         },
         "before_state": "scheduled",
         "after_state": "scheduled",
-        "note": "W-02 install moves from Crew IA Mon 11 Jun to Crew IA Fri 8 Jun.",
+        "note": "W-02 install moves from Crew IA Mon 11 Jun to Crew IA Wed 13 Jun.",
         "job_id": "W-02-I",
         "visit_type": "install"
       },
       {
-        "site_id": "W-03",
-        "kind": "moved",
-        "before": {
-          "crew_id": "BA",
-          "date": "2018-06-07"
-        },
-        "after": {
-          "crew_id": "BA",
-          "date": "2018-06-06"
-        },
-        "before_state": "scheduled",
-        "after_state": "scheduled",
-        "note": "W-03 battery day moves from Crew BA Thu 7 Jun to Crew BA Wed 6 Jun.",
-        "job_id": "W-03-B",
-        "visit_type": "battery_day"
-      },
-      {
-        "site_id": "W-04",
-        "kind": "moved",
-        "before": {
-          "crew_id": "IB",
-          "date": "2018-06-11"
-        },
-        "after": {
-          "crew_id": "IA",
-          "date": "2018-06-08"
-        },
-        "before_state": "scheduled",
-        "after_state": "scheduled",
-        "note": "W-04 install moves from Crew IB Mon 11 Jun to Crew IA Fri 8 Jun.",
-        "job_id": "W-04-I",
-        "visit_type": "install"
-      },
-      {
         "site_id": "W-05",
-        "kind": "moved",
+        "kind": "removed",
         "before": {
           "crew_id": "BA",
           "date": "2018-06-12"
         },
-        "after": {
-          "crew_id": "BA",
-          "date": "2018-06-11"
-        },
+        "after": null,
         "before_state": "scheduled",
-        "after_state": "scheduled",
-        "note": "W-05 battery day moves from Crew BA Tue 12 Jun to Crew BA Mon 11 Jun.",
+        "after_state": "unscheduled",
+        "note": "W-05 battery day is no longer scheduled.",
         "job_id": "W-05-B",
         "visit_type": "battery_day"
       },
       {
         "site_id": "W-05",
-        "kind": "moved",
+        "kind": "removed",
         "before": {
           "crew_id": "IA",
           "date": "2018-06-11"
         },
-        "after": {
-          "crew_id": "IA",
-          "date": "2018-06-08"
-        },
+        "after": null,
         "before_state": "scheduled",
-        "after_state": "scheduled",
-        "note": "W-05 install moves from Crew IA Mon 11 Jun to Crew IA Fri 8 Jun.",
+        "after_state": "unscheduled",
+        "note": "W-05 install is no longer scheduled.",
         "job_id": "W-05-I",
-        "visit_type": "install"
-      },
-      {
-        "site_id": "W-06",
-        "kind": "moved",
-        "before": {
-          "crew_id": "IB",
-          "date": "2018-06-11"
-        },
-        "after": {
-          "crew_id": "IB",
-          "date": "2018-06-13"
-        },
-        "before_state": "scheduled",
-        "after_state": "scheduled",
-        "note": "W-06 install moves from Crew IB Mon 11 Jun to Crew IB Wed 13 Jun.",
-        "job_id": "W-06-I",
         "visit_type": "install"
       },
       {
@@ -1943,197 +1558,100 @@
         },
         "after": {
           "crew_id": "BA",
-          "date": "2018-06-06"
+          "date": "2018-06-07"
         },
         "before_state": "scheduled",
         "after_state": "scheduled",
-        "note": "W-07 battery day moves from Crew BA Tue 12 Jun to Crew BA Wed 6 Jun.",
+        "note": "W-07 battery day moves from Crew BA Tue 12 Jun to Crew BA Thu 7 Jun.",
         "job_id": "W-07-B",
         "visit_type": "battery_day"
       },
       {
         "site_id": "W-08",
-        "kind": "moved",
+        "kind": "removed",
         "before": {
           "crew_id": "BA",
           "date": "2018-06-12"
         },
-        "after": {
-          "crew_id": "BA",
-          "date": "2018-06-11"
-        },
+        "after": null,
         "before_state": "scheduled",
-        "after_state": "scheduled",
-        "note": "W-08 battery day moves from Crew BA Tue 12 Jun to Crew BA Mon 11 Jun.",
+        "after_state": "unscheduled",
+        "note": "W-08 battery day is no longer scheduled.",
         "job_id": "W-08-B",
         "visit_type": "battery_day"
       },
       {
-        "site_id": "W-08",
-        "kind": "moved",
-        "before": {
-          "crew_id": "IB",
-          "date": "2018-06-11"
-        },
-        "after": {
-          "crew_id": "IA",
-          "date": "2018-06-06"
-        },
-        "before_state": "scheduled",
-        "after_state": "scheduled",
-        "note": "W-08 install moves from Crew IB Mon 11 Jun to Crew IA Wed 6 Jun.",
-        "job_id": "W-08-I",
-        "visit_type": "install"
-      },
-      {
-        "site_id": "W-09",
-        "kind": "moved",
-        "before": {
-          "crew_id": "BA",
-          "date": "2018-06-07"
-        },
-        "after": {
-          "crew_id": "BA",
-          "date": "2018-06-11"
-        },
-        "before_state": "scheduled",
-        "after_state": "scheduled",
-        "note": "W-09 battery day moves from Crew BA Thu 7 Jun to Crew BA Mon 11 Jun.",
-        "job_id": "W-09-B",
-        "visit_type": "battery_day"
-      },
-      {
-        "site_id": "W-10",
-        "kind": "moved",
-        "before": {
-          "crew_id": "BA",
-          "date": "2018-06-07"
-        },
-        "after": {
-          "crew_id": "BA",
-          "date": "2018-06-11"
-        },
-        "before_state": "scheduled",
-        "after_state": "scheduled",
-        "note": "W-10 battery day moves from Crew BA Thu 7 Jun to Crew BA Mon 11 Jun.",
-        "job_id": "W-10-B",
-        "visit_type": "battery_day"
-      },
-      {
         "site_id": "W-12",
-        "kind": "moved",
+        "kind": "removed",
         "before": {
           "crew_id": "BA",
           "date": "2018-06-12"
         },
-        "after": {
-          "crew_id": "BA",
-          "date": "2018-06-06"
-        },
+        "after": null,
         "before_state": "scheduled",
-        "after_state": "scheduled",
-        "note": "W-12 battery day moves from Crew BA Tue 12 Jun to Crew BA Wed 6 Jun.",
+        "after_state": "unscheduled",
+        "note": "W-12 battery day is no longer scheduled.",
         "job_id": "W-12-B",
         "visit_type": "battery_day"
       },
       {
         "site_id": "W-12",
-        "kind": "moved",
+        "kind": "removed",
         "before": {
           "crew_id": "IA",
           "date": "2018-06-11"
         },
-        "after": {
-          "crew_id": "IB",
-          "date": "2018-06-05"
-        },
+        "after": null,
         "before_state": "scheduled",
-        "after_state": "scheduled",
-        "note": "W-12 install moves from Crew IA Mon 11 Jun to Crew IB Tue 5 Jun.",
+        "after_state": "unscheduled",
+        "note": "W-12 install is no longer scheduled.",
         "job_id": "W-12-I",
         "visit_type": "install"
       },
       {
         "site_id": "W-13",
-        "kind": "moved",
+        "kind": "removed",
         "before": {
           "crew_id": "BA",
           "date": "2018-06-12"
         },
-        "after": {
-          "crew_id": "BA",
-          "date": "2018-06-06"
-        },
+        "after": null,
         "before_state": "scheduled",
-        "after_state": "scheduled",
-        "note": "W-13 battery day moves from Crew BA Tue 12 Jun to Crew BA Wed 6 Jun.",
+        "after_state": "unscheduled",
+        "note": "W-13 battery day is no longer scheduled.",
         "job_id": "W-13-B",
-        "visit_type": "battery_day"
-      },
-      {
-        "site_id": "W-15",
-        "kind": "moved",
-        "before": {
-          "crew_id": "BA",
-          "date": "2018-06-07"
-        },
-        "after": {
-          "crew_id": "BA",
-          "date": "2018-06-11"
-        },
-        "before_state": "scheduled",
-        "after_state": "scheduled",
-        "note": "W-15 battery day moves from Crew BA Thu 7 Jun to Crew BA Mon 11 Jun.",
-        "job_id": "W-15-B",
         "visit_type": "battery_day"
       }
     ],
     "summary": {
-      "moved": 47,
+      "moved": 19,
       "added": 0,
-      "removed": 2,
+      "removed": 6,
       "newly_late": 0,
-      "value_delta_usd": -87.55692849323668,
-      "travel_delta_min": 33,
-      "customers_to_reschedule": 35
+      "value_delta_usd": -353.8343981096182,
+      "travel_delta_min": -33,
+      "customers_to_reschedule": 18
     },
-    "headline": "47 visits move, 35 customers to reschedule. 2 jobs dropped."
+    "headline": "19 visits move, 18 customers to reschedule. 6 jobs dropped."
   },
   "diff_vs_no_action": {
-    "before_plan_id": "standard-r1-recovery-baseline_edf-7bf366a8",
-    "after_plan_id": "standard-r1-recovery-f1dc6769",
+    "before_plan_id": "standard-r2-recovery-85518efc",
+    "after_plan_id": "standard-r2-recovery-85518efc",
     "changes": [
-      {
-        "site_id": "N-01",
-        "kind": "moved",
-        "before": {
-          "crew_id": "BA",
-          "date": "2018-06-05"
-        },
-        "after": {
-          "crew_id": "BA",
-          "date": "2018-06-07"
-        },
-        "before_state": "scheduled",
-        "after_state": "scheduled",
-        "note": "N-01 battery day moves from Crew BA Tue 5 Jun to Crew BA Thu 7 Jun.",
-        "job_id": "N-01-B",
-        "visit_type": "battery_day"
-      },
       {
         "site_id": "N-02",
         "kind": "moved",
         "before": {
           "crew_id": "BA",
-          "date": "2018-06-13"
+          "date": "2018-06-11"
         },
         "after": {
-          "crew_id": "BT",
-          "date": "2018-06-15"
+          "crew_id": "BA",
+          "date": "2018-06-13"
         },
         "before_state": "scheduled",
         "after_state": "scheduled",
-        "note": "N-02 battery day moves from Crew BA Wed 13 Jun to Crew BT Fri 15 Jun.",
+        "note": "N-02 battery day moves from Crew BA Mon 11 Jun to Crew BA Wed 13 Jun.",
         "job_id": "N-02-B",
         "visit_type": "battery_day"
       },
@@ -2141,170 +1659,17 @@
         "site_id": "N-02",
         "kind": "moved",
         "before": {
-          "crew_id": "IA",
+          "crew_id": "IB",
           "date": "2018-06-08"
         },
         "after": {
           "crew_id": "IB",
-          "date": "2018-06-08"
+          "date": "2018-06-12"
         },
         "before_state": "scheduled",
         "after_state": "scheduled",
-        "note": "N-02 install moves from Crew IA Fri 8 Jun to Crew IB Fri 8 Jun.",
+        "note": "N-02 install moves from Crew IB Fri 8 Jun to Crew IB Tue 12 Jun.",
         "job_id": "N-02-I",
-        "visit_type": "install"
-      },
-      {
-        "site_id": "N-03",
-        "kind": "moved",
-        "before": {
-          "crew_id": "BA",
-          "date": "2018-06-05"
-        },
-        "after": {
-          "crew_id": "BA",
-          "date": "2018-06-07"
-        },
-        "before_state": "scheduled",
-        "after_state": "scheduled",
-        "note": "N-03 battery day moves from Crew BA Tue 5 Jun to Crew BA Thu 7 Jun.",
-        "job_id": "N-03-B",
-        "visit_type": "battery_day"
-      },
-      {
-        "site_id": "N-04",
-        "kind": "moved",
-        "before": {
-          "crew_id": "BA",
-          "date": "2018-06-11"
-        },
-        "after": {
-          "crew_id": "BA",
-          "date": "2018-06-13"
-        },
-        "before_state": "scheduled",
-        "after_state": "scheduled",
-        "note": "N-04 battery day moves from Crew BA Mon 11 Jun to Crew BA Wed 13 Jun.",
-        "job_id": "N-04-B",
-        "visit_type": "battery_day"
-      },
-      {
-        "site_id": "N-04",
-        "kind": "moved",
-        "before": {
-          "crew_id": "IA",
-          "date": "2018-06-06"
-        },
-        "after": {
-          "crew_id": "IB",
-          "date": "2018-06-12"
-        },
-        "before_state": "scheduled",
-        "after_state": "scheduled",
-        "note": "N-04 install moves from Crew IA Wed 6 Jun to Crew IB Tue 12 Jun.",
-        "job_id": "N-04-I",
-        "visit_type": "install"
-      },
-      {
-        "site_id": "N-05",
-        "kind": "moved",
-        "before": {
-          "crew_id": "BA",
-          "date": "2018-06-11"
-        },
-        "after": {
-          "crew_id": "BA",
-          "date": "2018-06-13"
-        },
-        "before_state": "scheduled",
-        "after_state": "scheduled",
-        "note": "N-05 battery day moves from Crew BA Mon 11 Jun to Crew BA Wed 13 Jun.",
-        "job_id": "N-05-B",
-        "visit_type": "battery_day"
-      },
-      {
-        "site_id": "N-05",
-        "kind": "moved",
-        "before": {
-          "crew_id": "IA",
-          "date": "2018-06-06"
-        },
-        "after": {
-          "crew_id": "IB",
-          "date": "2018-06-12"
-        },
-        "before_state": "scheduled",
-        "after_state": "scheduled",
-        "note": "N-05 install moves from Crew IA Wed 6 Jun to Crew IB Tue 12 Jun.",
-        "job_id": "N-05-I",
-        "visit_type": "install"
-      },
-      {
-        "site_id": "N-06",
-        "kind": "moved",
-        "before": {
-          "crew_id": "BA",
-          "date": "2018-06-11"
-        },
-        "after": {
-          "crew_id": "BA",
-          "date": "2018-06-13"
-        },
-        "before_state": "scheduled",
-        "after_state": "scheduled",
-        "note": "N-06 battery day moves from Crew BA Mon 11 Jun to Crew BA Wed 13 Jun.",
-        "job_id": "N-06-B",
-        "visit_type": "battery_day"
-      },
-      {
-        "site_id": "N-06",
-        "kind": "moved",
-        "before": {
-          "crew_id": "IB",
-          "date": "2018-06-06"
-        },
-        "after": {
-          "crew_id": "IB",
-          "date": "2018-06-08"
-        },
-        "before_state": "scheduled",
-        "after_state": "scheduled",
-        "note": "N-06 install moves from Crew IB Wed 6 Jun to Crew IB Fri 8 Jun.",
-        "job_id": "N-06-I",
-        "visit_type": "install"
-      },
-      {
-        "site_id": "N-07",
-        "kind": "moved",
-        "before": {
-          "crew_id": "BA",
-          "date": "2018-06-13"
-        },
-        "after": {
-          "crew_id": "BA",
-          "date": "2018-06-07"
-        },
-        "before_state": "scheduled",
-        "after_state": "scheduled",
-        "note": "N-07 battery day moves from Crew BA Wed 13 Jun to Crew BA Thu 7 Jun.",
-        "job_id": "N-07-B",
-        "visit_type": "battery_day"
-      },
-      {
-        "site_id": "N-07",
-        "kind": "moved",
-        "before": {
-          "crew_id": "IA",
-          "date": "2018-06-08"
-        },
-        "after": {
-          "crew_id": "IB",
-          "date": "2018-06-06"
-        },
-        "before_state": "scheduled",
-        "after_state": "scheduled",
-        "note": "N-07 install moves from Crew IA Fri 8 Jun to Crew IB Wed 6 Jun.",
-        "job_id": "N-07-I",
         "visit_type": "install"
       },
       {
@@ -2312,15 +1677,15 @@
         "kind": "moved",
         "before": {
           "crew_id": "BA",
-          "date": "2018-06-11"
+          "date": "2018-06-13"
         },
         "after": {
           "crew_id": "BA",
-          "date": "2018-06-13"
+          "date": "2018-06-11"
         },
         "before_state": "scheduled",
         "after_state": "scheduled",
-        "note": "N-08 battery day moves from Crew BA Mon 11 Jun to Crew BA Wed 13 Jun.",
+        "note": "N-08 battery day moves from Crew BA Wed 13 Jun to Crew BA Mon 11 Jun.",
         "job_id": "N-08-B",
         "visit_type": "battery_day"
       },
@@ -2328,55 +1693,21 @@
         "site_id": "N-08",
         "kind": "moved",
         "before": {
-          "crew_id": "IA",
-          "date": "2018-06-06"
-        },
-        "after": {
           "crew_id": "IB",
           "date": "2018-06-12"
         },
+        "after": {
+          "crew_id": "IB",
+          "date": "2018-06-08"
+        },
         "before_state": "scheduled",
         "after_state": "scheduled",
-        "note": "N-08 install moves from Crew IA Wed 6 Jun to Crew IB Tue 12 Jun.",
+        "note": "N-08 install moves from Crew IB Tue 12 Jun to Crew IB Fri 8 Jun.",
         "job_id": "N-08-I",
         "visit_type": "install"
       },
       {
-        "site_id": "N-09",
-        "kind": "moved",
-        "before": {
-          "crew_id": "BA",
-          "date": "2018-06-05"
-        },
-        "after": {
-          "crew_id": "BA",
-          "date": "2018-06-07"
-        },
-        "before_state": "scheduled",
-        "after_state": "scheduled",
-        "note": "N-09 battery day moves from Crew BA Tue 5 Jun to Crew BA Thu 7 Jun.",
-        "job_id": "N-09-B",
-        "visit_type": "battery_day"
-      },
-      {
         "site_id": "N-10",
-        "kind": "moved",
-        "before": {
-          "crew_id": "BA",
-          "date": "2018-06-13"
-        },
-        "after": {
-          "crew_id": "BA",
-          "date": "2018-06-07"
-        },
-        "before_state": "scheduled",
-        "after_state": "scheduled",
-        "note": "N-10 battery day moves from Crew BA Wed 13 Jun to Crew BA Thu 7 Jun.",
-        "job_id": "N-10-B",
-        "visit_type": "battery_day"
-      },
-      {
-        "site_id": "N-11",
         "kind": "moved",
         "before": {
           "crew_id": "BA",
@@ -2388,21 +1719,24 @@
         },
         "before_state": "scheduled",
         "after_state": "scheduled",
-        "note": "N-11 battery day moves from Crew BA Mon 11 Jun to Crew BA Wed 13 Jun.",
-        "job_id": "N-11-B",
+        "note": "N-10 battery day moves from Crew BA Mon 11 Jun to Crew BA Wed 13 Jun.",
+        "job_id": "N-10-B",
         "visit_type": "battery_day"
       },
       {
         "site_id": "N-12",
-        "kind": "added",
-        "before": null,
-        "after": {
-          "crew_id": "BT",
-          "date": "2018-06-15"
+        "kind": "moved",
+        "before": {
+          "crew_id": "BA",
+          "date": "2018-06-13"
         },
-        "before_state": "unscheduled",
+        "after": {
+          "crew_id": "BA",
+          "date": "2018-06-11"
+        },
+        "before_state": "scheduled",
         "after_state": "scheduled",
-        "note": "N-12 battery day is now scheduled on Crew BT Fri 15 Jun.",
+        "note": "N-12 battery day moves from Crew BA Wed 13 Jun to Crew BA Mon 11 Jun.",
         "job_id": "N-12-B",
         "visit_type": "battery_day"
       },
@@ -2424,135 +1758,30 @@
         "visit_type": "battery_day"
       },
       {
-        "site_id": "N-13",
-        "kind": "moved",
-        "before": {
-          "crew_id": "IB",
-          "date": "2018-06-06"
-        },
-        "after": {
-          "crew_id": "IB",
-          "date": "2018-06-08"
-        },
-        "before_state": "scheduled",
-        "after_state": "scheduled",
-        "note": "N-13 install moves from Crew IB Wed 6 Jun to Crew IB Fri 8 Jun.",
-        "job_id": "N-13-I",
-        "visit_type": "install"
-      },
-      {
-        "site_id": "N-14",
+        "site_id": "S-02",
         "kind": "added",
         "before": null,
-        "after": {
-          "crew_id": "BT",
-          "date": "2018-06-15"
-        },
-        "before_state": "unscheduled",
-        "after_state": "scheduled",
-        "note": "N-14 battery day is now scheduled on Crew BT Fri 15 Jun.",
-        "job_id": "N-14-B",
-        "visit_type": "battery_day"
-      },
-      {
-        "site_id": "N-15",
-        "kind": "moved",
-        "before": {
-          "crew_id": "BA",
-          "date": "2018-06-13"
-        },
-        "after": {
-          "crew_id": "BT",
-          "date": "2018-06-15"
-        },
-        "before_state": "scheduled",
-        "after_state": "scheduled",
-        "note": "N-15 battery day moves from Crew BA Wed 13 Jun to Crew BT Fri 15 Jun.",
-        "job_id": "N-15-B",
-        "visit_type": "battery_day"
-      },
-      {
-        "site_id": "N-15",
-        "kind": "moved",
-        "before": {
-          "crew_id": "IA",
-          "date": "2018-06-08"
-        },
-        "after": {
-          "crew_id": "IA",
-          "date": "2018-06-13"
-        },
-        "before_state": "scheduled",
-        "after_state": "scheduled",
-        "note": "N-15 install moves from Crew IA Fri 8 Jun to Crew IA Wed 13 Jun.",
-        "job_id": "N-15-I",
-        "visit_type": "install"
-      },
-      {
-        "site_id": "S-01",
-        "kind": "moved",
-        "before": {
-          "crew_id": "BA",
-          "date": "2018-06-06"
-        },
-        "after": {
-          "crew_id": "BA",
-          "date": "2018-06-08"
-        },
-        "before_state": "scheduled",
-        "after_state": "scheduled",
-        "note": "S-01 battery day moves from Crew BA Wed 6 Jun to Crew BA Fri 8 Jun.",
-        "job_id": "S-01-B",
-        "visit_type": "battery_day"
-      },
-      {
-        "site_id": "S-01",
-        "kind": "moved",
-        "before": {
-          "crew_id": "IA",
-          "date": "2018-06-05"
-        },
-        "after": {
-          "crew_id": "IA",
-          "date": "2018-06-07"
-        },
-        "before_state": "scheduled",
-        "after_state": "scheduled",
-        "note": "S-01 install moves from Crew IA Tue 5 Jun to Crew IA Thu 7 Jun.",
-        "job_id": "S-01-I",
-        "visit_type": "install"
-      },
-      {
-        "site_id": "S-02",
-        "kind": "moved",
-        "before": {
-          "crew_id": "BA",
-          "date": "2018-06-15"
-        },
         "after": {
           "crew_id": "BA",
           "date": "2018-06-12"
         },
-        "before_state": "scheduled",
+        "before_state": "unscheduled",
         "after_state": "scheduled",
-        "note": "S-02 battery day moves from Crew BA Fri 15 Jun to Crew BA Tue 12 Jun.",
+        "note": "S-02 battery day is now scheduled on Crew BA Tue 12 Jun.",
         "job_id": "S-02-B",
         "visit_type": "battery_day"
       },
       {
         "site_id": "S-03",
-        "kind": "moved",
-        "before": {
+        "kind": "added",
+        "before": null,
+        "after": {
           "crew_id": "BA",
           "date": "2018-06-12"
         },
-        "after": {
-          "crew_id": "BA",
-          "date": "2018-06-08"
-        },
-        "before_state": "scheduled",
+        "before_state": "unscheduled",
         "after_state": "scheduled",
-        "note": "S-03 battery day moves from Crew BA Tue 12 Jun to Crew BA Fri 8 Jun.",
+        "note": "S-03 battery day is now scheduled on Crew BA Tue 12 Jun.",
         "job_id": "S-03-B",
         "visit_type": "battery_day"
       },
@@ -2560,101 +1789,44 @@
         "site_id": "S-03",
         "kind": "moved",
         "before": {
-          "crew_id": "IA",
-          "date": "2018-06-07"
+          "crew_id": "IB",
+          "date": "2018-06-13"
         },
         "after": {
-          "crew_id": "IB",
-          "date": "2018-06-07"
+          "crew_id": "IA",
+          "date": "2018-06-11"
         },
         "before_state": "scheduled",
         "after_state": "scheduled",
-        "note": "S-03 install moves from Crew IA Thu 7 Jun to Crew IB Thu 7 Jun.",
+        "note": "S-03 install moves from Crew IB Wed 13 Jun to Crew IA Mon 11 Jun.",
         "job_id": "S-03-I",
         "visit_type": "install"
       },
       {
-        "site_id": "S-04",
-        "kind": "moved",
-        "before": {
-          "crew_id": "BA",
-          "date": "2018-06-06"
-        },
-        "after": {
-          "crew_id": "BA",
-          "date": "2018-06-05"
-        },
-        "before_state": "scheduled",
-        "after_state": "scheduled",
-        "note": "S-04 battery day moves from Crew BA Wed 6 Jun to Crew BA Tue 5 Jun.",
-        "job_id": "S-04-B",
-        "visit_type": "battery_day"
-      },
-      {
-        "site_id": "S-05",
-        "kind": "moved",
-        "before": {
-          "crew_id": "BA",
-          "date": "2018-06-07"
-        },
+        "site_id": "S-06",
+        "kind": "added",
+        "before": null,
         "after": {
           "crew_id": "BA",
           "date": "2018-06-12"
         },
-        "before_state": "scheduled",
+        "before_state": "unscheduled",
         "after_state": "scheduled",
-        "note": "S-05 battery day moves from Crew BA Thu 7 Jun to Crew BA Tue 12 Jun.",
-        "job_id": "S-05-B",
+        "note": "S-06 battery day is now scheduled on Crew BA Tue 12 Jun.",
+        "job_id": "S-06-B",
         "visit_type": "battery_day"
-      },
-      {
-        "site_id": "S-05",
-        "kind": "moved",
-        "before": {
-          "crew_id": "IA",
-          "date": "2018-06-05"
-        },
-        "after": {
-          "crew_id": "IB",
-          "date": "2018-06-11"
-        },
-        "before_state": "scheduled",
-        "after_state": "scheduled",
-        "note": "S-05 install moves from Crew IA Tue 5 Jun to Crew IB Mon 11 Jun.",
-        "job_id": "S-05-I",
-        "visit_type": "install"
-      },
-      {
-        "site_id": "S-06",
-        "kind": "moved",
-        "before": {
-          "crew_id": "IB",
-          "date": "2018-06-08"
-        },
-        "after": {
-          "crew_id": "IB",
-          "date": "2018-06-11"
-        },
-        "before_state": "scheduled",
-        "after_state": "scheduled",
-        "note": "S-06 install moves from Crew IB Fri 8 Jun to Crew IB Mon 11 Jun.",
-        "job_id": "S-06-I",
-        "visit_type": "install"
       },
       {
         "site_id": "S-07",
-        "kind": "moved",
-        "before": {
-          "crew_id": "BA",
-          "date": "2018-06-15"
-        },
+        "kind": "added",
+        "before": null,
         "after": {
           "crew_id": "BA",
           "date": "2018-06-12"
         },
-        "before_state": "scheduled",
+        "before_state": "unscheduled",
         "after_state": "scheduled",
-        "note": "S-07 battery day moves from Crew BA Fri 15 Jun to Crew BA Tue 12 Jun.",
+        "note": "S-07 battery day is now scheduled on Crew BA Tue 12 Jun.",
         "job_id": "S-07-B",
         "visit_type": "battery_day"
       },
@@ -2676,20 +1848,17 @@
         "visit_type": "install"
       },
       {
-        "site_id": "S-08",
-        "kind": "moved",
-        "before": {
-          "crew_id": "BA",
-          "date": "2018-06-06"
-        },
+        "site_id": "S-09",
+        "kind": "added",
+        "before": null,
         "after": {
           "crew_id": "BA",
-          "date": "2018-06-05"
+          "date": "2018-06-12"
         },
-        "before_state": "scheduled",
+        "before_state": "unscheduled",
         "after_state": "scheduled",
-        "note": "S-08 battery day moves from Crew BA Wed 6 Jun to Crew BA Tue 5 Jun.",
-        "job_id": "S-08-B",
+        "note": "S-09 battery day is now scheduled on Crew BA Tue 12 Jun.",
+        "job_id": "S-09-B",
         "visit_type": "battery_day"
       },
       {
@@ -2697,7 +1866,7 @@
         "kind": "moved",
         "before": {
           "crew_id": "IB",
-          "date": "2018-06-08"
+          "date": "2018-06-13"
         },
         "after": {
           "crew_id": "IA",
@@ -2705,741 +1874,400 @@
         },
         "before_state": "scheduled",
         "after_state": "scheduled",
-        "note": "S-09 install moves from Crew IB Fri 8 Jun to Crew IA Mon 11 Jun.",
+        "note": "S-09 install moves from Crew IB Wed 13 Jun to Crew IA Mon 11 Jun.",
         "job_id": "S-09-I",
         "visit_type": "install"
       },
       {
-        "site_id": "S-10",
-        "kind": "moved",
-        "before": {
-          "crew_id": "BA",
-          "date": "2018-06-12"
-        },
-        "after": {
-          "crew_id": "BA",
-          "date": "2018-06-08"
-        },
-        "before_state": "scheduled",
-        "after_state": "scheduled",
-        "note": "S-10 battery day moves from Crew BA Tue 12 Jun to Crew BA Fri 8 Jun.",
-        "job_id": "S-10-B",
-        "visit_type": "battery_day"
-      },
-      {
-        "site_id": "S-10",
-        "kind": "moved",
-        "before": {
-          "crew_id": "IB",
-          "date": "2018-06-08"
-        },
-        "after": {
-          "crew_id": "IB",
-          "date": "2018-06-07"
-        },
-        "before_state": "scheduled",
-        "after_state": "scheduled",
-        "note": "S-10 install moves from Crew IB Fri 8 Jun to Crew IB Thu 7 Jun.",
-        "job_id": "S-10-I",
-        "visit_type": "install"
-      },
-      {
         "site_id": "S-11",
-        "kind": "moved",
-        "before": {
-          "crew_id": "BA",
-          "date": "2018-06-15"
-        },
+        "kind": "added",
+        "before": null,
         "after": {
           "crew_id": "BA",
           "date": "2018-06-12"
         },
-        "before_state": "scheduled",
+        "before_state": "unscheduled",
         "after_state": "scheduled",
-        "note": "S-11 battery day moves from Crew BA Fri 15 Jun to Crew BA Tue 12 Jun.",
+        "note": "S-11 battery day is now scheduled on Crew BA Tue 12 Jun.",
         "job_id": "S-11-B",
         "visit_type": "battery_day"
       },
       {
-        "site_id": "S-11",
-        "kind": "moved",
-        "before": {
-          "crew_id": "IA",
-          "date": "2018-06-11"
-        },
-        "after": {
-          "crew_id": "IA",
-          "date": "2018-06-07"
-        },
-        "before_state": "scheduled",
-        "after_state": "scheduled",
-        "note": "S-11 install moves from Crew IA Mon 11 Jun to Crew IA Thu 7 Jun.",
-        "job_id": "S-11-I",
-        "visit_type": "install"
-      },
-      {
         "site_id": "S-12",
-        "kind": "moved",
-        "before": {
-          "crew_id": "BA",
-          "date": "2018-06-15"
-        },
+        "kind": "added",
+        "before": null,
         "after": {
           "crew_id": "BA",
           "date": "2018-06-12"
         },
-        "before_state": "late",
+        "before_state": "unscheduled",
         "after_state": "scheduled",
-        "note": "S-12 battery day moves from Crew BA Fri 15 Jun to Crew BA Tue 12 Jun.",
+        "note": "S-12 battery day is now scheduled on Crew BA Tue 12 Jun.",
         "job_id": "S-12-B",
         "visit_type": "battery_day"
       },
       {
-        "site_id": "S-12",
+        "site_id": "W-02",
         "kind": "moved",
         "before": {
           "crew_id": "IA",
           "date": "2018-06-11"
         },
         "after": {
-          "crew_id": "IB",
-          "date": "2018-06-07"
-        },
-        "before_state": "scheduled",
-        "after_state": "scheduled",
-        "note": "S-12 install moves from Crew IA Mon 11 Jun to Crew IB Thu 7 Jun.",
-        "job_id": "S-12-I",
-        "visit_type": "install"
-      },
-      {
-        "site_id": "S-13",
-        "kind": "removed",
-        "before": {
-          "crew_id": "BA",
-          "date": "2018-06-07"
-        },
-        "after": null,
-        "before_state": "scheduled",
-        "after_state": "unscheduled",
-        "note": "S-13 battery day is no longer scheduled.",
-        "job_id": "S-13-B",
-        "visit_type": "battery_day"
-      },
-      {
-        "site_id": "S-13",
-        "kind": "removed",
-        "before": {
           "crew_id": "IA",
-          "date": "2018-06-05"
-        },
-        "after": null,
-        "before_state": "scheduled",
-        "after_state": "unscheduled",
-        "note": "S-13 install is no longer scheduled.",
-        "job_id": "S-13-I",
-        "visit_type": "install"
-      },
-      {
-        "site_id": "S-14",
-        "kind": "moved",
-        "before": {
-          "crew_id": "BA",
-          "date": "2018-06-12"
-        },
-        "after": {
-          "crew_id": "BA",
-          "date": "2018-06-08"
+          "date": "2018-06-13"
         },
         "before_state": "scheduled",
         "after_state": "scheduled",
-        "note": "S-14 battery day moves from Crew BA Tue 12 Jun to Crew BA Fri 8 Jun.",
-        "job_id": "S-14-B",
-        "visit_type": "battery_day"
-      },
-      {
-        "site_id": "S-14",
-        "kind": "moved",
-        "before": {
-          "crew_id": "IA",
-          "date": "2018-06-07"
-        },
-        "after": {
-          "crew_id": "IB",
-          "date": "2018-06-07"
-        },
-        "before_state": "scheduled",
-        "after_state": "scheduled",
-        "note": "S-14 install moves from Crew IA Thu 7 Jun to Crew IB Thu 7 Jun.",
-        "job_id": "S-14-I",
-        "visit_type": "install"
-      },
-      {
-        "site_id": "S-15",
-        "kind": "moved",
-        "before": {
-          "crew_id": "BA",
-          "date": "2018-06-12"
-        },
-        "after": {
-          "crew_id": "BA",
-          "date": "2018-06-08"
-        },
-        "before_state": "scheduled",
-        "after_state": "scheduled",
-        "note": "S-15 battery day moves from Crew BA Tue 12 Jun to Crew BA Fri 8 Jun.",
-        "job_id": "S-15-B",
-        "visit_type": "battery_day"
-      },
-      {
-        "site_id": "W-01",
-        "kind": "added",
-        "before": null,
-        "after": {
-          "crew_id": "BA",
-          "date": "2018-06-15"
-        },
-        "before_state": "unscheduled",
-        "after_state": "scheduled",
-        "note": "W-01 battery day is now scheduled on Crew BA Fri 15 Jun.",
-        "job_id": "W-01-B",
-        "visit_type": "battery_day"
-      },
-      {
-        "site_id": "W-01",
-        "kind": "moved",
-        "before": {
-          "crew_id": "IB",
-          "date": "2018-06-11"
-        },
-        "after": {
-          "crew_id": "IA",
-          "date": "2018-06-12"
-        },
-        "before_state": "scheduled",
-        "after_state": "scheduled",
-        "note": "W-01 install moves from Crew IB Mon 11 Jun to Crew IA Tue 12 Jun.",
-        "job_id": "W-01-I",
-        "visit_type": "install"
-      },
-      {
-        "site_id": "W-02",
-        "kind": "added",
-        "before": null,
-        "after": {
-          "crew_id": "BA",
-          "date": "2018-06-15"
-        },
-        "before_state": "unscheduled",
-        "after_state": "scheduled",
-        "note": "W-02 battery day is now scheduled on Crew BA Fri 15 Jun.",
-        "job_id": "W-02-B",
-        "visit_type": "battery_day"
-      },
-      {
-        "site_id": "W-02",
-        "kind": "moved",
-        "before": {
-          "crew_id": "IA",
-          "date": "2018-06-12"
-        },
-        "after": {
-          "crew_id": "IA",
-          "date": "2018-06-08"
-        },
-        "before_state": "scheduled",
-        "after_state": "scheduled",
-        "note": "W-02 install moves from Crew IA Tue 12 Jun to Crew IA Fri 8 Jun.",
+        "note": "W-02 install moves from Crew IA Mon 11 Jun to Crew IA Wed 13 Jun.",
         "job_id": "W-02-I",
         "visit_type": "install"
       },
       {
-        "site_id": "W-03",
-        "kind": "moved",
+        "site_id": "W-05",
+        "kind": "removed",
         "before": {
           "crew_id": "BA",
-          "date": "2018-06-08"
-        },
-        "after": {
-          "crew_id": "BA",
-          "date": "2018-06-06"
-        },
-        "before_state": "scheduled",
-        "after_state": "scheduled",
-        "note": "W-03 battery day moves from Crew BA Fri 8 Jun to Crew BA Wed 6 Jun.",
-        "job_id": "W-03-B",
-        "visit_type": "battery_day"
-      },
-      {
-        "site_id": "W-03",
-        "kind": "moved",
-        "before": {
-          "crew_id": "IB",
-          "date": "2018-06-05"
-        },
-        "after": {
-          "crew_id": "IA",
-          "date": "2018-06-05"
-        },
-        "before_state": "scheduled",
-        "after_state": "scheduled",
-        "note": "W-03 install moves from Crew IB Tue 5 Jun to Crew IA Tue 5 Jun.",
-        "job_id": "W-03-I",
-        "visit_type": "install"
-      },
-      {
-        "site_id": "W-04",
-        "kind": "added",
-        "before": null,
-        "after": {
-          "crew_id": "BA",
-          "date": "2018-06-15"
-        },
-        "before_state": "unscheduled",
-        "after_state": "scheduled",
-        "note": "W-04 battery day is now scheduled on Crew BA Fri 15 Jun.",
-        "job_id": "W-04-B",
-        "visit_type": "battery_day"
-      },
-      {
-        "site_id": "W-04",
-        "kind": "moved",
-        "before": {
-          "crew_id": "IA",
           "date": "2018-06-12"
         },
-        "after": {
-          "crew_id": "IA",
-          "date": "2018-06-08"
-        },
+        "after": null,
         "before_state": "scheduled",
-        "after_state": "scheduled",
-        "note": "W-04 install moves from Crew IA Tue 12 Jun to Crew IA Fri 8 Jun.",
-        "job_id": "W-04-I",
-        "visit_type": "install"
-      },
-      {
-        "site_id": "W-05",
-        "kind": "moved",
-        "before": {
-          "crew_id": "BA",
-          "date": "2018-06-08"
-        },
-        "after": {
-          "crew_id": "BA",
-          "date": "2018-06-11"
-        },
-        "before_state": "scheduled",
-        "after_state": "scheduled",
-        "note": "W-05 battery day moves from Crew BA Fri 8 Jun to Crew BA Mon 11 Jun.",
+        "after_state": "unscheduled",
+        "note": "W-05 battery day is no longer scheduled.",
         "job_id": "W-05-B",
         "visit_type": "battery_day"
       },
       {
         "site_id": "W-05",
-        "kind": "moved",
+        "kind": "removed",
         "before": {
-          "crew_id": "IB",
-          "date": "2018-06-07"
-        },
-        "after": {
           "crew_id": "IA",
-          "date": "2018-06-08"
+          "date": "2018-06-11"
         },
+        "after": null,
         "before_state": "scheduled",
-        "after_state": "scheduled",
-        "note": "W-05 install moves from Crew IB Thu 7 Jun to Crew IA Fri 8 Jun.",
+        "after_state": "unscheduled",
+        "note": "W-05 install is no longer scheduled.",
         "job_id": "W-05-I",
         "visit_type": "install"
       },
       {
-        "site_id": "W-06",
-        "kind": "added",
-        "before": null,
-        "after": {
-          "crew_id": "BA",
-          "date": "2018-06-15"
-        },
-        "before_state": "unscheduled",
-        "after_state": "scheduled",
-        "note": "W-06 battery day is now scheduled on Crew BA Fri 15 Jun.",
-        "job_id": "W-06-B",
-        "visit_type": "battery_day"
-      },
-      {
-        "site_id": "W-06",
-        "kind": "moved",
-        "before": {
-          "crew_id": "IB",
-          "date": "2018-06-12"
-        },
-        "after": {
-          "crew_id": "IB",
-          "date": "2018-06-13"
-        },
-        "before_state": "scheduled",
-        "after_state": "scheduled",
-        "note": "W-06 install moves from Crew IB Tue 12 Jun to Crew IB Wed 13 Jun.",
-        "job_id": "W-06-I",
-        "visit_type": "install"
-      },
-      {
         "site_id": "W-07",
         "kind": "moved",
         "before": {
           "crew_id": "BA",
-          "date": "2018-06-08"
+          "date": "2018-06-12"
         },
         "after": {
           "crew_id": "BA",
-          "date": "2018-06-06"
+          "date": "2018-06-07"
         },
         "before_state": "scheduled",
         "after_state": "scheduled",
-        "note": "W-07 battery day moves from Crew BA Fri 8 Jun to Crew BA Wed 6 Jun.",
+        "note": "W-07 battery day moves from Crew BA Tue 12 Jun to Crew BA Thu 7 Jun.",
         "job_id": "W-07-B",
         "visit_type": "battery_day"
       },
       {
-        "site_id": "W-07",
-        "kind": "moved",
-        "before": {
-          "crew_id": "IB",
-          "date": "2018-06-05"
-        },
-        "after": {
-          "crew_id": "IA",
-          "date": "2018-06-05"
-        },
-        "before_state": "scheduled",
-        "after_state": "scheduled",
-        "note": "W-07 install moves from Crew IB Tue 5 Jun to Crew IA Tue 5 Jun.",
-        "job_id": "W-07-I",
-        "visit_type": "install"
-      },
-      {
         "site_id": "W-08",
-        "kind": "added",
-        "before": null,
-        "after": {
+        "kind": "removed",
+        "before": {
           "crew_id": "BA",
-          "date": "2018-06-11"
+          "date": "2018-06-12"
         },
-        "before_state": "unscheduled",
-        "after_state": "scheduled",
-        "note": "W-08 battery day is now scheduled on Crew BA Mon 11 Jun.",
+        "after": null,
+        "before_state": "scheduled",
+        "after_state": "unscheduled",
+        "note": "W-08 battery day is no longer scheduled.",
         "job_id": "W-08-B",
         "visit_type": "battery_day"
       },
       {
-        "site_id": "W-08",
-        "kind": "moved",
-        "before": {
-          "crew_id": "IB",
-          "date": "2018-06-07"
-        },
-        "after": {
-          "crew_id": "IA",
-          "date": "2018-06-06"
-        },
-        "before_state": "scheduled",
-        "after_state": "scheduled",
-        "note": "W-08 install moves from Crew IB Thu 7 Jun to Crew IA Wed 6 Jun.",
-        "job_id": "W-08-I",
-        "visit_type": "install"
-      },
-      {
-        "site_id": "W-09",
-        "kind": "added",
-        "before": null,
-        "after": {
-          "crew_id": "BA",
-          "date": "2018-06-11"
-        },
-        "before_state": "unscheduled",
-        "after_state": "scheduled",
-        "note": "W-09 battery day is now scheduled on Crew BA Mon 11 Jun.",
-        "job_id": "W-09-B",
-        "visit_type": "battery_day"
-      },
-      {
-        "site_id": "W-09",
-        "kind": "moved",
-        "before": {
-          "crew_id": "IB",
-          "date": "2018-06-07"
-        },
-        "after": {
-          "crew_id": "IA",
-          "date": "2018-06-06"
-        },
-        "before_state": "scheduled",
-        "after_state": "scheduled",
-        "note": "W-09 install moves from Crew IB Thu 7 Jun to Crew IA Wed 6 Jun.",
-        "job_id": "W-09-I",
-        "visit_type": "install"
-      },
-      {
-        "site_id": "W-10",
-        "kind": "added",
-        "before": null,
-        "after": {
-          "crew_id": "BA",
-          "date": "2018-06-11"
-        },
-        "before_state": "unscheduled",
-        "after_state": "scheduled",
-        "note": "W-10 battery day is now scheduled on Crew BA Mon 11 Jun.",
-        "job_id": "W-10-B",
-        "visit_type": "battery_day"
-      },
-      {
-        "site_id": "W-10",
-        "kind": "moved",
-        "before": {
-          "crew_id": "IB",
-          "date": "2018-06-11"
-        },
-        "after": {
-          "crew_id": "IA",
-          "date": "2018-06-06"
-        },
-        "before_state": "scheduled",
-        "after_state": "scheduled",
-        "note": "W-10 install moves from Crew IB Mon 11 Jun to Crew IA Wed 6 Jun.",
-        "job_id": "W-10-I",
-        "visit_type": "install"
-      },
-      {
-        "site_id": "W-11",
-        "kind": "added",
-        "before": null,
-        "after": {
-          "crew_id": "BA",
-          "date": "2018-06-15"
-        },
-        "before_state": "unscheduled",
-        "after_state": "scheduled",
-        "note": "W-11 battery day is now scheduled on Crew BA Fri 15 Jun.",
-        "job_id": "W-11-B",
-        "visit_type": "battery_day"
-      },
-      {
-        "site_id": "W-11",
-        "kind": "moved",
-        "before": {
-          "crew_id": "IB",
-          "date": "2018-06-12"
-        },
-        "after": {
-          "crew_id": "IA",
-          "date": "2018-06-12"
-        },
-        "before_state": "scheduled",
-        "after_state": "scheduled",
-        "note": "W-11 install moves from Crew IB Tue 12 Jun to Crew IA Tue 12 Jun.",
-        "job_id": "W-11-I",
-        "visit_type": "install"
-      },
-      {
         "site_id": "W-12",
-        "kind": "moved",
+        "kind": "removed",
         "before": {
           "crew_id": "BA",
-          "date": "2018-06-08"
+          "date": "2018-06-12"
         },
-        "after": {
-          "crew_id": "BA",
-          "date": "2018-06-06"
-        },
+        "after": null,
         "before_state": "scheduled",
-        "after_state": "scheduled",
-        "note": "W-12 battery day moves from Crew BA Fri 8 Jun to Crew BA Wed 6 Jun.",
+        "after_state": "unscheduled",
+        "note": "W-12 battery day is no longer scheduled.",
         "job_id": "W-12-B",
         "visit_type": "battery_day"
       },
       {
+        "site_id": "W-12",
+        "kind": "removed",
+        "before": {
+          "crew_id": "IA",
+          "date": "2018-06-11"
+        },
+        "after": null,
+        "before_state": "scheduled",
+        "after_state": "unscheduled",
+        "note": "W-12 install is no longer scheduled.",
+        "job_id": "W-12-I",
+        "visit_type": "install"
+      },
+      {
         "site_id": "W-13",
-        "kind": "moved",
+        "kind": "removed",
         "before": {
           "crew_id": "BA",
-          "date": "2018-06-08"
+          "date": "2018-06-12"
         },
-        "after": {
-          "crew_id": "BA",
-          "date": "2018-06-06"
-        },
+        "after": null,
         "before_state": "scheduled",
-        "after_state": "scheduled",
-        "note": "W-13 battery day moves from Crew BA Fri 8 Jun to Crew BA Wed 6 Jun.",
+        "after_state": "unscheduled",
+        "note": "W-13 battery day is no longer scheduled.",
         "job_id": "W-13-B",
         "visit_type": "battery_day"
-      },
-      {
-        "site_id": "W-13",
-        "kind": "moved",
-        "before": {
-          "crew_id": "IB",
-          "date": "2018-06-07"
-        },
-        "after": {
-          "crew_id": "IA",
-          "date": "2018-06-05"
-        },
-        "before_state": "scheduled",
-        "after_state": "scheduled",
-        "note": "W-13 install moves from Crew IB Thu 7 Jun to Crew IA Tue 5 Jun.",
-        "job_id": "W-13-I",
-        "visit_type": "install"
-      },
-      {
-        "site_id": "W-14",
-        "kind": "added",
-        "before": null,
-        "after": {
-          "crew_id": "BA",
-          "date": "2018-06-15"
-        },
-        "before_state": "unscheduled",
-        "after_state": "scheduled",
-        "note": "W-14 battery day is now scheduled on Crew BA Fri 15 Jun.",
-        "job_id": "W-14-B",
-        "visit_type": "battery_day"
-      },
-      {
-        "site_id": "W-15",
-        "kind": "added",
-        "before": null,
-        "after": {
-          "crew_id": "BA",
-          "date": "2018-06-11"
-        },
-        "before_state": "unscheduled",
-        "after_state": "scheduled",
-        "note": "W-15 battery day is now scheduled on Crew BA Mon 11 Jun.",
-        "job_id": "W-15-B",
-        "visit_type": "battery_day"
-      },
-      {
-        "site_id": "W-15",
-        "kind": "moved",
-        "before": {
-          "crew_id": "IB",
-          "date": "2018-06-11"
-        },
-        "after": {
-          "crew_id": "IA",
-          "date": "2018-06-06"
-        },
-        "before_state": "scheduled",
-        "after_state": "scheduled",
-        "note": "W-15 install moves from Crew IB Mon 11 Jun to Crew IA Wed 6 Jun.",
-        "job_id": "W-15-I",
-        "visit_type": "install"
       }
     ],
     "summary": {
-      "moved": 61,
-      "added": 12,
-      "removed": 2,
+      "moved": 12,
+      "added": 7,
+      "removed": 6,
       "newly_late": 0,
-      "value_delta_usd": 999.0657673090718,
-      "travel_delta_min": 17,
-      "customers_to_reschedule": 42
+      "value_delta_usd": 276.4116454569785,
+      "travel_delta_min": 8,
+      "customers_to_reschedule": 14
     },
-    "headline": "61 visits move, 42 customers to reschedule. 12 jobs added. 2 jobs dropped."
+    "headline": "12 visits move, 14 customers to reschedule. 7 jobs added. 6 jobs dropped."
   },
   "counts": {
-    "deadlines_missed": 1,
-    "deadlines_recovered": 12,
+    "deadlines_missed": 4,
+    "deadlines_recovered": 7,
     "delay_days": 0,
-    "visits_moved": 49,
-    "customers_to_reschedule": 35,
-    "unscheduled": 1
+    "visits_moved": 25,
+    "customers_to_reschedule": 18,
+    "unscheduled": 4
   },
   "economics": {
-    "net_impact_usd": 1037.56,
-    "advantage_vs_no_action_usd": 49.06,
-    "cost_per_deadline_recovered_usd": 79.17,
+    "net_impact_usd": 353.83,
+    "advantage_vs_no_action_usd": 276.42,
+    "cost_per_deadline_recovered_usd": 0.0,
     "lines": [
       {
-        "label": "Extra crew labor",
-        "amount_usd": 950.0,
+        "label": "Existing crew labor",
+        "amount_usd": 0.0,
         "kind": "labor",
-        "basis": "STUB placeholder. Lane R computes it from the BLS Houston electrician wage."
+        "basis": "Existing roster is paid regardless of utilization; no claimed savings from uncompleted visits."
       },
       {
-        "label": "Energy value lost vs the original plan",
-        "amount_usd": 87.56,
+        "label": "Overtime",
+        "amount_usd": 0.0,
+        "kind": "labor",
+        "basis": "0 authorized minutes / 60 \u00d7 $28.33/person-hour \u00d7 2.0 people \u00d7 1.5. Charged for authorized capacity, including idle minutes."
+      },
+      {
+        "label": "Temporary capacity",
+        "amount_usd": 0.0,
+        "kind": "labor",
+        "basis": "0 added crew-days \u00d7 $453.28/day; full day charged."
+      },
+      {
+        "label": "Lost modeled operating value",
+        "amount_usd": 353.83,
         "kind": "value",
-        "basis": "Value table: ERCOT 2018 LZ_HOUSTON prices, modeled Powerwall 3. Real number."
+        "basis": "Original minus option gross operating margin over the same evaluation horizon; 2018 hindsight prices, not forecast profit. Wage inputs are 2023 dollars without inflation conversion; illustrative comparison."
+      },
+      {
+        "label": "Incremental travel",
+        "amount_usd": -0.0,
+        "kind": "other",
+        "basis": "Difference in fixed travel allowance minutes \u00d7 $0.0/min; no route mileage."
+      },
+      {
+        "label": "Deadline penalty",
+        "amount_usd": 0.0,
+        "kind": "penalty",
+        "basis": "Additional missed homes vs original \u00d7 $0.0; default disabled."
+      },
+      {
+        "label": "Customer rescheduling",
+        "amount_usd": 0.0,
+        "kind": "other",
+        "basis": "18 distinct customers \u00d7 $0.0; default disabled."
       }
     ]
   },
   "overtime_min": 0,
   "explanations": [
     {
-      "job_id": "N-01-B",
-      "text": "STUB: N-01 battery day moves from Crew BA Tue 5 Jun to Crew BA Thu 7 Jun. Lane R names the constraint.",
-      "constraint": "stub"
-    },
-    {
       "job_id": "N-02-B",
-      "text": "STUB: N-02 battery day moves from Crew BA Mon 11 Jun to Crew BT Fri 15 Jun. Lane R names the constraint.",
-      "constraint": "stub"
+      "text": "N-02 battery day moves from Crew BA Mon 11 Jun to Crew BA Wed 13 Jun. Joint recovery constraints: crew skill, capacity, inventory, appointment windows, locks, and visit precedence; no unique cause inferred.",
+      "constraint": "joint_constraints"
     },
     {
-      "job_id": "N-03-B",
-      "text": "STUB: N-03 battery day moves from Crew BA Tue 5 Jun to Crew BA Thu 7 Jun. Lane R names the constraint.",
-      "constraint": "stub"
+      "job_id": "N-02-I",
+      "text": "N-02 install moves from Crew IB Fri 8 Jun to Crew IB Tue 12 Jun. Joint recovery constraints: crew skill, capacity, inventory, appointment windows, locks, and visit precedence; no unique cause inferred.",
+      "constraint": "joint_constraints"
+    },
+    {
+      "job_id": "N-08-B",
+      "text": "N-08 battery day moves from Crew BA Wed 13 Jun to Crew BA Mon 11 Jun. Joint recovery constraints: crew skill, capacity, inventory, appointment windows, locks, and visit precedence; no unique cause inferred.",
+      "constraint": "joint_constraints"
+    },
+    {
+      "job_id": "N-08-I",
+      "text": "N-08 install moves from Crew IB Tue 12 Jun to Crew IB Fri 8 Jun. Joint recovery constraints: crew skill, capacity, inventory, appointment windows, locks, and visit precedence; no unique cause inferred.",
+      "constraint": "joint_constraints"
+    },
+    {
+      "job_id": "N-10-B",
+      "text": "N-10 battery day moves from Crew BA Mon 11 Jun to Crew BA Wed 13 Jun. Joint recovery constraints: crew skill, capacity, inventory, appointment windows, locks, and visit precedence; no unique cause inferred.",
+      "constraint": "joint_constraints"
+    },
+    {
+      "job_id": "N-12-B",
+      "text": "N-12 battery day moves from Crew BA Wed 13 Jun to Crew BA Mon 11 Jun. Joint recovery constraints: crew skill, capacity, inventory, appointment windows, locks, and visit precedence; no unique cause inferred.",
+      "constraint": "joint_constraints"
+    },
+    {
+      "job_id": "N-13-B",
+      "text": "N-13 battery day moves from Crew BA Mon 11 Jun to Crew BA Wed 13 Jun. Joint recovery constraints: crew skill, capacity, inventory, appointment windows, locks, and visit precedence; no unique cause inferred.",
+      "constraint": "joint_constraints"
+    },
+    {
+      "job_id": "S-02-B",
+      "text": "S-02 battery day moves from Crew BA Thu 14 Jun to Crew BA Tue 12 Jun. Joint recovery constraints: crew skill, capacity, inventory, appointment windows, locks, and visit precedence; no unique cause inferred.",
+      "constraint": "joint_constraints"
+    },
+    {
+      "job_id": "S-03-B",
+      "text": "S-03 battery day moves from Crew BA Thu 14 Jun to Crew BA Tue 12 Jun. Joint recovery constraints: crew skill, capacity, inventory, appointment windows, locks, and visit precedence; no unique cause inferred.",
+      "constraint": "joint_constraints"
+    },
+    {
+      "job_id": "S-03-I",
+      "text": "S-03 install moves from Crew IB Wed 13 Jun to Crew IA Mon 11 Jun. Joint recovery constraints: crew skill, capacity, inventory, appointment windows, locks, and visit precedence; no unique cause inferred.",
+      "constraint": "joint_constraints"
+    },
+    {
+      "job_id": "S-06-B",
+      "text": "S-06 battery day moves from Crew BA Thu 14 Jun to Crew BA Tue 12 Jun. Joint recovery constraints: crew skill, capacity, inventory, appointment windows, locks, and visit precedence; no unique cause inferred.",
+      "constraint": "joint_constraints"
+    },
+    {
+      "job_id": "S-07-B",
+      "text": "S-07 battery day moves from Crew BA Thu 14 Jun to Crew BA Tue 12 Jun. Joint recovery constraints: crew skill, capacity, inventory, appointment windows, locks, and visit precedence; no unique cause inferred.",
+      "constraint": "joint_constraints"
+    },
+    {
+      "job_id": "S-07-I",
+      "text": "S-07 install moves from Crew IB Wed 13 Jun to Crew IA Mon 11 Jun. Joint recovery constraints: crew skill, capacity, inventory, appointment windows, locks, and visit precedence; no unique cause inferred.",
+      "constraint": "joint_constraints"
+    },
+    {
+      "job_id": "S-09-B",
+      "text": "S-09 battery day moves from Crew BA Thu 14 Jun to Crew BA Tue 12 Jun. Joint recovery constraints: crew skill, capacity, inventory, appointment windows, locks, and visit precedence; no unique cause inferred.",
+      "constraint": "joint_constraints"
+    },
+    {
+      "job_id": "S-09-I",
+      "text": "S-09 install moves from Crew IB Wed 13 Jun to Crew IA Mon 11 Jun. Joint recovery constraints: crew skill, capacity, inventory, appointment windows, locks, and visit precedence; no unique cause inferred.",
+      "constraint": "joint_constraints"
+    },
+    {
+      "job_id": "S-11-B",
+      "text": "S-11 battery day moves from Crew BA Thu 14 Jun to Crew BA Tue 12 Jun. Joint recovery constraints: crew skill, capacity, inventory, appointment windows, locks, and visit precedence; no unique cause inferred.",
+      "constraint": "joint_constraints"
+    },
+    {
+      "job_id": "S-12-B",
+      "text": "S-12 battery day moves from Crew BA Thu 14 Jun to Crew BA Tue 12 Jun. Joint recovery constraints: crew skill, capacity, inventory, appointment windows, locks, and visit precedence; no unique cause inferred.",
+      "constraint": "joint_constraints"
+    },
+    {
+      "job_id": "W-02-I",
+      "text": "W-02 install moves from Crew IA Mon 11 Jun to Crew IA Wed 13 Jun. Joint recovery constraints: crew skill, capacity, inventory, appointment windows, locks, and visit precedence; no unique cause inferred.",
+      "constraint": "joint_constraints"
+    },
+    {
+      "job_id": "W-05-B",
+      "text": "W-05 battery day is no longer scheduled. Joint recovery constraints: crew skill, capacity, inventory, appointment windows, locks, and visit precedence; no unique cause inferred.",
+      "constraint": "joint_constraints"
+    },
+    {
+      "job_id": "W-05-I",
+      "text": "W-05 install is no longer scheduled. Joint recovery constraints: crew skill, capacity, inventory, appointment windows, locks, and visit precedence; no unique cause inferred.",
+      "constraint": "joint_constraints"
+    },
+    {
+      "job_id": "W-07-B",
+      "text": "W-07 battery day moves from Crew BA Tue 12 Jun to Crew BA Thu 7 Jun. Joint recovery constraints: crew skill, capacity, inventory, appointment windows, locks, and visit precedence; no unique cause inferred.",
+      "constraint": "joint_constraints"
+    },
+    {
+      "job_id": "W-08-B",
+      "text": "W-08 battery day is no longer scheduled. Joint recovery constraints: crew skill, capacity, inventory, appointment windows, locks, and visit precedence; no unique cause inferred.",
+      "constraint": "joint_constraints"
+    },
+    {
+      "job_id": "W-12-B",
+      "text": "W-12 battery day is no longer scheduled. Joint recovery constraints: crew skill, capacity, inventory, appointment windows, locks, and visit precedence; no unique cause inferred.",
+      "constraint": "joint_constraints"
+    },
+    {
+      "job_id": "W-12-I",
+      "text": "W-12 install is no longer scheduled. Joint recovery constraints: crew skill, capacity, inventory, appointment windows, locks, and visit precedence; no unique cause inferred.",
+      "constraint": "joint_constraints"
+    },
+    {
+      "job_id": "W-13-B",
+      "text": "W-13 battery day is no longer scheduled. Joint recovery constraints: crew skill, capacity, inventory, appointment windows, locks, and visit precedence; no unique cause inferred.",
+      "constraint": "joint_constraints"
     }
   ],
   "crew_load": [
     {
       "crew_id": "BA",
       "date": "2018-06-05",
-      "before": 0.5708,
-      "after": 0.4292
+      "before": 0.5708333333333333,
+      "after": 0.5708333333333333
     },
     {
       "crew_id": "BA",
       "date": "2018-06-06",
-      "before": 0.6167,
-      "after": 0.7562
+      "before": 0.6166666666666667,
+      "after": 0.6166666666666667
     },
     {
       "crew_id": "BA",
       "date": "2018-06-07",
-      "before": 0.7562,
-      "after": 0.8833
+      "before": 0.75625,
+      "after": 0.88125
     },
     {
       "crew_id": "BA",
       "date": "2018-06-08",
-      "before": 0.8979,
-      "after": 0.8979
+      "before": 0.8979166666666667,
+      "after": 0.8979166666666667
     },
     {
       "crew_id": "BA",
       "date": "2018-06-11",
-      "before": 0.9771,
-      "after": 0.9437
+      "before": 0.9770833333333333,
+      "after": 0.9458333333333333
     },
     {
       "crew_id": "BA",
       "date": "2018-06-12",
-      "before": 0.9437,
-      "after": 0.9917
+      "before": 0.94375,
+      "after": 0.9916666666666667
     },
     {
       "crew_id": "BA",
       "date": "2018-06-13",
-      "before": 0.9458,
-      "after": 0.9771
+      "before": 0.9458333333333333,
+      "after": 0.9770833333333333
     },
     {
       "crew_id": "BA",
       "date": "2018-06-14",
-      "before": 0.9917,
+      "before": 0.9916666666666667,
       "after": 0.0
     },
     {
@@ -3449,58 +2277,52 @@
       "after": 0.9125
     },
     {
-      "crew_id": "BT",
-      "date": "2018-06-15",
-      "before": 0.0,
-      "after": 0.6333
-    },
-    {
       "crew_id": "IA",
       "date": "2018-06-04",
-      "before": 0.9458,
-      "after": 0.9458
+      "before": 0.9458333333333333,
+      "after": 0.9458333333333333
     },
     {
       "crew_id": "IA",
       "date": "2018-06-05",
-      "before": 0.8187,
-      "after": 0.8187
+      "before": 0.81875,
+      "after": 0.81875
     },
     {
       "crew_id": "IA",
       "date": "2018-06-06",
-      "before": 0.7562,
-      "after": 0.9437
+      "before": 0.75625,
+      "after": 0.75625
     },
     {
       "crew_id": "IA",
       "date": "2018-06-07",
-      "before": 0.8979,
-      "after": 0.8979
+      "before": 0.8979166666666667,
+      "after": 0.8979166666666667
     },
     {
       "crew_id": "IA",
       "date": "2018-06-08",
-      "before": 0.9458,
-      "after": 0.9437
+      "before": 0.9458333333333333,
+      "after": 0.9458333333333333
     },
     {
       "crew_id": "IA",
       "date": "2018-06-11",
-      "before": 0.8812,
-      "after": 0.9604
+      "before": 0.88125,
+      "after": 0.9604166666666667
     },
     {
       "crew_id": "IA",
       "date": "2018-06-12",
-      "before": 0.8812,
-      "after": 0.8812
+      "before": 0.88125,
+      "after": 0.88125
     },
     {
       "crew_id": "IA",
       "date": "2018-06-13",
       "before": 0.0,
-      "after": 0.9458
+      "after": 0.38125
     },
     {
       "crew_id": "IA",
@@ -3517,50 +2339,50 @@
     {
       "crew_id": "IB",
       "date": "2018-06-04",
-      "before": 0.8354,
-      "after": 0.8354
+      "before": 0.8354166666666667,
+      "after": 0.8354166666666667
     },
     {
       "crew_id": "IB",
       "date": "2018-06-05",
-      "before": 0.9604,
-      "after": 0.3187
+      "before": 0.9604166666666667,
+      "after": 0.9604166666666667
     },
     {
       "crew_id": "IB",
       "date": "2018-06-06",
-      "before": 0.8208,
-      "after": 0.8208
+      "before": 0.8208333333333333,
+      "after": 0.8208333333333333
     },
     {
       "crew_id": "IB",
       "date": "2018-06-07",
-      "before": 0.9604,
-      "after": 0.9604
+      "before": 0.9604166666666667,
+      "after": 0.9604166666666667
     },
     {
       "crew_id": "IB",
       "date": "2018-06-08",
-      "before": 0.8833,
-      "after": 0.8833
+      "before": 0.8833333333333333,
+      "after": 0.8833333333333333
     },
     {
       "crew_id": "IB",
       "date": "2018-06-11",
-      "before": 0.9437,
-      "after": 0.7729
+      "before": 0.94375,
+      "after": 0.94375
     },
     {
       "crew_id": "IB",
       "date": "2018-06-12",
-      "before": 0.8833,
-      "after": 0.8833
+      "before": 0.8833333333333333,
+      "after": 0.8833333333333333
     },
     {
       "crew_id": "IB",
       "date": "2018-06-13",
-      "before": 0.9604,
-      "after": 0.4437
+      "before": 0.9604166666666667,
+      "after": 0.0
     },
     {
       "crew_id": "IB",
@@ -3576,5 +2398,5 @@
     }
   ],
   "lowest_modeled_cost": false,
-  "stub": true
+  "stub": false
 }

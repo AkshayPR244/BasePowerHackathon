@@ -1,0 +1,37 @@
+{
+  "disruption": [
+    {
+      "kind": "delay_inventory",
+      "configuration_id": "B13",
+      "from_date": "2018-06-07",
+      "to_date": "2018-06-08",
+      "quantity": null
+    }
+  ],
+  "options": [
+    {
+      "kind": "no_action",
+      "action": "Keep original crews; wait for their next open slot",
+      "missed": 4,
+      "validated": true
+    },
+    {
+      "kind": "rebalance",
+      "action": "Rebalance existing crews",
+      "missed": 4,
+      "validated": true
+    },
+    {
+      "kind": "overtime",
+      "action": "Crew BA +2h overtime on 2018-06-08",
+      "missed": 2,
+      "validated": true
+    },
+    {
+      "kind": "temporary_capacity",
+      "action": "Add Crew TEMP-BA on 2018-06-08",
+      "missed": 0,
+      "validated": true
+    }
+  ]
+}

@@ -77,7 +77,8 @@ def eligibility(scenario: Scenario, mode: Mode, forced: set[str]) -> Eligibility
             j.job_id: [
                 (c.crew_id, c.date)
                 for c in scenario.crew_days
-                if j.required_skill in c.skills
+                if scenario.config.planning_start <= c.date <= scenario.config.planning_end
+                and j.required_skill in c.skills
                 and s.cluster_id in c.allowed_clusters
                 and c.date >= s.ready_date
             ]
@@ -95,9 +96,6 @@ def eligibility(scenario: Scenario, mode: Mode, forced: set[str]) -> Eligibility
             if not raw[last.job_id]:
                 elig.blocked[s.site_id] = [ReasonCode.NO_LEGAL_DATE]
                 continue
-        if total_stock.get(s.configuration_id, 0) == 0:
-            elig.blocked[s.site_id] = [ReasonCode.NO_INVENTORY]
-            continue
         opts = dict(raw)
         if mode == Mode.strict or s.site_id in forced:
             final = jobs[-1]

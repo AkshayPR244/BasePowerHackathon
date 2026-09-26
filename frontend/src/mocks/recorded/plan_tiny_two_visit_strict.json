@@ -52,7 +52,7 @@
       "date": "2018-06-05",
       "state": "scheduled",
       "days_late": 0,
-      "value_usd": 14.616258516365857,
+      "value_usd": 14.616258516365855,
       "job_id": "H1-B",
       "visit_type": "battery_day"
     },
@@ -72,7 +72,7 @@
       "date": "2018-06-05",
       "state": "scheduled",
       "days_late": 0,
-      "value_usd": 14.616258516365857,
+      "value_usd": 14.616258516365855,
       "job_id": "H2-B",
       "visit_type": "battery_day"
     },
@@ -181,5 +181,5 @@
       "kind": "assumed"
     }
   ],
-  "solve_ms": 0
+  "solve_ms": 2
 }

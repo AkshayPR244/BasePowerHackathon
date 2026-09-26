@@ -1,0 +1,42 @@
+[
+  {
+    "case_id": "storm-2018-06-14",
+    "name": "Thunderstorm, Thu 14 Jun 2018",
+    "date": "2018-06-14",
+    "summary": "This replay applies a modeled operational disruption to a real historical storm. Hobby observed thunder in 2 work hours and 25.9 mm of rain.",
+    "storm_event_id": "hou-2018-06-14",
+    "disruption": [
+      {
+        "kind": "remove_crew_day",
+        "crew_id": "IA",
+        "date": "2018-06-14"
+      },
+      {
+        "kind": "remove_crew_day",
+        "crew_id": "IB",
+        "date": "2018-06-14"
+      },
+      {
+        "kind": "remove_crew_day",
+        "crew_id": "BA",
+        "date": "2018-06-14"
+      }
+    ],
+    "modeled_rule": "Modeled rule: a thunderstorm report, or at least 7.6 mm of rain in one hour, during 08:00-17:00 stops electrical work, so every crew loses that day.",
+    "provenance": [
+      {
+        "input": "weather",
+        "kind": "observed",
+        "source": "https://mesonet.agron.iastate.edu/cgi-bin/request/asos.py (station HOU, Houston Hobby, routine METAR, 08:00-17:00 local, retrieved 2026-09-26)",
+        "manifest_id": null
+      },
+      {
+        "input": "lost crew-days",
+        "kind": "modeled",
+        "source": "Modeled rule: a thunderstorm report, or at least 7.6 mm of rain in one hour, during 08:00-17:00 stops electrical work, so every crew loses that day.",
+        "manifest_id": null
+      }
+    ],
+    "stub": true
+  }
+]

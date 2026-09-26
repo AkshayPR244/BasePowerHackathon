@@ -81,6 +81,12 @@ def apply_edits(base: Scenario, edits: Sequence[Edit]) -> Edited:
                     issues.append(_issue(InputIssueCode.UNKNOWN_REFERENCE, f"No site {e.site_id}."))
                     continue
                 forced.add(e.site_id)
+            case _:
+                # TODO(lane-r): reduce_crew_day, change_appointment, extend_crew_day,
+                # pin_visit, move_visit.
+                issues.append(
+                    _issue(InputIssueCode.BAD_VALUE, f"Edit {e.kind} is not implemented yet.")
+                )
 
     edited = base.model_copy(
         update={

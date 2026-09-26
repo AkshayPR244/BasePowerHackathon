@@ -36,21 +36,22 @@ Every error is an `ApiError` with `code` and `message`. The first cold start bui
 
 ## Start a lane
 
-Each teammate runs one lane in their own clone, with any coding agent or by hand. The rules live in `AGENTS.md`. Each lane's state and next step live in `lanes/<lane>/PROGRESS.md`.
+Three lanes build in parallel: R-engine (recovery engine), C-canvas (recovery canvas UI), and H-hardening (makes the flow demo-safe: errors, stub and validation honesty, e2e, freeze script). Weather replay is a parked nice-to-have (`lanes/_parked/weather`). Each teammate runs one lane in their own clone or worktree, with any coding agent or by hand. The rules live in `AGENTS.md` and `CLAUDE.md`. Each lane's state and next step live in `lanes/<lane>/PROGRESS.md`.
 
 ```bash
-git switch lane/a-data       # or lane/b-planning, lane/c-ui
+git switch lane/R-engine      # or lane/C-canvas, lane/H-hardening
+./lanes/R-engine/init.sh
 ```
 
 Then give your agent one line:
 
 ```text
-Read AGENTS.md, then lanes/A-data/PROGRESS.md, and continue from there.
+Read AGENTS.md and CLAUDE.md, then lanes/R-engine/PROGRESS.md, and continue from there.
 ```
 
 - Stop an agent: `touch AGENT_STOP`. Resume: `rm AGENT_STOP`.
 - Redirect an agent: write a note to `lanes/<lane>/STEER.md` or `STEER.md`.
-- Claude Code users get hooks, subagents, and an orchestrator mode on top. See [`CLAUDE.md`](CLAUDE.md).
+- The day 1 lanes (A, B, C) are archived in `lanes/_archive/`.
 
 ## Layout
 
@@ -66,7 +67,7 @@ backend/app/api         lane B: FastAPI app
 frontend/               lane C: React app, MSW mocks, Playwright
 data/demo/tiny          hand-built 6-job fixture with expected results
 contracts/              generated openapi.json and the change log
-lanes/                  briefs, feature lists, progress notes per lane
+lanes/                  today's lane briefs, feature lists, progress notes; lanes/_archive holds day 1
 docs/                   spec, decisions, contracts, design, demo script
 ```
 

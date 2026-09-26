@@ -1,0 +1,83 @@
+[
+  {
+    "event_id": "hou-2018-06-14",
+    "date": "2018-06-14",
+    "rainfall_mm": 25.9,
+    "max_wind_kmh": 42.6,
+    "thunder_hours": 2,
+    "source": "https://mesonet.agron.iastate.edu/cgi-bin/request/asos.py (station HOU, Houston Hobby, routine METAR, 08:00-17:00 local, retrieved 2026-09-26)",
+    "stub": true
+  },
+  {
+    "event_id": "hou-2018-06-20",
+    "date": "2018-06-20",
+    "rainfall_mm": 1.0,
+    "max_wind_kmh": 37.0,
+    "thunder_hours": 1,
+    "source": "https://mesonet.agron.iastate.edu/cgi-bin/request/asos.py (station HOU, Houston Hobby, routine METAR, 08:00-17:00 local, retrieved 2026-09-26)",
+    "stub": true
+  },
+  {
+    "event_id": "hou-2018-06-25",
+    "date": "2018-06-25",
+    "rainfall_mm": 4.3,
+    "max_wind_kmh": 48.2,
+    "thunder_hours": 1,
+    "source": "https://mesonet.agron.iastate.edu/cgi-bin/request/asos.py (station HOU, Houston Hobby, routine METAR, 08:00-17:00 local, retrieved 2026-09-26)",
+    "stub": true
+  },
+  {
+    "event_id": "hou-2018-06-27",
+    "date": "2018-06-27",
+    "rainfall_mm": 1.8,
+    "max_wind_kmh": 18.5,
+    "thunder_hours": 1,
+    "source": "https://mesonet.agron.iastate.edu/cgi-bin/request/asos.py (station HOU, Houston Hobby, routine METAR, 08:00-17:00 local, retrieved 2026-09-26)",
+    "stub": true
+  },
+  {
+    "event_id": "hou-2018-07-04",
+    "date": "2018-07-04",
+    "rainfall_mm": 145.0,
+    "max_wind_kmh": 35.2,
+    "thunder_hours": 1,
+    "source": "https://mesonet.agron.iastate.edu/cgi-bin/request/asos.py (station HOU, Houston Hobby, routine METAR, 08:00-17:00 local, retrieved 2026-09-26)",
+    "stub": true
+  },
+  {
+    "event_id": "hou-2018-07-05",
+    "date": "2018-07-05",
+    "rainfall_mm": 14.7,
+    "max_wind_kmh": 14.8,
+    "thunder_hours": 1,
+    "source": "https://mesonet.agron.iastate.edu/cgi-bin/request/asos.py (station HOU, Houston Hobby, routine METAR, 08:00-17:00 local, retrieved 2026-09-26)",
+    "stub": true
+  },
+  {
+    "event_id": "hou-2018-07-09",
+    "date": "2018-07-09",
+    "rainfall_mm": 14.5,
+    "max_wind_kmh": 20.4,
+    "thunder_hours": 1,
+    "source": "https://mesonet.agron.iastate.edu/cgi-bin/request/asos.py (station HOU, Houston Hobby, routine METAR, 08:00-17:00 local, retrieved 2026-09-26)",
+    "stub": true
+  },
+  {
+    "event_id": "hou-2018-07-12",
+    "date": "2018-07-12",
+    "rainfall_mm": 0.0,
+    "max_wind_kmh": 14.8,
+    "thunder_hours": 1,
+    "source": "https://mesonet.agron.iastate.edu/cgi-bin/request/asos.py (station HOU, Houston Hobby, routine METAR, 08:00-17:00 local, retrieved 2026-09-26)",
+    "stub": true
+  },
+  {
+    "event_id": "hou-2018-07-31",
+    "date": "2018-07-31",
+    "rainfall_mm": 1.0,
+    "max_wind_kmh": 63.0,
+    "thunder_hours": 2,
+    "source": "https://mesonet.agron.iastate.edu/cgi-bin/request/asos.py (station HOU, Houston Hobby, routine METAR, 08:00-17:00 local, retrieved 2026-09-26)",
+    "stub": true
+  }
+]

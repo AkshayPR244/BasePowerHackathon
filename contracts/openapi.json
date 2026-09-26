@@ -87,6 +87,58 @@
         "title": "ApiError",
         "type": "object"
       },
+      "ApproveRequest": {
+        "additionalProperties": false,
+        "properties": {
+          "option": {
+            "$ref": "#/components/schemas/RecoveryOption"
+          },
+          "revision": {
+            "minimum": 0.0,
+            "title": "Revision",
+            "type": "integer"
+          },
+          "scenario_id": {
+            "minLength": 1,
+            "title": "Scenario Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "scenario_id",
+          "revision",
+          "option"
+        ],
+        "title": "ApproveRequest",
+        "type": "object"
+      },
+      "ApproveResult": {
+        "additionalProperties": false,
+        "properties": {
+          "new_current_plan": {
+            "items": {
+              "$ref": "#/components/schemas/PlannedInstall"
+            },
+            "title": "New Current Plan",
+            "type": "array"
+          },
+          "stub": {
+            "default": false,
+            "title": "Stub",
+            "type": "boolean"
+          },
+          "summary": {
+            "title": "Summary",
+            "type": "string"
+          }
+        },
+        "required": [
+          "new_current_plan",
+          "summary"
+        ],
+        "title": "ApproveResult",
+        "type": "object"
+      },
       "Assignment": {
         "additionalProperties": false,
         "properties": {
@@ -231,6 +283,198 @@
         "title": "BatteryConfig",
         "type": "object"
       },
+      "CascadeKind": {
+        "enum": [
+          "disruption",
+          "direct",
+          "pushed",
+          "commitment"
+        ],
+        "title": "CascadeKind",
+        "type": "string"
+      },
+      "CascadeStep": {
+        "additionalProperties": false,
+        "description": "disruption -> directly affected visits -> battery days pushed -> commitments missed.",
+        "properties": {
+          "job_ids": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Job Ids",
+            "type": "array"
+          },
+          "kind": {
+            "$ref": "#/components/schemas/CascadeKind"
+          },
+          "label": {
+            "title": "Label",
+            "type": "string"
+          }
+        },
+        "required": [
+          "kind",
+          "label",
+          "job_ids"
+        ],
+        "title": "CascadeStep",
+        "type": "object"
+      },
+      "Case": {
+        "additionalProperties": false,
+        "properties": {
+          "case_id": {
+            "minLength": 1,
+            "title": "Case Id",
+            "type": "string"
+          },
+          "date": {
+            "format": "date",
+            "title": "Date",
+            "type": "string"
+          },
+          "disruption": {
+            "items": {
+              "discriminator": {
+                "mapping": {
+                  "add_crew_day": "#/components/schemas/AddCrewDay",
+                  "change_appointment": "#/components/schemas/ChangeAppointment",
+                  "change_ready_date": "#/components/schemas/ChangeReadyDate",
+                  "delay_inventory": "#/components/schemas/DelayInventory",
+                  "extend_crew_day": "#/components/schemas/ExtendCrewDay",
+                  "force_include": "#/components/schemas/ForceInclude",
+                  "move_visit": "#/components/schemas/MoveVisit",
+                  "pin_visit": "#/components/schemas/PinVisit",
+                  "reduce_crew_day": "#/components/schemas/ReduceCrewDay",
+                  "remove_crew_day": "#/components/schemas/RemoveCrewDay"
+                },
+                "propertyName": "kind"
+              },
+              "oneOf": [
+                {
+                  "$ref": "#/components/schemas/RemoveCrewDay"
+                },
+                {
+                  "$ref": "#/components/schemas/AddCrewDay"
+                },
+                {
+                  "$ref": "#/components/schemas/DelayInventory"
+                },
+                {
+                  "$ref": "#/components/schemas/ChangeReadyDate"
+                },
+                {
+                  "$ref": "#/components/schemas/ForceInclude"
+                },
+                {
+                  "$ref": "#/components/schemas/ReduceCrewDay"
+                },
+                {
+                  "$ref": "#/components/schemas/ChangeAppointment"
+                },
+                {
+                  "$ref": "#/components/schemas/ExtendCrewDay"
+                },
+                {
+                  "$ref": "#/components/schemas/PinVisit"
+                },
+                {
+                  "$ref": "#/components/schemas/MoveVisit"
+                }
+              ]
+            },
+            "title": "Disruption",
+            "type": "array"
+          },
+          "modeled_rule": {
+            "description": "The modeled weather-to-disruption rule applied",
+            "title": "Modeled Rule",
+            "type": "string"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "provenance": {
+            "items": {
+              "$ref": "#/components/schemas/ProvenanceNote"
+            },
+            "title": "Provenance",
+            "type": "array"
+          },
+          "storm_event_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Storm Event Id"
+          },
+          "stub": {
+            "default": false,
+            "title": "Stub",
+            "type": "boolean"
+          },
+          "summary": {
+            "title": "Summary",
+            "type": "string"
+          }
+        },
+        "required": [
+          "case_id",
+          "name",
+          "date",
+          "summary",
+          "disruption",
+          "modeled_rule",
+          "provenance"
+        ],
+        "title": "Case",
+        "type": "object"
+      },
+      "ChangeAppointment": {
+        "additionalProperties": false,
+        "description": "Disruption: the customer can only host this visit inside the new window.",
+        "properties": {
+          "available_from": {
+            "format": "date",
+            "title": "Available From",
+            "type": "string"
+          },
+          "available_to": {
+            "anyOf": [
+              {
+                "format": "date",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Available To"
+          },
+          "job_id": {
+            "minLength": 1,
+            "title": "Job Id",
+            "type": "string"
+          },
+          "kind": {
+            "const": "change_appointment",
+            "default": "change_appointment",
+            "title": "Kind",
+            "type": "string"
+          }
+        },
+        "required": [
+          "job_id",
+          "available_from"
+        ],
+        "title": "ChangeAppointment",
+        "type": "object"
+      },
       "ChangeKind": {
         "enum": [
           "added",
@@ -341,9 +585,14 @@
             "discriminator": {
               "mapping": {
                 "add_crew_day": "#/components/schemas/AddCrewDay",
+                "change_appointment": "#/components/schemas/ChangeAppointment",
                 "change_ready_date": "#/components/schemas/ChangeReadyDate",
                 "delay_inventory": "#/components/schemas/DelayInventory",
+                "extend_crew_day": "#/components/schemas/ExtendCrewDay",
                 "force_include": "#/components/schemas/ForceInclude",
+                "move_visit": "#/components/schemas/MoveVisit",
+                "pin_visit": "#/components/schemas/PinVisit",
+                "reduce_crew_day": "#/components/schemas/ReduceCrewDay",
                 "remove_crew_day": "#/components/schemas/RemoveCrewDay"
               },
               "propertyName": "kind"
@@ -363,6 +612,21 @@
               },
               {
                 "$ref": "#/components/schemas/ForceInclude"
+              },
+              {
+                "$ref": "#/components/schemas/ReduceCrewDay"
+              },
+              {
+                "$ref": "#/components/schemas/ChangeAppointment"
+              },
+              {
+                "$ref": "#/components/schemas/ExtendCrewDay"
+              },
+              {
+                "$ref": "#/components/schemas/PinVisit"
+              },
+              {
+                "$ref": "#/components/schemas/MoveVisit"
               }
             ],
             "title": "Intervention"
@@ -394,9 +658,14 @@
             "discriminator": {
               "mapping": {
                 "add_crew_day": "#/components/schemas/AddCrewDay",
+                "change_appointment": "#/components/schemas/ChangeAppointment",
                 "change_ready_date": "#/components/schemas/ChangeReadyDate",
                 "delay_inventory": "#/components/schemas/DelayInventory",
+                "extend_crew_day": "#/components/schemas/ExtendCrewDay",
                 "force_include": "#/components/schemas/ForceInclude",
+                "move_visit": "#/components/schemas/MoveVisit",
+                "pin_visit": "#/components/schemas/PinVisit",
+                "reduce_crew_day": "#/components/schemas/ReduceCrewDay",
                 "remove_crew_day": "#/components/schemas/RemoveCrewDay"
               },
               "propertyName": "kind"
@@ -416,6 +685,21 @@
               },
               {
                 "$ref": "#/components/schemas/ForceInclude"
+              },
+              {
+                "$ref": "#/components/schemas/ReduceCrewDay"
+              },
+              {
+                "$ref": "#/components/schemas/ChangeAppointment"
+              },
+              {
+                "$ref": "#/components/schemas/ExtendCrewDay"
+              },
+              {
+                "$ref": "#/components/schemas/PinVisit"
+              },
+              {
+                "$ref": "#/components/schemas/MoveVisit"
               }
             ],
             "title": "Intervention"
@@ -536,6 +820,41 @@
         "title": "CrewDayUsage",
         "type": "object"
       },
+      "CrewLoad": {
+        "additionalProperties": false,
+        "properties": {
+          "after": {
+            "maximum": 1.0,
+            "minimum": 0.0,
+            "title": "After",
+            "type": "number"
+          },
+          "before": {
+            "maximum": 1.0,
+            "minimum": 0.0,
+            "title": "Before",
+            "type": "number"
+          },
+          "crew_id": {
+            "minLength": 1,
+            "title": "Crew Id",
+            "type": "string"
+          },
+          "date": {
+            "format": "date",
+            "title": "Date",
+            "type": "string"
+          }
+        },
+        "required": [
+          "crew_id",
+          "date",
+          "before",
+          "after"
+        ],
+        "title": "CrewLoad",
+        "type": "object"
+      },
       "DataKind": {
         "enum": [
           "observed",
@@ -644,6 +963,292 @@
         "title": "DiffSummary",
         "type": "object"
       },
+      "EconomicAssumption": {
+        "additionalProperties": false,
+        "properties": {
+          "editable": {
+            "title": "Editable",
+            "type": "boolean"
+          },
+          "key": {
+            "title": "Key",
+            "type": "string"
+          },
+          "kind": {
+            "$ref": "#/components/schemas/DataKind"
+          },
+          "source": {
+            "title": "Source",
+            "type": "string"
+          },
+          "unit": {
+            "title": "Unit",
+            "type": "string"
+          },
+          "value": {
+            "title": "Value",
+            "type": "number"
+          }
+        },
+        "required": [
+          "key",
+          "value",
+          "unit",
+          "kind",
+          "source",
+          "editable"
+        ],
+        "title": "EconomicAssumption",
+        "type": "object"
+      },
+      "EconomicKind": {
+        "enum": [
+          "labor",
+          "value",
+          "penalty",
+          "other"
+        ],
+        "title": "EconomicKind",
+        "type": "string"
+      },
+      "EconomicLine": {
+        "additionalProperties": false,
+        "properties": {
+          "amount_usd": {
+            "description": "Positive is a cost, negative is a saving",
+            "title": "Amount Usd",
+            "type": "number"
+          },
+          "basis": {
+            "description": "How the amount was computed, with its sources",
+            "title": "Basis",
+            "type": "string"
+          },
+          "kind": {
+            "$ref": "#/components/schemas/EconomicKind"
+          },
+          "label": {
+            "title": "Label",
+            "type": "string"
+          }
+        },
+        "required": [
+          "label",
+          "amount_usd",
+          "kind",
+          "basis"
+        ],
+        "title": "EconomicLine",
+        "type": "object"
+      },
+      "EvaluateRequest": {
+        "additionalProperties": false,
+        "description": "Any manual change (knock out, stretch, drag, pin). Returns an option of kind custom.",
+        "properties": {
+          "current_plan": {
+            "anyOf": [
+              {
+                "items": {
+                  "$ref": "#/components/schemas/PlannedInstall"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Current Plan"
+          },
+          "disruption": {
+            "items": {
+              "discriminator": {
+                "mapping": {
+                  "add_crew_day": "#/components/schemas/AddCrewDay",
+                  "change_appointment": "#/components/schemas/ChangeAppointment",
+                  "change_ready_date": "#/components/schemas/ChangeReadyDate",
+                  "delay_inventory": "#/components/schemas/DelayInventory",
+                  "extend_crew_day": "#/components/schemas/ExtendCrewDay",
+                  "force_include": "#/components/schemas/ForceInclude",
+                  "move_visit": "#/components/schemas/MoveVisit",
+                  "pin_visit": "#/components/schemas/PinVisit",
+                  "reduce_crew_day": "#/components/schemas/ReduceCrewDay",
+                  "remove_crew_day": "#/components/schemas/RemoveCrewDay"
+                },
+                "propertyName": "kind"
+              },
+              "oneOf": [
+                {
+                  "$ref": "#/components/schemas/RemoveCrewDay"
+                },
+                {
+                  "$ref": "#/components/schemas/AddCrewDay"
+                },
+                {
+                  "$ref": "#/components/schemas/DelayInventory"
+                },
+                {
+                  "$ref": "#/components/schemas/ChangeReadyDate"
+                },
+                {
+                  "$ref": "#/components/schemas/ForceInclude"
+                },
+                {
+                  "$ref": "#/components/schemas/ReduceCrewDay"
+                },
+                {
+                  "$ref": "#/components/schemas/ChangeAppointment"
+                },
+                {
+                  "$ref": "#/components/schemas/ExtendCrewDay"
+                },
+                {
+                  "$ref": "#/components/schemas/PinVisit"
+                },
+                {
+                  "$ref": "#/components/schemas/MoveVisit"
+                }
+              ]
+            },
+            "title": "Disruption",
+            "type": "array"
+          },
+          "interactive": {
+            "default": true,
+            "title": "Interactive",
+            "type": "boolean"
+          },
+          "interventions": {
+            "items": {
+              "discriminator": {
+                "mapping": {
+                  "add_crew_day": "#/components/schemas/AddCrewDay",
+                  "change_appointment": "#/components/schemas/ChangeAppointment",
+                  "change_ready_date": "#/components/schemas/ChangeReadyDate",
+                  "delay_inventory": "#/components/schemas/DelayInventory",
+                  "extend_crew_day": "#/components/schemas/ExtendCrewDay",
+                  "force_include": "#/components/schemas/ForceInclude",
+                  "move_visit": "#/components/schemas/MoveVisit",
+                  "pin_visit": "#/components/schemas/PinVisit",
+                  "reduce_crew_day": "#/components/schemas/ReduceCrewDay",
+                  "remove_crew_day": "#/components/schemas/RemoveCrewDay"
+                },
+                "propertyName": "kind"
+              },
+              "oneOf": [
+                {
+                  "$ref": "#/components/schemas/RemoveCrewDay"
+                },
+                {
+                  "$ref": "#/components/schemas/AddCrewDay"
+                },
+                {
+                  "$ref": "#/components/schemas/DelayInventory"
+                },
+                {
+                  "$ref": "#/components/schemas/ChangeReadyDate"
+                },
+                {
+                  "$ref": "#/components/schemas/ForceInclude"
+                },
+                {
+                  "$ref": "#/components/schemas/ReduceCrewDay"
+                },
+                {
+                  "$ref": "#/components/schemas/ChangeAppointment"
+                },
+                {
+                  "$ref": "#/components/schemas/ExtendCrewDay"
+                },
+                {
+                  "$ref": "#/components/schemas/PinVisit"
+                },
+                {
+                  "$ref": "#/components/schemas/MoveVisit"
+                }
+              ]
+            },
+            "title": "Interventions",
+            "type": "array"
+          },
+          "revision": {
+            "minimum": 0.0,
+            "title": "Revision",
+            "type": "integer"
+          },
+          "scenario_id": {
+            "minLength": 1,
+            "title": "Scenario Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "scenario_id",
+          "revision",
+          "disruption",
+          "interventions"
+        ],
+        "title": "EvaluateRequest",
+        "type": "object"
+      },
+      "Explanation": {
+        "additionalProperties": false,
+        "properties": {
+          "constraint": {
+            "title": "Constraint",
+            "type": "string"
+          },
+          "job_id": {
+            "title": "Job Id",
+            "type": "string"
+          },
+          "text": {
+            "title": "Text",
+            "type": "string"
+          }
+        },
+        "required": [
+          "job_id",
+          "text",
+          "constraint"
+        ],
+        "title": "Explanation",
+        "type": "object"
+      },
+      "ExtendCrewDay": {
+        "additionalProperties": false,
+        "description": "Intervention: overtime. The crew-day gets extra minutes.",
+        "properties": {
+          "crew_id": {
+            "minLength": 1,
+            "title": "Crew Id",
+            "type": "string"
+          },
+          "date": {
+            "format": "date",
+            "title": "Date",
+            "type": "string"
+          },
+          "extra_min": {
+            "description": "Integer minutes",
+            "minimum": 0.0,
+            "title": "Extra Min",
+            "type": "integer"
+          },
+          "kind": {
+            "const": "extend_crew_day",
+            "default": "extend_crew_day",
+            "title": "Kind",
+            "type": "string"
+          }
+        },
+        "required": [
+          "crew_id",
+          "date",
+          "extra_min"
+        ],
+        "title": "ExtendCrewDay",
+        "type": "object"
+      },
       "ForceInclude": {
         "additionalProperties": false,
         "properties": {
@@ -663,6 +1268,48 @@
           "site_id"
         ],
         "title": "ForceInclude",
+        "type": "object"
+      },
+      "ImpactAnalysis": {
+        "additionalProperties": false,
+        "properties": {
+          "affected_job_ids": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Affected Job Ids",
+            "type": "array"
+          },
+          "cascade": {
+            "items": {
+              "$ref": "#/components/schemas/CascadeStep"
+            },
+            "title": "Cascade",
+            "type": "array"
+          },
+          "deadlines_at_risk": {
+            "title": "Deadlines At Risk",
+            "type": "integer"
+          },
+          "headline": {
+            "title": "Headline",
+            "type": "string"
+          },
+          "lost_capacity_min": {
+            "description": "Integer minutes",
+            "minimum": 0.0,
+            "title": "Lost Capacity Min",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "headline",
+          "affected_job_ids",
+          "lost_capacity_min",
+          "cascade",
+          "deadlines_at_risk"
+        ],
+        "title": "ImpactAnalysis",
         "type": "object"
       },
       "InputIssue": {
@@ -766,6 +1413,40 @@
         "title": "Mode",
         "type": "string"
       },
+      "MoveVisit": {
+        "additionalProperties": false,
+        "description": "Intervention: put this visit on a chosen crew-day and keep it there.",
+        "properties": {
+          "crew_id": {
+            "minLength": 1,
+            "title": "Crew Id",
+            "type": "string"
+          },
+          "date": {
+            "format": "date",
+            "title": "Date",
+            "type": "string"
+          },
+          "job_id": {
+            "minLength": 1,
+            "title": "Job Id",
+            "type": "string"
+          },
+          "kind": {
+            "const": "move_visit",
+            "default": "move_visit",
+            "title": "Kind",
+            "type": "string"
+          }
+        },
+        "required": [
+          "job_id",
+          "crew_id",
+          "date"
+        ],
+        "title": "MoveVisit",
+        "type": "object"
+      },
       "ObjectiveComponents": {
         "additionalProperties": false,
         "properties": {
@@ -865,6 +1546,17 @@
         "title": "ObjectivePolicy",
         "type": "string"
       },
+      "OptionKind": {
+        "enum": [
+          "no_action",
+          "rebalance",
+          "overtime",
+          "temporary_capacity",
+          "custom"
+        ],
+        "title": "OptionKind",
+        "type": "string"
+      },
       "Parameter": {
         "additionalProperties": false,
         "description": "One operational number the model uses, with where it came from.",
@@ -917,6 +1609,28 @@
           "derivation"
         ],
         "title": "Parameter",
+        "type": "object"
+      },
+      "PinVisit": {
+        "additionalProperties": false,
+        "description": "Intervention: keep this visit on its current crew-day.",
+        "properties": {
+          "job_id": {
+            "minLength": 1,
+            "title": "Job Id",
+            "type": "string"
+          },
+          "kind": {
+            "const": "pin_visit",
+            "default": "pin_visit",
+            "title": "Kind",
+            "type": "string"
+          }
+        },
+        "required": [
+          "job_id"
+        ],
+        "title": "PinVisit",
         "type": "object"
       },
       "PlanChange": {
@@ -1045,9 +1759,14 @@
               "discriminator": {
                 "mapping": {
                   "add_crew_day": "#/components/schemas/AddCrewDay",
+                  "change_appointment": "#/components/schemas/ChangeAppointment",
                   "change_ready_date": "#/components/schemas/ChangeReadyDate",
                   "delay_inventory": "#/components/schemas/DelayInventory",
+                  "extend_crew_day": "#/components/schemas/ExtendCrewDay",
                   "force_include": "#/components/schemas/ForceInclude",
+                  "move_visit": "#/components/schemas/MoveVisit",
+                  "pin_visit": "#/components/schemas/PinVisit",
+                  "reduce_crew_day": "#/components/schemas/ReduceCrewDay",
                   "remove_crew_day": "#/components/schemas/RemoveCrewDay"
                 },
                 "propertyName": "kind"
@@ -1067,6 +1786,21 @@
                 },
                 {
                   "$ref": "#/components/schemas/ForceInclude"
+                },
+                {
+                  "$ref": "#/components/schemas/ReduceCrewDay"
+                },
+                {
+                  "$ref": "#/components/schemas/ChangeAppointment"
+                },
+                {
+                  "$ref": "#/components/schemas/ExtendCrewDay"
+                },
+                {
+                  "$ref": "#/components/schemas/PinVisit"
+                },
+                {
+                  "$ref": "#/components/schemas/MoveVisit"
                 }
               ]
             },
@@ -1150,9 +1884,14 @@
               "discriminator": {
                 "mapping": {
                   "add_crew_day": "#/components/schemas/AddCrewDay",
+                  "change_appointment": "#/components/schemas/ChangeAppointment",
                   "change_ready_date": "#/components/schemas/ChangeReadyDate",
                   "delay_inventory": "#/components/schemas/DelayInventory",
+                  "extend_crew_day": "#/components/schemas/ExtendCrewDay",
                   "force_include": "#/components/schemas/ForceInclude",
+                  "move_visit": "#/components/schemas/MoveVisit",
+                  "pin_visit": "#/components/schemas/PinVisit",
+                  "reduce_crew_day": "#/components/schemas/ReduceCrewDay",
                   "remove_crew_day": "#/components/schemas/RemoveCrewDay"
                 },
                 "propertyName": "kind"
@@ -1172,6 +1911,21 @@
                 },
                 {
                   "$ref": "#/components/schemas/ForceInclude"
+                },
+                {
+                  "$ref": "#/components/schemas/ReduceCrewDay"
+                },
+                {
+                  "$ref": "#/components/schemas/ChangeAppointment"
+                },
+                {
+                  "$ref": "#/components/schemas/ExtendCrewDay"
+                },
+                {
+                  "$ref": "#/components/schemas/PinVisit"
+                },
+                {
+                  "$ref": "#/components/schemas/MoveVisit"
                 }
               ]
             },
@@ -1378,6 +2132,437 @@
         ],
         "title": "ReasonCode",
         "type": "string"
+      },
+      "RecoveryCounts": {
+        "additionalProperties": false,
+        "properties": {
+          "customers_to_reschedule": {
+            "title": "Customers To Reschedule",
+            "type": "integer"
+          },
+          "deadlines_missed": {
+            "title": "Deadlines Missed",
+            "type": "integer"
+          },
+          "deadlines_recovered": {
+            "description": "Deadlines this option saves vs no action",
+            "title": "Deadlines Recovered",
+            "type": "integer"
+          },
+          "delay_days": {
+            "description": "Whole days",
+            "minimum": 0.0,
+            "title": "Delay Days",
+            "type": "integer"
+          },
+          "unscheduled": {
+            "title": "Unscheduled",
+            "type": "integer"
+          },
+          "visits_moved": {
+            "title": "Visits Moved",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "deadlines_missed",
+          "deadlines_recovered",
+          "delay_days",
+          "visits_moved",
+          "customers_to_reschedule",
+          "unscheduled"
+        ],
+        "title": "RecoveryCounts",
+        "type": "object"
+      },
+      "RecoveryEconomics": {
+        "additionalProperties": false,
+        "properties": {
+          "advantage_vs_no_action_usd": {
+            "description": "No-action net impact minus this one",
+            "title": "Advantage Vs No Action Usd",
+            "type": "number"
+          },
+          "cost_per_deadline_recovered_usd": {
+            "anyOf": [
+              {
+                "description": "Value, USD",
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Cost Per Deadline Recovered Usd"
+          },
+          "lines": {
+            "items": {
+              "$ref": "#/components/schemas/EconomicLine"
+            },
+            "title": "Lines",
+            "type": "array"
+          },
+          "net_impact_usd": {
+            "description": "Modeled cost of this option vs the original plan",
+            "title": "Net Impact Usd",
+            "type": "number"
+          }
+        },
+        "required": [
+          "net_impact_usd",
+          "advantage_vs_no_action_usd",
+          "lines"
+        ],
+        "title": "RecoveryEconomics",
+        "type": "object"
+      },
+      "RecoveryOption": {
+        "additionalProperties": false,
+        "properties": {
+          "action_label": {
+            "description": "A business action, e.g. \"Crew IB +2h overtime\"",
+            "title": "Action Label",
+            "type": "string"
+          },
+          "counts": {
+            "$ref": "#/components/schemas/RecoveryCounts"
+          },
+          "crew_load": {
+            "items": {
+              "$ref": "#/components/schemas/CrewLoad"
+            },
+            "title": "Crew Load",
+            "type": "array"
+          },
+          "diff_vs_no_action": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/PlanDiff"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "diff_vs_original": {
+            "$ref": "#/components/schemas/PlanDiff"
+          },
+          "economics": {
+            "$ref": "#/components/schemas/RecoveryEconomics"
+          },
+          "explanations": {
+            "items": {
+              "$ref": "#/components/schemas/Explanation"
+            },
+            "title": "Explanations",
+            "type": "array"
+          },
+          "intervention_edits": {
+            "items": {
+              "discriminator": {
+                "mapping": {
+                  "add_crew_day": "#/components/schemas/AddCrewDay",
+                  "change_appointment": "#/components/schemas/ChangeAppointment",
+                  "change_ready_date": "#/components/schemas/ChangeReadyDate",
+                  "delay_inventory": "#/components/schemas/DelayInventory",
+                  "extend_crew_day": "#/components/schemas/ExtendCrewDay",
+                  "force_include": "#/components/schemas/ForceInclude",
+                  "move_visit": "#/components/schemas/MoveVisit",
+                  "pin_visit": "#/components/schemas/PinVisit",
+                  "reduce_crew_day": "#/components/schemas/ReduceCrewDay",
+                  "remove_crew_day": "#/components/schemas/RemoveCrewDay"
+                },
+                "propertyName": "kind"
+              },
+              "oneOf": [
+                {
+                  "$ref": "#/components/schemas/RemoveCrewDay"
+                },
+                {
+                  "$ref": "#/components/schemas/AddCrewDay"
+                },
+                {
+                  "$ref": "#/components/schemas/DelayInventory"
+                },
+                {
+                  "$ref": "#/components/schemas/ChangeReadyDate"
+                },
+                {
+                  "$ref": "#/components/schemas/ForceInclude"
+                },
+                {
+                  "$ref": "#/components/schemas/ReduceCrewDay"
+                },
+                {
+                  "$ref": "#/components/schemas/ChangeAppointment"
+                },
+                {
+                  "$ref": "#/components/schemas/ExtendCrewDay"
+                },
+                {
+                  "$ref": "#/components/schemas/PinVisit"
+                },
+                {
+                  "$ref": "#/components/schemas/MoveVisit"
+                }
+              ]
+            },
+            "title": "Intervention Edits",
+            "type": "array"
+          },
+          "kind": {
+            "$ref": "#/components/schemas/OptionKind"
+          },
+          "lowest_modeled_cost": {
+            "default": false,
+            "title": "Lowest Modeled Cost",
+            "type": "boolean"
+          },
+          "option_id": {
+            "minLength": 1,
+            "title": "Option Id",
+            "type": "string"
+          },
+          "overtime_min": {
+            "default": 0,
+            "description": "Integer minutes",
+            "minimum": 0.0,
+            "title": "Overtime Min",
+            "type": "integer"
+          },
+          "proven_optimal": {
+            "title": "Proven Optimal",
+            "type": "boolean"
+          },
+          "result": {
+            "$ref": "#/components/schemas/PlanResult"
+          },
+          "status": {
+            "$ref": "#/components/schemas/PlanStatus"
+          },
+          "stub": {
+            "default": false,
+            "title": "Stub",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "option_id",
+          "kind",
+          "action_label",
+          "intervention_edits",
+          "status",
+          "proven_optimal",
+          "result",
+          "diff_vs_original",
+          "diff_vs_no_action",
+          "counts",
+          "economics",
+          "explanations",
+          "crew_load"
+        ],
+        "title": "RecoveryOption",
+        "type": "object"
+      },
+      "RecoveryOptionsRequest": {
+        "additionalProperties": false,
+        "properties": {
+          "current_plan": {
+            "anyOf": [
+              {
+                "items": {
+                  "$ref": "#/components/schemas/PlannedInstall"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "None uses the scenario's current plan",
+            "title": "Current Plan"
+          },
+          "disruption": {
+            "items": {
+              "discriminator": {
+                "mapping": {
+                  "add_crew_day": "#/components/schemas/AddCrewDay",
+                  "change_appointment": "#/components/schemas/ChangeAppointment",
+                  "change_ready_date": "#/components/schemas/ChangeReadyDate",
+                  "delay_inventory": "#/components/schemas/DelayInventory",
+                  "extend_crew_day": "#/components/schemas/ExtendCrewDay",
+                  "force_include": "#/components/schemas/ForceInclude",
+                  "move_visit": "#/components/schemas/MoveVisit",
+                  "pin_visit": "#/components/schemas/PinVisit",
+                  "reduce_crew_day": "#/components/schemas/ReduceCrewDay",
+                  "remove_crew_day": "#/components/schemas/RemoveCrewDay"
+                },
+                "propertyName": "kind"
+              },
+              "oneOf": [
+                {
+                  "$ref": "#/components/schemas/RemoveCrewDay"
+                },
+                {
+                  "$ref": "#/components/schemas/AddCrewDay"
+                },
+                {
+                  "$ref": "#/components/schemas/DelayInventory"
+                },
+                {
+                  "$ref": "#/components/schemas/ChangeReadyDate"
+                },
+                {
+                  "$ref": "#/components/schemas/ForceInclude"
+                },
+                {
+                  "$ref": "#/components/schemas/ReduceCrewDay"
+                },
+                {
+                  "$ref": "#/components/schemas/ChangeAppointment"
+                },
+                {
+                  "$ref": "#/components/schemas/ExtendCrewDay"
+                },
+                {
+                  "$ref": "#/components/schemas/PinVisit"
+                },
+                {
+                  "$ref": "#/components/schemas/MoveVisit"
+                }
+              ]
+            },
+            "title": "Disruption",
+            "type": "array"
+          },
+          "economics_overrides": {
+            "anyOf": [
+              {
+                "additionalProperties": {
+                  "type": "number"
+                },
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Economics Overrides"
+          },
+          "interactive": {
+            "default": false,
+            "title": "Interactive",
+            "type": "boolean"
+          },
+          "revision": {
+            "minimum": 0.0,
+            "title": "Revision",
+            "type": "integer"
+          },
+          "scenario_id": {
+            "minLength": 1,
+            "title": "Scenario Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "scenario_id",
+          "revision",
+          "disruption"
+        ],
+        "title": "RecoveryOptionsRequest",
+        "type": "object"
+      },
+      "RecoveryOptionsResult": {
+        "additionalProperties": false,
+        "properties": {
+          "assumptions": {
+            "items": {
+              "$ref": "#/components/schemas/Assumption"
+            },
+            "title": "Assumptions",
+            "type": "array"
+          },
+          "economic_assumptions": {
+            "items": {
+              "$ref": "#/components/schemas/EconomicAssumption"
+            },
+            "title": "Economic Assumptions",
+            "type": "array"
+          },
+          "impact": {
+            "$ref": "#/components/schemas/ImpactAnalysis"
+          },
+          "no_action": {
+            "$ref": "#/components/schemas/RecoveryOption"
+          },
+          "options": {
+            "items": {
+              "$ref": "#/components/schemas/RecoveryOption"
+            },
+            "title": "Options",
+            "type": "array"
+          },
+          "revision": {
+            "title": "Revision",
+            "type": "integer"
+          },
+          "scenario_hash": {
+            "title": "Scenario Hash",
+            "type": "string"
+          },
+          "stub": {
+            "default": false,
+            "title": "Stub",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "revision",
+          "scenario_hash",
+          "impact",
+          "no_action",
+          "options",
+          "economic_assumptions",
+          "assumptions"
+        ],
+        "title": "RecoveryOptionsResult",
+        "type": "object"
+      },
+      "ReduceCrewDay": {
+        "additionalProperties": false,
+        "description": "Disruption: reduced capacity. The crew-day keeps only available_min.",
+        "properties": {
+          "available_min": {
+            "description": "Integer minutes",
+            "minimum": 0.0,
+            "title": "Available Min",
+            "type": "integer"
+          },
+          "crew_id": {
+            "minLength": 1,
+            "title": "Crew Id",
+            "type": "string"
+          },
+          "date": {
+            "format": "date",
+            "title": "Date",
+            "type": "string"
+          },
+          "kind": {
+            "const": "reduce_crew_day",
+            "default": "reduce_crew_day",
+            "title": "Kind",
+            "type": "string"
+          }
+        },
+        "required": [
+          "crew_id",
+          "date",
+          "available_min"
+        ],
+        "title": "ReduceCrewDay",
+        "type": "object"
       },
       "RemoveCrewDay": {
         "additionalProperties": false,
@@ -1663,6 +2848,143 @@
         "title": "ScenarioSummary",
         "type": "object"
       },
+      "SeasonReplay": {
+        "additionalProperties": false,
+        "properties": {
+          "events": {
+            "items": {
+              "$ref": "#/components/schemas/SeasonReplayEvent"
+            },
+            "title": "Events",
+            "type": "array"
+          },
+          "replay_id": {
+            "minLength": 1,
+            "title": "Replay Id",
+            "type": "string"
+          },
+          "stress_tests": {
+            "anyOf": [
+              {
+                "items": {
+                  "$ref": "#/components/schemas/StressTest"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Stress Tests"
+          },
+          "stub": {
+            "default": false,
+            "title": "Stub",
+            "type": "boolean"
+          },
+          "totals": {
+            "$ref": "#/components/schemas/SeasonTotals"
+          }
+        },
+        "required": [
+          "replay_id",
+          "events",
+          "totals"
+        ],
+        "title": "SeasonReplay",
+        "type": "object"
+      },
+      "SeasonReplayEvent": {
+        "additionalProperties": false,
+        "properties": {
+          "case_id": {
+            "minLength": 1,
+            "title": "Case Id",
+            "type": "string"
+          },
+          "chosen_option_kind": {
+            "$ref": "#/components/schemas/OptionKind"
+          },
+          "no_action": {
+            "$ref": "#/components/schemas/RecoveryCounts"
+          },
+          "no_action_net_impact_usd": {
+            "description": "Value, USD",
+            "title": "No Action Net Impact Usd",
+            "type": "number"
+          },
+          "recovery": {
+            "$ref": "#/components/schemas/RecoveryCounts"
+          },
+          "recovery_net_impact_usd": {
+            "description": "Value, USD",
+            "title": "Recovery Net Impact Usd",
+            "type": "number"
+          },
+          "solve_ms": {
+            "minimum": 0.0,
+            "title": "Solve Ms",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "case_id",
+          "no_action",
+          "no_action_net_impact_usd",
+          "recovery",
+          "recovery_net_impact_usd",
+          "chosen_option_kind",
+          "solve_ms"
+        ],
+        "title": "SeasonReplayEvent",
+        "type": "object"
+      },
+      "SeasonTotals": {
+        "additionalProperties": false,
+        "properties": {
+          "deadline_misses_no_action": {
+            "title": "Deadline Misses No Action",
+            "type": "integer"
+          },
+          "deadline_misses_recovery": {
+            "title": "Deadline Misses Recovery",
+            "type": "integer"
+          },
+          "deadlines_recovered": {
+            "title": "Deadlines Recovered",
+            "type": "integer"
+          },
+          "events_replayed": {
+            "title": "Events Replayed",
+            "type": "integer"
+          },
+          "median_solve_ms": {
+            "title": "Median Solve Ms",
+            "type": "integer"
+          },
+          "modeled_cost_no_action_usd": {
+            "description": "Value, USD",
+            "title": "Modeled Cost No Action Usd",
+            "type": "number"
+          },
+          "modeled_cost_recovery_usd": {
+            "description": "Value, USD",
+            "title": "Modeled Cost Recovery Usd",
+            "type": "number"
+          }
+        },
+        "required": [
+          "events_replayed",
+          "deadline_misses_no_action",
+          "deadline_misses_recovery",
+          "deadlines_recovered",
+          "modeled_cost_no_action_usd",
+          "modeled_cost_recovery_usd",
+          "median_solve_ms"
+        ],
+        "title": "SeasonTotals",
+        "type": "object"
+      },
       "Site": {
         "additionalProperties": false,
         "properties": {
@@ -1845,6 +3167,81 @@
         ],
         "title": "StageStatus",
         "type": "string"
+      },
+      "StormEvent": {
+        "additionalProperties": false,
+        "properties": {
+          "date": {
+            "format": "date",
+            "title": "Date",
+            "type": "string"
+          },
+          "event_id": {
+            "minLength": 1,
+            "title": "Event Id",
+            "type": "string"
+          },
+          "max_wind_kmh": {
+            "minimum": 0.0,
+            "title": "Max Wind Kmh",
+            "type": "number"
+          },
+          "rainfall_mm": {
+            "description": "Work hours, 08:00-17:00 local",
+            "minimum": 0.0,
+            "title": "Rainfall Mm",
+            "type": "number"
+          },
+          "source": {
+            "title": "Source",
+            "type": "string"
+          },
+          "stub": {
+            "default": false,
+            "title": "Stub",
+            "type": "boolean"
+          },
+          "thunder_hours": {
+            "minimum": 0.0,
+            "title": "Thunder Hours",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "event_id",
+          "date",
+          "rainfall_mm",
+          "max_wind_kmh",
+          "thunder_hours",
+          "source"
+        ],
+        "title": "StormEvent",
+        "type": "object"
+      },
+      "StressTest": {
+        "additionalProperties": false,
+        "properties": {
+          "advantage_usd": {
+            "description": "Value, USD",
+            "title": "Advantage Usd",
+            "type": "number"
+          },
+          "deadlines_recovered": {
+            "title": "Deadlines Recovered",
+            "type": "integer"
+          },
+          "variant": {
+            "title": "Variant",
+            "type": "string"
+          }
+        },
+        "required": [
+          "variant",
+          "deadlines_recovered",
+          "advantage_usd"
+        ],
+        "title": "StressTest",
+        "type": "object"
       },
       "UnscheduledJob": {
         "additionalProperties": false,
@@ -2104,6 +3501,28 @@
   },
   "openapi": "3.1.0",
   "paths": {
+    "/api/cases": {
+      "get": {
+        "operationId": "list_cases_api_cases_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/Case"
+                  },
+                  "title": "Response List Cases Api Cases Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "List Cases"
+      }
+    },
     "/api/health": {
       "get": {
         "description": "`values` is not_started, warming, ready, or failed.",
@@ -2331,6 +3750,210 @@
         "summary": "Run Counterfactual"
       }
     },
+    "/api/recovery/approve": {
+      "post": {
+        "operationId": "recovery_approve_api_recovery_approve_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ApproveRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApproveResult"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            },
+            "description": "The request is valid JSON but makes no sense"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            },
+            "description": "Unknown scenario or path"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            },
+            "description": "The request or the scenario files are invalid"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            },
+            "description": "The planner produced a plan that failed validation"
+          }
+        },
+        "summary": "Recovery Approve"
+      }
+    },
+    "/api/recovery/evaluate": {
+      "post": {
+        "operationId": "recovery_evaluate_api_recovery_evaluate_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EvaluateRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RecoveryOption"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            },
+            "description": "The request is valid JSON but makes no sense"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            },
+            "description": "Unknown scenario or path"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            },
+            "description": "The request or the scenario files are invalid"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            },
+            "description": "The planner produced a plan that failed validation"
+          }
+        },
+        "summary": "Recovery Evaluate"
+      }
+    },
+    "/api/recovery/options": {
+      "post": {
+        "operationId": "recovery_options_api_recovery_options_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RecoveryOptionsRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RecoveryOptionsResult"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            },
+            "description": "The request is valid JSON but makes no sense"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            },
+            "description": "Unknown scenario or path"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            },
+            "description": "The request or the scenario files are invalid"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            },
+            "description": "The planner produced a plan that failed validation"
+          }
+        },
+        "summary": "Recovery Options"
+      }
+    },
     "/api/scenarios": {
       "get": {
         "operationId": "list_scenarios_api_scenarios_get",
@@ -2420,6 +4043,46 @@
           }
         },
         "summary": "Get Scenario"
+      }
+    },
+    "/api/season-replay": {
+      "get": {
+        "operationId": "season_replay_api_season_replay_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SeasonReplay"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Season Replay"
+      }
+    },
+    "/api/storms": {
+      "get": {
+        "operationId": "list_storms_api_storms_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/StormEvent"
+                  },
+                  "title": "Response List Storms Api Storms Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "List Storms"
       }
     }
   }

@@ -99,3 +99,25 @@ class ChangeKind(StrEnum):
     removed = "removed"
     moved = "moved"
     state_changed = "state_changed"
+
+
+class OptionKind(StrEnum):
+    no_action = "no_action"
+    rebalance = "rebalance"
+    overtime = "overtime"
+    temporary_capacity = "temporary_capacity"
+    custom = "custom"
+
+
+class CascadeKind(StrEnum):
+    disruption = "disruption"
+    direct = "direct"
+    pushed = "pushed"
+    commitment = "commitment"
+
+
+class EconomicKind(StrEnum):
+    labor = "labor"
+    value = "value"
+    penalty = "penalty"
+    other = "other"

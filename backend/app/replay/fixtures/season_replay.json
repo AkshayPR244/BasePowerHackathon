@@ -1,0 +1,39 @@
+{
+  "replay_id": "season-2018-jun-jul",
+  "events": [
+    {
+      "case_id": "storm-2018-06-14",
+      "no_action": {
+        "deadlines_missed": 13,
+        "deadlines_recovered": 0,
+        "delay_days": 1,
+        "visits_moved": 72,
+        "customers_to_reschedule": 40,
+        "unscheduled": 12
+      },
+      "no_action_net_impact_usd": 1086.62,
+      "recovery": {
+        "deadlines_missed": 4,
+        "deadlines_recovered": 9,
+        "delay_days": 0,
+        "visits_moved": 25,
+        "customers_to_reschedule": 18,
+        "unscheduled": 4
+      },
+      "recovery_net_impact_usd": 353.83,
+      "chosen_option_kind": "rebalance",
+      "solve_ms": 3750
+    }
+  ],
+  "totals": {
+    "events_replayed": 1,
+    "deadline_misses_no_action": 13,
+    "deadline_misses_recovery": 4,
+    "deadlines_recovered": 9,
+    "modeled_cost_no_action_usd": 1086.62,
+    "modeled_cost_recovery_usd": 353.83,
+    "median_solve_ms": 3750
+  },
+  "stress_tests": null,
+  "stub": true
+}

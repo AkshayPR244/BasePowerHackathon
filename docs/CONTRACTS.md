@@ -105,6 +105,49 @@ The battery day comes at least `config.min_gap_business_days` business days afte
 
 Scenarios with two-visit homes: `standard`, `tiny_two_visit`. `tiny` stays one-visit.
 
+### Recovery and weather seams (contract 1.2, additive, stubbed)
+
+The recovery flow: current plan, then a known disruption, then impact analysis, then recovery options, each solved and validated, then comparison, review, and approval.
+
+**Edits.** All share the discriminated `Edit` union, so `/api/plans` and the recovery endpoints accept the same list.
+
+| Role | kind | Fields | State |
+|---|---|---|---|
+| Disruption: crew unavailable | `remove_crew_day` | crew_id, date | works |
+| Disruption: reduced capacity | `reduce_crew_day` | crew_id, date, available_min | not implemented (lane R) |
+| Disruption: readiness change | `change_ready_date` | site_id, ready_date | works |
+| Disruption: appointment change | `change_appointment` | job_id, available_from, available_to? | not implemented (lane R) |
+| Intervention: overtime | `extend_crew_day` | crew_id, date, extra_min | not implemented (lane R) |
+| Intervention: temporary capacity | `add_crew_day` | crew_id, date, available_min, skills, allowed_clusters | works |
+| Intervention: pin a visit | `pin_visit` | job_id | not implemented (lane R) |
+| Intervention: move a visit | `move_visit` | job_id, crew_id, date | not implemented (lane R) |
+
+Until lane R lands them, the unimplemented edits return `status: invalid_input` with "Edit <kind> is not implemented yet."
+
+**Recovery models**
+- `RecoveryOption`: `option_id`, `kind` (no_action, rebalance, overtime, temporary_capacity, custom), `action_label` (a business action such as "Crew IB +2h overtime", never "Plan 3"), `intervention_edits`, `status`, `proven_optimal`, `result` (a full validated `PlanResult`), `diff_vs_original`, `diff_vs_no_action` (null on the no-action option), `counts`, `economics`, `overtime_min`, `explanations`, `crew_load`, `lowest_modeled_cost` (label it "Lowest modeled cost", never "Recommended"), `stub`.
+- `RecoveryCounts`: deadlines_missed, deadlines_recovered (vs no action), delay_days, visits_moved, customers_to_reschedule, unscheduled.
+- `RecoveryEconomics`: `net_impact_usd` (cost vs the original plan), `advantage_vs_no_action_usd` (no-action net impact minus this option's), `cost_per_deadline_recovered_usd` (null when none recovered), `lines[]` of `EconomicLine {label, amount_usd, kind: labor | value | penalty | other, basis}`. Positive amounts are costs. Every line states its basis. Penalty lines are off by default.
+- `ImpactAnalysis`: headline, affected_job_ids, lost_capacity_min, `cascade[]` of `CascadeStep {kind: disruption | direct | pushed | commitment, label, job_ids}`, deadlines_at_risk.
+- `EconomicAssumption`: key, value, unit, kind, source, editable. Overrides go in `economics_overrides` by key.
+- `Explanation {job_id, text, constraint}` and `CrewLoad {crew_id, date, before, after}`.
+
+**Recovery endpoints**
+- `POST /api/recovery/options`: `RecoveryOptionsRequest {scenario_id, revision, current_plan?, disruption, economics_overrides?, interactive}` returns `RecoveryOptionsResult {revision, scenario_hash, impact, no_action, options, economic_assumptions, assumptions, stub}`. `revision` is echoed.
+- `POST /api/recovery/evaluate`: `EvaluateRequest {scenario_id, revision, current_plan?, disruption, interventions, interactive}` returns one `RecoveryOption` of kind `custom`. Use it for knock-out, overtime stretch, drag, and pin.
+- `POST /api/recovery/approve`: `ApproveRequest {scenario_id, revision, option}` returns `ApproveResult {new_current_plan, summary, stub}`.
+
+**Weather evidence** (parked nice-to-have: these endpoints stay frozen stubs until weather returns)
+- `GET /api/storms` returns `StormEvent[] {event_id, date, rainfall_mm, max_wind_kmh, thunder_hours, source, stub}`. Observed at Houston Hobby.
+- `GET /api/cases` returns `Case[] {case_id, name, date, summary, storm_event_id?, disruption, modeled_rule, provenance, stub}`. The disruption is modeled. Say "This replay applies a modeled operational disruption to a real historical storm."
+- `GET /api/season-replay` returns `SeasonReplay {replay_id, events[], totals, stress_tests?, stub}`. Each `SeasonReplayEvent` compares no action with the recovery engine for one case.
+
+**Python seams**
+- `app.recovery.service.recover(scenario, disruption, current_plan=None, economics=None, interactive=False) -> RecoveryOptionsResult`, plus `evaluate(...)` and `approve(...)`. A parked weather replay may call `recover()` later.
+- `app.replay.service.storms()`, `cases()`, `season_replay()`.
+
+**Stubs.** Until lanes R and W replace them, these return fixtures from `backend/app/recovery/fixtures/` and `backend/app/replay/fixtures/`, built by `scripts/build_stubs.py`. The fixtures use real planner results on `standard` for the 14 Jun 2018 storm case, with earliest-deadline-first standing in for no action. Economics and explanations are placeholders. Storm events are real observations. Every stub payload has `stub: true`, and the endpoint sets the header `X-Rollout-Stub: true`. The UI shows a stub label while `stub` is true.
+
 ## Regenerating (planned)
 
 ```bash

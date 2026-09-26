@@ -24,7 +24,7 @@
       "value": 4136.48,
       "bound": 4136.48,
       "gap": 0.0,
-      "elapsed_ms": 16
+      "elapsed_ms": 14
     },
     {
       "name": "travel",
@@ -32,7 +32,7 @@
       "value": 864.0,
       "bound": 864.0,
       "gap": 0.0,
-      "elapsed_ms": 14
+      "elapsed_ms": 0
     }
   ],
   "assignments": [

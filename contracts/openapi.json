@@ -808,6 +808,60 @@
         "title": "ObjectivePolicy",
         "type": "string"
       },
+      "Parameter": {
+        "additionalProperties": false,
+        "description": "One operational number the model uses, with where it came from.",
+        "properties": {
+          "derivation": {
+            "description": "Rule, formula, or citation that produced the value",
+            "title": "Derivation",
+            "type": "string"
+          },
+          "kind": {
+            "$ref": "#/components/schemas/DataKind"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "source": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "URL or reference, when one exists",
+            "title": "Source"
+          },
+          "unit": {
+            "title": "Unit",
+            "type": "string"
+          },
+          "value": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "string"
+              }
+            ],
+            "title": "Value"
+          }
+        },
+        "required": [
+          "name",
+          "value",
+          "unit",
+          "kind",
+          "derivation"
+        ],
+        "title": "Parameter",
+        "type": "object"
+      },
       "PlanChange": {
         "additionalProperties": false,
         "properties": {
@@ -1365,6 +1419,14 @@
             "$ref": "#/components/schemas/ObjectivePolicy",
             "default": "value_aware"
           },
+          "parameters": {
+            "default": [],
+            "items": {
+              "$ref": "#/components/schemas/Parameter"
+            },
+            "title": "Parameters",
+            "type": "array"
+          },
           "planning_end": {
             "format": "date",
             "title": "Planning End",
@@ -1414,6 +1476,16 @@
             "minimum": 0.0,
             "title": "Unscheduled Penalty Days",
             "type": "integer"
+          },
+          "weather_rule": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/WeatherRule"
+              },
+              {
+                "type": "null"
+              }
+            ]
           }
         },
         "required": [
@@ -1797,6 +1869,43 @@
         ],
         "title": "ViolationCode",
         "type": "string"
+      },
+      "WeatherRule": {
+        "additionalProperties": false,
+        "description": "A crew-day is lost when any working hour meets either condition.",
+        "properties": {
+          "heavy_rain_mm_per_h": {
+            "exclusiveMinimum": 0.0,
+            "title": "Heavy Rain Mm Per H",
+            "type": "number"
+          },
+          "thunder": {
+            "default": true,
+            "description": "Lose the day on any reported thunderstorm",
+            "title": "Thunder",
+            "type": "boolean"
+          },
+          "work_end_hour": {
+            "description": "Exclusive",
+            "maximum": 24.0,
+            "minimum": 1.0,
+            "title": "Work End Hour",
+            "type": "integer"
+          },
+          "work_start_hour": {
+            "maximum": 23.0,
+            "minimum": 0.0,
+            "title": "Work Start Hour",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "heavy_rain_mm_per_h",
+          "work_start_hour",
+          "work_end_hour"
+        ],
+        "title": "WeatherRule",
+        "type": "object"
       }
     }
   },

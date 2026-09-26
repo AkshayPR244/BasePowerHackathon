@@ -2,13 +2,13 @@
   "dataset_id": "standard_clusters_geojson",
   "kind": "synthetic",
   "source_url": null,
-  "release": "generator-v1-seed-42",
+  "release": "generator-v2-seed-42",
   "retrieved_at": null,
   "covered_start": "2018-06-04",
   "covered_end": "2018-06-15",
   "license_notes": "Synthetic benchmark data; repository MIT license.",
   "sha256": "827b8048e4e1d3625a47ebdc4dac8ce479981c4ccebb4d2c199d2bed917eaea4",
-  "transformation": "Seeded synthetic operational and geometry inputs; no real customers.",
+  "transformation": "Rule-based synthetic inputs; no real customers.",
   "row_count": 3,
   "fields": {
     "geometry": "synthetic"

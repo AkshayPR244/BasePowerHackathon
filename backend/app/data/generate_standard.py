@@ -1,150 +1,477 @@
-"""Generate the deterministic synthetic 30-job benchmark, without network access.
+"""Generate a rule-based synthetic benchmark, without network access.
 
-Run from backend: python -m app.data.generate_standard
+Every number comes from a stated rule or a cited source. The rules and their sources are
+written into scenario.yaml as `parameters`, so the API can show them.
+
+Run from backend: python -m app.data.generate_standard [--scenario storm_2018 --start ...]
 """
 
 import argparse
 import csv
 import datetime as dt
 import json
+import math
 import random
+from dataclasses import dataclass, field
 from pathlib import Path
 
 import yaml
 
+from app.data.calendar import business_days
 from app.data.load import DATA_ROOT
-from app.data.manifest import build_manifest, write_manifest
+from app.data.manifest import MANIFEST_ROOT, build_manifest, write_manifest
+from app.data.travel import haversine_km, mean_point, travel_allowance_min
+
+GENERATOR = "generator-v2"
+POWERWALL3_DATASHEET = (
+    "https://energylibrary.tesla.com/docs/Public/EnergyStorage/Powerwall/3/Datasheet/"
+    "en-us/Powerwall-3-Datasheet.pdf"
+)
+BOSCOE_2012 = (
+    "Boscoe, Henry, Zdeb (2012). A Nationwide Comparison of Driving Distance Versus "
+    "Straight-Line Distance to Hospitals. The Professional Geographer 64(2):188-196."
+)
+AMS_HEAVY_RAIN = "https://glossary.ametsoc.org/wiki/Rain"
 
 
-def _csv(path, rows):
+@dataclass
+class Spec:
+    """Generator inputs. Defaults are the committed `standard` scenario."""
+
+    scenario_id: str = "standard"
+    start: dt.date = dt.date(2018, 6, 4)
+    window_days: int = 10
+    overflow_days: int = 0
+    evaluation_end: dt.date = dt.date(2018, 7, 29)
+    n_jobs: int = 30
+    crews: str = "ABC"
+    ready_window_days: int = 5
+    deadline_business_days: int = 5
+    durations_min: tuple[int, ...] = (180, 210, 240)
+    workday_min: int = 480
+    delivery_every_days: int = 3
+    circuity: float = 1.417
+    speed_kmh: float = 40.0
+    centers: dict[str, tuple[float, float]] = field(
+        default_factory=lambda: {"N": (-95.40, 29.81), "S": (-95.37, 29.68), "W": (-95.49, 29.75)}
+    )
+    site_spread_deg: float = 0.01
+    capacity_kwh: float = 13.5
+    reserve_fraction: float = 0.10
+    charge_kw: float = 5.0
+    discharge_kw: float = 11.5
+    round_trip: float = 0.89
+    heavy_rain_mm_per_h: float = 7.6
+    work_start_hour: int = 8
+    work_end_hour: int = 17
+    weather_station: str = "HOU"
+    unscheduled_penalty_days: int = 30
+
+
+def _csv(path: Path, rows: list[dict]) -> None:
     with path.open("w", newline="", encoding="utf-8") as f:
         writer = csv.DictWriter(f, fieldnames=list(rows[0]), lineterminator="\n")
         writer.writeheader()
         writer.writerows(rows)
 
 
-def _geojson(path, features):
-    path.write_text(
-        json.dumps({"type": "FeatureCollection", "features": features}, indent=2, sort_keys=True)
-        + "\n"
-    )
+def _geojson(path: Path, features: list[dict]) -> None:
+    body = json.dumps({"type": "FeatureCollection", "features": features}, indent=2, sort_keys=True)
+    path.write_text(body + "\n", encoding="utf-8", newline="\n")
+
+
+def _param(name, value, unit, kind, derivation, source=None) -> dict:
+    out = {"name": name, "value": value, "unit": unit, "kind": kind, "derivation": derivation}
+    if source:
+        out["source"] = source
+    return out
+
+
+def _edf_plan(sites, days, crews, travel, workday_min):
+    """Earliest-deadline-first booking: the rule that produced the current plan."""
+    used: dict[tuple[str, dt.date], int] = {}
+    cluster: dict[tuple[str, dt.date], str] = {}
+    plan = {}
+    for s in sorted(sites, key=lambda s: (s["deadline"], s["ready_date"], s["site_id"])):
+        for d in days:
+            if d < s["ready_date"]:
+                continue
+            placed = False
+            for c in crews:
+                k = cluster.get((c, d))
+                if k not in (None, s["cluster_id"]):
+                    continue
+                extra = s["duration_min"] + (0 if k else travel[s["cluster_id"]])
+                if used.get((c, d), 0) + extra <= workday_min:
+                    used[(c, d)] = used.get((c, d), 0) + extra
+                    cluster[(c, d)] = s["cluster_id"]
+                    plan[s["site_id"]] = (c, d)
+                    placed = True
+                    break
+            if placed:
+                break
+    return plan, used
+
+
+def _carryover_provenance(output: Path) -> list[dict]:
+    """Keep provenance that preparation steps added for prices and loads."""
+    path = output / "scenario.yaml"
+    if not path.exists():
+        return []
+    old = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
+    keep = ("prices.parquet", "loads.parquet", "sites.csv:profile_id")
+    return [p for p in old.get("provenance", []) if p["input"] in keep]
+
+
+def _parameters(spec: Spec, depot, travel, eta: float, reserve: float) -> list[dict]:
+    return [
+        _param("workday", spec.workday_min, "min", "assumed", "One 8-hour crew day"),
+        _param(
+            "install_duration",
+            "/".join(map(str, spec.durations_min)),
+            "min",
+            "assumed",
+            "Onsite battery retrofit of 3 to 4 hours, drawn uniformly per job (seeded)",
+        ),
+        _param(
+            "ready_dates",
+            spec.ready_window_days,
+            "business days",
+            "synthetic",
+            "Each job becomes ready on a uniform random day in the first N business days",
+        ),
+        _param(
+            "deadline_rule",
+            spec.deadline_business_days,
+            "business days",
+            "assumed",
+            "Deadline = ready date + N business days, capped at the last window day",
+        ),
+        _param(
+            "business_days",
+            "weekdays",
+            "",
+            "assumed",
+            "Crews work weekdays that are not US federal holidays",
+        ),
+        _param(
+            "overflow_days",
+            spec.overflow_days,
+            "business days",
+            "assumed",
+            "Crew days after the window where late jobs can still land",
+        ),
+        _param(
+            "current_plan_rule",
+            "EDF",
+            "",
+            "derived",
+            "Current plan = earliest-deadline-first booking in the window, day 0 locked",
+        ),
+        _param(
+            "depot",
+            f"{depot[0]:.4f},{depot[1]:.4f}",
+            "lon,lat",
+            "assumed",
+            "Crew yard at the mean of the cluster centers",
+        ),
+        _param(
+            "road_circuity",
+            spec.circuity,
+            "ratio",
+            "assumed",
+            "US nationwide driving distance / straight-line distance",
+            BOSCOE_2012,
+        ),
+        _param("average_speed", spec.speed_kmh, "km/h", "assumed", "Urban driving including stops"),
+        *[
+            _param(
+                f"travel_{k}",
+                v,
+                "min",
+                "derived",
+                "(2 x depot-to-center + 2 x mean site radius) x circuity / speed, "
+                f"depot distance {haversine_km(depot, spec.centers[k]):.2f} km",
+            )
+            for k, v in travel.items()
+        ],
+        _param(
+            "deliveries",
+            spec.delivery_every_days,
+            "business days",
+            "assumed",
+            "A delivery every N business days, sized to the planned installs until the next",
+        ),
+        _param(
+            "battery_capacity",
+            spec.capacity_kwh,
+            "kWh",
+            "observed",
+            "Powerwall 3 nominal battery energy (13.5 kWh AC)",
+            POWERWALL3_DATASHEET,
+        ),
+        _param(
+            "battery_charge_limit",
+            spec.charge_kw,
+            "kW",
+            "observed",
+            "Powerwall 3 maximum continuous charge power",
+            POWERWALL3_DATASHEET,
+        ),
+        _param(
+            "battery_discharge_limit",
+            spec.discharge_kw,
+            "kW",
+            "observed",
+            "Powerwall 3 nominal output power, highest rating",
+            POWERWALL3_DATASHEET,
+        ),
+        _param(
+            "battery_round_trip",
+            spec.round_trip,
+            "fraction",
+            "observed",
+            "Powerwall 3 solar-to-battery-to-home/grid efficiency (typical solar shifting). "
+            "The datasheet gives no grid-charge figure",
+            POWERWALL3_DATASHEET,
+        ),
+        _param(
+            "battery_one_way_efficiency",
+            eta,
+            "fraction",
+            "derived",
+            "Charge and discharge efficiency = sqrt(round trip)",
+        ),
+        _param(
+            "battery_reserve",
+            reserve,
+            "kWh",
+            "assumed",
+            f"{spec.reserve_fraction:.0%} of capacity held back; start and end at reserve",
+        ),
+        _param(
+            "unscheduled_penalty",
+            spec.unscheduled_penalty_days,
+            "days",
+            "assumed",
+            "Delay charged for a job left unscheduled; larger than any lateness in the horizon",
+        ),
+        _param(
+            "weather_thunder",
+            "any TS in METAR",
+            "",
+            "assumed",
+            "Electrical work stops for lightning. A thunderstorm report in working hours "
+            "loses the crew-day",
+        ),
+        _param(
+            "weather_heavy_rain",
+            spec.heavy_rain_mm_per_h,
+            "mm/h",
+            "assumed",
+            "AMS heavy-rain threshold (0.30 in/h) in any working hour loses the crew-day",
+            AMS_HEAVY_RAIN,
+        ),
+        _param(
+            "weather_working_hours",
+            f"{spec.work_start_hour:02d}-{spec.work_end_hour:02d}",
+            "local hour",
+            "assumed",
+            "Hours in which weather can stop work",
+        ),
+        _param(
+            "weather_station",
+            spec.weather_station,
+            "",
+            "assumed",
+            "Nearest ASOS station to the study area (Houston Hobby)",
+        ),
+    ]
 
 
 def generate_standard(
-    output: Path | None = None, seed: int = 42, manifest_dir: Path | None = None
+    output: Path | None = None, seed: int = 42, manifest_dir: Path | None = None, spec=None
 ) -> Path:
-    output = DATA_ROOT / "standard" if output is None else Path(output)
+    spec = spec or Spec()
+    output = DATA_ROOT / spec.scenario_id if output is None else Path(output)
     output.mkdir(parents=True, exist_ok=True)
     rng = random.Random(seed)
-    start = dt.date(2018, 6, 4)
-    days = [
-        start + dt.timedelta(days=i)
-        for i in range(14)
-        if (start + dt.timedelta(days=i)).weekday() < 5
-    ]
-    cfg = yaml.safe_load((DATA_ROOT / "tiny/scenario.yaml").read_text())
-    cfg.update(
-        name="Standard synthetic recovery benchmark",
-        description="30 synthetic jobs, 3 clusters, 3 crews and 10 working days.",
-        planning_end=days[-1],
-        random_seed=seed,
-        num_workers=8,
-        unscheduled_penalty_days=30,
-        solve_time_limit_s=15,
-        travel_allowance_min={"N": 60, "S": 45, "W": 50},
-        provenance=[
-            {
-                "input": "all operational and geometry files",
-                "kind": "synthetic",
-                "source": f"Seeded benchmark generator v1, seed {seed}. Not customers.",
-            }
-        ],
-    )
-    (output / "scenario.yaml").write_text(yaml.safe_dump(cfg, sort_keys=False))
-    centers = {"N": (-95.40, 29.81), "S": (-95.37, 29.68), "W": (-95.49, 29.75)}
-    clusters = []
-    for cid, (lon, lat) in centers.items():
-        ring = [
-            [round(lon + x, 6), round(lat + y, 6)]
-            for x, y in [
-                (-0.015, -0.015),
-                (0.015, -0.015),
-                (0.015, 0.015),
-                (-0.015, 0.015),
-                (-0.015, -0.015),
-            ]
-        ]
-        clusters.append(
-            {
-                "type": "Feature",
-                "properties": {"cluster_id": cid, "name": cid},
-                "geometry": {"type": "Polygon", "coordinates": [ring]},
-            }
+    all_days = business_days(spec.start, spec.window_days + spec.overflow_days)
+    window = all_days[: spec.window_days]
+    index = {d: i for i, d in enumerate(all_days)}
+
+    points, sites = {}, []
+    names = list(spec.centers)
+    for i in range(spec.n_jobs):
+        k = names[i % len(names)]
+        ready = window[rng.randrange(spec.ready_window_days)]
+        deadline = all_days[min(index[ready] + spec.deadline_business_days, len(window) - 1)]
+        sid = f"{k}-{i // len(names) + 1:02d}"
+        lon, lat = spec.centers[k]
+        points[sid] = (
+            round(lon + rng.uniform(-spec.site_spread_deg, spec.site_spread_deg), 6),
+            round(lat + rng.uniform(-spec.site_spread_deg, spec.site_spread_deg), 6),
         )
-    _geojson(output / "clusters.geojson", clusters)
-    sites, geometry, plan = [], [], []
-    for i in range(30):
-        cluster = list(centers)[i % 3]
-        day = i // 3
-        sid = f"{cluster}-{day + 1:02d}"
         sites.append(
             dict(
                 site_id=sid,
-                cluster_id=cluster,
+                cluster_id=k,
                 program_id="P1",
-                ready_date=days[max(0, day - rng.randint(0, 2))],
-                deadline=days[min(9, day + rng.randint(0, 2))],
-                duration_min=rng.choice([180, 210, 240]),
+                ready_date=ready,
+                deadline=deadline,
+                duration_min=rng.choice(spec.durations_min),
                 required_skill="install",
                 configuration_id="B13",
                 load_zone="LZ_HOUSTON",
                 profile_id="",
             )
         )
-        lon, lat = centers[cluster]
-        point = [round(lon + rng.uniform(-0.01, 0.01), 6), round(lat + rng.uniform(-0.01, 0.01), 6)]
-        geometry.append(
+
+    depot = mean_point(list(spec.centers.values()))
+    travel = {
+        k: travel_allowance_min(
+            depot,
+            center,
+            [points[s["site_id"]] for s in sites if s["cluster_id"] == k],
+            spec.circuity,
+            spec.speed_kmh,
+        )
+        for k, center in spec.centers.items()
+    }
+    plan, _ = _edf_plan(sites, window, spec.crews, travel, spec.workday_min)
+
+    deliveries = window[:: spec.delivery_every_days]
+    qty = dict.fromkeys(deliveries, 0)
+    for s in sites:
+        day = plan[s["site_id"]][1] if s["site_id"] in plan else s["ready_date"]
+        qty[max(d for d in deliveries if d <= day)] += 1
+
+    eta = round(math.sqrt(spec.round_trip), 6)
+    reserve = round(spec.capacity_kwh * spec.reserve_fraction, 4)
+    provenance = [
+        {
+            "input": "all operational and geometry files",
+            "kind": "synthetic",
+            "source": f"Rule-based generator v2, seed {seed}. Not customers.",
+        },
+        *_carryover_provenance(output),
+    ]
+    extra = f" plus {spec.overflow_days} overflow days" if spec.overflow_days else ""
+    cfg = {
+        "name": f"{spec.scenario_id} synthetic recovery benchmark",
+        "description": (
+            f"{spec.n_jobs} synthetic jobs, {len(spec.centers)} clusters, {len(spec.crews)} "
+            f"crews, {spec.window_days} business days{extra}. "
+            "Every number comes from a stated rule or source."
+        ),
+        "timezone": "America/Chicago",
+        "planning_start": all_days[0],
+        "planning_end": all_days[-1],
+        "evaluation_end": spec.evaluation_end,
+        "qualification_lag_days": 0,
+        "unscheduled_penalty_days": spec.unscheduled_penalty_days,
+        "objective_policy": "value_aware",
+        "solve_time_limit_s": 15,
+        "random_seed": seed,
+        "num_workers": 8,
+        "synthetic": True,
+        "travel_allowance_min": travel,
+        "batteries": [
+            {
+                "configuration_id": "B13",
+                "capacity_kwh": spec.capacity_kwh,
+                "reserve_kwh": reserve,
+                "charge_limit_kw": spec.charge_kw,
+                "discharge_limit_kw": spec.discharge_kw,
+                "eta_charge": eta,
+                "eta_discharge": eta,
+            }
+        ],
+        "weather_rule": {
+            "thunder": True,
+            "heavy_rain_mm_per_h": spec.heavy_rain_mm_per_h,
+            "work_start_hour": spec.work_start_hour,
+            "work_end_hour": spec.work_end_hour,
+        },
+        "parameters": _parameters(spec, depot, travel, eta, reserve),
+        "provenance": provenance,
+    }
+    has_loads = (output / "loads.parquet").exists()
+    if has_loads:
+        from app.data.prepare_resstock import PROFILE_ID
+
+        for s in sites:
+            s["profile_id"] = PROFILE_ID
+    (output / "scenario.yaml").write_text(
+        yaml.safe_dump(cfg, sort_keys=False), encoding="utf-8", newline="\n"
+    )
+
+    clusters = []
+    for k, (lon, lat) in spec.centers.items():
+        d = 0.015
+        corners = [(-d, -d), (d, -d), (d, d), (-d, d), (-d, -d)]
+        ring = [[round(lon + x, 6), round(lat + y, 6)] for x, y in corners]
+        clusters.append(
             {
                 "type": "Feature",
-                "properties": {"site_id": sid},
-                "geometry": {"type": "Point", "coordinates": point},
+                "properties": {"cluster_id": k, "name": k},
+                "geometry": {"type": "Polygon", "coordinates": [ring]},
             }
         )
-        plan.append(
-            dict(
-                site_id=sid,
-                crew_id="ABC"[i % 3],
-                date=days[day],
-                locked="true" if day == 0 else "false",
-            )
-        )
+    _geojson(output / "clusters.geojson", clusters)
     _csv(output / "sites.csv", sites)
-    _geojson(output / "sites.geojson", geometry)
-    _csv(output / "current_plan.csv", plan)
-    crews = [
-        dict(crew_id=c, date=day, available_min=480, skills="install", allowed_clusters="N;S;W")
-        for c in "ABC"
-        for day in days
-    ]
-    _csv(output / "crew_days.csv", crews)
-    receipts = [
-        dict(configuration_id="B13", available_date=days[d], quantity=q)
-        for d, q in [(0, 9), (3, 9), (6, 12)]
-    ]
-    _csv(output / "inventory.csv", receipts)
+    _geojson(
+        output / "sites.geojson",
+        [
+            {
+                "type": "Feature",
+                "properties": {"site_id": s["site_id"]},
+                "geometry": {"type": "Point", "coordinates": list(points[s["site_id"]])},
+            }
+            for s in sites
+        ],
+    )
+    _csv(
+        output / "current_plan.csv",
+        [
+            dict(site_id=sid, crew_id=c, date=d, locked="true" if d == window[0] else "false")
+            for sid, (c, d) in sorted(plan.items(), key=lambda kv: (kv[1][1], kv[1][0], kv[0]))
+        ],
+    )
+    _csv(
+        output / "crew_days.csv",
+        [
+            dict(
+                crew_id=c,
+                date=d,
+                available_min=spec.workday_min,
+                skills="install",
+                allowed_clusters=";".join(spec.centers),
+            )
+            for c in spec.crews
+            for d in all_days
+        ],
+    )
+    _csv(
+        output / "inventory.csv",
+        [dict(configuration_id="B13", available_date=d, quantity=q) for d, q in qty.items() if q],
+    )
+
     counts = {
         "scenario.yaml": 1,
-        "sites.csv": 30,
-        "sites.geojson": 30,
-        "clusters.geojson": 3,
-        "crew_days.csv": 30,
-        "inventory.csv": 3,
-        "current_plan.csv": 30,
+        "sites.csv": len(sites),
+        "sites.geojson": len(sites),
+        "clusters.geojson": len(clusters),
+        "crew_days.csv": len(spec.crews) * len(all_days),
+        "inventory.csv": sum(1 for q in qty.values() if q),
+        "current_plan.csv": len(plan),
     }
     for name, count in counts.items():
         path = output / name
         if path.suffix == ".csv":
             fields = {k: "synthetic" for k in path.read_text().splitlines()[0].split(",")}
+            if has_loads and name == "sites.csv":
+                fields["profile_id"] = "modeled"
         else:
             fields = {"geometry" if path.suffix == ".geojson" else "config": "synthetic"}
         write_manifest(
@@ -154,10 +481,10 @@ def generate_standard(
                 kind="synthetic",
                 row_count=count,
                 fields=fields,
-                release=f"generator-v1-seed-{seed}",
-                covered_start=start,
-                covered_end=days[-1],
-                transformation="Seeded synthetic inputs; no real customers.",
+                release=f"{GENERATOR}-seed-{seed}",
+                covered_start=all_days[0],
+                covered_end=all_days[-1],
+                transformation="Rule-based synthetic inputs; no real customers.",
             ),
             manifest_dir,
         )
@@ -167,6 +494,12 @@ def generate_standard(
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--seed", type=int, default=42)
+    parser.add_argument("--scenario", default="standard")
+    parser.add_argument("--start", type=dt.date.fromisoformat)
+    parser.add_argument("--overflow-days", type=int, default=0)
     parser.add_argument("--output", type=Path)
     args = parser.parse_args()
-    print(generate_standard(args.output, args.seed))
+    spec = Spec(scenario_id=args.scenario, overflow_days=args.overflow_days)
+    if args.start:
+        spec.start = args.start
+    print(generate_standard(args.output, args.seed, MANIFEST_ROOT, spec))

@@ -11,7 +11,10 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** Health */
+        /**
+         * Health
+         * @description `values` is not_started, warming, ready, or failed.
+         */
         get: operations["health_api_health_get"];
         put?: never;
         post?: never;
@@ -381,11 +384,6 @@ export interface components {
             /** Site Id */
             site_id: string;
         };
-        /** HTTPValidationError */
-        HTTPValidationError: {
-            /** Detail */
-            detail?: components["schemas"]["ValidationError"][];
-        };
         /** InputIssue */
         InputIssue: {
             code: components["schemas"]["InputIssueCode"];
@@ -466,6 +464,29 @@ export interface components {
          * @enum {string}
          */
         ObjectivePolicy: "value_aware" | "deadline_travel_only";
+        /**
+         * Parameter
+         * @description One operational number the model uses, with where it came from.
+         */
+        Parameter: {
+            /**
+             * Derivation
+             * @description Rule, formula, or citation that produced the value
+             */
+            derivation: string;
+            kind: components["schemas"]["DataKind"];
+            /** Name */
+            name: string;
+            /**
+             * Source
+             * @description URL or reference, when one exists
+             */
+            source?: string | null;
+            /** Unit */
+            unit: string;
+            /** Value */
+            value: number | string;
+        };
         /** PlanChange */
         PlanChange: {
             after: components["schemas"]["Slot"] | null;
@@ -652,6 +673,11 @@ export interface components {
             /** @default value_aware */
             objective_policy: components["schemas"]["ObjectivePolicy"];
             /**
+             * Parameters
+             * @default []
+             */
+            parameters: components["schemas"]["Parameter"][];
+            /**
              * Planning End
              * Format: date
              */
@@ -691,6 +717,7 @@ export interface components {
              * @description Whole days
              */
             unscheduled_penalty_days: number;
+            weather_rule?: components["schemas"]["WeatherRule"] | null;
         };
         /** ScenarioSummary */
         ScenarioSummary: {
@@ -794,19 +821,6 @@ export interface components {
             site_id: string;
             state: components["schemas"]["JobState"];
         };
-        /** ValidationError */
-        ValidationError: {
-            /** Context */
-            ctx?: Record<string, never>;
-            /** Input */
-            input?: unknown;
-            /** Location */
-            loc: (string | number)[];
-            /** Message */
-            msg: string;
-            /** Error Type */
-            type: string;
-        };
         /** ValidationIssue */
         ValidationIssue: {
             code: components["schemas"]["ViolationCode"];
@@ -841,6 +855,27 @@ export interface components {
          * @enum {string}
          */
         ViolationCode: "UNKNOWN_SITE" | "DUPLICATE_ASSIGNMENT" | "NO_CREW_DAY" | "BEFORE_READY" | "AFTER_DEADLINE" | "MISSING_JOB" | "SKILL" | "CLUSTER_NOT_ALLOWED" | "MULTIPLE_CLUSTERS" | "CAPACITY" | "INVENTORY" | "LOCK_BROKEN" | "STATE_MISMATCH" | "OBJECTIVE_MISMATCH";
+        /**
+         * WeatherRule
+         * @description A crew-day is lost when any working hour meets either condition.
+         */
+        WeatherRule: {
+            /** Heavy Rain Mm Per H */
+            heavy_rain_mm_per_h: number;
+            /**
+             * Thunder
+             * @description Lose the day on any reported thunderstorm
+             * @default true
+             */
+            thunder: boolean;
+            /**
+             * Work End Hour
+             * @description Exclusive
+             */
+            work_end_hour: number;
+            /** Work Start Hour */
+            work_start_hour: number;
+        };
     };
     responses: never;
     parameters: never;
@@ -894,7 +929,16 @@ export interface operations {
                     "application/json": components["schemas"]["PlanResult"];
                 };
             };
-            /** @description Unknown scenario */
+            /** @description The request is valid JSON but makes no sense */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Unknown scenario or path */
             404: {
                 headers: {
                     [name: string]: unknown;
@@ -903,7 +947,7 @@ export interface operations {
                     "application/json": components["schemas"]["ApiError"];
                 };
             };
-            /** @description Scenario files are invalid */
+            /** @description The request or the scenario files are invalid */
             422: {
                 headers: {
                     [name: string]: unknown;
@@ -945,13 +989,40 @@ export interface operations {
                     "application/json": components["schemas"]["PlanDiff"];
                 };
             };
-            /** @description Validation Error */
+            /** @description The request is valid JSON but makes no sense */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Unknown scenario or path */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description The request or the scenario files are invalid */
             422: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description The planner produced a plan that failed validation */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
                 };
             };
         };
@@ -978,7 +1049,16 @@ export interface operations {
                     "application/json": components["schemas"]["CounterfactualResult"];
                 };
             };
-            /** @description Unknown scenario */
+            /** @description The request is valid JSON but makes no sense */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Unknown scenario or path */
             404: {
                 headers: {
                     [name: string]: unknown;
@@ -987,7 +1067,7 @@ export interface operations {
                     "application/json": components["schemas"]["ApiError"];
                 };
             };
-            /** @description Scenario files are invalid */
+            /** @description The request or the scenario files are invalid */
             422: {
                 headers: {
                     [name: string]: unknown;
@@ -1047,7 +1127,16 @@ export interface operations {
                     "application/json": components["schemas"]["Scenario"];
                 };
             };
-            /** @description Unknown scenario */
+            /** @description The request is valid JSON but makes no sense */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Unknown scenario or path */
             404: {
                 headers: {
                     [name: string]: unknown;
@@ -1056,7 +1145,7 @@ export interface operations {
                     "application/json": components["schemas"]["ApiError"];
                 };
             };
-            /** @description Scenario files are invalid */
+            /** @description The request or the scenario files are invalid */
             422: {
                 headers: {
                     [name: string]: unknown;

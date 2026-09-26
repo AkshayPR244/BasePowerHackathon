@@ -34,7 +34,9 @@
         "source": "Hand-built for tests. Not real parcels, crews, or inventory.",
         "manifest_id": null
       }
-    ]
+    ],
+    "parameters": [],
+    "weather_rule": null
   },
   "clusters": [
     {

@@ -2,13 +2,13 @@
   "dataset_id": "standard_scenario_yaml",
   "kind": "synthetic",
   "source_url": null,
-  "release": "generator-v1-seed-42",
+  "release": "generator-v2-seed-42",
   "retrieved_at": null,
   "covered_start": "2018-06-04",
   "covered_end": "2018-06-15",
   "license_notes": "Synthetic benchmark data; repository MIT license.",
-  "sha256": "92e67aaecfa2b4eb046615d82fce759ee86c12262276746d4540c6095d5f28f0",
-  "transformation": "Seeded synthetic operational and geometry inputs; no real customers.",
+  "sha256": "ea20771dc113d7a25861be9b8417ba18ed0890219da5d15d42405fc4846994e8",
+  "transformation": "Rule-based synthetic inputs; no real customers.",
   "row_count": 1,
   "fields": {
     "config": "synthetic"

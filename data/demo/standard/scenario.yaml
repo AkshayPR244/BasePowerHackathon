@@ -1,5 +1,6 @@
-name: Standard synthetic recovery benchmark
-description: 30 synthetic jobs, 3 clusters, 3 crews and 10 working days.
+name: standard synthetic recovery benchmark
+description: 30 synthetic jobs, 3 clusters, 3 crews, 10 business days. Every number
+  comes from a stated rule or source.
 timezone: America/Chicago
 planning_start: 2018-06-04
 planning_end: 2018-06-15
@@ -12,21 +13,168 @@ random_seed: 42
 num_workers: 8
 synthetic: true
 travel_allowance_min:
-  N: 60
-  S: 45
-  W: 50
+  N: 34
+  S: 41
+  W: 32
 batteries:
 - configuration_id: B13
   capacity_kwh: 13.5
   reserve_kwh: 1.35
   charge_limit_kw: 5.0
-  discharge_limit_kw: 5.0
-  eta_charge: 0.95
-  eta_discharge: 0.95
+  discharge_limit_kw: 11.5
+  eta_charge: 0.943398
+  eta_discharge: 0.943398
+weather_rule:
+  thunder: true
+  heavy_rain_mm_per_h: 7.6
+  work_start_hour: 8
+  work_end_hour: 17
+parameters:
+- name: workday
+  value: 480
+  unit: min
+  kind: assumed
+  derivation: One 8-hour crew day
+- name: install_duration
+  value: 180/210/240
+  unit: min
+  kind: assumed
+  derivation: Onsite battery retrofit of 3 to 4 hours, drawn uniformly per job (seeded)
+- name: ready_dates
+  value: 5
+  unit: business days
+  kind: synthetic
+  derivation: Each job becomes ready on a uniform random day in the first N business
+    days
+- name: deadline_rule
+  value: 5
+  unit: business days
+  kind: assumed
+  derivation: Deadline = ready date + N business days, capped at the last window day
+- name: business_days
+  value: weekdays
+  unit: ''
+  kind: assumed
+  derivation: Crews work weekdays that are not US federal holidays
+- name: overflow_days
+  value: 0
+  unit: business days
+  kind: assumed
+  derivation: Crew days after the window where late jobs can still land
+- name: current_plan_rule
+  value: EDF
+  unit: ''
+  kind: derived
+  derivation: Current plan = earliest-deadline-first booking in the window, day 0
+    locked
+- name: depot
+  value: -95.4200,29.7467
+  unit: lon,lat
+  kind: assumed
+  derivation: Crew yard at the mean of the cluster centers
+- name: road_circuity
+  value: 1.417
+  unit: ratio
+  kind: assumed
+  derivation: US nationwide driving distance / straight-line distance
+  source: Boscoe, Henry, Zdeb (2012). A Nationwide Comparison of Driving Distance
+    Versus Straight-Line Distance to Hospitals. The Professional Geographer 64(2):188-196.
+- name: average_speed
+  value: 40.0
+  unit: km/h
+  kind: assumed
+  derivation: Urban driving including stops
+- name: travel_N
+  value: 34
+  unit: min
+  kind: derived
+  derivation: (2 x depot-to-center + 2 x mean site radius) x circuity / speed, depot
+    distance 7.30 km
+- name: travel_S
+  value: 41
+  unit: min
+  kind: derived
+  derivation: (2 x depot-to-center + 2 x mean site radius) x circuity / speed, depot
+    distance 8.85 km
+- name: travel_W
+  value: 32
+  unit: min
+  kind: derived
+  derivation: (2 x depot-to-center + 2 x mean site radius) x circuity / speed, depot
+    distance 6.77 km
+- name: deliveries
+  value: 3
+  unit: business days
+  kind: assumed
+  derivation: A delivery every N business days, sized to the planned installs until
+    the next
+- name: battery_capacity
+  value: 13.5
+  unit: kWh
+  kind: observed
+  derivation: Powerwall 3 nominal battery energy (13.5 kWh AC)
+  source: https://energylibrary.tesla.com/docs/Public/EnergyStorage/Powerwall/3/Datasheet/en-us/Powerwall-3-Datasheet.pdf
+- name: battery_charge_limit
+  value: 5.0
+  unit: kW
+  kind: observed
+  derivation: Powerwall 3 maximum continuous charge power
+  source: https://energylibrary.tesla.com/docs/Public/EnergyStorage/Powerwall/3/Datasheet/en-us/Powerwall-3-Datasheet.pdf
+- name: battery_discharge_limit
+  value: 11.5
+  unit: kW
+  kind: observed
+  derivation: Powerwall 3 nominal output power, highest rating
+  source: https://energylibrary.tesla.com/docs/Public/EnergyStorage/Powerwall/3/Datasheet/en-us/Powerwall-3-Datasheet.pdf
+- name: battery_round_trip
+  value: 0.89
+  unit: fraction
+  kind: observed
+  derivation: Powerwall 3 solar-to-battery-to-home/grid efficiency (typical solar
+    shifting). The datasheet gives no grid-charge figure
+  source: https://energylibrary.tesla.com/docs/Public/EnergyStorage/Powerwall/3/Datasheet/en-us/Powerwall-3-Datasheet.pdf
+- name: battery_one_way_efficiency
+  value: 0.943398
+  unit: fraction
+  kind: derived
+  derivation: Charge and discharge efficiency = sqrt(round trip)
+- name: battery_reserve
+  value: 1.35
+  unit: kWh
+  kind: assumed
+  derivation: 10% of capacity held back; start and end at reserve
+- name: unscheduled_penalty
+  value: 30
+  unit: days
+  kind: assumed
+  derivation: Delay charged for a job left unscheduled; larger than any lateness in
+    the horizon
+- name: weather_thunder
+  value: any TS in METAR
+  unit: ''
+  kind: assumed
+  derivation: Electrical work stops for lightning. A thunderstorm report in working
+    hours loses the crew-day
+- name: weather_heavy_rain
+  value: 7.6
+  unit: mm/h
+  kind: assumed
+  derivation: AMS heavy-rain threshold (0.30 in/h) in any working hour loses the crew-day
+  source: https://glossary.ametsoc.org/wiki/Rain
+- name: weather_working_hours
+  value: 08-17
+  unit: local hour
+  kind: assumed
+  derivation: Hours in which weather can stop work
+- name: weather_station
+  value: HOU
+  unit: ''
+  kind: assumed
+  derivation: Nearest ASOS station to the study area (Houston Hobby)
 provenance:
 - input: all operational and geometry files
   kind: synthetic
-  source: Seeded benchmark generator v1, seed 42. Not customers.
+  source: Rule-based generator v2, seed 42. Not customers.
 - input: prices.parquet
   kind: observed
   source: https://www.ercot.com/misdownload/servlets/mirDownload?doclookupId=642564849

@@ -1,10 +1,10 @@
 {
   "scenario_id": "standard",
-  "scenario_hash": "9121db683a3893e136069fa7cfc20f6960a29407ef895653a0977339daff87ec",
+  "scenario_hash": "6c0f6d8105c349caa19953b80b35f28bbc509219648b3f739acb1297710e25ac",
   "revision": 0,
   "config": {
-    "name": "Standard synthetic recovery benchmark",
-    "description": "30 synthetic jobs, 3 clusters, 3 crews and 10 working days.",
+    "name": "standard synthetic recovery benchmark",
+    "description": "30 synthetic jobs, 3 clusters, 3 crews, 10 business days. Every number comes from a stated rule or source.",
     "timezone": "America/Chicago",
     "planning_start": "2018-06-04",
     "planning_end": "2018-06-15",
@@ -21,9 +21,9 @@
         "capacity_kwh": 13.5,
         "reserve_kwh": 1.35,
         "charge_limit_kw": 5.0,
-        "discharge_limit_kw": 5.0,
-        "eta_charge": 0.95,
-        "eta_discharge": 0.95
+        "discharge_limit_kw": 11.5,
+        "eta_charge": 0.943398,
+        "eta_discharge": 0.943398
       }
     ],
     "synthetic": true,
@@ -31,7 +31,7 @@
       {
         "input": "all operational and geometry files",
         "kind": "synthetic",
-        "source": "Seeded benchmark generator v1, seed 42. Not customers.",
+        "source": "Rule-based generator v2, seed 42. Not customers.",
         "manifest_id": null
       },
       {
@@ -52,13 +52,221 @@
         "source": "https://oedi-data-lake.s3.amazonaws.com/nrel-pds-building-stock/end-use-load-profiles-for-us-building-stock/2025/resstock_amy2018_release_1/timeseries_individual_buildings/by_state/upgrade=0/state=TX/100-0.parquet",
         "manifest_id": "resstock_amy2018_tx_100"
       }
-    ]
+    ],
+    "parameters": [
+      {
+        "name": "workday",
+        "value": 480.0,
+        "unit": "min",
+        "kind": "assumed",
+        "derivation": "One 8-hour crew day",
+        "source": null
+      },
+      {
+        "name": "install_duration",
+        "value": "180/210/240",
+        "unit": "min",
+        "kind": "assumed",
+        "derivation": "Onsite battery retrofit of 3 to 4 hours, drawn uniformly per job (seeded)",
+        "source": null
+      },
+      {
+        "name": "ready_dates",
+        "value": 5.0,
+        "unit": "business days",
+        "kind": "synthetic",
+        "derivation": "Each job becomes ready on a uniform random day in the first N business days",
+        "source": null
+      },
+      {
+        "name": "deadline_rule",
+        "value": 5.0,
+        "unit": "business days",
+        "kind": "assumed",
+        "derivation": "Deadline = ready date + N business days, capped at the last window day",
+        "source": null
+      },
+      {
+        "name": "business_days",
+        "value": "weekdays",
+        "unit": "",
+        "kind": "assumed",
+        "derivation": "Crews work weekdays that are not US federal holidays",
+        "source": null
+      },
+      {
+        "name": "overflow_days",
+        "value": 0.0,
+        "unit": "business days",
+        "kind": "assumed",
+        "derivation": "Crew days after the window where late jobs can still land",
+        "source": null
+      },
+      {
+        "name": "current_plan_rule",
+        "value": "EDF",
+        "unit": "",
+        "kind": "derived",
+        "derivation": "Current plan = earliest-deadline-first booking in the window, day 0 locked",
+        "source": null
+      },
+      {
+        "name": "depot",
+        "value": "-95.4200,29.7467",
+        "unit": "lon,lat",
+        "kind": "assumed",
+        "derivation": "Crew yard at the mean of the cluster centers",
+        "source": null
+      },
+      {
+        "name": "road_circuity",
+        "value": 1.417,
+        "unit": "ratio",
+        "kind": "assumed",
+        "derivation": "US nationwide driving distance / straight-line distance",
+        "source": "Boscoe, Henry, Zdeb (2012). A Nationwide Comparison of Driving Distance Versus Straight-Line Distance to Hospitals. The Professional Geographer 64(2):188-196."
+      },
+      {
+        "name": "average_speed",
+        "value": 40.0,
+        "unit": "km/h",
+        "kind": "assumed",
+        "derivation": "Urban driving including stops",
+        "source": null
+      },
+      {
+        "name": "travel_N",
+        "value": 34.0,
+        "unit": "min",
+        "kind": "derived",
+        "derivation": "(2 x depot-to-center + 2 x mean site radius) x circuity / speed, depot distance 7.30 km",
+        "source": null
+      },
+      {
+        "name": "travel_S",
+        "value": 41.0,
+        "unit": "min",
+        "kind": "derived",
+        "derivation": "(2 x depot-to-center + 2 x mean site radius) x circuity / speed, depot distance 8.85 km",
+        "source": null
+      },
+      {
+        "name": "travel_W",
+        "value": 32.0,
+        "unit": "min",
+        "kind": "derived",
+        "derivation": "(2 x depot-to-center + 2 x mean site radius) x circuity / speed, depot distance 6.77 km",
+        "source": null
+      },
+      {
+        "name": "deliveries",
+        "value": 3.0,
+        "unit": "business days",
+        "kind": "assumed",
+        "derivation": "A delivery every N business days, sized to the planned installs until the next",
+        "source": null
+      },
+      {
+        "name": "battery_capacity",
+        "value": 13.5,
+        "unit": "kWh",
+        "kind": "observed",
+        "derivation": "Powerwall 3 nominal battery energy (13.5 kWh AC)",
+        "source": "https://energylibrary.tesla.com/docs/Public/EnergyStorage/Powerwall/3/Datasheet/en-us/Powerwall-3-Datasheet.pdf"
+      },
+      {
+        "name": "battery_charge_limit",
+        "value": 5.0,
+        "unit": "kW",
+        "kind": "observed",
+        "derivation": "Powerwall 3 maximum continuous charge power",
+        "source": "https://energylibrary.tesla.com/docs/Public/EnergyStorage/Powerwall/3/Datasheet/en-us/Powerwall-3-Datasheet.pdf"
+      },
+      {
+        "name": "battery_discharge_limit",
+        "value": 11.5,
+        "unit": "kW",
+        "kind": "observed",
+        "derivation": "Powerwall 3 nominal output power, highest rating",
+        "source": "https://energylibrary.tesla.com/docs/Public/EnergyStorage/Powerwall/3/Datasheet/en-us/Powerwall-3-Datasheet.pdf"
+      },
+      {
+        "name": "battery_round_trip",
+        "value": 0.89,
+        "unit": "fraction",
+        "kind": "observed",
+        "derivation": "Powerwall 3 solar-to-battery-to-home/grid efficiency (typical solar shifting). The datasheet gives no grid-charge figure",
+        "source": "https://energylibrary.tesla.com/docs/Public/EnergyStorage/Powerwall/3/Datasheet/en-us/Powerwall-3-Datasheet.pdf"
+      },
+      {
+        "name": "battery_one_way_efficiency",
+        "value": 0.943398,
+        "unit": "fraction",
+        "kind": "derived",
+        "derivation": "Charge and discharge efficiency = sqrt(round trip)",
+        "source": null
+      },
+      {
+        "name": "battery_reserve",
+        "value": 1.35,
+        "unit": "kWh",
+        "kind": "assumed",
+        "derivation": "10% of capacity held back; start and end at reserve",
+        "source": null
+      },
+      {
+        "name": "unscheduled_penalty",
+        "value": 30.0,
+        "unit": "days",
+        "kind": "assumed",
+        "derivation": "Delay charged for a job left unscheduled; larger than any lateness in the horizon",
+        "source": null
+      },
+      {
+        "name": "weather_thunder",
+        "value": "any TS in METAR",
+        "unit": "",
+        "kind": "assumed",
+        "derivation": "Electrical work stops for lightning. A thunderstorm report in working hours loses the crew-day",
+        "source": null
+      },
+      {
+        "name": "weather_heavy_rain",
+        "value": 7.6,
+        "unit": "mm/h",
+        "kind": "assumed",
+        "derivation": "AMS heavy-rain threshold (0.30 in/h) in any working hour loses the crew-day",
+        "source": "https://glossary.ametsoc.org/wiki/Rain"
+      },
+      {
+        "name": "weather_working_hours",
+        "value": "08-17",
+        "unit": "local hour",
+        "kind": "assumed",
+        "derivation": "Hours in which weather can stop work",
+        "source": null
+      },
+      {
+        "name": "weather_station",
+        "value": "HOU",
+        "unit": "",
+        "kind": "assumed",
+        "derivation": "Nearest ASOS station to the study area (Houston Hobby)",
+        "source": null
+      }
+    ],
+    "weather_rule": {
+      "thunder": true,
+      "heavy_rain_mm_per_h": 7.6,
+      "work_start_hour": 8,
+      "work_end_hour": 17
+    }
   },
   "clusters": [
     {
       "cluster_id": "N",
       "name": "N",
-      "travel_allowance_min": 60,
+      "travel_allowance_min": 34,
       "outline": [
         [
           -95.415,
@@ -85,7 +293,7 @@
     {
       "cluster_id": "S",
       "name": "S",
-      "travel_allowance_min": 45,
+      "travel_allowance_min": 41,
       "outline": [
         [
           -95.385,
@@ -112,7 +320,7 @@
     {
       "cluster_id": "W",
       "name": "W",
-      "travel_allowance_min": 50,
+      "travel_allowance_min": 32,
       "outline": [
         [
           -95.505,
@@ -143,330 +351,372 @@
       "cluster_id": "N",
       "program_id": "P1",
       "ready_date": "2018-06-04",
-      "deadline": "2018-06-04",
+      "deadline": "2018-06-11",
       "duration_min": 180,
       "required_skill": "install",
       "configuration_id": "B13",
       "load_zone": "LZ_HOUSTON",
       "profile_id": "resstock-2025-1-amy2018-tx-100",
-      "lon": -95.395169,
-      "lat": 29.804898
+      "lon": -95.4095,
+      "lat": 29.805501
     },
     {
       "site_id": "S-01",
       "cluster_id": "S",
       "program_id": "P1",
-      "ready_date": "2018-06-04",
-      "deadline": "2018-06-06",
-      "duration_min": 180,
+      "ready_date": "2018-06-05",
+      "deadline": "2018-06-12",
+      "duration_min": 240,
       "required_skill": "install",
       "configuration_id": "B13",
       "load_zone": "LZ_HOUSTON",
       "profile_id": "resstock-2025-1-amy2018-tx-100",
-      "lon": -95.366466,
-      "lat": 29.687844
+      "lon": -95.365271,
+      "lat": 29.683534
     },
     {
       "site_id": "W-01",
       "cluster_id": "W",
       "program_id": "P1",
       "ready_date": "2018-06-04",
-      "deadline": "2018-06-06",
-      "duration_min": 210,
+      "deadline": "2018-06-11",
+      "duration_min": 180,
       "required_skill": "install",
       "configuration_id": "B13",
       "load_zone": "LZ_HOUSTON",
       "profile_id": "resstock-2025-1-amy2018-tx-100",
-      "lon": -95.499364,
-      "lat": 29.741874
+      "lon": -95.48819,
+      "lat": 29.740636
     },
     {
       "site_id": "N-02",
       "cluster_id": "N",
       "program_id": "P1",
       "ready_date": "2018-06-05",
-      "deadline": "2018-06-07",
+      "deadline": "2018-06-12",
       "duration_min": 240,
       "required_skill": "install",
       "configuration_id": "B13",
       "load_zone": "LZ_HOUSTON",
       "profile_id": "resstock-2025-1-amy2018-tx-100",
-      "lon": -95.409469,
-      "lat": 29.803977
+      "lon": -95.405347,
+      "lat": 29.81204
     },
     {
       "site_id": "S-02",
       "cluster_id": "S",
       "program_id": "P1",
-      "ready_date": "2018-06-04",
-      "deadline": "2018-06-07",
-      "duration_min": 240,
-      "required_skill": "install",
-      "configuration_id": "B13",
-      "load_zone": "LZ_HOUSTON",
-      "profile_id": "resstock-2025-1-amy2018-tx-100",
-      "lon": -95.37161,
-      "lat": 29.678984
-    },
-    {
-      "site_id": "W-02",
-      "cluster_id": "W",
-      "program_id": "P1",
-      "ready_date": "2018-06-04",
-      "deadline": "2018-06-05",
-      "duration_min": 180,
-      "required_skill": "install",
-      "configuration_id": "B13",
-      "load_zone": "LZ_HOUSTON",
-      "profile_id": "resstock-2025-1-amy2018-tx-100",
-      "lon": -95.486037,
-      "lat": 29.746805
-    },
-    {
-      "site_id": "N-03",
-      "cluster_id": "N",
-      "program_id": "P1",
-      "ready_date": "2018-06-06",
-      "deadline": "2018-06-06",
+      "ready_date": "2018-06-05",
+      "deadline": "2018-06-12",
       "duration_min": 210,
       "required_skill": "install",
       "configuration_id": "B13",
       "load_zone": "LZ_HOUSTON",
       "profile_id": "resstock-2025-1-amy2018-tx-100",
-      "lon": -95.407956,
-      "lat": 29.807599
+      "lon": -95.36568,
+      "lat": 29.684026
+    },
+    {
+      "site_id": "W-02",
+      "cluster_id": "W",
+      "program_id": "P1",
+      "ready_date": "2018-06-05",
+      "deadline": "2018-06-12",
+      "duration_min": 180,
+      "required_skill": "install",
+      "configuration_id": "B13",
+      "load_zone": "LZ_HOUSTON",
+      "profile_id": "resstock-2025-1-amy2018-tx-100",
+      "lon": -95.491016,
+      "lat": 29.745564
+    },
+    {
+      "site_id": "N-03",
+      "cluster_id": "N",
+      "program_id": "P1",
+      "ready_date": "2018-06-05",
+      "deadline": "2018-06-12",
+      "duration_min": 180,
+      "required_skill": "install",
+      "configuration_id": "B13",
+      "load_zone": "LZ_HOUSTON",
+      "profile_id": "resstock-2025-1-amy2018-tx-100",
+      "lon": -95.396037,
+      "lat": 29.806805
     },
     {
       "site_id": "S-03",
       "cluster_id": "S",
       "program_id": "P1",
       "ready_date": "2018-06-05",
-      "deadline": "2018-06-07",
-      "duration_min": 240,
-      "required_skill": "install",
-      "configuration_id": "B13",
-      "load_zone": "LZ_HOUSTON",
-      "profile_id": "resstock-2025-1-amy2018-tx-100",
-      "lon": -95.37471,
-      "lat": 29.670869
-    },
-    {
-      "site_id": "W-03",
-      "cluster_id": "W",
-      "program_id": "P1",
-      "ready_date": "2018-06-05",
-      "deadline": "2018-06-08",
+      "deadline": "2018-06-12",
       "duration_min": 180,
       "required_skill": "install",
       "configuration_id": "B13",
       "load_zone": "LZ_HOUSTON",
       "profile_id": "resstock-2025-1-amy2018-tx-100",
-      "lon": -95.480538,
-      "lat": 29.747571
+      "lon": -95.360856,
+      "lat": 29.676732
+    },
+    {
+      "site_id": "W-03",
+      "cluster_id": "W",
+      "program_id": "P1",
+      "ready_date": "2018-06-07",
+      "deadline": "2018-06-14",
+      "duration_min": 240,
+      "required_skill": "install",
+      "configuration_id": "B13",
+      "load_zone": "LZ_HOUSTON",
+      "profile_id": "resstock-2025-1-amy2018-tx-100",
+      "lon": -95.498066,
+      "lat": 29.75695
     },
     {
       "site_id": "N-04",
       "cluster_id": "N",
       "program_id": "P1",
-      "ready_date": "2018-06-05",
-      "deadline": "2018-06-08",
+      "ready_date": "2018-06-06",
+      "deadline": "2018-06-13",
       "duration_min": 240,
       "required_skill": "install",
       "configuration_id": "B13",
       "load_zone": "LZ_HOUSTON",
       "profile_id": "resstock-2025-1-amy2018-tx-100",
-      "lon": -95.39763,
-      "lat": 29.817234
+      "lon": -95.393857,
+      "lat": 29.814595
     },
     {
       "site_id": "S-04",
       "cluster_id": "S",
       "program_id": "P1",
-      "ready_date": "2018-06-05",
-      "deadline": "2018-06-07",
+      "ready_date": "2018-06-04",
+      "deadline": "2018-06-11",
       "duration_min": 240,
       "required_skill": "install",
       "configuration_id": "B13",
       "load_zone": "LZ_HOUSTON",
       "profile_id": "resstock-2025-1-amy2018-tx-100",
-      "lon": -95.378609,
-      "lat": 29.683225
+      "lon": -95.360538,
+      "lat": 29.677571
     },
     {
       "site_id": "W-04",
       "cluster_id": "W",
       "program_id": "P1",
       "ready_date": "2018-06-06",
-      "deadline": "2018-06-07",
-      "duration_min": 180,
+      "deadline": "2018-06-13",
+      "duration_min": 210,
       "required_skill": "install",
       "configuration_id": "B13",
       "load_zone": "LZ_HOUSTON",
       "profile_id": "resstock-2025-1-amy2018-tx-100",
-      "lon": -95.48267,
-      "lat": 29.747603
+      "lon": -95.483412,
+      "lat": 29.75237
     },
     {
       "site_id": "N-05",
       "cluster_id": "N",
       "program_id": "P1",
-      "ready_date": "2018-06-07",
-      "deadline": "2018-06-12",
-      "duration_min": 210,
-      "required_skill": "install",
-      "configuration_id": "B13",
-      "load_zone": "LZ_HOUSTON",
-      "profile_id": "resstock-2025-1-amy2018-tx-100",
-      "lon": -95.406747,
-      "lat": 29.807105
-    },
-    {
-      "site_id": "S-05",
-      "cluster_id": "S",
-      "program_id": "P1",
-      "ready_date": "2018-06-06",
-      "deadline": "2018-06-11",
-      "duration_min": 240,
-      "required_skill": "install",
-      "configuration_id": "B13",
-      "load_zone": "LZ_HOUSTON",
-      "profile_id": "resstock-2025-1-amy2018-tx-100",
-      "lon": -95.361267,
-      "lat": 29.682961
-    },
-    {
-      "site_id": "W-05",
-      "cluster_id": "W",
-      "program_id": "P1",
-      "ready_date": "2018-06-06",
-      "deadline": "2018-06-12",
-      "duration_min": 180,
-      "required_skill": "install",
-      "configuration_id": "B13",
-      "load_zone": "LZ_HOUSTON",
-      "profile_id": "resstock-2025-1-amy2018-tx-100",
-      "lon": -95.489317,
-      "lat": 29.744896
-    },
-    {
-      "site_id": "N-06",
-      "cluster_id": "N",
-      "program_id": "P1",
       "ready_date": "2018-06-08",
-      "deadline": "2018-06-12",
-      "duration_min": 210,
-      "required_skill": "install",
-      "configuration_id": "B13",
-      "load_zone": "LZ_HOUSTON",
-      "profile_id": "resstock-2025-1-amy2018-tx-100",
-      "lon": -95.39021,
-      "lat": 29.8128
-    },
-    {
-      "site_id": "S-06",
-      "cluster_id": "S",
-      "program_id": "P1",
-      "ready_date": "2018-06-07",
-      "deadline": "2018-06-11",
-      "duration_min": 240,
-      "required_skill": "install",
-      "configuration_id": "B13",
-      "load_zone": "LZ_HOUSTON",
-      "profile_id": "resstock-2025-1-amy2018-tx-100",
-      "lon": -95.373514,
-      "lat": 29.685366
-    },
-    {
-      "site_id": "W-06",
-      "cluster_id": "W",
-      "program_id": "P1",
-      "ready_date": "2018-06-11",
-      "deadline": "2018-06-11",
-      "duration_min": 180,
-      "required_skill": "install",
-      "configuration_id": "B13",
-      "load_zone": "LZ_HOUSTON",
-      "profile_id": "resstock-2025-1-amy2018-tx-100",
-      "lon": -95.483899,
-      "lat": 29.748023
-    },
-    {
-      "site_id": "N-07",
-      "cluster_id": "N",
-      "program_id": "P1",
-      "ready_date": "2018-06-12",
-      "deadline": "2018-06-12",
-      "duration_min": 240,
-      "required_skill": "install",
-      "configuration_id": "B13",
-      "load_zone": "LZ_HOUSTON",
-      "profile_id": "resstock-2025-1-amy2018-tx-100",
-      "lon": -95.392473,
-      "lat": 29.806294
-    },
-    {
-      "site_id": "S-07",
-      "cluster_id": "S",
-      "program_id": "P1",
-      "ready_date": "2018-06-08",
-      "deadline": "2018-06-13",
-      "duration_min": 210,
-      "required_skill": "install",
-      "configuration_id": "B13",
-      "load_zone": "LZ_HOUSTON",
-      "profile_id": "resstock-2025-1-amy2018-tx-100",
-      "lon": -95.362306,
-      "lat": 29.682857
-    },
-    {
-      "site_id": "W-07",
-      "cluster_id": "W",
-      "program_id": "P1",
-      "ready_date": "2018-06-12",
-      "deadline": "2018-06-13",
-      "duration_min": 180,
-      "required_skill": "install",
-      "configuration_id": "B13",
-      "load_zone": "LZ_HOUSTON",
-      "profile_id": "resstock-2025-1-amy2018-tx-100",
-      "lon": -95.495067,
-      "lat": 29.751227
-    },
-    {
-      "site_id": "N-08",
-      "cluster_id": "N",
-      "program_id": "P1",
-      "ready_date": "2018-06-12",
       "deadline": "2018-06-15",
       "duration_min": 240,
       "required_skill": "install",
       "configuration_id": "B13",
       "load_zone": "LZ_HOUSTON",
       "profile_id": "resstock-2025-1-amy2018-tx-100",
-      "lon": -95.401431,
-      "lat": 29.811671
+      "lon": -95.406154,
+      "lat": 29.801391
     },
     {
-      "site_id": "S-08",
+      "site_id": "S-05",
       "cluster_id": "S",
       "program_id": "P1",
-      "ready_date": "2018-06-12",
-      "deadline": "2018-06-13",
+      "ready_date": "2018-06-05",
+      "deadline": "2018-06-12",
       "duration_min": 180,
       "required_skill": "install",
       "configuration_id": "B13",
       "load_zone": "LZ_HOUSTON",
       "profile_id": "resstock-2025-1-amy2018-tx-100",
-      "lon": -95.369809,
-      "lat": 29.671818
+      "lon": -95.364539,
+      "lat": 29.689704
+    },
+    {
+      "site_id": "W-05",
+      "cluster_id": "W",
+      "program_id": "P1",
+      "ready_date": "2018-06-04",
+      "deadline": "2018-06-11",
+      "duration_min": 210,
+      "required_skill": "install",
+      "configuration_id": "B13",
+      "load_zone": "LZ_HOUSTON",
+      "profile_id": "resstock-2025-1-amy2018-tx-100",
+      "lon": -95.492397,
+      "lat": 29.749068
+    },
+    {
+      "site_id": "N-06",
+      "cluster_id": "N",
+      "program_id": "P1",
+      "ready_date": "2018-06-05",
+      "deadline": "2018-06-12",
+      "duration_min": 210,
+      "required_skill": "install",
+      "configuration_id": "B13",
+      "load_zone": "LZ_HOUSTON",
+      "profile_id": "resstock-2025-1-amy2018-tx-100",
+      "lon": -95.402596,
+      "lat": 29.80419
+    },
+    {
+      "site_id": "S-06",
+      "cluster_id": "S",
+      "program_id": "P1",
+      "ready_date": "2018-06-04",
+      "deadline": "2018-06-11",
+      "duration_min": 240,
+      "required_skill": "install",
+      "configuration_id": "B13",
+      "load_zone": "LZ_HOUSTON",
+      "profile_id": "resstock-2025-1-amy2018-tx-100",
+      "lon": -95.367817,
+      "lat": 29.673423
+    },
+    {
+      "site_id": "W-06",
+      "cluster_id": "W",
+      "program_id": "P1",
+      "ready_date": "2018-06-05",
+      "deadline": "2018-06-12",
+      "duration_min": 240,
+      "required_skill": "install",
+      "configuration_id": "B13",
+      "load_zone": "LZ_HOUSTON",
+      "profile_id": "resstock-2025-1-amy2018-tx-100",
+      "lon": -95.496732,
+      "lat": 29.747589
+    },
+    {
+      "site_id": "N-07",
+      "cluster_id": "N",
+      "program_id": "P1",
+      "ready_date": "2018-06-08",
+      "deadline": "2018-06-15",
+      "duration_min": 180,
+      "required_skill": "install",
+      "configuration_id": "B13",
+      "load_zone": "LZ_HOUSTON",
+      "profile_id": "resstock-2025-1-amy2018-tx-100",
+      "lon": -95.405608,
+      "lat": 29.806486
+    },
+    {
+      "site_id": "S-07",
+      "cluster_id": "S",
+      "program_id": "P1",
+      "ready_date": "2018-06-05",
+      "deadline": "2018-06-12",
+      "duration_min": 210,
+      "required_skill": "install",
+      "configuration_id": "B13",
+      "load_zone": "LZ_HOUSTON",
+      "profile_id": "resstock-2025-1-amy2018-tx-100",
+      "lon": -95.363564,
+      "lat": 29.686101
+    },
+    {
+      "site_id": "W-07",
+      "cluster_id": "W",
+      "program_id": "P1",
+      "ready_date": "2018-06-06",
+      "deadline": "2018-06-13",
+      "duration_min": 240,
+      "required_skill": "install",
+      "configuration_id": "B13",
+      "load_zone": "LZ_HOUSTON",
+      "profile_id": "resstock-2025-1-amy2018-tx-100",
+      "lon": -95.498676,
+      "lat": 29.758263
+    },
+    {
+      "site_id": "N-08",
+      "cluster_id": "N",
+      "program_id": "P1",
+      "ready_date": "2018-06-06",
+      "deadline": "2018-06-13",
+      "duration_min": 240,
+      "required_skill": "install",
+      "configuration_id": "B13",
+      "load_zone": "LZ_HOUSTON",
+      "profile_id": "resstock-2025-1-amy2018-tx-100",
+      "lon": -95.405747,
+      "lat": 29.809985
+    },
+    {
+      "site_id": "S-08",
+      "cluster_id": "S",
+      "program_id": "P1",
+      "ready_date": "2018-06-07",
+      "deadline": "2018-06-14",
+      "duration_min": 240,
+      "required_skill": "install",
+      "configuration_id": "B13",
+      "load_zone": "LZ_HOUSTON",
+      "profile_id": "resstock-2025-1-amy2018-tx-100",
+      "lon": -95.377143,
+      "lat": 29.672793
     },
     {
       "site_id": "W-08",
       "cluster_id": "W",
       "program_id": "P1",
-      "ready_date": "2018-06-13",
-      "deadline": "2018-06-13",
+      "ready_date": "2018-06-08",
+      "deadline": "2018-06-15",
+      "duration_min": 210,
+      "required_skill": "install",
+      "configuration_id": "B13",
+      "load_zone": "LZ_HOUSTON",
+      "profile_id": "resstock-2025-1-amy2018-tx-100",
+      "lon": -95.48922,
+      "lat": 29.75494
+    },
+    {
+      "site_id": "N-09",
+      "cluster_id": "N",
+      "program_id": "P1",
+      "ready_date": "2018-06-08",
+      "deadline": "2018-06-15",
       "duration_min": 180,
+      "required_skill": "install",
+      "configuration_id": "B13",
+      "load_zone": "LZ_HOUSTON",
+      "profile_id": "resstock-2025-1-amy2018-tx-100",
+      "lon": -95.402012,
+      "lat": 29.804386
+    },
+    {
+      "site_id": "S-09",
+      "cluster_id": "S",
+      "program_id": "P1",
+      "ready_date": "2018-06-08",
+      "deadline": "2018-06-15",
+      "duration_min": 180,
+      "required_skill": "install",
+      "configuration_id": "B13",
+      "load_zone": "LZ_HOUSTON",
+      "profile_id": "resstock-2025-1-amy2018-tx-100",
+      "lon": -95.37013,
+      "lat": 29.685116
+    },
+    {
+      "site_id": "W-09",
+      "cluster_id": "W",
+      "program_id": "P1",
+      "ready_date": "2018-06-05",
+      "deadline": "2018-06-12",
+      "duration_min": 210,
       "required_skill": "install",
       "configuration_id": "B13",
       "load_zone": "LZ_HOUSTON",
@@ -475,88 +725,46 @@
       "lat": 29.755842
     },
     {
-      "site_id": "N-09",
+      "site_id": "N-10",
       "cluster_id": "N",
       "program_id": "P1",
-      "ready_date": "2018-06-13",
+      "ready_date": "2018-06-08",
+      "deadline": "2018-06-15",
+      "duration_min": 210,
+      "required_skill": "install",
+      "configuration_id": "B13",
+      "load_zone": "LZ_HOUSTON",
+      "profile_id": "resstock-2025-1-amy2018-tx-100",
+      "lon": -95.408729,
+      "lat": 29.807632
+    },
+    {
+      "site_id": "S-10",
+      "cluster_id": "S",
+      "program_id": "P1",
+      "ready_date": "2018-06-08",
       "deadline": "2018-06-15",
       "duration_min": 180,
       "required_skill": "install",
       "configuration_id": "B13",
       "load_zone": "LZ_HOUSTON",
       "profile_id": "resstock-2025-1-amy2018-tx-100",
-      "lon": -95.402305,
-      "lat": 29.811918
-    },
-    {
-      "site_id": "S-09",
-      "cluster_id": "S",
-      "program_id": "P1",
-      "ready_date": "2018-06-13",
-      "deadline": "2018-06-15",
-      "duration_min": 210,
-      "required_skill": "install",
-      "configuration_id": "B13",
-      "load_zone": "LZ_HOUSTON",
-      "profile_id": "resstock-2025-1-amy2018-tx-100",
-      "lon": -95.360578,
-      "lat": 29.687216
-    },
-    {
-      "site_id": "W-09",
-      "cluster_id": "W",
-      "program_id": "P1",
-      "ready_date": "2018-06-14",
-      "deadline": "2018-06-15",
-      "duration_min": 240,
-      "required_skill": "install",
-      "configuration_id": "B13",
-      "load_zone": "LZ_HOUSTON",
-      "profile_id": "resstock-2025-1-amy2018-tx-100",
-      "lon": -95.497709,
-      "lat": 29.757696
-    },
-    {
-      "site_id": "N-10",
-      "cluster_id": "N",
-      "program_id": "P1",
-      "ready_date": "2018-06-14",
-      "deadline": "2018-06-15",
-      "duration_min": 210,
-      "required_skill": "install",
-      "configuration_id": "B13",
-      "load_zone": "LZ_HOUSTON",
-      "profile_id": "resstock-2025-1-amy2018-tx-100",
-      "lon": -95.407769,
-      "lat": 29.808695
-    },
-    {
-      "site_id": "S-10",
-      "cluster_id": "S",
-      "program_id": "P1",
-      "ready_date": "2018-06-14",
-      "deadline": "2018-06-15",
-      "duration_min": 240,
-      "required_skill": "install",
-      "configuration_id": "B13",
-      "load_zone": "LZ_HOUSTON",
-      "profile_id": "resstock-2025-1-amy2018-tx-100",
-      "lon": -95.362483,
-      "lat": 29.675268
+      "lon": -95.374972,
+      "lat": 29.681065
     },
     {
       "site_id": "W-10",
       "cluster_id": "W",
       "program_id": "P1",
-      "ready_date": "2018-06-13",
-      "deadline": "2018-06-15",
-      "duration_min": 240,
+      "ready_date": "2018-06-04",
+      "deadline": "2018-06-11",
+      "duration_min": 210,
       "required_skill": "install",
       "configuration_id": "B13",
       "load_zone": "LZ_HOUSTON",
       "profile_id": "resstock-2025-1-amy2018-tx-100",
-      "lon": -95.481747,
-      "lat": 29.75741
+      "lon": -95.486366,
+      "lat": 29.750739
     }
   ],
   "crew_days": [
@@ -955,17 +1163,17 @@
     {
       "configuration_id": "B13",
       "available_date": "2018-06-04",
-      "quantity": 9
+      "quantity": 14
     },
     {
       "configuration_id": "B13",
       "available_date": "2018-06-07",
-      "quantity": 9
+      "quantity": 13
     },
     {
       "configuration_id": "B13",
       "available_date": "2018-06-12",
-      "quantity": 12
+      "quantity": 3
     }
   ],
   "current_plan": [
@@ -976,38 +1184,62 @@
       "locked": true
     },
     {
-      "site_id": "S-01",
+      "site_id": "S-04",
       "crew_id": "B",
       "date": "2018-06-04",
       "locked": true
     },
     {
-      "site_id": "W-01",
+      "site_id": "S-06",
       "crew_id": "C",
       "date": "2018-06-04",
       "locked": true
     },
     {
-      "site_id": "N-02",
+      "site_id": "W-01",
       "crew_id": "A",
       "date": "2018-06-05",
       "locked": false
     },
     {
-      "site_id": "S-02",
-      "crew_id": "B",
+      "site_id": "W-05",
+      "crew_id": "A",
       "date": "2018-06-05",
       "locked": false
     },
     {
       "site_id": "W-02",
+      "crew_id": "B",
+      "date": "2018-06-05",
+      "locked": false
+    },
+    {
+      "site_id": "W-10",
+      "crew_id": "B",
+      "date": "2018-06-05",
+      "locked": false
+    },
+    {
+      "site_id": "N-02",
       "crew_id": "C",
       "date": "2018-06-05",
       "locked": false
     },
     {
       "site_id": "N-03",
+      "crew_id": "C",
+      "date": "2018-06-05",
+      "locked": false
+    },
+    {
+      "site_id": "N-06",
       "crew_id": "A",
+      "date": "2018-06-06",
+      "locked": false
+    },
+    {
+      "site_id": "S-01",
+      "crew_id": "B",
       "date": "2018-06-06",
       "locked": false
     },
@@ -1018,19 +1250,25 @@
       "locked": false
     },
     {
-      "site_id": "W-03",
+      "site_id": "S-02",
       "crew_id": "C",
       "date": "2018-06-06",
       "locked": false
     },
     {
-      "site_id": "N-04",
+      "site_id": "S-05",
+      "crew_id": "C",
+      "date": "2018-06-06",
+      "locked": false
+    },
+    {
+      "site_id": "S-07",
       "crew_id": "A",
       "date": "2018-06-07",
       "locked": false
     },
     {
-      "site_id": "S-04",
+      "site_id": "W-06",
       "crew_id": "B",
       "date": "2018-06-07",
       "locked": false
@@ -1042,111 +1280,81 @@
       "locked": false
     },
     {
-      "site_id": "N-05",
+      "site_id": "W-09",
+      "crew_id": "C",
+      "date": "2018-06-07",
+      "locked": false
+    },
+    {
+      "site_id": "N-04",
       "crew_id": "A",
       "date": "2018-06-08",
-      "locked": false
-    },
-    {
-      "site_id": "S-05",
-      "crew_id": "B",
-      "date": "2018-06-08",
-      "locked": false
-    },
-    {
-      "site_id": "W-05",
-      "crew_id": "C",
-      "date": "2018-06-08",
-      "locked": false
-    },
-    {
-      "site_id": "N-06",
-      "crew_id": "A",
-      "date": "2018-06-11",
-      "locked": false
-    },
-    {
-      "site_id": "S-06",
-      "crew_id": "B",
-      "date": "2018-06-11",
-      "locked": false
-    },
-    {
-      "site_id": "W-06",
-      "crew_id": "C",
-      "date": "2018-06-11",
       "locked": false
     },
     {
       "site_id": "N-07",
       "crew_id": "A",
-      "date": "2018-06-12",
+      "date": "2018-06-08",
       "locked": false
     },
     {
-      "site_id": "S-07",
+      "site_id": "N-08",
       "crew_id": "B",
-      "date": "2018-06-12",
+      "date": "2018-06-08",
+      "locked": false
+    },
+    {
+      "site_id": "N-09",
+      "crew_id": "B",
+      "date": "2018-06-08",
       "locked": false
     },
     {
       "site_id": "W-07",
       "crew_id": "C",
-      "date": "2018-06-12",
-      "locked": false
-    },
-    {
-      "site_id": "N-08",
-      "crew_id": "A",
-      "date": "2018-06-13",
+      "date": "2018-06-08",
       "locked": false
     },
     {
       "site_id": "S-08",
-      "crew_id": "B",
-      "date": "2018-06-13",
-      "locked": false
-    },
-    {
-      "site_id": "W-08",
-      "crew_id": "C",
-      "date": "2018-06-13",
-      "locked": false
-    },
-    {
-      "site_id": "N-09",
       "crew_id": "A",
-      "date": "2018-06-14",
+      "date": "2018-06-11",
       "locked": false
     },
     {
       "site_id": "S-09",
-      "crew_id": "B",
-      "date": "2018-06-14",
+      "crew_id": "A",
+      "date": "2018-06-11",
       "locked": false
     },
     {
-      "site_id": "W-09",
+      "site_id": "W-03",
+      "crew_id": "B",
+      "date": "2018-06-11",
+      "locked": false
+    },
+    {
+      "site_id": "N-05",
       "crew_id": "C",
-      "date": "2018-06-14",
+      "date": "2018-06-11",
       "locked": false
     },
     {
       "site_id": "N-10",
       "crew_id": "A",
-      "date": "2018-06-15",
+      "date": "2018-06-12",
       "locked": false
     },
     {
       "site_id": "S-10",
       "crew_id": "B",
-      "date": "2018-06-15",
+      "date": "2018-06-12",
       "locked": false
     },
     {
-      "site_id": "W-10",
+      "site_id": "W-08",
       "crew_id": "C",
-      "date": "2018-06-15",
+      "date": "2018-06-12",
       "locked": false
     }
   ]

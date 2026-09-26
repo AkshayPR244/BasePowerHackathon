@@ -90,6 +90,26 @@ class ProvenanceNote(Contract):
     manifest_id: str | None = None
 
 
+class Parameter(Contract):
+    """One operational number the model uses, with where it came from."""
+
+    name: str
+    value: float | str
+    unit: str
+    kind: DataKind
+    derivation: str = Field(description="Rule, formula, or citation that produced the value")
+    source: str | None = Field(default=None, description="URL or reference, when one exists")
+
+
+class WeatherRule(Contract):
+    """A crew-day is lost when any working hour meets either condition."""
+
+    thunder: bool = Field(default=True, description="Lose the day on any reported thunderstorm")
+    heavy_rain_mm_per_h: float = Field(gt=0)
+    work_start_hour: int = Field(ge=0, le=23)
+    work_end_hour: int = Field(ge=1, le=24, description="Exclusive")
+
+
 class ScenarioConfig(Contract):
     name: str
     description: str
@@ -106,6 +126,8 @@ class ScenarioConfig(Contract):
     batteries: list[BatteryConfig]
     synthetic: bool
     provenance: list[ProvenanceNote]
+    parameters: list[Parameter] = []
+    weather_rule: WeatherRule | None = None
 
 
 class Scenario(Contract):

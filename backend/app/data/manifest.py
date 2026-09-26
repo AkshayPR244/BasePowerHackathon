@@ -53,7 +53,7 @@ def write_manifest(manifest: Manifest, directory: Path | None = None) -> Path:
     directory = MANIFEST_ROOT if directory is None else Path(directory)
     directory.mkdir(parents=True, exist_ok=True)
     path = directory / f"{manifest.dataset_id}.json"
-    path.write_text(manifest.model_dump_json(indent=2) + "\n")
+    path.write_text(manifest.model_dump_json(indent=2) + "\n", encoding="utf-8", newline="\n")
     return path
 
 

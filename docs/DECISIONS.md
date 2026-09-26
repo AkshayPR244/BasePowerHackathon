@@ -43,6 +43,14 @@ One line of reasoning each. Newest changes at the bottom of each section.
 - **Measured on standard.** Strict with no disruption changed 13 of 30 planned installs under the spec order and 0 now. Keeping the plan gives up $39.44 of modeled value ($1,998.39 to $1,958.95) and raises travel from 1,190 to 1,550 min. Late-shipment recovery: 3 jobs late and 13 delay days in both orders, with 10 changed installs instead of 15.
 - **The tiny expected results list stages in the new order.** Their values, assignments, and objectives did not change, because tiny has equal values.
 
+## First principles for the standard scenario (2026-09-26)
+
+- **Every generated number follows a stated rule or a cited source,** listed in `scenario.yaml` under `parameters`. Deadlines are ready date + 5 business days (US federal holidays excluded). The current plan is an earliest-deadline-first booking. Deliveries are sized to the planned installs.
+- **Travel comes from geometry:** (2 x depot-to-cluster + 2 x mean site radius) x 1.417 circuity / 40 km/h. Circuity is the US nationwide detour index (Boscoe, Henry, Zdeb 2012). Speed is an assumption.
+- **Battery comes from the Powerwall 3 datasheet:** 13.5 kWh, 5 kW charge, 11.5 kW output. The datasheet gives no grid-charge round trip, so we use its 89% solar-to-battery-to-home/grid figure and split it as sqrt(0.89) per direction. This is a labeled approximation.
+- **Weather uses observed METAR reports from Houston Hobby (IEM ASOS archive), not Open-Meteo.** Open-Meteo's reanalysis reported no thunderstorm codes for Houston in June and July 2018 (1 lost weekday). METAR reported thunder on 10 weekdays. The lightning rule needs observed thunder, so we use METAR. The rule: any `TS` report or at least 7.6 mm/h (AMS heavy rain) during 08:00 to 17:00 loses the crew-day.
+- **The late-shipment example no longer makes any job late** under the rule-based deadlines. We report that as is.
+
 ## Skills
 
 - **frontend-design** (anthropics/claude-plugins-official) and **webapp-testing** (anthropics/skills): vendored into `.claude/skills/` with their Apache-2.0 licenses. Vendoring means teammates need no plugin install and subagents can preload them by name.

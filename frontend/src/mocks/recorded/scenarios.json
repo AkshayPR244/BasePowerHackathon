@@ -1,8 +1,8 @@
 [
   {
     "scenario_id": "standard",
-    "name": "Standard synthetic recovery benchmark",
-    "scenario_hash": "9121db683a3893e136069fa7cfc20f6960a29407ef895653a0977339daff87ec",
+    "name": "standard synthetic recovery benchmark",
+    "scenario_hash": "6c0f6d8105c349caa19953b80b35f28bbc509219648b3f739acb1297710e25ac",
     "planning_start": "2018-06-04",
     "planning_end": "2018-06-15",
     "n_sites": 30,

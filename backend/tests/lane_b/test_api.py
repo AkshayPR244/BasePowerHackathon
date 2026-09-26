@@ -77,7 +77,6 @@ def test_standard_every_endpoint():
     rec = _post(STANDARD_RECOVERY)
     assert rec.status in (PlanStatus.optimal, PlanStatus.feasible)
     assert rec.validation.checked and rec.validation.valid
-    assert rec.objective.jobs_late > 0  # the late shipment breaks commitments
 
     edf = _post({"scenario_id": "standard", "revision": 0, "algorithm": "baseline_edf"})
     assert edf.validation.valid
@@ -89,12 +88,26 @@ def test_standard_every_endpoint():
     assert diff.status_code == 200
     assert diff.json()["summary"]["newly_late"] == rec.objective.jobs_late
 
-    late = next(a.site_id for a in rec.assignments if a.state == JobState.late)
-    body = {
-        "request": STANDARD_RECOVERY,
-        "base": rec.model_dump(mode="json"),
-        "intervention": {"kind": "force_include", "site_id": late},
-    }
-    cf = client.post("/api/plans/counterfactual", json=body)
-    assert cf.status_code == 200
-    assert cf.json()["result"]["validation"]["valid"] is True
+    target = next(
+        (a.site_id for a in rec.assignments if a.state == JobState.late),
+        rec.assignments[-1].site_id,
+    )
+    for intervention in [
+        {"kind": "force_include", "site_id": target},
+        {
+            "kind": "add_crew_day",
+            "crew_id": "D",
+            "date": "2018-06-11",
+            "available_min": 480,
+            "skills": ["install"],
+            "allowed_clusters": ["N", "S", "W"],
+        },
+    ]:
+        body = {
+            "request": STANDARD_RECOVERY,
+            "base": rec.model_dump(mode="json"),
+            "intervention": intervention,
+        }
+        cf = client.post("/api/plans/counterfactual", json=body)
+        assert cf.status_code == 200
+        assert cf.json()["result"]["validation"]["valid"] is True

@@ -11,56 +11,56 @@
     "priority": "P0",
     "title": "Contract tests: tiny scenario and every data/demo/tiny/expected/*.json round-trip through the models, and expected scenario_hash values match the loader",
     "acceptance": "cd backend && uv run pytest tests/contract/test_fixtures_roundtrip.py -q",
-    "passes": false
+    "passes": true
   },
   {
     "id": "A-03",
     "priority": "P0",
     "title": "Boundary test: app/validate never imports app.planning or app.baselines, app/contracts imports no lane code",
     "acceptance": "cd backend && uv run pytest tests/contract/test_boundaries.py -q",
-    "passes": false
+    "passes": true
   },
   {
     "id": "A-04",
     "priority": "P0",
     "title": "Validator recomputes capacity, cluster, skill, readiness, deadline, inventory, and locks from assignments and sets checked=true",
     "acceptance": "cd backend && uv run pytest tests/lane_a/test_validator.py -q",
-    "passes": false
+    "passes": true
   },
   {
     "id": "A-05",
     "priority": "P0",
     "title": "Validator passes every expected tiny plan with zero issues and flags one deliberately broken plan per ViolationCode",
     "acceptance": "cd backend && uv run pytest tests/lane_a/test_validator.py -q -k \"expected or broken\"",
-    "passes": false
+    "passes": true
   },
   {
     "id": "A-06",
     "priority": "P0",
     "title": "Validator recomputes ObjectiveComponents and flags OBJECTIVE_MISMATCH",
     "acceptance": "cd backend && uv run pytest tests/lane_a/test_validator.py -q -k objective",
-    "passes": false
+    "passes": true
   },
   {
     "id": "A-07",
     "priority": "P0",
     "title": "Tiny enumerator reproduces expected objectives for strict, strict infeasible, and recovery with Crew A out Monday",
     "acceptance": "cd backend && uv run pytest tests/lane_a/test_enumerate_tiny.py -q",
-    "passes": false
+    "passes": true
   },
   {
     "id": "A-08",
     "priority": "P0",
     "title": "Input validation returns structured InputIssues for duplicate IDs, unknown references, bad values, date order, duplicate planned installs",
     "acceptance": "cd backend && uv run pytest tests/lane_a/test_validate_inputs.py -q",
-    "passes": false
+    "passes": true
   },
   {
     "id": "A-09",
     "priority": "P0",
     "title": "Ready date after deadline loads as a valid scenario. Contradictory hard locks surface as CONTRADICTORY_LOCKS and are never dropped",
     "acceptance": "cd backend && uv run pytest tests/lane_a/test_validate_inputs.py -q -k \"ready_after_deadline or contradictory_locks\"",
-    "passes": false
+    "passes": true
   },
   {
     "id": "A-10",

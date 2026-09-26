@@ -16,7 +16,7 @@
       "value": 0.0,
       "bound": 0.0,
       "gap": 0.0,
-      "elapsed_ms": 29
+      "elapsed_ms": 30
     },
     {
       "name": "operating_value",
@@ -1205,5 +1205,5 @@
       "kind": "assumed"
     }
   ],
-  "solve_ms": 393
+  "solve_ms": 388
 }

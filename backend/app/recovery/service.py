@@ -18,7 +18,7 @@ from app.contracts.models import (
     RecoveryOptionsResult,
 )
 from app.contracts.visits import all_jobs, job_of_row, jobs_of
-from app.planning.edits import apply_edits
+from app.planning.edits import apply_edits, appointment_windows
 from app.planning.solve import InvalidPlanError, _validated, plan
 from app.recovery.economics import DEFAULTS, assumptions
 from app.recovery.impact import analyze
@@ -135,54 +135,86 @@ def _solve(base, edits, budget):
     return result
 
 
-def _candidates(base, disruption, cap):
+def _candidates(base, disruption, cap, original, no_action):
     edited = _check_edits(base, disruption)
-    changed = {
-        (e.crew_id, e.date) for e in disruption if hasattr(e, "crew_id") and hasattr(e, "date")
-    }
-    affected_crews = {c for c, _ in changed}
-    first = min((d for _, d in changed), default=base.config.planning_start)
-    days = sorted(edited.crew_days, key=lambda c: (c.date, c.crew_id))
-    # Bound the search; every candidate is explicit and the search is not claimed exhaustive.
-    ot = (
-        [
-            [ExtendCrewDay(crew_id=c.crew_id, date=c.date, extra_min=int(cap))]
-            for c in days
-            if c.date >= first
-            and (not affected_crews or c.crew_id in affected_crews)
-            and c.available_min > 0
-        ][:4]
-        if cap
-        else []
-    )
-    lost = [c for c in base.crew_days if (c.crew_id, c.date) in changed]
-    templates = lost or list(base.crew_days[:1])
-    temporary = []
-    seen = set()
+    jobs = all_jobs(base)
+    sites = {s.site_id: s for s in edited.sites}
+    by_site = {s.site_id: jobs_of(s) for s in base.sites}
+    after = {job_of_row(a, by_site): (a.crew_id, a.date) for a in no_action.assignments}
+    windows = appointment_windows(disruption)
+    demands = set()
+    for row in original.assignments:
+        jid = job_of_row(row, by_site)
+        if after.get(jid) == (row.crew_id, row.date):
+            continue
+        job, site = jobs[jid], sites[row.site_id]
+        first = max(row.date, site.ready_date)
+        window = windows.get(jid)
+        if window:
+            first = max(first, window[0])
+        # Capacity before the delayed receipt cannot serve the displaced battery visits.
+        if job.final:
+            for edit in disruption:
+                if (
+                    edit.kind == "delay_inventory"
+                    and edit.configuration_id == site.configuration_id
+                ):
+                    if edit.from_date <= row.date < edit.to_date:
+                        first = max(first, edit.to_date)
+        demands.add((first, job.required_skill, site.cluster_id, window[1] if window else None))
+
+    # Match capacity to displaced visits, not an arbitrary crew or the edit's shape.
+    # Date-first ordering gives different skills/clusters a chance before later dates.
+    days = sorted({c.date for c in base.crew_days})
+    templates = sorted(base.crew_days, key=lambda c: (c.date, c.crew_id))
+    existing = sorted(edited.crew_days, key=lambda c: (c.date, c.crew_id))
+    ot, temporary = [], []
+    seen_ot, seen_temp = set(), set()
     ids = {c.crew_id for c in base.crew_days}
-    for c in templates:
-        for day in sorted({d.date for d in base.crew_days if d.date >= first}):
-            key = (tuple(sorted(c.skills)), tuple(sorted(c.allowed_clusters)), day)
-            if key in seen:
+    for day in days:
+        for first, skill, cluster, last in sorted(
+            demands, key=lambda d: (d[0], d[1], d[2], str(d[3]))
+        ):
+            if day < first or (last and day > last):
                 continue
-            seen.add(key)
-            name = "TEMP-" + c.crew_id
-            while name in ids:
-                name += "-R"
-            temporary.append(
-                [
-                    AddCrewDay(
-                        crew_id=name,
-                        date=day,
-                        available_min=c.available_min,
-                        skills=c.skills,
-                        allowed_clusters=c.allowed_clusters,
-                    )
-                ]
-            )
-            if len(temporary) >= 4:
-                return ot, temporary
-    return ot, temporary
+            if cap:
+                for c in existing:
+                    key = (c.crew_id, day)
+                    if (
+                        c.date == day
+                        and c.available_min > 0
+                        and skill in c.skills
+                        and cluster in c.allowed_clusters
+                        and key not in seen_ot
+                    ):
+                        seen_ot.add(key)
+                        ot.append([ExtendCrewDay(crew_id=c.crew_id, date=day, extra_min=int(cap))])
+            for c in templates:
+                key = (tuple(sorted(c.skills)), tuple(sorted(c.allowed_clusters)), day)
+                if (
+                    c.available_min <= 0
+                    or skill not in c.skills
+                    or cluster not in c.allowed_clusters
+                    or key in seen_temp
+                ):
+                    continue
+                seen_temp.add(key)
+                name = "TEMP-" + c.crew_id
+                while name in ids:
+                    name += "-R"
+                temporary.append(
+                    [
+                        AddCrewDay(
+                            crew_id=name,
+                            date=day,
+                            available_min=c.available_min,
+                            skills=c.skills,
+                            allowed_clusters=c.allowed_clusters,
+                        )
+                    ]
+                )
+    # Bounded search, not an exhaustive intervention optimum.
+    return ot[:4], temporary[:4]
 
 
 def recover(scenario, disruption, current_plan=None, economics=None, interactive=False):
@@ -244,8 +276,9 @@ def recover(scenario, disruption, current_plan=None, economics=None, interactive
         no_action,
     )
     cap = next(a.value for a in rates if a.key == "max_overtime_min")
-    ot, temporary = _candidates(base, disruption, cap)
+    ot, temporary = _candidates(base, disruption, cap, original, no_action.result)
     options = [rebalance]
+    baseline = min([no_action, rebalance], key=rank)
     for kind, candidates in [("overtime", ot), ("temporary_capacity", temporary)]:
         best = None
         # Reserve at least one solve for each action kind in interactive mode.
@@ -262,6 +295,12 @@ def recover(scenario, disruption, current_plan=None, economics=None, interactive
                 else f"Add Crew {e.crew_id} on {e.date}"
             )
             candidate = wrap(kind, label, original, result, interventions, rates, no_action)
+            # Paid capacity must improve operational outcomes beyond doing nothing
+            # or simply rebalancing. Cost and arbitrary IDs cannot establish benefit.
+            if candidate.status not in FEASIBLE or not candidate.result.validation.valid:
+                continue
+            if baseline.status in FEASIBLE and rank(candidate)[:-2] >= rank(baseline)[:-2]:
+                continue
             if best is None or rank(candidate) < rank(best):
                 best = candidate
         if best is not None:

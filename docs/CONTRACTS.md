@@ -210,3 +210,7 @@ The HTTP API still loads named scenarios and does not persist approval sessions.
 `new_current_plan` back against an unchanged roster after adding capacity. Python callers can reuse
 the effective scenario; HTTP approval chaining is deferred. Appointment windows remain in the
 approved option's edit history and must be reapplied to future analyses.
+
+Recovery action lists may omit overtime/temporary capacity when the bounded search finds no
+validated operational improvement over both no action and rebalance. Render returned options;
+do not assume all three action kinds are present. Cost or option IDs alone do not establish benefit.

@@ -13,6 +13,7 @@ from app.contracts.models import (
 )
 from app.data import load_scenario
 from app.recovery import service
+from app.recovery.options import rank
 
 client = TestClient(app)
 STORM = [
@@ -31,7 +32,16 @@ def test_recovery_options_seam():
     result = RecoveryOptionsResult.model_validate(_ok(r))
     assert result.revision == 7
     assert result.no_action.kind == "no_action"
-    assert {o.kind for o in result.options} == {"rebalance", "overtime", "temporary_capacity"}
+    kinds = [o.kind for o in result.options]
+    assert "rebalance" in kinds
+    assert len(kinds) == len(set(kinds))
+    assert set(kinds) <= {"rebalance", "overtime", "temporary_capacity"}
+    baseline = min(
+        [result.no_action, next(o for o in result.options if o.kind == "rebalance")], key=rank
+    )
+    for option in result.options:
+        if option.kind != "rebalance":
+            assert rank(option)[:-2] < rank(baseline)[:-2]
     assert sum(o.lowest_modeled_cost for o in [result.no_action, *result.options]) == 1
     for o in [result.no_action, *result.options]:
         assert o.result.validation.checked and o.result.validation.valid

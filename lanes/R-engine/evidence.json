@@ -1,0 +1,112 @@
+{
+  "preparation_s": 0.002,
+  "runs": [
+    {
+      "interactive": true,
+      "elapsed_s": 2.433,
+      "options": [
+        {
+          "kind": "no_action",
+          "action": "Keep original crews; wait for their next open slot",
+          "status": "feasible",
+          "validated": true,
+          "missed": 4,
+          "visits_moved": 4,
+          "customers": 4,
+          "cost": 377.96,
+          "advantage_vs_no_action": 0.0
+        },
+        {
+          "kind": "rebalance",
+          "action": "Rebalance existing crews",
+          "status": "feasible",
+          "validated": true,
+          "missed": 4,
+          "visits_moved": 4,
+          "customers": 4,
+          "cost": 377.96,
+          "advantage_vs_no_action": 0.0
+        },
+        {
+          "kind": "overtime",
+          "action": "Crew BA +2h overtime on 2018-06-08",
+          "status": "feasible",
+          "validated": true,
+          "missed": 2,
+          "visits_moved": 9,
+          "customers": 9,
+          "cost": 361.48,
+          "advantage_vs_no_action": 16.48
+        },
+        {
+          "kind": "temporary_capacity",
+          "action": "Add Crew TEMP-BA on 2018-06-07",
+          "status": "feasible",
+          "validated": true,
+          "missed": 0,
+          "visits_moved": 4,
+          "customers": 4,
+          "cost": 453.28,
+          "advantage_vs_no_action": -75.32
+        }
+      ]
+    },
+    {
+      "interactive": false,
+      "elapsed_s": 11.356,
+      "options": [
+        {
+          "kind": "no_action",
+          "action": "Keep original crews; wait for their next open slot",
+          "status": "feasible",
+          "validated": true,
+          "missed": 4,
+          "visits_moved": 4,
+          "customers": 4,
+          "cost": 377.96,
+          "advantage_vs_no_action": 0.0
+        },
+        {
+          "kind": "rebalance",
+          "action": "Rebalance existing crews",
+          "status": "feasible",
+          "validated": true,
+          "missed": 4,
+          "visits_moved": 4,
+          "customers": 4,
+          "cost": 377.96,
+          "advantage_vs_no_action": 0.0
+        },
+        {
+          "kind": "overtime",
+          "action": "Crew BA +2h overtime on 2018-06-08",
+          "status": "optimal",
+          "validated": true,
+          "missed": 2,
+          "visits_moved": 9,
+          "customers": 9,
+          "cost": 361.48,
+          "advantage_vs_no_action": 16.48
+        },
+        {
+          "kind": "temporary_capacity",
+          "action": "Add Crew TEMP-BA on 2018-06-07",
+          "status": "optimal",
+          "validated": true,
+          "missed": 0,
+          "visits_moved": 4,
+          "customers": 4,
+          "cost": 453.28,
+          "advantage_vs_no_action": -75.32
+        }
+      ]
+    }
+  ],
+  "cache_hit_s": 0.218,
+  "evaluate_approve": {
+    "elapsed_s": 2.731,
+    "status": "feasible",
+    "validated": true,
+    "approved_visits": 86
+  }
+}

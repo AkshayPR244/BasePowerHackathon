@@ -21,6 +21,7 @@ from app.contracts.models import (
     StageMeta,
     UnscheduledJob,
 )
+from app.contracts.visits import job_of_row, jobs_of
 from app.planning import explain
 from app.planning.edits import apply_edits
 from app.planning.infeasibility import conflicting_jobs
@@ -181,8 +182,9 @@ def _solve(scenario, req, forced, values, policy, common) -> PlanResult:
         )
 
     names = {v.name: key for key, v in pm.x.items()}
+    by_site = {s.site_id: jobs_of(s) for s in scenario.sites}
     for p in scenario.current_plan:
-        v = pm.x.get((p.site_id, p.crew_id, p.date))
+        v = pm.x.get((job_of_row(p, by_site), p.crew_id, p.date))
         if v is not None and not p.locked:
             pm.model.add_hint(v, 1)
 
@@ -207,9 +209,14 @@ def _solve(scenario, req, forced, values, policy, common) -> PlanResult:
     metas = [_in_usd(m) for m in _merge_skipped(reported, lex.stages)]
 
     if lex.values is None:
+        failed = next(
+            m.status
+            for m in lex.stages
+            if m.status not in (StageStatus.optimal, StageStatus.feasible)
+        )
         status = (
             PlanStatus.infeasible
-            if lex.stages[0].status == StageStatus.infeasible
+            if failed == StageStatus.infeasible
             else PlanStatus.timeout_no_incumbent
         )
         extra: list[UnscheduledJob] = []
@@ -304,13 +311,18 @@ def plan_message(scenario: Scenario, r: PlanResult) -> str:
     else:
         late = [a for a in r.assignments if a.days_late]
         for a in late:
+            what = f"{a.site_id} battery day" if a.visit_type else a.site_id
             parts.append(
-                f"{a.site_id} is {explain.plural(a.days_late, 'day')} late on "
-                f"{explain.day(a.date)}."
+                f"{what} is {explain.plural(a.days_late, 'day')} late on {explain.day(a.date)}."
             )
         n_uns = o.jobs_unscheduled - o.jobs_blocked
         if n_uns:
             parts.append(f"{explain.plural(n_uns, 'job')} not scheduled.")
+    if o.customers_to_reschedule and any(a.visit_type for a in r.assignments):
+        parts.append(
+            f"{explain.plural(o.visits_moved, 'visit')} move, so "
+            f"{explain.plural(o.customers_to_reschedule, 'customer')} need a new date."
+        )
     blocked = [u for u in r.unscheduled if u.state == JobState.blocked]
     if blocked:
         if len(blocked) == 1:

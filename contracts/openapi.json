@@ -107,6 +107,18 @@
             "title": "Days Late",
             "type": "integer"
           },
+          "job_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Visit job; None for one-visit homes",
+            "title": "Job Id"
+          },
           "site_id": {
             "minLength": 1,
             "title": "Site Id",
@@ -120,6 +132,16 @@
             "description": "Value, USD",
             "title": "Value Usd",
             "type": "number"
+          },
+          "visit_type": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/VisitType"
+              },
+              {
+                "type": "null"
+              }
+            ]
           }
         },
         "required": [
@@ -578,6 +600,17 @@
             "title": "Added",
             "type": "integer"
           },
+          "customers_to_reschedule": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Customers To Reschedule"
+          },
           "moved": {
             "title": "Moved",
             "type": "integer"
@@ -746,6 +779,18 @@
             "title": "Crew Utilization",
             "type": "number"
           },
+          "customers_to_reschedule": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Distinct homes with at least one moved or dropped visit",
+            "title": "Customers To Reschedule"
+          },
           "jobs_blocked": {
             "title": "Jobs Blocked",
             "type": "integer"
@@ -783,6 +828,18 @@
           "value_distinguishes_choices": {
             "title": "Value Distinguishes Choices",
             "type": "boolean"
+          },
+          "visits_moved": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Planned visits moved or dropped. Same count as changed_installs",
+            "title": "Visits Moved"
           }
         },
         "required": [
@@ -891,6 +948,17 @@
           "before_state": {
             "$ref": "#/components/schemas/JobState"
           },
+          "job_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Job Id"
+          },
           "kind": {
             "$ref": "#/components/schemas/ChangeKind"
           },
@@ -902,6 +970,16 @@
             "minLength": 1,
             "title": "Site Id",
             "type": "string"
+          },
+          "visit_type": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/VisitType"
+              },
+              {
+                "type": "null"
+              }
+            ]
           }
         },
         "required": [
@@ -1221,6 +1299,18 @@
             "title": "Date",
             "type": "string"
           },
+          "job_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Visit job; None for one-visit homes",
+            "title": "Job Id"
+          },
           "locked": {
             "title": "Locked",
             "type": "boolean"
@@ -1404,6 +1494,20 @@
             "format": "date",
             "title": "Evaluation End",
             "type": "string"
+          },
+          "min_gap_business_days": {
+            "anyOf": [
+              {
+                "description": "Whole days",
+                "minimum": 0.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Business days from install to battery day. None means 1.",
+            "title": "Min Gap Business Days"
           },
           "name": {
             "title": "Name",
@@ -1626,6 +1730,15 @@
             "minLength": 1,
             "title": "Site Id",
             "type": "string"
+          },
+          "visits": {
+            "default": [],
+            "description": "Empty: one visit described by duration_min and required_skill. Otherwise an install and a battery day; the deadline and energy value apply to the battery day, and duration_min / required_skill describe the battery day.",
+            "items": {
+              "$ref": "#/components/schemas/Visit"
+            },
+            "title": "Visits",
+            "type": "array"
           }
         },
         "required": [
@@ -1740,6 +1853,18 @@
             "title": "Detail",
             "type": "string"
           },
+          "job_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "None covers the whole home",
+            "title": "Job Id"
+          },
           "reasons": {
             "items": {
               "$ref": "#/components/schemas/ReasonCode"
@@ -1754,6 +1879,16 @@
           },
           "state": {
             "$ref": "#/components/schemas/JobState"
+          },
+          "visit_type": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/VisitType"
+              },
+              {
+                "type": "null"
+              }
+            ]
           }
         },
         "required": [
@@ -1793,6 +1928,17 @@
               }
             ],
             "title": "Date"
+          },
+          "job_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Job Id"
           },
           "message": {
             "title": "Message",
@@ -1865,9 +2011,51 @@
           "INVENTORY",
           "LOCK_BROKEN",
           "STATE_MISMATCH",
-          "OBJECTIVE_MISMATCH"
+          "OBJECTIVE_MISMATCH",
+          "PRECEDENCE"
         ],
         "title": "ViolationCode",
+        "type": "string"
+      },
+      "Visit": {
+        "additionalProperties": false,
+        "description": "One crew visit to a home. A two-visit home has an install, then a battery day.",
+        "properties": {
+          "duration_min": {
+            "description": "Integer minutes",
+            "minimum": 0.0,
+            "title": "Duration Min",
+            "type": "integer"
+          },
+          "job_id": {
+            "minLength": 1,
+            "title": "Job Id",
+            "type": "string"
+          },
+          "required_skill": {
+            "minLength": 1,
+            "title": "Required Skill",
+            "type": "string"
+          },
+          "visit_type": {
+            "$ref": "#/components/schemas/VisitType"
+          }
+        },
+        "required": [
+          "job_id",
+          "visit_type",
+          "duration_min",
+          "required_skill"
+        ],
+        "title": "Visit",
+        "type": "object"
+      },
+      "VisitType": {
+        "enum": [
+          "install",
+          "battery_day"
+        ],
+        "title": "VisitType",
         "type": "string"
       },
       "WeatherRule": {

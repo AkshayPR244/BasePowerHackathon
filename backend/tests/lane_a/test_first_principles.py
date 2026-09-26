@@ -51,7 +51,7 @@ def test_deadlines_follow_the_business_day_rule(generated, monkeypatch):
     monkeypatch.setattr(loader, "DATA_ROOT", root)
     s = loader.load_scenario("standard")
     spec = Spec()
-    days = sorted({c.date for c in s.crew_days})
+    days = sorted({c.date for c in s.crew_days if c.crew_id.startswith("I")})
     for site in s.sites:
         i = days.index(site.ready_date)
         assert i < spec.ready_window_days
@@ -77,9 +77,10 @@ def test_current_plan_and_inventory_are_feasible(generated, monkeypatch):
     root, _ = generated
     monkeypatch.setattr(loader, "DATA_ROOT", root)
     s = loader.load_scenario("standard")
-    assert len(s.current_plan) == len(s.sites)
+    assert len(s.current_plan) == 2 * len(s.sites)  # an install and a battery day per home
+    batteries = [p for p in s.current_plan if p.job_id.endswith("-B")]
     by_day: dict = {}
-    for p in s.current_plan:
+    for p in batteries:
         by_day[p.date] = by_day.get(p.date, 0) + 1
     for d in sorted({c.date for c in s.crew_days}):
         used = sum(n for day, n in by_day.items() if day <= d)
@@ -96,6 +97,10 @@ def test_every_parameter_is_tagged_and_explained(generated, monkeypatch):
     for required in [
         "workday",
         "install_duration",
+        "battery_day_duration",
+        "min_gap_install_to_battery_day",
+        "crew_mix",
+        "battery_crew_start",
         "deadline_rule",
         "road_circuity",
         "average_speed",
@@ -134,3 +139,18 @@ def test_weather_rule():
     # 06-25 storm was before 08:00. 06-28 had 0.29 in = 7.37 mm. 06-29 was after 17:00.
     looser = rule.model_copy(update={"heavy_rain_mm_per_h": 7.0})
     assert dt.date(2018, 6, 28) in lost_reasons(parse_iem_csv(RAW), looser)
+
+
+def test_two_visit_shape(generated, monkeypatch):
+    root, _ = generated
+    monkeypatch.setattr(loader, "DATA_ROOT", root)
+    s = loader.load_scenario("standard")
+    crews = {c.crew_id: tuple(c.skills) for c in s.crew_days}
+    assert sorted(crews.values()).count(("install",)) == 2
+    assert sorted(crews.values()).count(("battery",)) == 1
+    first_day = min(c.date for c in s.crew_days)
+    assert not any(c.date == first_day and "battery" in c.skills for c in s.crew_days)
+    for site in s.sites:
+        assert [v.visit_type for v in site.visits] == ["install", "battery_day"]
+        assert 90 <= site.visits[0].duration_min <= 180
+        assert site.visits[1].duration_min in (60, 75, 90)

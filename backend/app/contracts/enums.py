@@ -33,6 +33,11 @@ class ObjectivePolicy(StrEnum):
     deadline_travel_only = "deadline_travel_only"
 
 
+class VisitType(StrEnum):
+    install = "install"
+    battery_day = "battery_day"
+
+
 class ReasonCode(StrEnum):
     NOT_READY = "NOT_READY"
     SKILL_MISMATCH = "SKILL_MISMATCH"
@@ -75,6 +80,7 @@ class ViolationCode(StrEnum):
     LOCK_BROKEN = "LOCK_BROKEN"
     STATE_MISMATCH = "STATE_MISMATCH"
     OBJECTIVE_MISMATCH = "OBJECTIVE_MISMATCH"
+    PRECEDENCE = "PRECEDENCE"
 
 
 class InputIssueCode(StrEnum):

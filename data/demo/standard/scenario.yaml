@@ -1,6 +1,7 @@
-name: standard synthetic recovery benchmark
-description: 30 synthetic jobs, 3 clusters, 3 crews, 10 business days. Every number
-  comes from a stated rule or source.
+name: standard synthetic two-visit recovery benchmark
+description: 45 synthetic homes, each needing an install then a battery day. 3 clusters,
+  2 install crews, 1 battery crew(s), 10 business days. Every number comes from a
+  stated rule or source.
 timezone: America/Chicago
 planning_start: 2018-06-04
 planning_end: 2018-06-15
@@ -12,10 +13,11 @@ solve_time_limit_s: 15
 random_seed: 42
 num_workers: 8
 synthetic: true
+min_gap_business_days: 1
 travel_allowance_min:
   N: 34
   S: 41
-  W: 32
+  W: 33
 batteries:
 - configuration_id: B13
   capacity_kwh: 13.5
@@ -36,21 +38,45 @@ parameters:
   kind: assumed
   derivation: One 8-hour crew day
 - name: install_duration
-  value: 180/210/240
+  value: 90/120/150/180
   unit: min
   kind: assumed
-  derivation: Onsite battery retrofit of 3 to 4 hours, drawn uniformly per job (seeded)
+  derivation: Electrical disconnect visit of 1.5 to 3 hours, varied per home (seeded)
+- name: battery_day_duration
+  value: 60/75/90
+  unit: min
+  kind: assumed
+  derivation: About 75 min to place one battery, so a battery crew fits 5 to 6 a day
+    with travel
+- name: min_gap_install_to_battery_day
+  value: 1
+  unit: business days
+  kind: assumed
+  derivation: The battery day comes at least one business day after the install
+- name: crew_mix
+  value: '2:1'
+  unit: install:battery crews
+  kind: assumed
+  derivation: Installs take longer per home, so two install crews feed one battery
+    crew
+- name: battery_crew_start
+  value: 1
+  unit: business days
+  kind: assumed
+  derivation: Battery crews start after the first window day because no install is
+    finished yet
 - name: ready_dates
   value: 5
   unit: business days
   kind: synthetic
-  derivation: Each job becomes ready on a uniform random day in the first N business
+  derivation: Each home becomes ready on a uniform random day in the first N business
     days
 - name: deadline_rule
-  value: 5
+  value: 6
   unit: business days
   kind: assumed
-  derivation: Deadline = ready date + N business days, capped at the last window day
+  derivation: Battery-day deadline = ready date + N business days, capped at the last
+    window day
 - name: business_days
   value: weekdays
   unit: ''
@@ -60,13 +86,13 @@ parameters:
   value: 0
   unit: business days
   kind: assumed
-  derivation: Crew days after the window where late jobs can still land
+  derivation: Crew days after the window where late visits can still land
 - name: current_plan_rule
   value: EDF
   unit: ''
   kind: derived
-  derivation: Current plan = earliest-deadline-first booking in the window, day 0
-    locked
+  derivation: Current plan = this tool's strict plan for the undisrupted scenario,
+    day 0 locked. Deliveries are sized to it
 - name: depot
   value: -95.4200,29.7467
   unit: lon,lat
@@ -97,7 +123,7 @@ parameters:
   derivation: (2 x depot-to-center + 2 x mean site radius) x circuity / speed, depot
     distance 8.85 km
 - name: travel_W
-  value: 32
+  value: 33
   unit: min
   kind: derived
   derivation: (2 x depot-to-center + 2 x mean site radius) x circuity / speed, depot
@@ -106,8 +132,8 @@ parameters:
   value: 3
   unit: business days
   kind: assumed
-  derivation: A delivery every N business days, sized to the planned installs until
-    the next
+  derivation: A delivery every N business days, sized to the planned battery days
+    until the next
 - name: battery_capacity
   value: 13.5
   unit: kWh
@@ -143,18 +169,29 @@ parameters:
   unit: kWh
   kind: assumed
   derivation: 10% of capacity held back; start and end at reserve
+- name: value_start
+  value: after battery day
+  unit: ''
+  kind: assumed
+  derivation: Energy value starts after the battery day; the install alone earns nothing
 - name: unscheduled_penalty
   value: 30
   unit: days
   kind: assumed
-  derivation: Delay charged for a job left unscheduled; larger than any lateness in
-    the horizon
+  derivation: Delay charged for a home left unscheduled; larger than any lateness
+    in the horizon
 - name: weather_thunder
   value: any TS in METAR
   unit: ''
   kind: assumed
   derivation: Electrical work stops for lightning. A thunderstorm report in working
     hours loses the crew-day
+- name: weather_battery_day
+  value: same rule
+  unit: ''
+  kind: assumed
+  derivation: Battery days stop for the same weather as installs; their sensitivity
+    is untested
 - name: weather_heavy_rain
   value: 7.6
   unit: mm/h
@@ -174,7 +211,7 @@ parameters:
 provenance:
 - input: all operational and geometry files
   kind: synthetic
-  source: Rule-based generator v2, seed 42. Not customers.
+  source: Rule-based generator v3, seed 42. Not customers.
 - input: prices.parquet
   kind: observed
   source: https://www.ercot.com/misdownload/servlets/mirDownload?doclookupId=642564849

@@ -14,6 +14,7 @@ def test_bundled_manifest_hashes_and_provenance():
     for filename in (
         "scenario.yaml",
         "sites.csv",
+        "visits.csv",
         "sites.geojson",
         "clusters.geojson",
         "crew_days.csv",

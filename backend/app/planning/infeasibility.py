@@ -19,8 +19,11 @@ def conflicting_jobs(scenario: Scenario, forced: set[str], budget_s: float) -> l
         return None
     sites = {s.site_id: s for s in scenario.sites}
     lits: dict[int, str] = {}
-    for sid in elig.options:
-        on_time = [v for (s, _, d), v in pm.x.items() if s == sid and d <= sites[sid].deadline]
+    for jid, job in elig.jobs.items():
+        if not job.final:
+            continue
+        sid = job.site_id
+        on_time = [v for (j, _, d), v in pm.x.items() if j == jid and d <= sites[sid].deadline]
         lit = pm.model.new_bool_var(f"ontime_{sid}")
         pm.model.add(sum(on_time) == 1).only_enforce_if(lit)
         lits[lit.index] = sid

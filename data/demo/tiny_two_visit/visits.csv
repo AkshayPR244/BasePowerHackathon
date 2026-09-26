@@ -1,0 +1,7 @@
+job_id,site_id,visit_type,duration_min,required_skill
+H1-I,H1,install,120,install
+H1-B,H1,battery_day,75,battery
+H2-I,H2,install,150,install
+H2-B,H2,battery_day,75,battery
+H3-I,H3,install,90,install
+H3-B,H3,battery_day,75,battery

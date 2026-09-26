@@ -16,7 +16,7 @@
       "value": 0.0,
       "bound": 0.0,
       "gap": 0.0,
-      "elapsed_ms": 14
+      "elapsed_ms": 0
     },
     {
       "name": "operating_value",
@@ -42,7 +42,9 @@
       "date": "2018-06-05",
       "state": "locked",
       "days_late": 0,
-      "value_usd": 0.0
+      "value_usd": 0.0,
+      "job_id": null,
+      "visit_type": null
     },
     {
       "site_id": "N-02",
@@ -50,7 +52,9 @@
       "date": "2018-06-04",
       "state": "scheduled",
       "days_late": 0,
-      "value_usd": 0.0
+      "value_usd": 0.0,
+      "job_id": null,
+      "visit_type": null
     },
     {
       "site_id": "N-03",
@@ -58,7 +62,9 @@
       "date": "2018-06-05",
       "state": "scheduled",
       "days_late": 0,
-      "value_usd": 0.0
+      "value_usd": 0.0,
+      "job_id": null,
+      "visit_type": null
     },
     {
       "site_id": "S-01",
@@ -66,7 +72,9 @@
       "date": "2018-06-04",
       "state": "scheduled",
       "days_late": 0,
-      "value_usd": 0.0
+      "value_usd": 0.0,
+      "job_id": null,
+      "visit_type": null
     },
     {
       "site_id": "S-02",
@@ -74,7 +82,9 @@
       "date": "2018-06-04",
       "state": "scheduled",
       "days_late": 0,
-      "value_usd": 0.0
+      "value_usd": 0.0,
+      "job_id": null,
+      "visit_type": null
     }
   ],
   "unscheduled": [
@@ -84,7 +94,9 @@
       "reasons": [
         "SKILL_MISMATCH"
       ],
-      "detail": "S-03 needs skill panel_upgrade. No crew has it."
+      "detail": "S-03 needs skill panel_upgrade. No crew has it.",
+      "job_id": null,
+      "visit_type": null
     }
   ],
   "crew_days": [
@@ -147,7 +159,9 @@
     "changed_installs": 0,
     "travel_allowance_min": 165,
     "crew_utilization": 0.4115,
-    "value_distinguishes_choices": false
+    "value_distinguishes_choices": false,
+    "visits_moved": 0,
+    "customers_to_reschedule": 0
   },
   "validation": {
     "checked": true,
@@ -173,5 +187,5 @@
       "kind": "assumed"
     }
   ],
-  "solve_ms": 14
+  "solve_ms": 0
 }

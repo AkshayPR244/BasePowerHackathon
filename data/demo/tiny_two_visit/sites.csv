@@ -1,0 +1,4 @@
+site_id,cluster_id,program_id,ready_date,deadline,duration_min,required_skill,configuration_id,load_zone,profile_id
+H1,N,P1,2018-06-04,2018-06-05,75,battery,B13,LZ_HOUSTON,
+H2,N,P1,2018-06-04,2018-06-06,75,battery,B13,LZ_HOUSTON,
+H3,S,P1,2018-06-04,2018-06-06,75,battery,B13,LZ_HOUSTON,

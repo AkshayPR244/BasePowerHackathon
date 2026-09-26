@@ -54,6 +54,9 @@ def solve_stages(
     for i, st in enumerate(stages):
         expr = exprs[st.name]
         remaining = deadline - time.monotonic()
+        if i < len(stages) - 1:
+            # Leave time for later stages: one hard stage must not starve the ones after it.
+            remaining = remaining / 2
         if st.max_s is not None:
             remaining = min(remaining, st.max_s)
         if remaining <= 0.01:
@@ -61,7 +64,8 @@ def solve_stages(
                 StageMeta(name=s.name, status=StageStatus.skipped, elapsed_ms=0) for s in stages[i:]
             ]
             break
-        if isinstance(expr, int):
+        constant = isinstance(expr, int)
+        if constant and snapshot is not None:
             metas.append(
                 StageMeta(
                     name=st.name,
@@ -74,7 +78,9 @@ def solve_stages(
             )
             continue
         model.clear_objective()
-        if st.maximize:
+        if constant:
+            pass  # nothing to optimize, but no stage has proved feasibility yet
+        elif st.maximize:
             model.maximize(expr)
         else:
             model.minimize(expr)
@@ -103,8 +109,11 @@ def solve_stages(
             ]
             return LexResult(stages=metas, values=snapshot, solver=last_solver)
 
-        value = float(round(solver.objective_value)) + 0.0
-        bound = float(round(solver.best_objective_bound)) + 0.0
+        if constant:
+            value = bound = float(expr)
+        else:
+            value = float(round(solver.objective_value)) + 0.0
+            bound = float(round(solver.best_objective_bound)) + 0.0
         metas.append(
             StageMeta(
                 name=st.name,
@@ -116,7 +125,9 @@ def solve_stages(
             )
         )
         achieved = round(value)
-        if st.maximize:
+        if constant:
+            pass
+        elif st.maximize:
             model.add(expr >= achieved)
         else:
             model.add(expr <= achieved)

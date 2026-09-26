@@ -49,7 +49,9 @@
       "reasons": [
         "NO_LEGAL_DATE"
       ],
-      "detail": "N-02 is due Mon 4 Jun. No crew that serves N works on or before that day."
+      "detail": "N-02 is due Mon 4 Jun. No crew that serves N works on or before that day.",
+      "job_id": null,
+      "visit_type": null
     },
     {
       "site_id": "S-03",
@@ -57,7 +59,9 @@
       "reasons": [
         "SKILL_MISMATCH"
       ],
-      "detail": "S-03 needs skill panel_upgrade. No crew has it."
+      "detail": "S-03 needs skill panel_upgrade. No crew has it.",
+      "job_id": null,
+      "visit_type": null
     }
   ],
   "crew_days": [],

@@ -15,6 +15,7 @@ from app.contracts.enums import (
     ReasonCode,
     StageStatus,
     ViolationCode,
+    VisitType,
 )
 from app.contracts.units import KW, Days, Fraction, Id, KWh, Minutes, Usd
 
@@ -26,6 +27,15 @@ class Contract(BaseModel):
 
 
 # --- Inputs ---------------------------------------------------------------
+
+
+class Visit(Contract):
+    """One crew visit to a home. A two-visit home has an install, then a battery day."""
+
+    job_id: Id
+    visit_type: VisitType
+    duration_min: Minutes
+    required_skill: Id
 
 
 class Site(Contract):
@@ -41,6 +51,12 @@ class Site(Contract):
     profile_id: str | None = None
     lon: float
     lat: float
+    visits: list[Visit] = Field(
+        default=[],
+        description="Empty: one visit described by duration_min and required_skill. "
+        "Otherwise an install and a battery day; the deadline and energy value apply to "
+        "the battery day, and duration_min / required_skill describe the battery day.",
+    )
 
 
 class Cluster(Contract):
@@ -71,6 +87,7 @@ class PlannedInstall(Contract):
     crew_id: Id
     date: dt.date
     locked: bool
+    job_id: str | None = Field(default=None, description="Visit job; None for one-visit homes")
 
 
 class BatteryConfig(Contract):
@@ -128,6 +145,9 @@ class ScenarioConfig(Contract):
     provenance: list[ProvenanceNote]
     parameters: list[Parameter] = []
     weather_rule: WeatherRule | None = None
+    min_gap_business_days: Days | None = Field(
+        default=None, description="Business days from install to battery day. None means 1."
+    )
 
 
 class Scenario(Contract):
@@ -218,6 +238,8 @@ class Assignment(Contract):
     state: JobState
     days_late: Days = 0
     value_usd: Usd = 0.0
+    job_id: str | None = Field(default=None, description="Visit job; None for one-visit homes")
+    visit_type: VisitType | None = None
 
 
 class UnscheduledJob(Contract):
@@ -225,6 +247,8 @@ class UnscheduledJob(Contract):
     state: JobState
     reasons: list[ReasonCode]
     detail: str
+    job_id: str | None = Field(default=None, description="None covers the whole home")
+    visit_type: VisitType | None = None
 
 
 class CrewDayUsage(Contract):
@@ -256,6 +280,12 @@ class ObjectiveComponents(Contract):
     travel_allowance_min: Minutes
     crew_utilization: Fraction
     value_distinguishes_choices: bool
+    visits_moved: int | None = Field(
+        default=None, description="Planned visits moved or dropped. Same count as changed_installs"
+    )
+    customers_to_reschedule: int | None = Field(
+        default=None, description="Distinct homes with at least one moved or dropped visit"
+    )
 
 
 class ValidationIssue(Contract):
@@ -264,6 +294,7 @@ class ValidationIssue(Contract):
     site_id: str | None = None
     crew_id: str | None = None
     date: dt.date | None = None
+    job_id: str | None = None
 
 
 class ValidationReport(Contract):
@@ -321,6 +352,8 @@ class PlanChange(Contract):
     before_state: JobState
     after_state: JobState
     note: str
+    job_id: str | None = None
+    visit_type: VisitType | None = None
 
 
 class DiffSummary(Contract):
@@ -330,6 +363,7 @@ class DiffSummary(Contract):
     newly_late: int
     value_delta_usd: Usd
     travel_delta_min: int
+    customers_to_reschedule: int | None = None
 
 
 class CompareRequest(Contract):

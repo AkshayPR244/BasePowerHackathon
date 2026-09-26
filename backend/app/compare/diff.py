@@ -9,32 +9,56 @@ def _slot(a) -> Slot:
     return Slot(crew_id=a.crew_id, date=a.date)
 
 
+def _key(v) -> str:
+    return v.job_id or v.site_id
+
+
+def _state(key, site_id, assigned, unscheduled):
+    if key in assigned:
+        return assigned[key].state
+    u = unscheduled.get(key) or unscheduled.get(site_id)
+    return u.state if u else JobState.unscheduled
+
+
 def diff_plans(before: PlanResult, after: PlanResult) -> PlanDiff:
-    b = {a.site_id: a for a in before.assignments}
-    a_ = {a.site_id: a for a in after.assignments}
-    bu = {u.site_id: u for u in before.unscheduled}
-    au = {u.site_id: u for u in after.unscheduled}
+    """Changes per visit. A one-visit home has a single visit named by its site_id."""
+    b = {_key(a): a for a in before.assignments}
+    a_ = {_key(a): a for a in after.assignments}
+    bu = {_key(u): u for u in before.unscheduled}
+    au = {_key(u): u for u in after.unscheduled}
+    owner = {
+        _key(v): (v.site_id, v.visit_type)
+        for v in [*before.assignments, *after.assignments, *before.unscheduled, *after.unscheduled]
+    }
     changes: list[PlanChange] = []
-    for sid in sorted(set(b) | set(a_) | set(bu) | set(au)):
-        x, y = b.get(sid), a_.get(sid)
-        bs = x.state if x else bu[sid].state if sid in bu else JobState.unscheduled
-        as_ = y.state if y else au[sid].state if sid in au else JobState.unscheduled
+    for key in sorted(set(b) | set(a_) | set(bu) | set(au), key=lambda k: (owner[k][0], k)):
+        sid, visit_type = owner[key]
+        if (
+            key == sid
+            and visit_type is None
+            and any(owner[k][0] == sid and owner[k][1] for k in owner if k != key)
+        ):
+            continue  # a whole-home unscheduled entry; its visits are compared one by one
+        x, y = b.get(key), a_.get(key)
+        bs = _state(key, sid, b, bu)
+        as_ = _state(key, sid, a_, au)
+        what = f"{sid} {visit_type.value.replace('_', ' ')}" if visit_type else sid
         if x and y and (x.crew_id, x.date) != (y.crew_id, y.date):
             note = (
-                f"{sid} moves from Crew {x.crew_id} {day(x.date)} "
+                f"{what} moves from Crew {x.crew_id} {day(x.date)} "
                 f"to Crew {y.crew_id} {day(y.date)}."
             )
             if y.days_late:
                 note += f" {plural(y.days_late, 'day')} late."
             kind = ChangeKind.moved
         elif x and not y:
-            note = f"{sid} is no longer scheduled."
+            note = f"{what} is no longer scheduled."
             kind = ChangeKind.removed
         elif y and not x:
-            note = f"{sid} is now scheduled on Crew {y.crew_id} {day(y.date)}."
+            note = f"{what} is now scheduled on Crew {y.crew_id} {day(y.date)}."
             kind = ChangeKind.added
         elif bs != as_:
-            note = f"{sid} changes from {bs.value} to {as_.value}."
+            note = f"{what} changes from {bs.value} to {as_.value}."
             kind = ChangeKind.state_changed
         else:
             continue
@@ -47,6 +71,8 @@ def diff_plans(before: PlanResult, after: PlanResult) -> PlanDiff:
                 before_state=bs,
                 after_state=as_,
                 note=note,
+                job_id=key if visit_type else None,
+                visit_type=visit_type,
             )
         )
     ob, oa = before.objective, after.objective
@@ -59,6 +85,9 @@ def diff_plans(before: PlanResult, after: PlanResult) -> PlanDiff:
         ),
         value_delta_usd=oa.operating_value_usd - ob.operating_value_usd if ob and oa else 0.0,
         travel_delta_min=(oa.travel_allowance_min - ob.travel_allowance_min) if ob and oa else 0,
+        customers_to_reschedule=len(
+            {c.site_id for c in changes if c.kind in (ChangeKind.moved, ChangeKind.removed)}
+        ),
     )
     return PlanDiff(
         before_plan_id=before.plan_id,
@@ -73,7 +102,12 @@ def headline(s: DiffSummary, after: PlanResult) -> str:
     if not (s.moved or s.added or s.removed or s.newly_late):
         return "No jobs change."
     parts = []
-    if s.moved:
+    two_visit = any(a.visit_type for a in after.assignments)
+    if s.moved and two_visit:
+        verb = "moves" if s.moved == 1 else "move"
+        who = plural(s.customers_to_reschedule or 0, "customer")
+        parts.append(f"{plural(s.moved, 'visit')} {verb}, {who} to reschedule.")
+    elif s.moved:
         parts.append(f"{plural(s.moved, 'job')} {'moves' if s.moved == 1 else 'move'}.")
     if s.added:
         parts.append(f"{plural(s.added, 'job')} added.")

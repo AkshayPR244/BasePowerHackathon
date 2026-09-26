@@ -7,7 +7,7 @@ from app.baselines.nearest_cluster import nearest_cluster
 from app.contracts.enums import Algorithm, Mode, PlanStatus, StageStatus
 from app.contracts.models import PlanRequest, PlanResult, Scenario, StageMeta
 from app.planning.model import eligibility
-from app.planning.result import build_result
+from app.planning.result import build_result, locked_job_slots
 
 _RUNNERS = {Algorithm.baseline_edf: edf, Algorithm.baseline_nearest_cluster: nearest_cluster}
 _LABEL = {
@@ -19,9 +19,9 @@ _LABEL = {
 def run_baseline(scenario: Scenario, req: PlanRequest, forced, values, policy) -> PlanResult:
     elig = eligibility(scenario, Mode.recovery, set())
     locks = {
-        p.site_id: (p.crew_id, p.date)
-        for p in scenario.current_plan
-        if p.locked and (p.crew_id, p.date) in elig.any_option.get(p.site_id, [])
+        jid: slot
+        for jid, slot in locked_job_slots(scenario).items()
+        if slot in elig.any_option.get(jid, [])
     }
     t0 = time.monotonic()
     board = _RUNNERS[req.algorithm](scenario, elig, locks, forced)

@@ -78,3 +78,13 @@ def test_solves_run_off_the_event_loop(monkeypatch, tiny):
     monkeypatch.setattr(main, "plan", spy)
     asyncio.run(main.create_plan(PlanRequest(scenario_id="tiny", revision=0)))
     assert loop_thread == [False]
+
+
+def test_constant_first_stages_still_prove_infeasibility(tiny):
+    """Empty current plan and equal values make the first strict stages constants."""
+    from app.contracts.models import DelayInventory
+
+    s = tiny.model_copy(update={"current_plan": []})
+    short = DelayInventory(configuration_id="B13", from_date="2018-06-04", to_date="2018-06-06")
+    r = plan(s, PlanRequest(scenario_id="tiny", revision=1, edits=[short]))
+    assert r.status == PlanStatus.infeasible

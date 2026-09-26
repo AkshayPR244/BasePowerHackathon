@@ -1,7 +1,9 @@
-"""Generate a rule-based synthetic benchmark, without network access.
+"""Generate a rule-based synthetic two-visit benchmark, without network access.
 
-Every number comes from a stated rule or a cited source. The rules and their sources are
-written into scenario.yaml as `parameters`, so the API can show them.
+Each home needs an install (the electrical disconnect visit), then a battery day (the battery
+is placed) at least one business day later. Install crews do installs; battery crews do
+battery days. Every number comes from a stated rule or a cited source, written into
+scenario.yaml as `parameters` so the API can show them.
 
 Run from backend: python -m app.data.generate_standard [--scenario storm_2018 --start ...]
 """
@@ -17,12 +19,12 @@ from pathlib import Path
 
 import yaml
 
-from app.data.calendar import business_days
+from app.contracts.calendar import business_days
 from app.data.load import DATA_ROOT
 from app.data.manifest import MANIFEST_ROOT, build_manifest, write_manifest
 from app.data.travel import haversine_km, mean_point, travel_allowance_min
 
-GENERATOR = "generator-v2"
+GENERATOR = "generator-v3"
 POWERWALL3_DATASHEET = (
     "https://energylibrary.tesla.com/docs/Public/EnergyStorage/Powerwall/3/Datasheet/"
     "en-us/Powerwall-3-Datasheet.pdf"
@@ -32,6 +34,7 @@ BOSCOE_2012 = (
     "Straight-Line Distance to Hospitals. The Professional Geographer 64(2):188-196."
 )
 AMS_HEAVY_RAIN = "https://glossary.ametsoc.org/wiki/Rain"
+INSTALL, BATTERY = "install", "battery"
 
 
 @dataclass
@@ -43,11 +46,16 @@ class Spec:
     window_days: int = 10
     overflow_days: int = 0
     evaluation_end: dt.date = dt.date(2018, 7, 29)
-    n_jobs: int = 30
-    crews: str = "ABC"
+    n_homes: int = 45
+    install_crews: tuple[str, ...] = ("IA", "IB")
+    battery_crews: tuple[str, ...] = ("BA",)
     ready_window_days: int = 5
-    deadline_business_days: int = 5
-    durations_min: tuple[int, ...] = (180, 210, 240)
+    deadline_business_days: int = 6
+    battery_start_offset: int = 1
+    plan_work_limit: float = 20.0  # CP-SAT deterministic time units
+    install_durations_min: tuple[int, ...] = (90, 120, 150, 180)
+    battery_durations_min: tuple[int, ...] = (60, 75, 90)
+    min_gap_business_days: int = 1
     workday_min: int = 480
     delivery_every_days: int = 3
     circuity: float = 1.417
@@ -87,30 +95,35 @@ def _param(name, value, unit, kind, derivation, source=None) -> dict:
     return out
 
 
-def _edf_plan(sites, days, crews, travel, workday_min):
-    """Earliest-deadline-first booking: the rule that produced the current plan."""
-    used: dict[tuple[str, dt.date], int] = {}
-    cluster: dict[tuple[str, dt.date], str] = {}
-    plan = {}
-    for s in sorted(sites, key=lambda s: (s["deadline"], s["ready_date"], s["site_id"])):
-        for d in days:
-            if d < s["ready_date"]:
-                continue
-            placed = False
-            for c in crews:
-                k = cluster.get((c, d))
-                if k not in (None, s["cluster_id"]):
-                    continue
-                extra = s["duration_min"] + (0 if k else travel[s["cluster_id"]])
-                if used.get((c, d), 0) + extra <= workday_min:
-                    used[(c, d)] = used.get((c, d), 0) + extra
-                    cluster[(c, d)] = s["cluster_id"]
-                    plan[s["site_id"]] = (c, d)
-                    placed = True
-                    break
-            if placed:
-                break
-    return plan, used
+def _optimizer_plan(output: Path, spec: Spec) -> dict[str, tuple[str, dt.date]]:
+    """Strict plan for the undisrupted scenario: every visit placed, every deadline met.
+
+    One worker and a deterministic work limit make the result identical on every machine.
+    """
+    from ortools.sat.python import cp_model
+
+    from app.contracts.enums import Mode
+    from app.data import load as loader
+    from app.planning.model import build, eligibility
+
+    root = loader.DATA_ROOT
+    try:
+        loader.DATA_ROOT = output.parent
+        scenario = loader.load_scenario(output.name)
+    finally:
+        loader.DATA_ROOT = root
+    elig = eligibility(scenario, Mode.strict, set())
+    pm = build(scenario, elig, Mode.strict, set(), {})
+    pm.model.minimize(pm.exprs["travel"])
+    solver = cp_model.CpSolver()
+    solver.parameters.num_workers = 1
+    solver.parameters.random_seed = 0
+    solver.parameters.max_deterministic_time = spec.plan_work_limit
+    if solver.solve(pm.model) not in (cp_model.OPTIMAL, cp_model.FEASIBLE):
+        raise ValueError(
+            f"No on-time plan found for {spec.n_homes} homes: lower n_homes or relax deadlines"
+        )
+    return {jid: (crew, d) for (jid, crew, d), v in pm.x.items() if solver.value(v)}
 
 
 def _carryover_provenance(output: Path) -> list[dict]:
@@ -124,28 +137,57 @@ def _carryover_provenance(output: Path) -> list[dict]:
 
 
 def _parameters(spec: Spec, depot, travel, eta: float, reserve: float) -> list[dict]:
+    ratio = f"{len(spec.install_crews)}:{len(spec.battery_crews)}"
     return [
         _param("workday", spec.workday_min, "min", "assumed", "One 8-hour crew day"),
         _param(
             "install_duration",
-            "/".join(map(str, spec.durations_min)),
+            "/".join(map(str, spec.install_durations_min)),
             "min",
             "assumed",
-            "Onsite battery retrofit of 3 to 4 hours, drawn uniformly per job (seeded)",
+            "Electrical disconnect visit of 1.5 to 3 hours, varied per home (seeded)",
+        ),
+        _param(
+            "battery_day_duration",
+            "/".join(map(str, spec.battery_durations_min)),
+            "min",
+            "assumed",
+            "About 75 min to place one battery, so a battery crew fits 5 to 6 a day with travel",
+        ),
+        _param(
+            "min_gap_install_to_battery_day",
+            spec.min_gap_business_days,
+            "business days",
+            "assumed",
+            "The battery day comes at least one business day after the install",
+        ),
+        _param(
+            "crew_mix",
+            ratio,
+            "install:battery crews",
+            "assumed",
+            "Installs take longer per home, so two install crews feed one battery crew",
+        ),
+        _param(
+            "battery_crew_start",
+            spec.battery_start_offset,
+            "business days",
+            "assumed",
+            "Battery crews start after the first window day because no install is finished yet",
         ),
         _param(
             "ready_dates",
             spec.ready_window_days,
             "business days",
             "synthetic",
-            "Each job becomes ready on a uniform random day in the first N business days",
+            "Each home becomes ready on a uniform random day in the first N business days",
         ),
         _param(
             "deadline_rule",
             spec.deadline_business_days,
             "business days",
             "assumed",
-            "Deadline = ready date + N business days, capped at the last window day",
+            "Battery-day deadline = ready date + N business days, capped at the last window day",
         ),
         _param(
             "business_days",
@@ -159,14 +201,15 @@ def _parameters(spec: Spec, depot, travel, eta: float, reserve: float) -> list[d
             spec.overflow_days,
             "business days",
             "assumed",
-            "Crew days after the window where late jobs can still land",
+            "Crew days after the window where late visits can still land",
         ),
         _param(
             "current_plan_rule",
             "EDF",
             "",
             "derived",
-            "Current plan = earliest-deadline-first booking in the window, day 0 locked",
+            "Current plan = this tool's strict plan for the undisrupted scenario, day 0 locked. "
+            "Deliveries are sized to it",
         ),
         _param(
             "depot",
@@ -200,7 +243,7 @@ def _parameters(spec: Spec, depot, travel, eta: float, reserve: float) -> list[d
             spec.delivery_every_days,
             "business days",
             "assumed",
-            "A delivery every N business days, sized to the planned installs until the next",
+            "A delivery every N business days, sized to the planned battery days until the next",
         ),
         _param(
             "battery_capacity",
@@ -250,11 +293,18 @@ def _parameters(spec: Spec, depot, travel, eta: float, reserve: float) -> list[d
             f"{spec.reserve_fraction:.0%} of capacity held back; start and end at reserve",
         ),
         _param(
+            "value_start",
+            "after battery day",
+            "",
+            "assumed",
+            "Energy value starts after the battery day; the install alone earns nothing",
+        ),
+        _param(
             "unscheduled_penalty",
             spec.unscheduled_penalty_days,
             "days",
             "assumed",
-            "Delay charged for a job left unscheduled; larger than any lateness in the horizon",
+            "Delay charged for a home left unscheduled; larger than any lateness in the horizon",
         ),
         _param(
             "weather_thunder",
@@ -263,6 +313,13 @@ def _parameters(spec: Spec, depot, travel, eta: float, reserve: float) -> list[d
             "assumed",
             "Electrical work stops for lightning. A thunderstorm report in working hours "
             "loses the crew-day",
+        ),
+        _param(
+            "weather_battery_day",
+            "same rule",
+            "",
+            "assumed",
+            "Battery days stop for the same weather as installs; their sensitivity is untested",
         ),
         _param(
             "weather_heavy_rain",
@@ -300,9 +357,9 @@ def generate_standard(
     window = all_days[: spec.window_days]
     index = {d: i for i, d in enumerate(all_days)}
 
-    points, sites = {}, []
+    points, homes = {}, []
     names = list(spec.centers)
-    for i in range(spec.n_jobs):
+    for i in range(spec.n_homes):
         k = names[i % len(names)]
         ready = window[rng.randrange(spec.ready_window_days)]
         deadline = all_days[min(index[ready] + spec.deadline_business_days, len(window) - 1)]
@@ -312,18 +369,14 @@ def generate_standard(
             round(lon + rng.uniform(-spec.site_spread_deg, spec.site_spread_deg), 6),
             round(lat + rng.uniform(-spec.site_spread_deg, spec.site_spread_deg), 6),
         )
-        sites.append(
+        homes.append(
             dict(
                 site_id=sid,
                 cluster_id=k,
-                program_id="P1",
                 ready_date=ready,
                 deadline=deadline,
-                duration_min=rng.choice(spec.durations_min),
-                required_skill="install",
-                configuration_id="B13",
-                load_zone="LZ_HOUSTON",
-                profile_id="",
+                install_min=rng.choice(spec.install_durations_min),
+                battery_min=rng.choice(spec.battery_durations_min),
             )
         )
 
@@ -332,36 +385,30 @@ def generate_standard(
         k: travel_allowance_min(
             depot,
             center,
-            [points[s["site_id"]] for s in sites if s["cluster_id"] == k],
+            [points[h["site_id"]] for h in homes if h["cluster_id"] == k],
             spec.circuity,
             spec.speed_kmh,
         )
         for k, center in spec.centers.items()
     }
-    plan, _ = _edf_plan(sites, window, spec.crews, travel, spec.workday_min)
-
-    deliveries = window[:: spec.delivery_every_days]
-    qty = dict.fromkeys(deliveries, 0)
-    for s in sites:
-        day = plan[s["site_id"]][1] if s["site_id"] in plan else s["ready_date"]
-        qty[max(d for d in deliveries if d <= day)] += 1
-
     eta = round(math.sqrt(spec.round_trip), 6)
     reserve = round(spec.capacity_kwh * spec.reserve_fraction, 4)
     provenance = [
         {
             "input": "all operational and geometry files",
             "kind": "synthetic",
-            "source": f"Rule-based generator v2, seed {seed}. Not customers.",
+            "source": f"Rule-based generator v3, seed {seed}. Not customers.",
         },
         *_carryover_provenance(output),
     ]
+    crews = [*spec.install_crews, *spec.battery_crews]
     extra = f" plus {spec.overflow_days} overflow days" if spec.overflow_days else ""
     cfg = {
-        "name": f"{spec.scenario_id} synthetic recovery benchmark",
+        "name": f"{spec.scenario_id} synthetic two-visit recovery benchmark",
         "description": (
-            f"{spec.n_jobs} synthetic jobs, {len(spec.centers)} clusters, {len(spec.crews)} "
-            f"crews, {spec.window_days} business days{extra}. "
+            f"{spec.n_homes} synthetic homes, each needing an install then a battery day. "
+            f"{len(spec.centers)} clusters, {len(spec.install_crews)} install crews, "
+            f"{len(spec.battery_crews)} battery crew(s), {spec.window_days} business days{extra}. "
             "Every number comes from a stated rule or source."
         ),
         "timezone": "America/Chicago",
@@ -375,6 +422,7 @@ def generate_standard(
         "random_seed": seed,
         "num_workers": 8,
         "synthetic": True,
+        "min_gap_business_days": spec.min_gap_business_days,
         "travel_allowance_min": travel,
         "batteries": [
             {
@@ -396,12 +444,12 @@ def generate_standard(
         "parameters": _parameters(spec, depot, travel, eta, reserve),
         "provenance": provenance,
     }
+    profile = ""
     has_loads = (output / "loads.parquet").exists()
     if has_loads:
         from app.data.prepare_resstock import PROFILE_ID
 
-        for s in sites:
-            s["profile_id"] = PROFILE_ID
+        profile = PROFILE_ID
     (output / "scenario.yaml").write_text(
         yaml.safe_dump(cfg, sort_keys=False), encoding="utf-8", newline="\n"
     )
@@ -419,39 +467,96 @@ def generate_standard(
             }
         )
     _geojson(output / "clusters.geojson", clusters)
-    _csv(output / "sites.csv", sites)
+    _csv(
+        output / "sites.csv",
+        [
+            dict(
+                site_id=h["site_id"],
+                cluster_id=h["cluster_id"],
+                program_id="P1",
+                ready_date=h["ready_date"],
+                deadline=h["deadline"],
+                duration_min=h["battery_min"],
+                required_skill=BATTERY,
+                configuration_id="B13",
+                load_zone="LZ_HOUSTON",
+                profile_id=profile,
+            )
+            for h in homes
+        ],
+    )
+    _csv(
+        output / "visits.csv",
+        [
+            row
+            for h in homes
+            for row in (
+                dict(
+                    job_id=f"{h['site_id']}-I",
+                    site_id=h["site_id"],
+                    visit_type="install",
+                    duration_min=h["install_min"],
+                    required_skill=INSTALL,
+                ),
+                dict(
+                    job_id=f"{h['site_id']}-B",
+                    site_id=h["site_id"],
+                    visit_type="battery_day",
+                    duration_min=h["battery_min"],
+                    required_skill=BATTERY,
+                ),
+            )
+        ],
+    )
     _geojson(
         output / "sites.geojson",
         [
             {
                 "type": "Feature",
-                "properties": {"site_id": s["site_id"]},
-                "geometry": {"type": "Point", "coordinates": list(points[s["site_id"]])},
+                "properties": {"site_id": h["site_id"]},
+                "geometry": {"type": "Point", "coordinates": list(points[h["site_id"]])},
             }
-            for s in sites
+            for h in homes
         ],
     )
+    battery_days = all_days[spec.battery_start_offset :]
+    crew_rows = [
+        dict(
+            crew_id=c,
+            date=d,
+            available_min=spec.workday_min,
+            skills=INSTALL if c in spec.install_crews else BATTERY,
+            allowed_clusters=";".join(spec.centers),
+        )
+        for c in crews
+        for d in (all_days if c in spec.install_crews else battery_days)
+    ]
+    _csv(output / "crew_days.csv", crew_rows)
+    header = "site_id,job_id,crew_id,date,locked\n"
+    (output / "current_plan.csv").write_text(header, encoding="utf-8", newline="\n")
     _csv(
-        output / "current_plan.csv",
-        [
-            dict(site_id=sid, crew_id=c, date=d, locked="true" if d == window[0] else "false")
-            for sid, (c, d) in sorted(plan.items(), key=lambda kv: (kv[1][1], kv[1][0], kv[0]))
-        ],
+        output / "inventory.csv",
+        [dict(configuration_id="B13", available_date=window[0], quantity=len(homes))],
     )
-    _csv(
-        output / "crew_days.csv",
-        [
-            dict(
-                crew_id=c,
-                date=d,
-                available_min=spec.workday_min,
-                skills="install",
-                allowed_clusters=";".join(spec.centers),
-            )
-            for c in spec.crews
-            for d in all_days
-        ],
-    )
+    placed = _optimizer_plan(output, spec)
+
+    deliveries = window[:: spec.delivery_every_days]
+    qty = dict.fromkeys(deliveries, 0)
+    for jid, (_, day) in placed.items():
+        if jid.endswith("-B"):
+            qty[max(d for d in deliveries if d <= day)] += 1
+    rows = [
+        dict(
+            site_id=jid.rsplit("-", 1)[0],
+            job_id=jid,
+            crew_id=crew,
+            date=day,
+            locked="true" if day == window[0] else "false",
+        )
+        for jid, (crew, day) in placed.items()
+    ]
+    rows.sort(key=lambda r: (r["date"], r["crew_id"], r["job_id"]))
+    _csv(output / "current_plan.csv", rows)
     _csv(
         output / "inventory.csv",
         [dict(configuration_id="B13", available_date=d, quantity=q) for d, q in qty.items() if q],
@@ -459,12 +564,13 @@ def generate_standard(
 
     counts = {
         "scenario.yaml": 1,
-        "sites.csv": len(sites),
-        "sites.geojson": len(sites),
+        "sites.csv": len(homes),
+        "visits.csv": 2 * len(homes),
+        "sites.geojson": len(homes),
         "clusters.geojson": len(clusters),
-        "crew_days.csv": len(spec.crews) * len(all_days),
+        "crew_days.csv": len(crew_rows),
         "inventory.csv": sum(1 for q in qty.values() if q),
-        "current_plan.csv": len(plan),
+        "current_plan.csv": len(rows),
     }
     for name, count in counts.items():
         path = output / name
@@ -497,9 +603,12 @@ if __name__ == "__main__":
     parser.add_argument("--scenario", default="standard")
     parser.add_argument("--start", type=dt.date.fromisoformat)
     parser.add_argument("--overflow-days", type=int, default=0)
+    parser.add_argument("--homes", type=int)
     parser.add_argument("--output", type=Path)
     args = parser.parse_args()
     spec = Spec(scenario_id=args.scenario, overflow_days=args.overflow_days)
     if args.start:
         spec.start = args.start
+    if args.homes:
+        spec.n_homes = args.homes
     print(generate_standard(args.output, args.seed, MANIFEST_ROOT, spec))

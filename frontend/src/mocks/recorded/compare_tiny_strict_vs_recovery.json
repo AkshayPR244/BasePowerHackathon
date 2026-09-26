@@ -15,7 +15,9 @@
       },
       "before_state": "scheduled",
       "after_state": "late",
-      "note": "N-02 moves from Crew A Mon 4 Jun to Crew A Tue 5 Jun. 1 day late."
+      "note": "N-02 moves from Crew A Mon 4 Jun to Crew A Tue 5 Jun. 1 day late.",
+      "job_id": null,
+      "visit_type": null
     },
     {
       "site_id": "N-03",
@@ -30,7 +32,9 @@
       },
       "before_state": "scheduled",
       "after_state": "scheduled",
-      "note": "N-03 moves from Crew A Tue 5 Jun to Crew A Wed 6 Jun."
+      "note": "N-03 moves from Crew A Tue 5 Jun to Crew A Wed 6 Jun.",
+      "job_id": null,
+      "visit_type": null
     }
   ],
   "summary": {
@@ -39,7 +43,8 @@
     "removed": 0,
     "newly_late": 1,
     "value_delta_usd": 0.0,
-    "travel_delta_min": 0
+    "travel_delta_min": 0,
+    "customers_to_reschedule": 2
   },
   "headline": "2 jobs move. 1 misses its deadline by 1 day."
 }

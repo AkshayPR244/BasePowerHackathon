@@ -118,6 +118,21 @@ def load_scenario(scenario_id: str) -> Scenario:
         for s in sites:
             s["profile_id"] = s.get("profile_id") or None
             s["lon"], s["lat"] = _point(geometries[s["site_id"]])
+        filename = "visits.csv"
+        if (folder / filename).exists():
+            by_site = {s["site_id"]: s for s in sites}
+            for v in _csv(folder / filename):
+                if v["site_id"] not in by_site:
+                    raise ScenarioLoadError(
+                        [
+                            InputIssue(
+                                code="UNKNOWN_REFERENCE",
+                                file=filename,
+                                message=f"Visit {v['job_id']} names unknown home {v['site_id']}",
+                            )
+                        ]
+                    )
+                by_site[v.pop("site_id")].setdefault("visits", []).append(v)
         filename = "crew_days.csv"
         crews = _csv(folder / filename)
         for c in crews:
@@ -127,6 +142,8 @@ def load_scenario(scenario_id: str) -> Scenario:
         inventory = _csv(folder / filename)
         filename = "current_plan.csv"
         current = _csv(folder / filename)
+        for row in current:
+            row["job_id"] = row.get("job_id") or None
         filename = "scenario inputs"
         scenario = Scenario(
             scenario_id=scenario_id,

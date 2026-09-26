@@ -36,7 +36,8 @@
       }
     ],
     "parameters": [],
-    "weather_rule": null
+    "weather_rule": null,
+    "min_gap_business_days": null
   },
   "clusters": [
     {
@@ -107,7 +108,8 @@
       "load_zone": "LZ_HOUSTON",
       "profile_id": null,
       "lon": -95.412,
-      "lat": 29.812
+      "lat": 29.812,
+      "visits": []
     },
     {
       "site_id": "N-02",
@@ -121,7 +123,8 @@
       "load_zone": "LZ_HOUSTON",
       "profile_id": null,
       "lon": -95.398,
-      "lat": 29.806
+      "lat": 29.806,
+      "visits": []
     },
     {
       "site_id": "N-03",
@@ -135,7 +138,8 @@
       "load_zone": "LZ_HOUSTON",
       "profile_id": null,
       "lon": -95.405,
-      "lat": 29.797
+      "lat": 29.797,
+      "visits": []
     },
     {
       "site_id": "S-01",
@@ -149,7 +153,8 @@
       "load_zone": "LZ_HOUSTON",
       "profile_id": null,
       "lon": -95.371,
-      "lat": 29.689
+      "lat": 29.689,
+      "visits": []
     },
     {
       "site_id": "S-02",
@@ -163,7 +168,8 @@
       "load_zone": "LZ_HOUSTON",
       "profile_id": null,
       "lon": -95.36,
-      "lat": 29.681
+      "lat": 29.681,
+      "visits": []
     },
     {
       "site_id": "S-03",
@@ -177,7 +183,8 @@
       "load_zone": "LZ_HOUSTON",
       "profile_id": null,
       "lon": -95.378,
-      "lat": 29.676
+      "lat": 29.676,
+      "visits": []
     }
   ],
   "crew_days": [
@@ -268,13 +275,15 @@
       "site_id": "N-01",
       "crew_id": "A",
       "date": "2018-06-05",
-      "locked": true
+      "locked": true,
+      "job_id": null
     },
     {
       "site_id": "S-01",
       "crew_id": "B",
       "date": "2018-06-04",
-      "locked": false
+      "locked": false,
+      "job_id": null
     }
   ]
 }

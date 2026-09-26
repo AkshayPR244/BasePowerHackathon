@@ -1,0 +1,7 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {"type": "Feature", "properties": {"cluster_id": "N", "name": "North"}, "geometry": {"type": "Polygon", "coordinates": [[[-95.425, 29.790], [-95.390, 29.788], [-95.385, 29.818], [-95.420, 29.822], [-95.425, 29.790]]]}},
+    {"type": "Feature", "properties": {"cluster_id": "S", "name": "South"}, "geometry": {"type": "Polygon", "coordinates": [[[-95.390, 29.668], [-95.352, 29.670], [-95.350, 29.695], [-95.385, 29.699], [-95.390, 29.668]]]}}
+  ]
+}

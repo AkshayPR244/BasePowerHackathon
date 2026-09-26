@@ -3,7 +3,7 @@ from fastapi.testclient import TestClient
 from app.api.main import app
 from app.contracts.enums import JobState, PlanStatus
 from app.contracts.models import PlanResult
-from tests.lane_b.conftest import REMOVE_A_MON, deferred, expected, slots
+from tests.lane_b.conftest import REMOVE_A_MON, deferred, expected, frozen, slots
 
 client = TestClient(app)
 
@@ -17,7 +17,7 @@ def _post(body: dict) -> PlanResult:
 def _check(result: PlanResult, exp: PlanResult) -> None:
     assert result.status == exp.status
     assert result.scenario_hash == exp.scenario_hash
-    assert result.objective == exp.objective
+    assert frozen(result.objective) == frozen(exp.objective)
     assert slots(result) == slots(exp)
     assert deferred(result) == deferred(exp)
 

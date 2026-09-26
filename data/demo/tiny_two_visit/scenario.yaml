@@ -1,0 +1,33 @@
+name: Tiny two-visit check
+description: 3 homes, one install crew, one battery crew, 3 days. Each home needs an install, then a battery day at least 1 business day later. Hand-built. All operational inputs are synthetic.
+timezone: America/Chicago
+planning_start: 2018-06-04
+planning_end: 2018-06-06
+evaluation_end: 2018-06-30
+qualification_lag_days: 0
+unscheduled_penalty_days: 10
+objective_policy: value_aware
+solve_time_limit_s: 5
+random_seed: 0
+num_workers: 1
+synthetic: true
+min_gap_business_days: 1
+travel_allowance_min:
+  N: 60
+  S: 45
+batteries:
+  - configuration_id: B13
+    capacity_kwh: 13.5
+    reserve_kwh: 1.35
+    charge_limit_kw: 5.0
+    discharge_limit_kw: 11.5
+    eta_charge: 0.943398
+    eta_discharge: 0.943398
+provenance:
+  - input: all operational and geometry files
+    kind: synthetic
+    source: Hand-built for tests. Not real homes, crews, or inventory.
+  - input: prices.parquet
+    kind: observed
+    source: Copy of data/demo/standard/prices.parquet (ERCOT NP6-785-ER 2018, LZ_HOUSTON).
+    manifest_id: ercot_np6_785_2018

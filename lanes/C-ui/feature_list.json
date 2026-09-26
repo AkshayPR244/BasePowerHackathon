@@ -1,21 +1,135 @@
 [
-  {"id": "C-01", "priority": "P0", "title": "Vite + React + TS app with scripts dev, build, typecheck, test, e2e. Tailwind v4, self-hosted IBM Plex Sans and Mono, tokens.css per docs/DESIGN.md", "acceptance": "cd frontend && pnpm typecheck && pnpm build", "passes": false},
-  {"id": "C-02", "priority": "P0", "title": "scripts/gen_types.sh generates src/api/generated.ts from contracts/openapi.json. Typed openapi-fetch client in src/api/client.ts", "acceptance": "./scripts/gen_types.sh && cd frontend && pnpm typecheck", "passes": false},
-  {"id": "C-03", "priority": "P0", "title": "MSW wiring: handlers over src/mocks/recorded/index.json (or data/demo/tiny/expected until recordings exist), match POST /api/plans on scenario_id + mode + edits, echo revision, 501 ApiError when unmatched", "acceptance": "cd frontend && pnpm exec vitest run src/mocks/handlers.test.ts", "passes": false},
-  {"id": "C-04", "priority": "P0", "title": "App shell renders the tiny strict plan from mocks: header, metrics, calendar, deferred list, inspector", "acceptance": "cd frontend && pnpm exec playwright test e2e/shell.spec.ts && test -f e2e/screenshots/shell.png", "passes": false},
-  {"id": "C-05", "priority": "P0", "title": "Status system: shape + label + color for scheduled, locked, late, unscheduled, blocked", "acceptance": "cd frontend && pnpm exec vitest run src/design/status.test.tsx", "passes": false},
-  {"id": "C-06", "priority": "P0", "title": "Header: scenario, synthetic/provenance badge, planning dates, policy, solve status, and a Not validated label when validation.checked is false", "acceptance": "cd frontend && pnpm exec playwright test e2e/shell.spec.ts -g header && test -f e2e/screenshots/header.png", "passes": false},
-  {"id": "C-07", "priority": "P0", "title": "Crew calendar: one row per crew, capacity bar (onsite + travel of available), lock marks, missing crew-days shown as unavailable", "acceptance": "cd frontend && pnpm exec playwright test e2e/shell.spec.ts -g calendar && test -f e2e/screenshots/calendar.png", "passes": false},
-  {"id": "C-08", "priority": "P0", "title": "Deferred list shows S-03 blocked with SKILL_MISMATCH and its detail text. Inspector shows readiness, deadline, requirements, reason, state", "acceptance": "cd frontend && pnpm exec playwright test e2e/shell.spec.ts -g \"deferred|inspector\" && test -f e2e/screenshots/inspector.png", "passes": false},
-  {"id": "C-09", "priority": "P1", "title": "Remove crew-day disruption bumps revision, hatches the stale result, and shows a previous result label", "acceptance": "cd frontend && pnpm exec playwright test e2e/replan.spec.ts -g stale && test -f e2e/screenshots/stale.png", "passes": false},
-  {"id": "C-10", "priority": "P1", "title": "Responses with an old revision are discarded", "acceptance": "cd frontend && pnpm exec vitest run src/state/store.test.ts", "passes": false},
-  {"id": "C-11", "priority": "P1", "title": "Strict infeasible shows its message and offers recovery. The recovery result shows N-02 late", "acceptance": "cd frontend && pnpm exec playwright test e2e/replan.spec.ts -g recovery && test -f e2e/screenshots/recovery.png", "passes": false},
-  {"id": "C-12", "priority": "P1", "title": "Compare panel: changelog-style diff against the immutable baseline", "acceptance": "cd frontend && pnpm exec playwright test e2e/replan.spec.ts -g compare && test -f e2e/screenshots/compare.png", "passes": false},
-  {"id": "C-13", "priority": "P1", "title": "SVG map from Site.lon/lat and Cluster.outline, no tiles, no map library, selection linked with the calendar", "acceptance": "cd frontend && pnpm exec playwright test e2e/map.spec.ts && test -f e2e/screenshots/map.png", "passes": false},
-  {"id": "C-14", "priority": "P1", "title": "Inspector counterfactuals: force include (infeasible) and add crew-day (feasible) render their results", "acceptance": "cd frontend && pnpm exec playwright test e2e/replan.spec.ts -g counterfactual && test -f e2e/screenshots/counterfactual.png", "passes": false},
-  {"id": "C-15", "priority": "P1", "title": "Export JSON + CSV: assignments, missed commitments, assumptions, solver status", "acceptance": "cd frontend && pnpm exec vitest run src/lib/export.test.ts", "passes": false},
-  {"id": "C-16", "priority": "P1", "title": "Full e2e: load, remove crew-day, solve, compare, export", "acceptance": "cd frontend && pnpm exec playwright test e2e/flow.spec.ts && test -f e2e/screenshots/flow-export.png", "passes": false},
-  {"id": "C-17", "priority": "P2", "title": "Animated re-plan from the old cell to the new cell with a brief highlight. Respects prefers-reduced-motion", "acceptance": "cd frontend && pnpm exec playwright test e2e/replan.spec.ts -g animation", "passes": false},
-  {"id": "C-18", "priority": "P2", "title": "Keyboard shortcuts R, C, / and a command bar", "acceptance": "cd frontend && pnpm exec playwright test e2e/keys.spec.ts", "passes": false},
-  {"id": "C-19", "priority": "P2", "title": "Dark mode from the same tokens", "acceptance": "cd frontend && pnpm exec playwright test e2e/shell.spec.ts -g dark && test -f e2e/screenshots/shell-dark.png", "passes": false}
+  {
+    "id": "C-01",
+    "priority": "P0",
+    "title": "Vite + React + TS app with scripts dev, build, typecheck, test, e2e. Tailwind v4, self-hosted IBM Plex Sans and Mono, tokens.css per docs/DESIGN.md",
+    "acceptance": "cd frontend && pnpm typecheck && pnpm build",
+    "passes": true
+  },
+  {
+    "id": "C-02",
+    "priority": "P0",
+    "title": "scripts/gen_types.sh generates src/api/generated.ts from contracts/openapi.json. Typed openapi-fetch client in src/api/client.ts",
+    "acceptance": "./scripts/gen_types.sh && cd frontend && pnpm typecheck",
+    "passes": true
+  },
+  {
+    "id": "C-03",
+    "priority": "P0",
+    "title": "MSW wiring: handlers over src/mocks/recorded/index.json (or data/demo/tiny/expected until recordings exist), match POST /api/plans on scenario_id + mode + edits, echo revision, 501 ApiError when unmatched",
+    "acceptance": "cd frontend && pnpm exec vitest run src/mocks/handlers.test.ts",
+    "passes": true
+  },
+  {
+    "id": "C-04",
+    "priority": "P0",
+    "title": "App shell renders the tiny strict plan from mocks: header, metrics, calendar, deferred list, inspector",
+    "acceptance": "cd frontend && pnpm exec playwright test e2e/shell.spec.ts && test -f e2e/screenshots/shell.png",
+    "passes": true
+  },
+  {
+    "id": "C-05",
+    "priority": "P0",
+    "title": "Status system: shape + label + color for scheduled, locked, late, unscheduled, blocked",
+    "acceptance": "cd frontend && pnpm exec vitest run src/design/status.test.tsx",
+    "passes": true
+  },
+  {
+    "id": "C-06",
+    "priority": "P0",
+    "title": "Header: scenario, synthetic/provenance badge, planning dates, policy, solve status, and a Not validated label when validation.checked is false",
+    "acceptance": "cd frontend && pnpm exec playwright test e2e/shell.spec.ts -g header && test -f e2e/screenshots/header.png",
+    "passes": true
+  },
+  {
+    "id": "C-07",
+    "priority": "P0",
+    "title": "Crew calendar: one row per crew, capacity bar (onsite + travel of available), lock marks, missing crew-days shown as unavailable",
+    "acceptance": "cd frontend && pnpm exec playwright test e2e/shell.spec.ts -g calendar && test -f e2e/screenshots/calendar.png",
+    "passes": true
+  },
+  {
+    "id": "C-08",
+    "priority": "P0",
+    "title": "Deferred list shows S-03 blocked with SKILL_MISMATCH and its detail text. Inspector shows readiness, deadline, requirements, reason, state",
+    "acceptance": "cd frontend && pnpm exec playwright test e2e/shell.spec.ts -g \"deferred|inspector\" && test -f e2e/screenshots/inspector.png",
+    "passes": true
+  },
+  {
+    "id": "C-09",
+    "priority": "P1",
+    "title": "Remove crew-day disruption bumps revision, hatches the stale result, and shows a previous result label",
+    "acceptance": "cd frontend && pnpm exec playwright test e2e/replan.spec.ts -g stale && test -f e2e/screenshots/stale.png",
+    "passes": true
+  },
+  {
+    "id": "C-10",
+    "priority": "P1",
+    "title": "Responses with an old revision are discarded",
+    "acceptance": "cd frontend && pnpm exec vitest run src/state/store.test.ts",
+    "passes": true
+  },
+  {
+    "id": "C-11",
+    "priority": "P1",
+    "title": "Strict infeasible shows its message and offers recovery. The recovery result shows N-02 late",
+    "acceptance": "cd frontend && pnpm exec playwright test e2e/replan.spec.ts -g recovery && test -f e2e/screenshots/recovery.png",
+    "passes": true
+  },
+  {
+    "id": "C-12",
+    "priority": "P1",
+    "title": "Compare panel: changelog-style diff against the immutable baseline",
+    "acceptance": "cd frontend && pnpm exec playwright test e2e/replan.spec.ts -g compare && test -f e2e/screenshots/compare.png",
+    "passes": true
+  },
+  {
+    "id": "C-13",
+    "priority": "P1",
+    "title": "SVG map from Site.lon/lat and Cluster.outline, no tiles, no map library, selection linked with the calendar",
+    "acceptance": "cd frontend && pnpm exec playwright test e2e/map.spec.ts && test -f e2e/screenshots/map.png",
+    "passes": true
+  },
+  {
+    "id": "C-14",
+    "priority": "P1",
+    "title": "Inspector counterfactuals: force include (infeasible) and add crew-day (feasible) render their results",
+    "acceptance": "cd frontend && pnpm exec playwright test e2e/replan.spec.ts -g counterfactual && test -f e2e/screenshots/counterfactual.png",
+    "passes": true
+  },
+  {
+    "id": "C-15",
+    "priority": "P1",
+    "title": "Export JSON + CSV: assignments, missed commitments, assumptions, solver status",
+    "acceptance": "cd frontend && pnpm exec vitest run src/lib/export.test.ts",
+    "passes": true
+  },
+  {
+    "id": "C-16",
+    "priority": "P1",
+    "title": "Full e2e: load, remove crew-day, solve, compare, export",
+    "acceptance": "cd frontend && pnpm exec playwright test e2e/flow.spec.ts && test -f e2e/screenshots/flow-export.png",
+    "passes": true
+  },
+  {
+    "id": "C-17",
+    "priority": "P2",
+    "title": "Animated re-plan from the old cell to the new cell with a brief highlight. Respects prefers-reduced-motion",
+    "acceptance": "cd frontend && pnpm exec playwright test e2e/replan.spec.ts -g animation",
+    "passes": false
+  },
+  {
+    "id": "C-18",
+    "priority": "P2",
+    "title": "Keyboard shortcuts R, C, / and a command bar",
+    "acceptance": "cd frontend && pnpm exec playwright test e2e/keys.spec.ts",
+    "passes": false
+  },
+  {
+    "id": "C-19",
+    "priority": "P2",
+    "title": "Dark mode from the same tokens",
+    "acceptance": "cd frontend && pnpm exec playwright test e2e/shell.spec.ts -g dark && test -f e2e/screenshots/shell-dark.png",
+    "passes": true
+  }
 ]

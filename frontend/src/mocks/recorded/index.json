@@ -280,7 +280,7 @@
             "kind": "assumed"
           }
         ],
-        "solve_ms": 0
+        "solve_ms": 16
       },
       "after": {
         "plan_id": "tiny-r1-recovery-a27dc71d",
@@ -330,7 +330,7 @@
             "value": 0.0,
             "bound": 0.0,
             "gap": 0.0,
-            "elapsed_ms": 16
+            "elapsed_ms": 0
           },
           {
             "name": "travel",
@@ -471,7 +471,7 @@
             "kind": "assumed"
           }
         ],
-        "solve_ms": 16
+        "solve_ms": 0
       }
     }
   },
@@ -540,7 +540,7 @@
             "value": 0.0,
             "bound": 0.0,
             "gap": 0.0,
-            "elapsed_ms": 16
+            "elapsed_ms": 0
           },
           {
             "name": "travel",
@@ -681,7 +681,7 @@
             "kind": "assumed"
           }
         ],
-        "solve_ms": 16
+        "solve_ms": 0
       },
       "intervention": {
         "kind": "force_include",
@@ -754,7 +754,7 @@
             "value": 0.0,
             "bound": 0.0,
             "gap": 0.0,
-            "elapsed_ms": 16
+            "elapsed_ms": 0
           },
           {
             "name": "travel",
@@ -895,7 +895,7 @@
             "kind": "assumed"
           }
         ],
-        "solve_ms": 16
+        "solve_ms": 0
       },
       "intervention": {
         "kind": "add_crew_day",
@@ -917,9 +917,9 @@
     "path": "/api/plans/compare",
     "request": {
       "before": {
-        "plan_id": "standard-r0-strict-e4afa3ae",
+        "plan_id": "standard-r0-strict-9121db68",
         "scenario_id": "standard",
-        "scenario_hash": "e4afa3aec2d8b2c4788490dec5648708045ebb7532bb1a6bc51de3cfd8b045d5",
+        "scenario_hash": "9121db683a3893e136069fa7cfc20f6960a29407ef895653a0977339daff87ec",
         "revision": 0,
         "mode": "strict",
         "algorithm": "cpsat",
@@ -934,7 +934,7 @@
             "value": 1998.39,
             "bound": 1998.39,
             "gap": 0.0,
-            "elapsed_ms": 47
+            "elapsed_ms": 46
           },
           {
             "name": "changed_installs",
@@ -942,7 +942,7 @@
             "value": 13.0,
             "bound": 13.0,
             "gap": 0.0,
-            "elapsed_ms": 250
+            "elapsed_ms": 47
           },
           {
             "name": "travel",
@@ -950,7 +950,7 @@
             "value": 1190.0,
             "bound": 1190.0,
             "gap": 0.0,
-            "elapsed_ms": 77
+            "elapsed_ms": 125
           }
         ],
         "assignments": [
@@ -1061,10 +1061,10 @@
           {
             "site_id": "S-04",
             "crew_id": "B",
-            "date": "2018-06-05",
+            "date": "2018-06-07",
             "state": "scheduled",
             "days_late": 0,
-            "value_usd": 66.04969110282202
+            "value_usd": 65.05538980109073
           },
           {
             "site_id": "S-05",
@@ -1076,11 +1076,11 @@
           },
           {
             "site_id": "S-06",
-            "crew_id": "B",
-            "date": "2018-06-07",
+            "crew_id": "C",
+            "date": "2018-06-08",
             "state": "scheduled",
             "days_late": 0,
-            "value_usd": 65.05538980109073
+            "value_usd": 63.94390741279432
           },
           {
             "site_id": "S-07",
@@ -1132,11 +1132,11 @@
           },
           {
             "site_id": "W-03",
-            "crew_id": "C",
-            "date": "2018-06-07",
+            "crew_id": "B",
+            "date": "2018-06-05",
             "state": "scheduled",
             "days_late": 0,
-            "value_usd": 65.05538980109073
+            "value_usd": 66.04969110282202
           },
           {
             "site_id": "W-04",
@@ -1149,10 +1149,10 @@
           {
             "site_id": "W-05",
             "crew_id": "C",
-            "date": "2018-06-08",
+            "date": "2018-06-07",
             "state": "scheduled",
             "days_late": 0,
-            "value_usd": 63.94390741279432
+            "value_usd": 65.05538980109073
           },
           {
             "site_id": "W-06",
@@ -1288,9 +1288,9 @@
           {
             "crew_id": "B",
             "date": "2018-06-05",
-            "cluster_id": "S",
-            "onsite_min": 240,
-            "travel_min": 45,
+            "cluster_id": "W",
+            "onsite_min": 180,
+            "travel_min": 50,
             "available_min": 480
           },
           {
@@ -1392,9 +1392,9 @@
           {
             "crew_id": "C",
             "date": "2018-06-08",
-            "cluster_id": "W",
-            "onsite_min": 180,
-            "travel_min": 50,
+            "cluster_id": "S",
+            "onsite_min": 240,
+            "travel_min": 45,
             "available_min": 480
           },
           {
@@ -1469,12 +1469,12 @@
             "kind": "assumed"
           }
         ],
-        "solve_ms": 405
+        "solve_ms": 327
       },
       "after": {
-        "plan_id": "standard-r1-recovery-785cfba2",
+        "plan_id": "standard-r1-recovery-c6c42aec",
         "scenario_id": "standard",
-        "scenario_hash": "785cfba2ebe89ee24188ebb8b41be42511ed6c41cac332aaf13bbf88096ae861",
+        "scenario_hash": "c6c42aec2b73a7b6effbabadf75373500eef39b2719fd973f326698017fd64f5",
         "revision": 1,
         "mode": "recovery",
         "algorithm": "cpsat",
@@ -1497,7 +1497,7 @@
             "value": 3.0,
             "bound": 3.0,
             "gap": 0.0,
-            "elapsed_ms": 77
+            "elapsed_ms": 62
           },
           {
             "name": "total_delay",
@@ -1505,7 +1505,7 @@
             "value": 13.0,
             "bound": 13.0,
             "gap": 0.0,
-            "elapsed_ms": 110
+            "elapsed_ms": 125
           },
           {
             "name": "operating_value",
@@ -1513,7 +1513,7 @@
             "value": 1979.26,
             "bound": 1979.26,
             "gap": 0.0,
-            "elapsed_ms": 422
+            "elapsed_ms": 235
           },
           {
             "name": "changed_installs",
@@ -1521,7 +1521,7 @@
             "value": 15.0,
             "bound": 15.0,
             "gap": 0.0,
-            "elapsed_ms": 389
+            "elapsed_ms": 217
           },
           {
             "name": "travel",
@@ -1529,7 +1529,7 @@
             "value": 1140.0,
             "bound": 1140.0,
             "gap": 0.0,
-            "elapsed_ms": 297
+            "elapsed_ms": 375
           }
         ],
         "assignments": [
@@ -1567,7 +1567,7 @@
           },
           {
             "site_id": "N-05",
-            "crew_id": "B",
+            "crew_id": "C",
             "date": "2018-06-12",
             "state": "scheduled",
             "days_late": 0,
@@ -1575,7 +1575,7 @@
           },
           {
             "site_id": "N-06",
-            "crew_id": "B",
+            "crew_id": "C",
             "date": "2018-06-12",
             "state": "scheduled",
             "days_late": 0,
@@ -1711,7 +1711,7 @@
           },
           {
             "site_id": "W-03",
-            "crew_id": "C",
+            "crew_id": "B",
             "date": "2018-06-12",
             "state": "late",
             "days_late": 4,
@@ -1727,7 +1727,7 @@
           },
           {
             "site_id": "W-05",
-            "crew_id": "C",
+            "crew_id": "B",
             "date": "2018-06-12",
             "state": "scheduled",
             "days_late": 0,
@@ -1907,9 +1907,9 @@
           {
             "crew_id": "B",
             "date": "2018-06-12",
-            "cluster_id": "N",
-            "onsite_min": 420,
-            "travel_min": 60,
+            "cluster_id": "W",
+            "onsite_min": 360,
+            "travel_min": 50,
             "available_min": 480
           },
           {
@@ -1987,9 +1987,9 @@
           {
             "crew_id": "C",
             "date": "2018-06-12",
-            "cluster_id": "W",
-            "onsite_min": 360,
-            "travel_min": 50,
+            "cluster_id": "N",
+            "onsite_min": 420,
+            "travel_min": 60,
             "available_min": 480
           },
           {
@@ -2048,7 +2048,7 @@
             "kind": "assumed"
           }
         ],
-        "solve_ms": 1312
+        "solve_ms": 1531
       }
     }
   },
@@ -2071,9 +2071,9 @@
         ]
       },
       "base": {
-        "plan_id": "standard-r1-recovery-785cfba2",
+        "plan_id": "standard-r1-recovery-c6c42aec",
         "scenario_id": "standard",
-        "scenario_hash": "785cfba2ebe89ee24188ebb8b41be42511ed6c41cac332aaf13bbf88096ae861",
+        "scenario_hash": "c6c42aec2b73a7b6effbabadf75373500eef39b2719fd973f326698017fd64f5",
         "revision": 1,
         "mode": "recovery",
         "algorithm": "cpsat",
@@ -2096,7 +2096,7 @@
             "value": 3.0,
             "bound": 3.0,
             "gap": 0.0,
-            "elapsed_ms": 77
+            "elapsed_ms": 62
           },
           {
             "name": "total_delay",
@@ -2104,7 +2104,7 @@
             "value": 13.0,
             "bound": 13.0,
             "gap": 0.0,
-            "elapsed_ms": 110
+            "elapsed_ms": 125
           },
           {
             "name": "operating_value",
@@ -2112,7 +2112,7 @@
             "value": 1979.26,
             "bound": 1979.26,
             "gap": 0.0,
-            "elapsed_ms": 422
+            "elapsed_ms": 235
           },
           {
             "name": "changed_installs",
@@ -2120,7 +2120,7 @@
             "value": 15.0,
             "bound": 15.0,
             "gap": 0.0,
-            "elapsed_ms": 389
+            "elapsed_ms": 217
           },
           {
             "name": "travel",
@@ -2128,7 +2128,7 @@
             "value": 1140.0,
             "bound": 1140.0,
             "gap": 0.0,
-            "elapsed_ms": 297
+            "elapsed_ms": 375
           }
         ],
         "assignments": [
@@ -2166,7 +2166,7 @@
           },
           {
             "site_id": "N-05",
-            "crew_id": "B",
+            "crew_id": "C",
             "date": "2018-06-12",
             "state": "scheduled",
             "days_late": 0,
@@ -2174,7 +2174,7 @@
           },
           {
             "site_id": "N-06",
-            "crew_id": "B",
+            "crew_id": "C",
             "date": "2018-06-12",
             "state": "scheduled",
             "days_late": 0,
@@ -2310,7 +2310,7 @@
           },
           {
             "site_id": "W-03",
-            "crew_id": "C",
+            "crew_id": "B",
             "date": "2018-06-12",
             "state": "late",
             "days_late": 4,
@@ -2326,7 +2326,7 @@
           },
           {
             "site_id": "W-05",
-            "crew_id": "C",
+            "crew_id": "B",
             "date": "2018-06-12",
             "state": "scheduled",
             "days_late": 0,
@@ -2506,9 +2506,9 @@
           {
             "crew_id": "B",
             "date": "2018-06-12",
-            "cluster_id": "N",
-            "onsite_min": 420,
-            "travel_min": 60,
+            "cluster_id": "W",
+            "onsite_min": 360,
+            "travel_min": 50,
             "available_min": 480
           },
           {
@@ -2586,9 +2586,9 @@
           {
             "crew_id": "C",
             "date": "2018-06-12",
-            "cluster_id": "W",
-            "onsite_min": 360,
-            "travel_min": 50,
+            "cluster_id": "N",
+            "onsite_min": 420,
+            "travel_min": 60,
             "available_min": 480
           },
           {
@@ -2647,7 +2647,7 @@
             "kind": "assumed"
           }
         ],
-        "solve_ms": 1312
+        "solve_ms": 1531
       },
       "intervention": {
         "kind": "force_include",

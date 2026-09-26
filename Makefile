@@ -30,8 +30,9 @@ api: ## Backend only on :8000
 
 check: check-contracts check-a check-b check-c ## Everything CI would run
 
-check-contracts: ## Contract round-trips and lane boundaries
+check-contracts: ## Contract round-trips, lane boundaries, and a stale openapi.json
 	$(PY) pytest -q tests/contract
+	$(PY) python ../scripts/export_openapi.py --check
 
 check-a: ## Lane A: lint + tests
 	$(PY) ruff check $(LANE_A_PATHS)

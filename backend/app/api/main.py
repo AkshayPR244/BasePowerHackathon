@@ -1,11 +1,15 @@
 """FastAPI app. Endpoints: docs/CONTRACTS.md and SPEC section 11."""
 
 import asyncio
+from contextlib import asynccontextmanager
 
-from fastapi import FastAPI, HTTPException, Request
+from fastapi import FastAPI, Request
+from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
+from starlette.exceptions import HTTPException as StarletteHTTPException
 
+from app.api import warm
 from app.api.scenarios import ScenarioLoadError, load_scenario, scenario_ids, summarize
 from app.compare.diff import diff_plans
 from app.contracts.models import (
@@ -22,11 +26,19 @@ from app.contracts.models import (
 from app.planning.counterfactual import counterfactual
 from app.planning.solve import InvalidPlanError, plan
 
+
+@asynccontextmanager
+async def lifespan(_: FastAPI):
+    warm.start()
+    yield
+
+
 app = FastAPI(
     title="Rollout Planner API",
     description="Plan and disruption in, best recovery and its impact out.",
     version="1.0.0",
     separate_input_output_schemas=False,
+    lifespan=lifespan,
 )
 app.add_middleware(
     CORSMiddleware,
@@ -36,8 +48,9 @@ app.add_middleware(
 )
 
 ERRORS = {
-    404: {"model": ApiError, "description": "Unknown scenario"},
-    422: {"model": ApiError, "description": "Scenario files are invalid"},
+    400: {"model": ApiError, "description": "The request is valid JSON but makes no sense"},
+    404: {"model": ApiError, "description": "Unknown scenario or path"},
+    422: {"model": ApiError, "description": "The request or the scenario files are invalid"},
     500: {"model": ApiError, "description": "The planner produced a plan that failed validation"},
 }
 
@@ -48,15 +61,33 @@ class ApiException(Exception):
         self.error = ApiError(code=code, message=message, input_issues=list(issues))
 
 
+def _json(status: int, err: ApiError) -> JSONResponse:
+    return JSONResponse(status_code=status, content=err.model_dump(mode="json"))
+
+
 @app.exception_handler(ApiException)
 async def _api_error(_: Request, exc: ApiException) -> JSONResponse:
-    return JSONResponse(status_code=exc.status, content=exc.error.model_dump(mode="json"))
+    return _json(exc.status, exc.error)
 
 
 @app.exception_handler(InvalidPlanError)
 async def _invalid_plan(_: Request, exc: InvalidPlanError) -> JSONResponse:
-    err = ApiError(code="invalid_plan", message=str(exc))
-    return JSONResponse(status_code=500, content=err.model_dump(mode="json"))
+    return _json(500, ApiError(code="invalid_plan", message=str(exc)))
+
+
+@app.exception_handler(RequestValidationError)
+async def _bad_request(_: Request, exc: RequestValidationError) -> JSONResponse:
+    parts = []
+    for e in exc.errors():
+        where = ".".join(str(p) for p in e.get("loc", ()) if p != "body")
+        parts.append(f"{where}: {e.get('msg')}" if where else str(e.get("msg")))
+    return _json(422, ApiError(code="invalid_request", message="; ".join(parts)))
+
+
+@app.exception_handler(StarletteHTTPException)
+async def _http_error(_: Request, exc: StarletteHTTPException) -> JSONResponse:
+    code = {404: "not_found", 405: "method_not_allowed"}.get(exc.status_code, "http_error")
+    return _json(exc.status_code, ApiError(code=code, message=str(exc.detail)))
 
 
 def _scenario(scenario_id: str) -> Scenario:
@@ -74,7 +105,8 @@ def _scenario(scenario_id: str) -> Scenario:
 
 @app.get("/api/health")
 def health() -> dict[str, str]:
-    return {"status": "ok"}
+    """`values` is not_started, warming, ready, or failed."""
+    return {"status": "ok", **warm.status()}
 
 
 @app.get("/api/scenarios")
@@ -92,10 +124,10 @@ async def create_plan(req: PlanRequest) -> PlanResult:
     return await asyncio.to_thread(plan, _scenario(req.scenario_id), req)
 
 
-@app.post("/api/plans/compare")
+@app.post("/api/plans/compare", responses=ERRORS)
 def compare_plans(req: CompareRequest) -> PlanDiff:
     if req.before.scenario_id != req.after.scenario_id:
-        raise HTTPException(400, "Plans come from different scenarios.")
+        raise ApiException(400, "scenario_mismatch", "Plans come from different scenarios.")
     return diff_plans(req.before, req.after)
 
 

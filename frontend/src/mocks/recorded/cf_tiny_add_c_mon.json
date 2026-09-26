@@ -221,7 +221,7 @@
         "kind": "assumed"
       }
     ],
-    "solve_ms": 14
+    "solve_ms": 0
   },
   "diff": {
     "before_plan_id": "tiny-r1-recovery-a27dc71d",

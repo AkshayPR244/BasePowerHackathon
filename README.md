@@ -4,22 +4,35 @@ A planning and recovery analysis tool for residential battery installers like Ba
 
 It is not a customer booking tool. It does not pick appointments or send anything to customers.
 
-Status: scaffold only. Frozen contracts, the tiny fixture with expected results, lane briefs, and the agent harness exist. No product code exists yet. Every command below is planned until a lane verifies it. Spec: [`docs/SPEC.md`](docs/SPEC.md).
+Status: the backend works end to end. It covers data loading, input checks, battery valuation, the CP-SAT planner, the independent validator, baselines, diffs, counterfactuals, and the API. The UI is in progress. Spec: [`docs/SPEC.md`](docs/SPEC.md).
 
 ## Quick start
 
-Needs `uv`, `pnpm`, `make`, and bash (macOS, Linux, or WSL).
+Needs `uv`, `make`, and bash (macOS, Linux, WSL, or Git Bash on Windows). The UI also needs `pnpm`.
+
+"Verified" means the command ran and passed on 2026-09-26 on Windows with Git Bash. macOS and Linux are not verified.
 
 | Command | What it does | Status |
 |---|---|---|
-| `make setup` | Install Python and frontend deps, and the Playwright browser | planned |
-| `make dev` | Frontend on http://localhost:5173 with recorded mocks. No backend. | planned |
-| `make dev-live` | Backend on :8000 plus frontend proxied to it | planned |
-| `make check` | Contracts, lane A, lane B, lane C checks | planned |
-| `make e2e` | Playwright against mocks. Screenshots go to `frontend/e2e/screenshots/` | planned |
-| `make types` | Regenerate `contracts/openapi.json` and `frontend/src/api/generated.ts` | planned |
-| `make mocks` | Re-record MSW responses from the in-process API | planned |
-| `make demo` | Reset demo data and run the live app | planned |
+| `make setup` | Install Python deps. Installs frontend deps once `frontend/package.json` exists | verified (backend part) |
+| `make api` | API on http://localhost:8000. Builds every value table in the background. `GET /api/health` reports `values: ready` when done | verified |
+| `make check-contracts` | Contract tests plus a check that `contracts/openapi.json` is current | verified |
+| `make check-a` | Lane A lint and tests | verified |
+| `make check-b` | Lane B lint and tests | verified |
+| `make mocks` | Re-record the UI mock responses from the in-process API | verified |
+| `make types` | Write `contracts/openapi.json`, then generate `frontend/src/api/generated.ts` | OpenAPI half verified. The TypeScript half needs the frontend |
+| `make check` | All of the above plus `check-c` | needs the frontend |
+| `make dev`, `make dev-live`, `make e2e`, `make demo` | UI commands | need the frontend |
+
+Try the API without the UI:
+
+```bash
+make api
+curl -s localhost:8000/api/scenarios
+curl -s -X POST localhost:8000/api/plans -H 'content-type: application/json'   -d '{"scenario_id":"standard","revision":1,"mode":"recovery","edits":[{"kind":"delay_inventory","configuration_id":"B13","from_date":"2018-06-07","to_date":"2018-06-11"}]}'
+```
+
+Every error is an `ApiError` with `code` and `message`. The first cold start builds the standard value table in the background, which took 46 s on the test laptop.
 
 ## Start a lane
 
@@ -49,7 +62,7 @@ backend/app/validate    lane A: independent plan validator
 backend/app/planning    lane B: CP-SAT model, strict and recovery modes
 backend/app/baselines   lane B: EDF and nearest-cluster baselines
 backend/app/compare     lane B: plan diffs
-backend/app/api         lane B: FastAPI app (empty today)
+backend/app/api         lane B: FastAPI app
 frontend/               lane C: React app, MSW mocks, Playwright
 data/demo/tiny          hand-built 6-job fixture with expected results
 contracts/              generated openapi.json and the change log

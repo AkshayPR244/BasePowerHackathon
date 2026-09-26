@@ -9,7 +9,7 @@ unscheduled_penalty_days: 30
 objective_policy: value_aware
 solve_time_limit_s: 15
 random_seed: 42
-num_workers: 1
+num_workers: 8
 synthetic: true
 travel_allowance_min:
   N: 60

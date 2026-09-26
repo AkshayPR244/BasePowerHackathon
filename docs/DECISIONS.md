@@ -32,6 +32,11 @@ One line of reasoning each. Newest changes at the bottom of each section.
 - **No verify-gate hook.** The cwc repo's `verify-gate` and `track-read` hooks guard a single results file. Our `feature_list.json` acceptance commands and the evaluator subagent cover that job.
 - **Steer hook supports per-lane files.** `lanes/<lane>/STEER.md` targets one lane by subagent type or branch. `STEER.md` at the root targets every agent.
 
+## Backend hardening (2026-09-26)
+
+- **Standard solves with 8 CP-SAT workers plus a hidden tie-break stage.** A fixed seed does not make parallel CP-SAT deterministic. In 5 runs, 8 workers returned 4 different plans with equal objectives. A final `canonical` stage picks one plan among equal optima, so replays and recordings reproduce. Measured on standard: strict 0.31 to 0.36 s and late-shipment recovery 1.7 to 2.0 s, down from about 1.1 s and 3.7 s with 1 worker. CP-SAT's deterministic interleaved mode was slower (2.8 s and 5.8 s). The tie-break stage is not reported and never changes a result's status.
+- **Value tables build at API startup in a background thread.** A cold standard table took 46 s inside the first request.
+
 ## Skills
 
 - **frontend-design** (anthropics/claude-plugins-official) and **webapp-testing** (anthropics/skills): vendored into `.claude/skills/` with their Apache-2.0 licenses. Vendoring means teammates need no plugin install and subagents can preload them by name.

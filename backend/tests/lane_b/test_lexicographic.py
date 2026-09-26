@@ -10,7 +10,7 @@ def test_recovery_reports_five_stages(tiny):
     r = plan(
         tiny, PlanRequest(scenario_id="tiny", revision=1, mode=Mode.recovery, edits=[REMOVE_A_MON])
     )
-    assert [m.name for m in r.stages] == [s.name for s in RECOVERY_STAGES]
+    assert [m.name for m in r.stages] == [s.name for s in RECOVERY_STAGES if s.name != "canonical"]
     for m in r.stages:
         assert m.status == StageStatus.optimal
         assert m.value is not None and m.bound is not None and m.gap == 0.0
@@ -41,3 +41,18 @@ def test_one_total_budget_skips_remaining_stages(monkeypatch, tiny):
     assert statuses[0] == StageStatus.optimal
     assert StageStatus.skipped in statuses
     assert r.status.value == "feasible"
+
+
+def test_parallel_solves_are_reproducible():
+    """8 workers are non-deterministic alone. The canonical tie-break stage fixes the plan."""
+    from app.api.scenarios import load_scenario
+    from app.contracts.models import DelayInventory
+
+    s = load_scenario("standard")
+    assert s.config.num_workers > 1
+    late = DelayInventory(configuration_id="B13", from_date="2018-06-07", to_date="2018-06-11")
+    req = PlanRequest(scenario_id="standard", revision=1, mode=Mode.recovery, edits=[late])
+    runs = {
+        tuple((a.site_id, a.crew_id, a.date) for a in plan(s, req).assignments) for _ in range(3)
+    }
+    assert len(runs) == 1

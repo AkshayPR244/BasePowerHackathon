@@ -34,6 +34,7 @@ STRICT_STAGES = [
     Stage("operating_value", maximize=True),
     Stage("changed_installs"),
     Stage("travel"),
+    Stage("canonical"),
 ]
 RECOVERY_STAGES = [
     Stage("jobs_late_or_unscheduled"),
@@ -41,6 +42,7 @@ RECOVERY_STAGES = [
     Stage("operating_value", maximize=True),
     Stage("changed_installs"),
     Stage("travel"),
+    Stage("canonical"),
 ]
 
 
@@ -197,7 +199,8 @@ def _solve(scenario, req, forced, values, policy, common) -> PlanResult:
         seed=scenario.config.random_seed,
         workers=scenario.config.num_workers,
     )
-    metas = [_in_usd(m) for m in _merge_skipped(stages, lex.stages)]
+    reported = [st for st in stages if st.name != "canonical"]
+    metas = [_in_usd(m) for m in _merge_skipped(reported, lex.stages)]
 
     if lex.values is None:
         status = (
@@ -250,7 +253,7 @@ def _solve(scenario, req, forced, values, policy, common) -> PlanResult:
         for n, val in lex.values.items()
         if n in names and val
     }
-    run_names = {s.name for s in run}
+    run_names = {s.name for s in run} - {"canonical"}
     proven = all(m.status == StageStatus.optimal for m in metas if m.name in run_names)
     result = build_result(
         scenario=scenario,
@@ -265,6 +268,7 @@ def _solve(scenario, req, forced, values, policy, common) -> PlanResult:
 
 
 def _infeasible_stages(stages: list[Stage]) -> list[StageMeta]:
+    stages = [st for st in stages if st.name != "canonical"]
     return [StageMeta(name=stages[0].name, status=StageStatus.infeasible, elapsed_ms=0)] + [
         StageMeta(name=s.name, status=StageStatus.skipped, elapsed_ms=0) for s in stages[1:]
     ]

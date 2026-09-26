@@ -13,5 +13,5 @@ if "--check" in sys.argv:
         sys.exit("contracts/openapi.json is stale. Run `make types` and commit the result.")
     print("openapi.json is current")
 else:
-    out.write_text(spec, encoding="utf-8")
+    out.write_text(spec, encoding="utf-8", newline="\n")
     print(f"wrote {out}")

@@ -1,7 +1,7 @@
 {
-  "plan_id": "standard-r1-recovery-785cfba2",
+  "plan_id": "standard-r1-recovery-c6c42aec",
   "scenario_id": "standard",
-  "scenario_hash": "785cfba2ebe89ee24188ebb8b41be42511ed6c41cac332aaf13bbf88096ae861",
+  "scenario_hash": "c6c42aec2b73a7b6effbabadf75373500eef39b2719fd973f326698017fd64f5",
   "revision": 1,
   "mode": "recovery",
   "algorithm": "cpsat",
@@ -24,7 +24,7 @@
       "value": 3.0,
       "bound": 3.0,
       "gap": 0.0,
-      "elapsed_ms": 77
+      "elapsed_ms": 62
     },
     {
       "name": "total_delay",
@@ -32,7 +32,7 @@
       "value": 13.0,
       "bound": 13.0,
       "gap": 0.0,
-      "elapsed_ms": 110
+      "elapsed_ms": 125
     },
     {
       "name": "operating_value",
@@ -40,7 +40,7 @@
       "value": 1979.26,
       "bound": 1979.26,
       "gap": 0.0,
-      "elapsed_ms": 422
+      "elapsed_ms": 235
     },
     {
       "name": "changed_installs",
@@ -48,7 +48,7 @@
       "value": 15.0,
       "bound": 15.0,
       "gap": 0.0,
-      "elapsed_ms": 389
+      "elapsed_ms": 217
     },
     {
       "name": "travel",
@@ -56,7 +56,7 @@
       "value": 1140.0,
       "bound": 1140.0,
       "gap": 0.0,
-      "elapsed_ms": 297
+      "elapsed_ms": 375
     }
   ],
   "assignments": [
@@ -94,7 +94,7 @@
     },
     {
       "site_id": "N-05",
-      "crew_id": "B",
+      "crew_id": "C",
       "date": "2018-06-12",
       "state": "scheduled",
       "days_late": 0,
@@ -102,7 +102,7 @@
     },
     {
       "site_id": "N-06",
-      "crew_id": "B",
+      "crew_id": "C",
       "date": "2018-06-12",
       "state": "scheduled",
       "days_late": 0,
@@ -238,7 +238,7 @@
     },
     {
       "site_id": "W-03",
-      "crew_id": "C",
+      "crew_id": "B",
       "date": "2018-06-12",
       "state": "late",
       "days_late": 4,
@@ -254,7 +254,7 @@
     },
     {
       "site_id": "W-05",
-      "crew_id": "C",
+      "crew_id": "B",
       "date": "2018-06-12",
       "state": "scheduled",
       "days_late": 0,
@@ -434,9 +434,9 @@
     {
       "crew_id": "B",
       "date": "2018-06-12",
-      "cluster_id": "N",
-      "onsite_min": 420,
-      "travel_min": 60,
+      "cluster_id": "W",
+      "onsite_min": 360,
+      "travel_min": 50,
       "available_min": 480
     },
     {
@@ -514,9 +514,9 @@
     {
       "crew_id": "C",
       "date": "2018-06-12",
-      "cluster_id": "W",
-      "onsite_min": 360,
-      "travel_min": 50,
+      "cluster_id": "N",
+      "onsite_min": 420,
+      "travel_min": 60,
       "available_min": 480
     },
     {
@@ -575,5 +575,5 @@
       "kind": "assumed"
     }
   ],
-  "solve_ms": 1312
+  "solve_ms": 1531
 }

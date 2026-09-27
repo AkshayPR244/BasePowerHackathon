@@ -1,8 +1,10 @@
+import "../design/live-canvas.css";
 import { useEffect, useRef, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { api, unwrap } from "../api/client";
 import type { Schema } from "../api/types";
 import { dateLabel } from "../lib/format";
+import { statusLabel, validationLabel } from "../lib/recovery";
 import { OptionFrontier } from "../components/OptionFrontier";
 import {
   PlanFigure,
@@ -11,6 +13,7 @@ import {
 } from "../components/PlanFigure";
 import { SelectedRecovery } from "../components/SelectedRecovery";
 import { TriggerRail } from "../components/TriggerRail";
+import { useTheme } from "./useTheme";
 
 type Disruption = Schema["RecoveryOptionsRequest"]["disruption"][number];
 type Intervention = Schema["EvaluateRequest"]["interventions"][number];
@@ -57,7 +60,7 @@ function currentPlanForProtection(
   const protectedIds = new Set(protectedHomes);
   return rows.map((row) => ({
     ...row,
-    locked: protectedIds.has(row.site_id),
+    locked: row.locked || protectedIds.has(row.site_id),
   }));
 }
 
@@ -85,6 +88,9 @@ export function LiveRecoveryCanvas() {
   const [approvalError, setApprovalError] = useState<string | null>(null);
   const [approving, setApproving] = useState(false);
   const latestRevision = useRef(sandbox.revision);
+  // Any change to the option in view invalidates a pending approval.
+  const approvalToken = useRef(0);
+  const { theme, toggleTheme } = useTheme();
 
   const scenario = useQuery({
     queryKey: ["recovery-scenario", "standard"],
@@ -172,9 +178,13 @@ export function LiveRecoveryCanvas() {
     }
   }, [hasFreshRecovery, previousPlan, working]);
 
+  const approvalKey = `${sandbox.revision}|${selectedOption?.option_id}`;
   useEffect(() => {
-    document.documentElement.dataset.theme = "light";
-  }, []);
+    approvalToken.current++;
+    setApproval(null);
+    setApprovalError(null);
+    setApproving(false);
+  }, [approvalKey]);
 
   const preservePreviousPlan = () => {
     if (!selectedOption) return;
@@ -536,8 +546,9 @@ export function LiveRecoveryCanvas() {
     });
   };
 
-  const approve = async () => {
-    if (!selectedOption || !recovery.data || !isValid(selectedOption)) return;
+  const approve = async (option: RecoveryOption) => {
+    if (!recovery.data || !isValid(option)) return;
+    const token = approvalToken.current;
     setApproving(true);
     setApprovalError(null);
     try {
@@ -546,17 +557,18 @@ export function LiveRecoveryCanvas() {
           body: {
             scenario_id: "standard",
             revision: recovery.data.revision,
-            option: selectedOption,
+            option,
           },
         }),
       );
-      setApproval(result);
+      if (token === approvalToken.current) setApproval(result);
     } catch (error) {
-      setApprovalError(
-        error instanceof Error ? error.message : "Approval failed.",
-      );
+      if (token === approvalToken.current)
+        setApprovalError(
+          error instanceof Error ? error.message : "Approval failed.",
+        );
     } finally {
-      setApproving(false);
+      if (token === approvalToken.current) setApproving(false);
     }
   };
 
@@ -602,6 +614,22 @@ export function LiveRecoveryCanvas() {
         <div className="source-labels">
           {scenario.data?.config.synthetic && <span>Synthetic plan</span>}
           <span>Costs are modeled</span>
+          <button
+            type="button"
+            className="header-button"
+            onClick={toggleTheme}
+            aria-label={`Use ${theme === "dark" ? "light" : "dark"} theme`}
+            data-testid="theme-toggle"
+          >
+            {theme === "dark" ? "Light" : "Dark"}
+          </button>
+          <a
+            className="header-button"
+            href="?view=workspace"
+            data-testid="workspace-link"
+          >
+            Advanced: scenario suite and baseline plan
+          </a>
         </div>
       </header>
 
@@ -692,11 +720,11 @@ export function LiveRecoveryCanvas() {
                       ? "Independent validation did not run."
                       : report.issues.length
                         ? report.issues.map((issue) => issue.message).join("; ")
-                        : option.result.message ||
-                          `Plan status: ${option.status}.`;
+                        : option.result.message;
                     return (
-                      <p key={option.option_id}>
-                        {option.action_label}: {reason}
+                      <p key={option.option_id} data-testid="withheld-option">
+                        {option.action_label} · {statusLabel(option)} ·{" "}
+                        {validationLabel(option)}. {reason}
                       </p>
                     );
                   })}
@@ -721,7 +749,7 @@ export function LiveRecoveryCanvas() {
           busy={approving || working || showPrevious}
           approval={approval}
           error={approvalError}
-          onApprove={() => void approve()}
+          onApprove={(option) => void approve(option)}
         />
       )}
       {recovery.data?.stub && (

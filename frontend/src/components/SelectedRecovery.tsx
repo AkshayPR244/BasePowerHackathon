@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { Schema } from "../api/types";
+import { statusLabel, unproven } from "../lib/recovery";
 
 type RecoveryOption = Schema["RecoveryOption"];
 
@@ -33,9 +34,21 @@ export function SelectedRecovery({
   busy: boolean;
   approval: Schema["ApproveResult"] | null;
   error: string | null;
-  onApprove: () => void;
+  onApprove: (option: RecoveryOption) => void;
 }) {
-  const [confirming, setConfirming] = useState(false);
+  const [confirming, setConfirming] = useState<RecoveryOption | null>(null);
+  const dialogRef = useRef<HTMLDialogElement>(null);
+  const approveRef = useRef<HTMLButtonElement>(null);
+  useEffect(() => {
+    const dialog = dialogRef.current;
+    if (!dialog) return;
+    if (confirming && !dialog.open) dialog.showModal();
+    if (!confirming && dialog.open) dialog.close();
+  }, [confirming]);
+  const closeDialog = () => {
+    setConfirming(null);
+    approveRef.current?.focus();
+  };
   if (!option) {
     return (
       <section className="selected-recovery" aria-label="Selected recovery">
@@ -54,6 +67,10 @@ export function SelectedRecovery({
   const changes = option.diff_vs_original.changes;
   const preview = changes.slice(0, 3);
   const actionLabel = labelOverride ?? option.action_label;
+  const confirmLabel =
+    confirming?.option_id === option.option_id
+      ? actionLabel
+      : confirming?.action_label;
   const comparison =
     option.diff_vs_no_action?.headline ??
     "This is the no-action reference plan.";
@@ -75,6 +92,12 @@ export function SelectedRecovery({
           <p>{comparison}</p>
           {option.stub && (
             <span className="response-note">Fixture response</span>
+          )}
+          {valid && unproven(option) && (
+            <span className="stale-result-note" data-testid="unproven-note">
+              {statusLabel(option)}. The solver stopped before it proved that no
+              better plan exists.
+            </span>
           )}
         </div>
         <div className="selected-values">
@@ -102,10 +125,11 @@ export function SelectedRecovery({
           </span>
         </div>
         <button
+          ref={approveRef}
           type="button"
           className="approve-button"
           disabled={!valid || busy || !!approval}
-          onClick={() => setConfirming(true)}
+          onClick={() => setConfirming(option)}
           data-testid="approve-option"
         >
           Approve this recovery
@@ -151,26 +175,51 @@ export function SelectedRecovery({
           {approval.summary}
         </p>
       )}
-      {confirming && (
-        <div className="confirm-backdrop">
-          <section
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="confirm-heading"
-            className="confirm-dialog"
-          >
+      <dialog
+        ref={dialogRef}
+        className="confirm-dialog"
+        aria-labelledby="confirm-heading"
+        data-testid="approve-dialog"
+        onCancel={(event) => {
+          event.preventDefault();
+          closeDialog();
+        }}
+        onKeyDown={(event) => {
+          if (event.key !== "Tab") return;
+          // Keep Tab inside the dialog instead of moving to the browser UI.
+          const focusable = [
+            ...event.currentTarget.querySelectorAll<HTMLElement>(
+              "button:not(:disabled)",
+            ),
+          ];
+          if (!focusable.length) return;
+          const index = focusable.indexOf(
+            document.activeElement as HTMLElement,
+          );
+          const next = event.shiftKey
+            ? (index - 1 + focusable.length) % focusable.length
+            : (index + 1) % focusable.length;
+          event.preventDefault();
+          focusable[next].focus();
+        }}
+      >
+        {confirming && (
+          <>
             <h2 id="confirm-heading">Approve this recovery?</h2>
             <p>
-              {actionLabel}. {option.counts.deadlines_missed} deadlines missed;{" "}
-              {option.counts.customers_to_reschedule} customers to reschedule.
+              {confirmLabel}. {confirming.counts.deadlines_missed} deadlines
+              missed. {confirming.counts.customers_to_reschedule} customers to
+              reschedule.
             </p>
-            {preview.slice(0, 2).map((change, index) => (
-              <p key={change.job_id ?? `${change.site_id}-${index}`}>
-                {change.note}
-              </p>
-            ))}
+            {confirming.diff_vs_original.changes
+              .slice(0, 2)
+              .map((change, index) => (
+                <p key={change.job_id ?? `${change.site_id}-${index}`}>
+                  {change.note}
+                </p>
+              ))}
             <div className="confirm-actions">
-              <button type="button" onClick={() => setConfirming(false)}>
+              <button type="button" onClick={closeDialog}>
                 Keep reviewing
               </button>
               <button
@@ -178,16 +227,17 @@ export function SelectedRecovery({
                 className="approve-button"
                 disabled={busy}
                 onClick={() => {
-                  setConfirming(false);
-                  onApprove();
+                  const frozen = confirming;
+                  closeDialog();
+                  onApprove(frozen);
                 }}
               >
                 Confirm approval
               </button>
             </div>
-          </section>
-        </div>
-      )}
+          </>
+        )}
+      </dialog>
     </section>
   );
 }

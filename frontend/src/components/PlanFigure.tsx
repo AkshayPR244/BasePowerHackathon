@@ -1,6 +1,7 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import type { Plan, Scenario, Schema } from "../api/types";
 import { dateLabel, datesBetween } from "../lib/format";
+import { slotsOffPlan } from "../lib/recovery";
 
 export type CanvasTool =
   "knockout" | "halfday" | "long" | "reschedule" | "protect" | "trace";
@@ -86,6 +87,7 @@ export function PlanFigure({
   );
   const assignments = result?.assignments ?? [];
   const cumulativeChanges = option?.diff_vs_original.changes ?? [];
+  const ghosts = option ? slotsOffPlan(option) : [];
   const transitionChanges = comparisonOption
     ? compareOptions(comparisonOption, option)
     : cumulativeChanges;
@@ -526,6 +528,29 @@ export function PlanFigure({
                             );
                           })}
                         </span>
+                        {lost && (
+                          <span
+                            className="lost-ghosts"
+                            data-testid={`lost-capacity-${crewId}-${day}`}
+                          >
+                            {ghosts
+                              .filter(
+                                (ghost) =>
+                                  ghost.crew_id === crewId &&
+                                  ghost.date === day,
+                              )
+                              .map((ghost) => (
+                                <span
+                                  key={ghost.job_id}
+                                  className="lost-ghost"
+                                  data-testid={`ghost-${ghost.job_id}`}
+                                  title={`${ghost.site_id} was planned here. It ${ghost.kind === "moved" ? "moved" : "has no slot"} after recovery.`}
+                                >
+                                  {ghost.site_id}
+                                </span>
+                              ))}
+                          </span>
+                        )}
                         {pathOrigin && (
                           <span
                             className="move-origin-anchor"

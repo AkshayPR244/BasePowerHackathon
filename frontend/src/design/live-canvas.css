@@ -114,6 +114,23 @@ p {
   white-space: nowrap;
 }
 
+.live-app .header-button {
+  border: 1px solid var(--hairline);
+  border-radius: 2px;
+  padding: 4px 8px;
+  background: var(--panel);
+  color: var(--ink);
+  font: inherit;
+  font-size: 11px;
+  white-space: nowrap;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.live-app .header-button:hover {
+  border-color: var(--plot-line);
+}
+
 .trigger-rail {
   display: flex;
   min-height: 58px;
@@ -601,6 +618,34 @@ p {
   transform: rotate(45deg);
 }
 
+.lost-ghosts {
+  position: absolute;
+  z-index: 1;
+  top: 12px;
+  right: 2px;
+  bottom: 17px;
+  left: 2px;
+  display: flex;
+  flex-direction: column;
+  justify-content: end;
+  gap: 1px;
+  pointer-events: none;
+}
+
+.lost-ghost {
+  display: block;
+  min-height: 0;
+  flex: 0 1 11px;
+  overflow: hidden;
+  border: 1px dashed var(--plot-line);
+  border-radius: 1px;
+  padding: 0 2px;
+  color: var(--ink-2);
+  font-size: 7px;
+  line-height: 9px;
+  white-space: nowrap;
+}
+
 .crew-day-off .off-label {
   color: var(--ink-2);
   font-weight: 600;
@@ -1044,23 +1089,18 @@ p {
   font-size: 11px;
 }
 
-.confirm-backdrop {
-  position: fixed;
-  z-index: 20;
-  inset: 0;
-  display: grid;
-  place-items: center;
-  padding: 16px;
+.confirm-dialog::backdrop {
   background: rgb(20 35 39 / 0.42);
 }
 
-.confirm-dialog {
+.confirm-dialog[open] {
   display: grid;
-  width: min(460px, 100%);
+  width: min(460px, calc(100% - 32px));
   gap: 10px;
   border: 1px solid var(--hairline);
   padding: 18px;
   background: var(--panel);
+  color: var(--ink);
 }
 
 .confirm-dialog h2 {

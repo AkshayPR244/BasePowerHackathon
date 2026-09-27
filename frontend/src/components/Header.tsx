@@ -21,22 +21,36 @@ export function Validation({ plan }: { plan: Plan }) {
     </span>
   );
 }
+export function PlanStatus({ plan }: { plan: Plan }) {
+  const gap = plan.stages.reduce((n, s) => Math.max(n, s.gap ?? 0), 0);
+  return (
+    <span className="plan-status">
+      <span>
+        {labels[plan.status]}
+        {plan.status === "feasible" ? ` (gap ${(gap * 100).toFixed(1)}%)` : ""}
+      </span>
+      <Validation plan={plan} />
+      <span className="policy">
+        Policy: {plan.objective_policy.replaceAll("_", " ")}
+      </span>
+    </span>
+  );
+}
 export function Header({
   scenario,
-  plan,
   scenarios,
   onScenario,
+  onReset,
   theme,
   onTheme,
 }: {
   scenario: Scenario;
-  plan: Plan | null;
   scenarios: Schema["ScenarioSummary"][];
   onScenario: (id: string) => void;
+  onReset: () => void;
   theme: string;
   onTheme: () => void;
 }) {
-  const gap = plan?.stages.reduce((n, s) => Math.max(n, s.gap ?? 0), 0) ?? 0;
   return (
     <header>
       <div className="brand">
@@ -45,14 +59,8 @@ export function Header({
         </span>
         <div>
           <h1>Rollout Planner</h1>
-          <span className="eyebrow">OPERATIONS / RECOVERY WORKSPACE</span>
+          <span className="eyebrow">OPERATIONS / RECOVERY CANVAS</span>
         </div>
-      </div>
-      <div className="header-controls">
-        <span className="badge">{mockMode ? "Recorded demo" : "Live API"}</span>
-        <button onClick={onTheme} aria-label="Toggle dark mode">
-          {theme === "dark" ? "Light" : "Dark"}
-        </button>
       </div>
       <div className="context">
         <label>
@@ -72,26 +80,17 @@ export function Header({
           {scenario.config.synthetic ? "Synthetic data" : "Mixed-source data"}
         </span>
         <span className="mono">
-          {dateLabel(scenario.config.planning_start)} —{" "}
+          {dateLabel(scenario.config.planning_start)} –{" "}
           {dateLabel(scenario.config.planning_end)}
         </span>
         <span>{scenario.config.timezone}</span>
-        <span className="policy">
-          Policy:{" "}
-          {plan?.objective_policy.replaceAll("_", " ") ??
-            scenario.config.objective_policy.replaceAll("_", " ")}
-        </span>
-        {plan && (
-          <>
-            <strong>
-              {labels[plan.status]}
-              {plan.status === "feasible"
-                ? ` (gap ${(gap * 100).toFixed(1)}%)`
-                : ""}
-            </strong>
-            <Validation plan={plan} />
-          </>
-        )}
+      </div>
+      <div className="header-controls">
+        <span className="badge">{mockMode ? "Recorded demo" : "Live API"}</span>
+        <button onClick={onReset}>Reset demo</button>
+        <button onClick={onTheme} aria-label="Toggle dark mode">
+          {theme === "dark" ? "Light" : "Dark"}
+        </button>
       </div>
     </header>
   );

@@ -4,11 +4,11 @@
 
 Any agent or person can pick this up cold. Rewrite this block before you stop.
 
-- **Branch:** `lane/C-canvas`, synced through `origin/main` at the Lane R integration. Push the completed C changes and request review.
+- **Branch:** `fix/canvas` (PR to `main`). Lane work continues on `lane/C-canvas` after it merges.
 - **Setup:** `cd frontend && pnpm install`
-- **Check:** `cd frontend && pnpm typecheck && pnpm test && pnpm build`
-- **Read first:** `AGENTS.md`, `CLAUDE.md` ("Product (read first)"), `lanes/C-canvas/BRIEF.md`, `docs/DESIGN.md`, `docs/CONTRACTS.md` (recovery shapes), `frontend/src/mocks/recorded/index.json`, `.claude/skills/design-system/SKILL.md`
-- **Next:** layout pass C-17 to C-21 from the 2026-09-26 integration pass (canvas first, open on the disruption week, disruption bar matches the analysis, fewer arcs, no-lowest case). C-17 first.
+- **Check:** `cd frontend && pnpm typecheck && pnpm test && pnpm build && pnpm exec playwright test` (mock mode). Set `PW_PORT` to run Playwright on a port other than 5173.
+- **Read first:** `AGENTS.md`, `CLAUDE.md` ("Product (read first)"), `lanes/C-canvas/BRIEF.md`, `docs/DESIGN.md`, `frontend/src/views/Canvas.tsx`, `frontend/src/lib/recovery.ts`
+- **Next:** run the live checks (`CANVAS_LIVE=1`, tests `manipulate`, `live canvas`, `assumptions`) against the new backend. The evaluation controls now send the selected crew, day, and visit. Days before the disruption date are blocked in the UI.
 - **Then:** the next item in `lanes/C-canvas/feature_list.json` with `"passes": false`, highest priority first.
 
 ## Done
@@ -30,8 +30,12 @@ Any agent or person can pick this up cold. Rewrite this block before you stop.
 - C-14: number keys select options, A opens approval, and K tests a crew-day knockout.
 - C-15: the canvas remains visible in dark mode. Evidence: `frontend/e2e/screenshots/canvas-dark.png`.
 
+- QA sweep fixes (2026-09-26, `fix/canvas`): the app opens on `standard` and the Recovery Canvas is the page. The day 1 workspace is behind "Advanced: baseline plan" and opens by default only for scenarios with no recovery case (`?scenario=tiny`). Canvas state is keyed on scenario and demo session. Approval resets on option change and ignores stale responses. The confirm dialog is a modal `<dialog>` that freezes its option. Ghosts render in lost crew-day cells. Invalid, timed-out, and unproven options are labeled, never drawn, and cannot be approved. Economics overrides keep the last good options on error and offer Reset assumptions. Evaluate sends overrides and the analysis revision. Mocks match on the full recovery request. Theme follows the system and persists. Light tokens pass AA (`--accent #c4470a`, `--st-late #8a6508`).
+- C-17 to C-21 pass in mock mode. Evidence: `frontend/e2e/screenshots/canvas-first.png`, `canvas-dark.png`.
+
 ## In progress
 - None.
 
 ## Blockers
-- `pnpm test` still fails only at the known H-04 stale expectation in `src/lib/export.test.ts`. C left that H-owned test unchanged; 27 of 28 frontend unit tests pass.
+- The live checks for C-08, C-09, and C-12 were not run in this pass. The backend was changing. Needs: a running live API on port 8000.
+- `docs/DESIGN.md` still lists the old light `--accent` and `--st-late` values. Docs are not in lane C's paths.

@@ -26,3 +26,10 @@ test("quotes delimiters and prevents spreadsheet formulas", () => {
   plan.message = '=SUM(1,2) "test"';
   expect(planCsv(plan)).toContain(`"'=SUM(1,2) ""test"""`);
 });
+test("guards cells that start with a tab or carriage return", () => {
+  const plan = structuredClone(fixture) as Plan;
+  plan.message = "\t=1+1";
+  expect(planCsv(plan)).toContain(`"'\t=1+1"`);
+  plan.message = "\r=1+1";
+  expect(planCsv(plan)).toContain(`"'\r=1+1"`);
+});

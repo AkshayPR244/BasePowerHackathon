@@ -68,8 +68,11 @@ make dev-live
   - `DEMO_DIR=data/demo`
   - `API_PORT=8000`
   - `SOLVE_TIME_LIMIT_S=15`
-- Frontend env vars (`frontend/.env`):
-  - Set `VITE_API_MODE=mock` for recorded mocks, or set `VITE_API_MODE=live` to proxy `/api` to `localhost:8000`
+- Frontend env vars (`frontend/.env`) for the live demo path above:
+  - Set `VITE_API_MODE=live` to proxy `/api` to `localhost:8000`
+- Optional mock-only run:
+  - Set `VITE_API_MODE=mock`
+  - Run `make dev` instead of `make dev-live`
 - API keys: none are required for this repo. Data is local files plus recorded mocks.
 - Demo script: [`docs/DEMO.md`](docs/DEMO.md)
 

@@ -20,6 +20,8 @@
   --option-overtime: var(--st-late);
   --option-temporary-capacity: var(--st-blocked);
   --option-custom: var(--st-locked);
+  --cost-negative: #287a55;
+  --cost-positive: #b03f33;
   --surface-quiet: #f4f7f5;
   --font-ui: "IBM Plex Sans", sans-serif;
   --font-code: "IBM Plex Sans", sans-serif;
@@ -48,6 +50,8 @@
   --option-overtime: #ffbd59;
   --option-temporary-capacity: #ff7898;
   --option-custom: #aab4ff;
+  --cost-negative: #63dfa6;
+  --cost-positive: #ff806f;
   --surface-quiet: #1b292c;
   color-scheme: dark;
 }
@@ -73,6 +77,8 @@
     --option-overtime: #ffbd59;
     --option-temporary-capacity: #ff7898;
     --option-custom: #aab4ff;
+    --cost-negative: #63dfa6;
+    --cost-positive: #ff806f;
     --surface-quiet: #1b292c;
   }
 }

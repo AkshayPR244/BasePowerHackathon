@@ -1,4 +1,5 @@
 import type { Schema } from "../api/types";
+import { adjustedCostClass } from "../lib/format";
 
 type RecoveryOption = Schema["RecoveryOption"];
 
@@ -131,7 +132,7 @@ export function OptionFrontier({
             className="frontier-svg"
             viewBox={`0 0 ${width} ${height}`}
             role="group"
-            aria-label="Modeled cost by deadlines missed; dot size shows customers to reschedule"
+            aria-label="Adjusted cost versus the original plan by deadlines missed; dot size shows customers to reschedule"
           >
             {[0, 0.5, 1].map((fraction) => {
               const y = top + plotHeight * (1 - fraction);
@@ -185,7 +186,7 @@ export function OptionFrontier({
               y={height - 4}
               textAnchor="middle"
             >
-              Modeled cost
+              Adjusted cost vs original plan
             </text>
             <text
               className="plot-axis-label"
@@ -210,11 +211,11 @@ export function OptionFrontier({
                   key={option.option_id}
                   role="button"
                   tabIndex={0}
-                  aria-label={`${label(option)}, ${formatCost(option.economics.net_impact_usd)} modeled cost, ${option.counts.deadlines_missed} deadlines missed, ${option.counts.customers_to_reschedule} customers to reschedule`}
+                  aria-label={`${label(option)}, ${formatCost(option.economics.net_impact_usd)} adjusted cost versus the original plan, ${option.counts.deadlines_missed} deadlines missed, ${option.counts.customers_to_reschedule} customers to reschedule`}
                   aria-pressed={selected}
                   data-option-id={option.option_id}
                   data-option-kind={option.kind}
-                  className={`frontier-point ${isNoAction ? "frontier-no-action" : ""} ${selected ? "frontier-selected" : ""}`}
+                  className={`frontier-point ${adjustedCostClass(option.economics.net_impact_usd)} ${isNoAction ? "frontier-no-action" : ""} ${selected ? "frontier-selected" : ""}`}
                   style={{ pointerEvents: "all" }}
                   onClick={() => onSelect(option.option_id)}
                   onKeyDown={(event) => {
@@ -225,7 +226,7 @@ export function OptionFrontier({
                   }}
                 >
                   <title>
-                    {`${label(option)}, ${formatCost(option.economics.net_impact_usd)} modeled cost, ${option.counts.deadlines_missed} deadlines missed`}
+                    {`${label(option)}, ${formatCost(option.economics.net_impact_usd)} adjusted cost versus the original plan, ${option.counts.deadlines_missed} deadlines missed`}
                   </title>
                   {overlaps && (
                     <line
@@ -267,7 +268,7 @@ export function OptionFrontier({
                   <span>{label(option)}</span>
                 </span>
                 {option.lowest_modeled_cost && (
-                  <small>Lowest modeled cost</small>
+                  <small>Lowest adjusted cost</small>
                 )}
               </button>
             ))}

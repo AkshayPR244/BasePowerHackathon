@@ -19,18 +19,18 @@ Rehearse on the build you will show. Change this script to match what the app do
 
 ## Script
 
-| Time | Action | Say |
-|---|---|---|
-| 0:00 | Load `standard`. Point at the synthetic label and the dates. | "A synthetic two-week plan: 45 homes, 90 visits, 3 crews." |
-| 0:15 | Show the current plan in the crew calendar. | "Each home needs an install, then a battery day at least one business day later." |
-| 0:30 | Apply the disruption: all crews out Thu 14 Jun. | "A modeled disruption: every field crew is out on Thursday." |
-| 0:45 | Read the disruption bar and the cascade strip. Click a cascade step. | Read the impact headline. "<n> visits lose their day. <n> commitments are at risk if we do nothing." |
-| 1:05 | Show the option cards: no action, rebalance, and any paid option the engine returns. | "Each option is a business action. Each one is solved and checked by an independent validator." |
-| 1:30 | Compare net impact, deadlines missed, and customers to reschedule. Point at "Lowest modeled cost". | "Every crew is booked after Thursday, so rebalancing cannot help. A temporary battery crew on Friday recovers <n> deadlines and costs $<n> less than doing nothing." |
-| 1:55 | Open the assumptions panel. Change one assumed number. | "Every cost has a source or the tag assumed. Change one and the ranking updates." |
-| 2:15 | Test a change: pick Crew BA, add overtime on Fri 15 Jun. | "Overtime on Friday does not help. Crew BA works the West cluster that day and the lost visits are in the South. I can test my own change before I commit to it." |
-| 2:35 | Select an option. Approve it. Read the confirm summary. | "Approval updates the plan for this analysis. It contacts no customers." |
-| 2:50 | Close. | "Every plan you saw passed the independent validator." Say this only if every plan showed Validated. |
+| Time | Action                                                                                                 | Say                                                                                                                                                                  |
+| ---- | ------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 0:00 | Load `standard`. Point at the synthetic label and the dates.                                           | "A synthetic two-week plan: 45 homes, 90 visits, 3 crews."                                                                                                           |
+| 0:15 | Show the current plan in the crew calendar.                                                            | "Each home needs an install, then a battery day at least one business day later."                                                                                    |
+| 0:30 | Apply the disruption: all crews out Thu 14 Jun.                                                        | "A modeled disruption: every field crew is out on Thursday."                                                                                                         |
+| 0:45 | Read the disruption bar and the cascade strip. Click a cascade step.                                   | Read the impact headline. "<n> visits lose their day. <n> commitments are at risk if we do nothing."                                                                 |
+| 1:05 | Show the option cards: no action, rebalance, and any paid option the engine returns.                   | "Each option is a business action. Each one is solved and checked by an independent validator."                                                                      |
+| 1:30 | Compare adjusted cost, deadlines missed, and customers to reschedule. Point at "Lowest adjusted cost". | "Every crew is booked after Thursday, so rebalancing cannot help. A temporary battery crew on Friday recovers <n> deadlines and costs $<n> less than doing nothing." |
+| 1:55 | Open the assumptions panel. Change one assumed number.                                                 | "Every cost has a source or the tag assumed. Change one and the ranking updates."                                                                                    |
+| 2:15 | Test a change: pick Crew BA, add overtime on Fri 15 Jun.                                               | "Overtime on Friday does not help. Crew BA works the West cluster that day and the lost visits are in the South. I can test my own change before I commit to it."    |
+| 2:35 | Select an option. Approve it. Read the confirm summary.                                                | "Approval updates the plan for this analysis. It contacts no customers."                                                                                             |
+| 2:50 | Close.                                                                                                 | "Every plan you saw passed the independent validator." Say this only if every plan showed Validated.                                                                 |
 
 The engine returns an overtime or temporary-capacity option only when it helps more than no action and rebalance. Do not promise all four option kinds.
 
@@ -40,16 +40,16 @@ Fill each `<n>` from the build you record. Recovery solves use a deterministic w
 
 One reference run: 2026-09-26, branch `integrate/qa-fixes`, in-process API (`TestClient`) on a development laptop, `interactive: false`.
 
-| Item | Measured |
-|---|---|
-| Impact | 7 visits affected, 1440 capacity minutes lost, 7 commitments at risk under no action |
-| No action | net impact $630.25, 7 deadlines missed, 7 customers to reschedule |
-| Rebalance existing crews | same plan as no action. No visit before Thu 14 Jun may move, and every crew is full after it. |
-| Add temporary crew TEMP-BA on Fri 15 Jun (Lowest modeled cost) | net impact $458.40, $171.85 better than no action, 4 deadlines missed, 3 deadlines recovered, 7 customers to reschedule |
-| Overtime option | not returned. Overtime before Thu 14 Jun is in the past, and overtime on Fri 15 Jun does not help. |
-| Options solve time | 0.6 s for the first call, 0.05 s cached |
-| Change the hourly wage to $35 | 0.06 s. Re-prices without a re-solve. Temporary crew becomes $565.12. |
-| Test a change: Crew BA +120 min overtime Fri 15 Jun | 0.2 s, net impact $800.23, 7 deadlines missed |
+| Item                                                            | Measured                                                                                                                                        |
+| --------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
+| Impact                                                          | 7 visits affected, 1440 capacity minutes lost, 7 commitments at risk under no action                                                            |
+| No action                                                       | adjusted cost $630.25 vs the original plan, 7 deadlines missed, 7 customers to reschedule                                                       |
+| Rebalance existing crews                                        | same plan as no action. No visit before Thu 14 Jun may move, and every crew is full after it.                                                   |
+| Add temporary crew TEMP-BA on Fri 15 Jun (Lowest adjusted cost) | adjusted cost $458.40 vs the original plan, $171.85 better than no action, 4 deadlines missed, 3 deadlines recovered, 7 customers to reschedule |
+| Overtime option                                                 | not returned. Overtime before Thu 14 Jun is in the past, and overtime on Fri 15 Jun does not help.                                              |
+| Options solve time                                              | 0.6 s for the first call, 0.05 s cached                                                                                                         |
+| Change the hourly wage to $35                                   | 0.06 s. Re-prices without a re-solve. Temporary crew becomes $565.12.                                                                           |
+| Test a change: Crew BA +120 min overtime Fri 15 Jun             | 0.2 s, adjusted cost $800.23 vs the original plan, 7 deadlines missed                                                                           |
 
 ## Honesty checklist
 
@@ -57,7 +57,7 @@ One reference run: 2026-09-26, branch `integrate/qa-fixes`, in-process API (`Tes
 - [ ] No weather claims. The disruption is modeled, not observed.
 - [ ] Prices are "2018 hindsight prices", never a forecast.
 - [ ] Value is "modeled operating margin", never profit, revenue, savings, or ROI.
-- [ ] Say "customers to reschedule", not "changed installs". Say "Lowest modeled cost", not "Recommended".
+- [ ] Say "customers to reschedule", not "changed installs". Say "Lowest adjusted cost", not "Recommended".
 - [ ] Every plan shown says Validated. If one says "Not validated", say so or cut it.
 - [ ] Quote solve times only from the demo machine. Say "on this laptop".
 - [ ] Say whether the recording uses the live API or recorded mocks.

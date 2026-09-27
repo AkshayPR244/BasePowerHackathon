@@ -116,7 +116,7 @@ test.describe("live canvas on recorded responses", () => {
       "7 visits displaced",
     );
     await expect(
-      chip(page, "temporary_capacity").getByText("Lowest modeled cost"),
+      chip(page, "temporary_capacity").getByText("Lowest adjusted cost"),
     ).toBeVisible();
     await expect(page.locator("body")).not.toContainText("storm");
     await page.screenshot({ path: "e2e/screenshots/live-canvas-knockout.png" });

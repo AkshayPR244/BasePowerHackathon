@@ -1,5 +1,5 @@
 import type { Schema } from "../api/types";
-import { money } from "../lib/format";
+import { adjustedCostClass, money } from "../lib/format";
 
 export function DisruptionBar({
   description,
@@ -46,8 +46,14 @@ export function DisruptionBar({
             <span>Deadlines at risk</span>
           </div>
           <div data-testid="no-action-cost">
-            <strong>{money(result.no_action.economics.net_impact_usd)}</strong>
-            <span>No-action modeled cost</span>
+            <strong
+              className={adjustedCostClass(
+                result.no_action.economics.net_impact_usd,
+              )}
+            >
+              {money(result.no_action.economics.net_impact_usd)}
+            </strong>
+            <span>No-action adjusted cost</span>
           </div>
         </div>
       )}

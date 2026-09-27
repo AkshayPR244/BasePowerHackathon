@@ -917,6 +917,14 @@ p {
   pointer-events: none;
 }
 
+.frontier-point.cost-negative .frontier-halo {
+  stroke: var(--cost-negative);
+}
+
+.frontier-point.cost-positive .frontier-halo {
+  stroke: var(--cost-positive);
+}
+
 .frontier-marker {
   fill: var(--option-color);
   stroke: var(--option-color);
@@ -1000,6 +1008,18 @@ p {
 .request-error,
 .promise-risk {
   color: var(--accent) !important;
+}
+
+.cost-negative {
+  color: var(--cost-negative) !important;
+}
+
+.cost-positive {
+  color: var(--cost-positive) !important;
+}
+
+.cost-neutral {
+  color: var(--ink) !important;
 }
 
 .validation-warning {

@@ -1,5 +1,5 @@
 import type { Schema } from "../api/types";
-import { money } from "../lib/format";
+import { adjustedCostClass, money } from "../lib/format";
 import {
   hasValidPlan,
   statusLabel,
@@ -36,7 +36,7 @@ export function OptionCard({
         <strong>{option.action_label}</strong>
         <span className="option-badges">
           {option.lowest_modeled_cost && (
-            <span className="badge">Lowest modeled cost</span>
+            <span className="badge">Lowest adjusted cost</span>
           )}
           <span
             className={`badge ${valid && !unproven(option) ? "" : "warning"}`}
@@ -50,8 +50,12 @@ export function OptionCard({
       {valid ? (
         <span className="option-numbers">
           <span data-testid="option-cost">
-            <strong>{money(option.economics.net_impact_usd)}</strong>
-            <small>Modeled cost</small>
+            <strong
+              className={adjustedCostClass(option.economics.net_impact_usd)}
+            >
+              {money(option.economics.net_impact_usd)}
+            </strong>
+            <small>Adjusted cost vs original</small>
           </span>
           <span>
             <strong>

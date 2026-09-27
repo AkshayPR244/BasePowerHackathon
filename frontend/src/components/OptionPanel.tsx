@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import type { Schema } from "../api/types";
-import { money } from "../lib/format";
+import { adjustedCostClass, money } from "../lib/format";
 import {
   hasValidPlan,
   statusLabel,
@@ -69,8 +69,12 @@ export function OptionPanel({
         )}
         <div className="pinned-metrics">
           <div>
-            <span className="eyebrow">Modeled cost</span>
-            <strong>{money(option.economics.net_impact_usd)}</strong>
+            <span className="eyebrow">Adjusted cost vs original</span>
+            <strong
+              className={adjustedCostClass(option.economics.net_impact_usd)}
+            >
+              {money(option.economics.net_impact_usd)}
+            </strong>
           </div>
           <div>
             <span className="eyebrow">Deadlines missed</span>
@@ -96,7 +100,7 @@ export function OptionPanel({
         </details>
         <details data-testid="economic-breakdown">
           <summary>
-            Modeled cost breakdown ({option.economics.lines.length})
+            Adjusted cost breakdown ({option.economics.lines.length})
           </summary>
           <ul>
             {option.economics.lines.map((line, index) => (

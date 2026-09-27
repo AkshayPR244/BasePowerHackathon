@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { api, unwrap } from "../api/client";
 import type { Schema } from "../api/types";
@@ -18,6 +18,10 @@ import { OptionCard } from "../components/OptionCard";
 import { OptionPanel } from "../components/OptionPanel";
 import { EvaluationControls } from "../components/EvaluationControls";
 import { AssumptionsPanel } from "../components/AssumptionsPanel";
+import { PolicyComparison } from "../components/PolicyComparison";
+import { ScenarioBriefing } from "../components/ScenarioBriefing";
+import { narrativeFor } from "../narratives";
+import { presetFor } from "../scenario-presets";
 import { downloadPlan } from "../lib/export";
 
 const standardStormDisruption: Schema["RecoveryOptionsRequest"]["disruption"] =
@@ -47,6 +51,7 @@ export function Workspace() {
     solve,
     reset,
     edit,
+    replaceEdits,
     compare,
     intervention,
   } = usePlanner();
@@ -68,20 +73,53 @@ export function Workspace() {
   const [economicsOverrides, setEconomicsOverrides] = useState<
     Record<string, number>
   >({});
+  const requestScope = useRef("");
+  const approvalToken = useRef(0);
+  const evaluationToken = useRef(0);
+  requestScope.current = `${scenarioId}/${revision}/${JSON.stringify(economicsOverrides)}`;
+  const narrative = narrativeFor(scenarioId);
+  const preset = presetFor(scenarioId);
+  const isSuite = !!preset;
+  const [baselineAnalysis, setBaselineAnalysis] = useState<number | null>(null);
+  const primaryActive =
+    !!preset &&
+    (preset.primary_disruption.length === 0
+      ? baselineAnalysis === revision
+      : JSON.stringify(edits) === JSON.stringify(preset.primary_disruption));
+  const recoveryEnabled = isSuite
+    ? edits.length > 0 || baselineAnalysis === revision
+    : scenarioId === "standard";
+  const activeDisruption = isSuite ? edits : standardStormDisruption;
+  useEffect(() => {
+    setBaselineAnalysis(null);
+    setEconomicsOverrides({});
+  }, [scenarioId]);
+  useEffect(() => {
+    approvalToken.current++;
+    evaluationToken.current++;
+    setApproving(false);
+    setEvaluationPending(false);
+    setApproval(null);
+    setApproveError(null);
+    setSelectedOptionId(null);
+    setSelectedCascadeStep(null);
+    setEvaluation(null);
+  }, [scenarioId, revision, economicsOverrides]);
   const recoveryOptions = useQuery({
     queryKey: [
       "recovery-options",
-      "standard",
-      "storm-2018-06-14",
+      scenarioId,
+      revision,
+      activeDisruption,
       economicsOverrides,
     ],
     queryFn: async () =>
       unwrap(
         await api.POST("/api/recovery/options", {
           body: {
-            scenario_id: "standard",
-            revision: 1,
-            disruption: standardStormDisruption,
+            scenario_id: scenarioId,
+            revision,
+            disruption: activeDisruption,
             economics_overrides:
               Object.keys(economicsOverrides).length > 0
                 ? economicsOverrides
@@ -90,43 +128,54 @@ export function Workspace() {
           },
         }),
       ),
-    placeholderData: (previousData) => previousData,
-    enabled: scenarioId === "standard",
+    enabled: recoveryEnabled,
   });
-  const options = recoveryOptions.data
-    ? [recoveryOptions.data.no_action, ...recoveryOptions.data.options]
-    : [];
+  const options =
+    recoveryEnabled && recoveryOptions.data
+      ? [recoveryOptions.data.no_action, ...recoveryOptions.data.options]
+      : [];
   const selectedOption =
     options.find((option) => option.option_id === selectedOptionId) ??
     options.find((option) => option.lowest_modeled_cost) ??
     options[0];
+  const displayPlan = isSuite ? (selectedOption?.result ?? result) : result;
+  const displayValid = !!displayPlan?.objective && displayPlan.validation.valid;
   const approveSelectedOption = async () => {
     if (!selectedOption) return;
+    const scope = requestScope.current,
+      token = ++approvalToken.current;
+    const isCurrent = () =>
+      scope === requestScope.current && token === approvalToken.current;
     setApproving(true);
     setApproveError(null);
     try {
       const response = unwrap(
         await api.POST("/api/recovery/approve", {
           body: {
-            scenario_id: "standard",
+            scenario_id: scenarioId,
             revision: recoveryOptions.data?.revision ?? 1,
             option: selectedOption,
           },
         }),
       );
-      setApproval(response);
+      if (isCurrent()) setApproval(response);
     } catch (cause) {
-      setApproveError(
-        cause instanceof Error ? cause.message : "Approval failed.",
-      );
+      if (isCurrent())
+        setApproveError(
+          cause instanceof Error ? cause.message : "Approval failed.",
+        );
     } finally {
-      setApproving(false);
+      if (isCurrent()) setApproving(false);
     }
   };
   const evaluateChange = async (
     disruption: Schema["EvaluateRequest"]["disruption"],
     interventions: Schema["EvaluateRequest"]["interventions"],
   ) => {
+    const scope = requestScope.current,
+      token = ++evaluationToken.current;
+    const isCurrent = () =>
+      scope === requestScope.current && token === evaluationToken.current;
     setEvaluationPending(true);
     setEvaluationError(null);
     setEvaluation(null);
@@ -134,7 +183,7 @@ export function Workspace() {
       const response = unwrap(
         await api.POST("/api/recovery/evaluate", {
           body: {
-            scenario_id: "standard",
+            scenario_id: scenarioId,
             revision: (recoveryOptions.data?.revision ?? 1) + 1,
             disruption,
             interventions,
@@ -142,13 +191,16 @@ export function Workspace() {
           },
         }),
       );
-      setEvaluation(response);
+      if (isCurrent()) setEvaluation(response);
     } catch (cause) {
-      setEvaluationError(
-        cause instanceof Error ? cause.message : "The recovery change failed.",
-      );
+      if (isCurrent())
+        setEvaluationError(
+          cause instanceof Error
+            ? cause.message
+            : "The recovery change failed.",
+        );
     } finally {
-      setEvaluationPending(false);
+      if (isCurrent()) setEvaluationPending(false);
     }
   };
   useEffect(() => {
@@ -203,12 +255,38 @@ export function Workspace() {
     <main>
       <Header
         scenario={scenario.data}
-        plan={result}
+        plan={displayPlan}
         scenarios={scenarios.data ?? []}
         onScenario={reset}
         theme={theme}
         onTheme={() => setTheme((t) => (t === "dark" ? "light" : "dark"))}
       />
+      <ScenarioBriefing
+        key={scenarioId}
+        report={narrative}
+        primaryActive={primaryActive}
+        disabled={!!busy || mockMode}
+        hasDisruption={!!preset?.primary_disruption.length}
+        onApply={() => {
+          if (preset) {
+            replaceEdits(preset.primary_disruption);
+            setBaselineAnalysis(revision + 1);
+          }
+        }}
+      />
+      {isSuite && mockMode && (
+        <p role="status">
+          Use live API mode to run the synthetic scenario suite.
+        </p>
+      )}
+      {scenarioId === "value_sensitive" && (
+        <PolicyComparison
+          key={`${scenarioId}/${revision}`}
+          scenarioId={scenarioId}
+          revision={revision}
+          edits={edits}
+        />
+      )}
       <EditControls
         key={scenarioId}
         scenario={scenario.data}
@@ -216,9 +294,15 @@ export function Workspace() {
         onEdit={edit}
         onReset={() => reset()}
       />
-      {scenarioId === "standard" && (
+      {recoveryEnabled && (
         <>
           <DisruptionBar
+            truthLabel={
+              isSuite
+                ? (narrative?.truth_label ??
+                  "Synthetic installation portfolio; modeled operational disruption and costs.")
+                : undefined
+            }
             result={recoveryOptions.data}
             loading={recoveryOptions.isPending}
             error={
@@ -243,6 +327,16 @@ export function Workspace() {
                   <h2>Recovery options</h2>
                   <span>Compared with no action</span>
                 </div>
+                {narrative && (
+                  <aside className="scenario-watch" aria-label="What to watch">
+                    <strong>What to watch</strong>
+                    <ul>
+                      {narrative.what_to_watch.map((item) => (
+                        <li key={item}>{item}</li>
+                      ))}
+                    </ul>
+                  </aside>
+                )}
                 <div className="option-grid">
                   {options.map((option) => (
                     <OptionCard
@@ -254,22 +348,35 @@ export function Workspace() {
                     />
                   ))}
                 </div>
+                {narrative && (
+                  <p className="scenario-success">
+                    Success criterion: {narrative.success_criterion}
+                  </p>
+                )}
                 <OptionPanel
+                  key={selectedOption?.option_id}
                   option={selectedOption}
-                  canApprove={!mockMode || selectedOption?.kind === "rebalance"}
+                  canApprove={
+                    !!selectedOption &&
+                    selectedOption.result.validation.valid &&
+                    ["optimal", "feasible"].includes(selectedOption.status) &&
+                    (!mockMode || selectedOption.kind === "rebalance")
+                  }
                   approving={approving}
                   approval={approval}
                   error={approveError}
                   onApprove={() => void approveSelectedOption()}
                 />
-                <EvaluationControls
-                  onEvaluate={(disruption, interventions) =>
-                    void evaluateChange(disruption, interventions)
-                  }
-                  pending={evaluationPending}
-                  result={evaluation}
-                  error={evaluationError}
-                />
+                {!isSuite && (
+                  <EvaluationControls
+                    onEvaluate={(disruption, interventions) =>
+                      void evaluateChange(disruption, interventions)
+                    }
+                    pending={evaluationPending}
+                    result={evaluation}
+                    error={evaluationError}
+                  />
+                )}
                 <AssumptionsPanel
                   assumptions={recoveryOptions.data.economic_assumptions}
                   overrides={economicsOverrides}
@@ -285,9 +392,9 @@ export function Workspace() {
         <div>
           <span className="eyebrow">PLAN / REVISION {revision}</span>
           <strong>
-            {stale
+            {stale && !(isSuite && selectedOption)
               ? "Previous result · changes not solved"
-              : result?.mode === "recovery"
+              : displayPlan?.mode === "recovery"
                 ? "Recovery plan"
                 : "Strict plan"}
           </strong>
@@ -319,14 +426,24 @@ export function Workspace() {
             Compare plans
           </button>
           <button
-            disabled={!!busy || stale || !validShape}
-            onClick={() => result && downloadPlan(result, "json")}
+            disabled={
+              !!busy ||
+              (isSuite
+                ? recoveryOptions.isFetching || !displayValid
+                : stale || !validShape)
+            }
+            onClick={() => displayPlan && downloadPlan(displayPlan, "json")}
           >
             Export JSON
           </button>
           <button
-            disabled={!!busy || stale || !validShape}
-            onClick={() => result && downloadPlan(result, "csv")}
+            disabled={
+              !!busy ||
+              (isSuite
+                ? recoveryOptions.isFetching || !displayValid
+                : stale || !validShape)
+            }
+            onClick={() => displayPlan && downloadPlan(displayPlan, "csv")}
           >
             Export CSV
           </button>
@@ -339,9 +456,9 @@ export function Workspace() {
             {error}
           </p>
         )}
-        {result && (
-          <p className={result.status === "infeasible" ? "warning" : ""}>
-            {result.message}
+        {displayPlan && (
+          <p className={displayPlan.status === "infeasible" ? "warning" : ""}>
+            {displayPlan.message}
           </p>
         )}
         {result?.status === "infeasible" && !stale && (
@@ -363,10 +480,24 @@ export function Workspace() {
         ))}
       </div>
       <div
-        className={stale ? "result-area stale" : "result-area"}
+        className={
+          stale && !(isSuite && selectedOption)
+            ? "result-area stale"
+            : "result-area"
+        }
         aria-busy={!!busy}
       >
-        <MetricsStrip plan={validShape ? result : null} />
+        <MetricsStrip
+          plan={
+            isSuite
+              ? displayValid
+                ? displayPlan
+                : null
+              : validShape
+                ? result
+                : null
+          }
+        />
         <div className="workspace-grid">
           <div className="main-column">
             <CrewCalendar
@@ -379,7 +510,7 @@ export function Workspace() {
                   : (recoveryOptions.data?.impact.cascade[selectedCascadeStep]
                       ?.job_ids ?? [])
               }
-              lostCrewDays={standardStormDisruption.filter(
+              lostCrewDays={(recoveryEnabled ? activeDisruption : []).filter(
                 (edit) => edit.kind === "remove_crew_day",
               )}
               beforeAssignments={
@@ -397,18 +528,34 @@ export function Workspace() {
             <div className="lower-grid">
               <SiteMap
                 scenario={scenario.data}
-                plan={validShape ? result : null}
+                plan={
+                  isSuite
+                    ? displayValid
+                      ? displayPlan
+                      : null
+                    : validShape
+                      ? result
+                      : null
+                }
                 selected={selected}
                 affectedJobIds={recoveryOptions.data?.impact.affected_job_ids}
                 onSelect={state.select}
               />
-              <DeferredList plan={result} onSelect={state.select} />
+              <DeferredList plan={displayPlan} onSelect={state.select} />
             </div>
             {diff && <ComparePanel diff={diff} />}
           </div>
           <Inspector
             scenario={scenario.data}
-            plan={validShape ? result : null}
+            plan={
+              isSuite
+                ? displayValid
+                  ? displayPlan
+                  : null
+                : validShape
+                  ? result
+                  : null
+            }
             selected={selected}
             onIntervention={(kind) => void intervention(kind)}
             cf={cf}

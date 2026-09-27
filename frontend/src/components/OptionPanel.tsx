@@ -19,6 +19,24 @@ export function OptionPanel({
 }) {
   const [confirming, setConfirming] = useState(false);
   if (!option) return null;
+  if (
+    !["optimal", "feasible"].includes(option.status) ||
+    !option.result.validation.valid
+  ) {
+    return (
+      <section className="panel" aria-label="Unavailable recovery option">
+        <strong>{option.action_label}</strong>
+        <p role="status">
+          {option.status === "infeasible" ? "Infeasible" : "No validated plan"}
+        </p>
+        <p>{option.result.message}</p>
+        <p>
+          Costs and deadline outcomes are not evaluated without a feasible plan.
+        </p>
+        <button disabled>Approve unavailable</button>
+      </section>
+    );
+  }
   return (
     <section
       className="panel option-panel"

@@ -5,8 +5,10 @@ export function DisruptionBar({
   result,
   loading,
   error,
+  truthLabel,
 }: {
   result: Schema["RecoveryOptionsResult"] | undefined;
+  truthLabel?: string;
   loading: boolean;
   error: string | null;
 }) {
@@ -35,8 +37,8 @@ export function DisruptionBar({
         <span className="eyebrow">Modeled impact</span>
         <strong>{result.impact.headline}</strong>
         <small>
-          This replay applies a modeled operational disruption to a real
-          historical storm.
+          {truthLabel ??
+            "This replay applies a modeled operational disruption to a real historical storm."}
         </small>
       </div>
       {result.stub && <span className="badge">Stub data</span>}

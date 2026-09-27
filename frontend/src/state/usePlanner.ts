@@ -168,6 +168,10 @@ export function usePlanner() {
     solve,
     reset,
     edit,
+    replaceEdits: (values: Edit[]) => {
+      invalidate();
+      state.replaceEdits(values);
+    },
     compare,
     intervention,
   };

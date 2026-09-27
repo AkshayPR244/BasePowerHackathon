@@ -6,6 +6,9 @@ const rebalanceCard = (page: Page) =>
   page.locator('.option-card[data-option-kind="rebalance"]');
 const noActionCard = (page: Page) =>
   page.locator('.option-card[data-option-kind="no_action"]');
+// The temporary crew is the storm option that moves visits.
+const temporaryCard = (page: Page) =>
+  page.locator('.option-card[data-option-kind="temporary_capacity"]');
 
 type Patch = { delayMs?: number; transform?: string };
 // Transforms run in the page, so they travel as function source.
@@ -113,6 +116,7 @@ test("disruption bar matches the analyzed disruption", async ({ page }) => {
 
 test("cascade steps highlight affected visits", async ({ page }) => {
   await loadCanvas(page);
+  await temporaryCard(page).click();
 
   const direct = page.getByTestId("cascade-direct");
   await expect(direct).toContainText("Visits using changed resources");
@@ -136,6 +140,7 @@ test("plan lanes order crews and show visit links and lost capacity", async ({
   const lost = page.getByTestId("lost-capacity-IA-2018-06-14");
   await expect(lost).toBeVisible();
   await expect(lost).toContainText("Unavailable · modeled disruption");
+  await temporaryCard(page).click();
   await expect(page.getByTestId("visit-arc").first()).toBeAttached();
 
   await page.screenshot({
@@ -167,10 +172,11 @@ test("arcs link install and battery day only for moved, affected, or selected ho
   page,
 }) => {
   await loadCanvas(page);
+  await temporaryCard(page).click();
   const arcs = page.getByTestId("visit-arc");
   await expect(arcs.first()).toBeAttached();
-  const rebalanceArcs = await arcs.count();
-  expect(rebalanceArcs).toBeLessThan(45);
+  const temporaryArcs = await arcs.count();
+  expect(temporaryArcs).toBeLessThan(45);
 
   await noActionCard(page).click();
   await expect(noActionCard(page)).toHaveAttribute("aria-pressed", "true");
@@ -184,6 +190,7 @@ test("diff overlays show old positions and respect reduced motion", async ({
 }) => {
   await page.emulateMedia({ reducedMotion: "reduce" });
   await loadCanvas(page);
+  await temporaryCard(page).click();
 
   await expect(page.locator(".moved-ghost").first()).toBeVisible();
   await expect(page.locator(".moved-visit").first()).toBeVisible();
@@ -217,10 +224,13 @@ test("options show modeled cost, customer impact, overtime, and lowest cost", as
   await expect(cards).toHaveCount(3);
   const rebalance = options.locator('[data-option-kind="rebalance"]');
   const temporary = options.locator('[data-option-kind="temporary_capacity"]');
-  await expect(rebalance).toContainText("Lowest modeled cost");
-  await expect(rebalance.getByTestId("option-cost")).toContainText("$353.83");
+  const noAction = options.locator('[data-option-kind="no_action"]');
+  await expect(noAction).toContainText("Lowest modeled cost");
+  await expect(noAction.getByTestId("option-cost")).toContainText("$630.25");
+  await expect(rebalance).not.toContainText("Lowest modeled cost");
+  await expect(rebalance).toContainText("same plan as no action");
   await expect(temporary.getByTestId("option-customers")).toContainText("7");
-  await expect(temporary.getByTestId("option-cost")).toContainText("$453.28");
+  await expect(temporary.getByTestId("option-cost")).toContainText("$815.61");
   for (const card of await cards.all()) {
     await expect(card.locator(".option-details")).toContainText(
       /No overtime|\d+ min overtime/,
@@ -269,12 +279,13 @@ test("no lowest-cost option still renders every card with deadlines", async ({
 test("approve confirms the selected recovery option", async ({ page }) => {
   await loadCanvas(page);
 
+  await temporaryCard(page).click();
   const panel = page.getByTestId("option-panel");
-  await expect(panel).toContainText("Rebalance existing crews");
-  await expect(panel).toContainText("$353.83");
+  await expect(panel).toContainText("Add temporary crew TEMP-BA on Fri 15 Jun");
+  await expect(panel).toContainText("$815.61");
   await page.getByTestId("approve-option").click();
   const dialog = page.getByRole("dialog");
-  await expect(dialog).toContainText("18 customers to reschedule");
+  await expect(dialog).toContainText("7 customers to reschedule");
   await dialog.getByRole("button", { name: "Confirm approval" }).click();
   await expect(page.getByTestId("approval-result")).toContainText(
     "Recovery approved for this analysis.",
@@ -296,9 +307,9 @@ test("approval resets on option change and ignores stale responses", async ({
   await page.getByTestId("approve-option").click();
   await page.getByRole("button", { name: "Confirm approval" }).click();
   await expect(page.getByTestId("approval-result")).toBeVisible();
-  await noActionCard(page).click();
-  await expect(page.getByTestId("approval-result")).toHaveCount(0);
   await rebalanceCard(page).click();
+  await expect(page.getByTestId("approval-result")).toHaveCount(0);
+  await noActionCard(page).click();
   await expect(page.getByTestId("approval-result")).toHaveCount(0);
   await expect(page.getByTestId("approve-option")).toBeEnabled();
 });
@@ -314,10 +325,10 @@ test("slow approval response does not land on another option", async ({
   await loadCanvas(page);
   await page.getByTestId("approve-option").click();
   await page.getByRole("button", { name: "Confirm approval" }).click();
-  await noActionCard(page).click();
+  await rebalanceCard(page).click();
   await expect.poll(() => responded, { timeout: 5000 }).toBe(true);
   await expect(page.getByTestId("approval-result")).toHaveCount(0);
-  await rebalanceCard(page).click();
+  await noActionCard(page).click();
   await expect(page.getByTestId("approval-result")).toHaveCount(0);
 });
 
@@ -341,19 +352,19 @@ test("confirm dialog is modal and approves the option it opened for", async ({
     await page.keyboard.press("Tab");
     expect(await focusInDialog()).toBe(true);
   }
-  await page.keyboard.press("1");
-  await expect(rebalanceCard(page)).toHaveAttribute("aria-pressed", "true");
+  await page.keyboard.press("2");
+  await expect(noActionCard(page)).toHaveAttribute("aria-pressed", "true");
   await page.keyboard.press("Escape");
   await expect(dialog).toBeHidden();
   await expect(approve).toBeFocused();
 
   await page.keyboard.press("a");
   await expect(dialog).toBeVisible();
-  await page.keyboard.press("1");
+  await page.keyboard.press("2");
   await dialog.getByRole("button", { name: "Confirm approval" }).click();
   await expect(page.getByTestId("approval-result")).toBeVisible();
   expect(approvals).toHaveLength(1);
-  expect(approvals[0].option.option_id).toMatch(/^rebalance-/);
+  expect(approvals[0].option.option_id).toMatch(/^no_action-/);
 });
 
 test("invalid and unproven options are labeled and never drawn or approved", async ({
@@ -376,6 +387,7 @@ test("invalid and unproven options are labeled and never drawn or approved", asy
   await expect(rebalanceCard(page).getByTestId("option-status")).toContainText(
     "Best found, not proven",
   );
+  await rebalanceCard(page).click();
   await expect(page.getByTestId("approve-option")).toBeEnabled();
 
   const temporary = page.locator(
@@ -426,7 +438,7 @@ test("scenario round trip resets the canvas and never shows another scenario's p
   });
   await scenario.selectOption("standard");
   await expect(page.getByTestId("impact-headline")).toBeVisible();
-  await expect(rebalanceCard(page)).toHaveAttribute("aria-pressed", "true");
+  await expect(noActionCard(page)).toHaveAttribute("aria-pressed", "true");
   await expect(page.getByTestId("cascade-direct")).toHaveAttribute(
     "aria-pressed",
     "false",
@@ -631,8 +643,8 @@ test("keyboard keys select options, approve, and knock out a crew-day", async ({
   });
   expect(evaluations[0].interventions).toEqual([]);
   await expect(
-    page.getByTestId("evaluation-controls").getByRole("alert"),
-  ).toContainText("no recorded response");
+    page.getByTestId("evaluation-controls").locator(".evaluation-result"),
+  ).toContainText("Validated");
 });
 
 test("dark canvas preserves readable recovery controls", async ({ page }) => {

@@ -9,6 +9,7 @@ interface State {
   baseline: Plan | null;
   select: (id: string | null) => void;
   edit: (edit: Edit) => void;
+  replaceEdits: (edits: Edit[]) => void;
   accept: (plan: Plan) => boolean;
   reset: (scenarioId?: string) => void;
 }
@@ -22,6 +23,7 @@ export const useWorkspace = create<State>((set, get) => ({
   select: (selected) => set({ selected }),
   edit: (edit) =>
     set((s) => ({ edits: [...s.edits, edit], revision: s.revision + 1 })),
+  replaceEdits: (edits) => set((s) => ({ edits, revision: s.revision + 1 })),
   accept: (plan) => {
     const s = get();
     if (plan.revision !== s.revision || plan.scenario_id !== s.scenarioId)

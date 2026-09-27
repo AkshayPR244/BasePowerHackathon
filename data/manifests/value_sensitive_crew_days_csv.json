@@ -1,0 +1,20 @@
+{
+  "dataset_id": "value_sensitive_crew_days_csv",
+  "kind": "synthetic",
+  "source_url": null,
+  "release": "generator-v3-seed-110",
+  "retrieved_at": null,
+  "covered_start": "2018-06-04",
+  "covered_end": "2018-06-15",
+  "license_notes": "Synthetic benchmark data; repository MIT license.",
+  "sha256": "9268451fb9c2339a80506e0aaf1357ab9e20701d6b8e75b7e1a1079e759d8181",
+  "transformation": "Rule-based synthetic inputs; no real customers.",
+  "row_count": 29,
+  "fields": {
+    "crew_id": "synthetic",
+    "date": "synthetic",
+    "available_min": "synthetic",
+    "skills": "synthetic",
+    "allowed_clusters": "synthetic"
+  }
+}

@@ -1,0 +1,39 @@
+{
+  "features": [
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              -95.415,
+              29.795
+            ],
+            [
+              -95.385,
+              29.795
+            ],
+            [
+              -95.385,
+              29.825
+            ],
+            [
+              -95.415,
+              29.825
+            ],
+            [
+              -95.415,
+              29.795
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "properties": {
+        "cluster_id": "N",
+        "name": "N"
+      },
+      "type": "Feature"
+    }
+  ],
+  "type": "FeatureCollection"
+}

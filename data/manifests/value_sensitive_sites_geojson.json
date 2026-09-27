@@ -1,0 +1,16 @@
+{
+  "dataset_id": "value_sensitive_sites_geojson",
+  "kind": "synthetic",
+  "source_url": null,
+  "release": "generator-v3-seed-110",
+  "retrieved_at": null,
+  "covered_start": "2018-06-04",
+  "covered_end": "2018-06-15",
+  "license_notes": "Synthetic benchmark data; repository MIT license.",
+  "sha256": "ecb4c4fca8385d1094c1a233e65fcf2c3377b8ecc491740a5991b9342447f02d",
+  "transformation": "Rule-based synthetic inputs; no real customers.",
+  "row_count": 12,
+  "fields": {
+    "geometry": "synthetic"
+  }
+}

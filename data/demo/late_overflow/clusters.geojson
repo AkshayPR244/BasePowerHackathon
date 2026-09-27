@@ -1,0 +1,107 @@
+{
+  "features": [
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              -95.415,
+              29.795
+            ],
+            [
+              -95.385,
+              29.795
+            ],
+            [
+              -95.385,
+              29.825
+            ],
+            [
+              -95.415,
+              29.825
+            ],
+            [
+              -95.415,
+              29.795
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "properties": {
+        "cluster_id": "N",
+        "name": "N"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              -95.385,
+              29.665
+            ],
+            [
+              -95.355,
+              29.665
+            ],
+            [
+              -95.355,
+              29.695
+            ],
+            [
+              -95.385,
+              29.695
+            ],
+            [
+              -95.385,
+              29.665
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "properties": {
+        "cluster_id": "S",
+        "name": "S"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              -95.505,
+              29.735
+            ],
+            [
+              -95.475,
+              29.735
+            ],
+            [
+              -95.475,
+              29.765
+            ],
+            [
+              -95.505,
+              29.765
+            ],
+            [
+              -95.505,
+              29.735
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "properties": {
+        "cluster_id": "W",
+        "name": "W"
+      },
+      "type": "Feature"
+    }
+  ],
+  "type": "FeatureCollection"
+}

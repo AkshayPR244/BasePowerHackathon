@@ -1,0 +1,13 @@
+site_id,cluster_id,program_id,ready_date,deadline,duration_min,required_skill,configuration_id,load_zone,profile_id
+N-01,N,P1,2018-06-04,2018-06-11,75,battery,B13,LZ_HOUSTON,resstock-2025-1-amy2018-tx-100
+S-01,S,P1,2018-06-05,2018-06-12,75,battery,B13,LZ_HOUSTON,resstock-2025-1-amy2018-tx-100
+W-01,W,P1,2018-06-05,2018-06-12,75,battery,B13,LZ_HOUSTON,resstock-2025-1-amy2018-tx-100
+N-02,N,P1,2018-06-04,2018-06-11,60,battery,B13,LZ_HOUSTON,resstock-2025-1-amy2018-tx-100
+S-02,S,P1,2018-06-04,2018-06-11,60,battery,B13,LZ_HOUSTON,resstock-2025-1-amy2018-tx-100
+W-02,W,P1,2018-06-05,2018-06-12,60,battery,B13,LZ_HOUSTON,resstock-2025-1-amy2018-tx-100
+N-03,N,P1,2018-06-05,2018-06-12,60,battery,B13,LZ_HOUSTON,resstock-2025-1-amy2018-tx-100
+S-03,S,P1,2018-06-05,2018-06-12,60,battery,B13,LZ_HOUSTON,resstock-2025-1-amy2018-tx-100
+W-03,W,P1,2018-06-05,2018-06-12,60,battery,B13,LZ_HOUSTON,resstock-2025-1-amy2018-tx-100
+N-04,N,P1,2018-06-04,2018-06-11,60,battery,B13,LZ_HOUSTON,resstock-2025-1-amy2018-tx-100
+S-04,S,P1,2018-06-04,2018-06-11,75,battery,B13,LZ_HOUSTON,resstock-2025-1-amy2018-tx-100
+W-04,W,P1,2018-06-05,2018-06-12,75,battery,B13,LZ_HOUSTON,resstock-2025-1-amy2018-tx-100

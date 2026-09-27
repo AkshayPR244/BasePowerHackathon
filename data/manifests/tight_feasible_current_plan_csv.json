@@ -1,0 +1,20 @@
+{
+  "dataset_id": "tight_feasible_current_plan_csv",
+  "kind": "synthetic",
+  "source_url": null,
+  "release": "generator-v3-seed-102",
+  "retrieved_at": null,
+  "covered_start": "2018-06-04",
+  "covered_end": "2018-06-14",
+  "license_notes": "Synthetic benchmark data; repository MIT license.",
+  "sha256": "bc7e14b7e1bcd23091d311b0f6e208cf6bbc4a535116e56cbe1a9a24948f4fd4",
+  "transformation": "Rule-based synthetic inputs; no real customers.",
+  "row_count": 60,
+  "fields": {
+    "site_id": "synthetic",
+    "job_id": "synthetic",
+    "crew_id": "synthetic",
+    "date": "synthetic",
+    "locked": "synthetic"
+  }
+}

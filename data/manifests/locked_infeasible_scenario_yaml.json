@@ -1,0 +1,16 @@
+{
+  "dataset_id": "locked_infeasible_scenario_yaml",
+  "kind": "synthetic",
+  "source_url": null,
+  "release": "generator-v3-seed-108",
+  "retrieved_at": null,
+  "covered_start": "2018-06-04",
+  "covered_end": "2018-06-15",
+  "license_notes": "Synthetic benchmark data; repository MIT license.",
+  "sha256": "deceec0450a02b1953e8d69da37578a99f5da336ffa7c738c96ce50142bde9f4",
+  "transformation": "Rule-based synthetic inputs; no real customers.",
+  "row_count": 1,
+  "fields": {
+    "config": "synthetic"
+  }
+}

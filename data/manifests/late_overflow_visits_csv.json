@@ -1,0 +1,20 @@
+{
+  "dataset_id": "late_overflow_visits_csv",
+  "kind": "synthetic",
+  "source_url": null,
+  "release": "generator-v3-seed-109",
+  "retrieved_at": null,
+  "covered_start": "2018-06-04",
+  "covered_end": "2018-06-14",
+  "license_notes": "Synthetic benchmark data; repository MIT license.",
+  "sha256": "4a3549e736faa2ca4348012109827978430081a026b571142580792167e8fd3f",
+  "transformation": "Rule-based synthetic inputs; no real customers.",
+  "row_count": 24,
+  "fields": {
+    "job_id": "synthetic",
+    "site_id": "synthetic",
+    "visit_type": "synthetic",
+    "duration_min": "synthetic",
+    "required_skill": "synthetic"
+  }
+}

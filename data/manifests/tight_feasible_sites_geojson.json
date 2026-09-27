@@ -1,0 +1,16 @@
+{
+  "dataset_id": "tight_feasible_sites_geojson",
+  "kind": "synthetic",
+  "source_url": null,
+  "release": "generator-v3-seed-102",
+  "retrieved_at": null,
+  "covered_start": "2018-06-04",
+  "covered_end": "2018-06-14",
+  "license_notes": "Synthetic benchmark data; repository MIT license.",
+  "sha256": "a2ee4214667dfc0b203fb064ae4c5c1adf2c93f8abcc327e09b308c495012004",
+  "transformation": "Rule-based synthetic inputs; no real customers.",
+  "row_count": 30,
+  "fields": {
+    "geometry": "synthetic"
+  }
+}

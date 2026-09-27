@@ -1,0 +1,261 @@
+name: tight_feasible synthetic two-visit recovery benchmark
+description: 30 homes; battery capacity has little slack. Synthetic portfolio; no
+  real customers.
+timezone: America/Chicago
+planning_start: 2018-06-04
+planning_end: 2018-06-14
+evaluation_end: 2018-06-24
+qualification_lag_days: 0
+unscheduled_penalty_days: 30
+objective_policy: value_aware
+solve_time_limit_s: 12
+random_seed: 102
+num_workers: 1
+synthetic: true
+min_gap_business_days: 1
+travel_allowance_min:
+  N: 34
+  S: 41
+  W: 31
+batteries:
+- configuration_id: B13
+  capacity_kwh: 13.5
+  reserve_kwh: 1.35
+  charge_limit_kw: 5.0
+  discharge_limit_kw: 11.5
+  eta_charge: 0.943398
+  eta_discharge: 0.943398
+weather_rule:
+  thunder: true
+  heavy_rain_mm_per_h: 7.6
+  work_start_hour: 8
+  work_end_hour: 17
+parameters:
+- name: workday
+  value: 480
+  unit: min
+  kind: assumed
+  derivation: One 8-hour crew day
+- name: install_duration
+  value: '120'
+  unit: min
+  kind: assumed
+  derivation: Seeded choice from the listed positive visit durations.
+- name: battery_day_duration
+  value: '75'
+  unit: min
+  kind: assumed
+  derivation: Seeded choice from the listed positive visit durations.
+- name: min_gap_install_to_battery_day
+  value: 1
+  unit: business days
+  kind: assumed
+  derivation: Minimum business-day gap required between the two visits.
+- name: crew_mix
+  value: '2:1'
+  unit: install:battery crews
+  kind: assumed
+  derivation: See crew_spec parameter for explicit skills and territory restrictions.
+- name: battery_crew_start
+  value: 1
+  unit: business days
+  kind: assumed
+  derivation: Battery crews start after the first window day because no install is
+    finished yet
+- name: ready_dates
+  value: 1
+  unit: business days
+  kind: synthetic
+  derivation: Each home becomes ready on a uniform random day in the first N business
+    days
+- name: deadline_rule
+  value: 6
+  unit: business days
+  kind: assumed
+  derivation: Battery-day deadline = ready date + N business days, capped at the last
+    window day
+- name: business_days
+  value: weekdays
+  unit: ''
+  kind: assumed
+  derivation: Crews work weekdays that are not US federal holidays
+- name: overflow_days
+  value: 2
+  unit: business days
+  kind: assumed
+  derivation: Crew days after the window where late visits can still land
+- name: current_plan_rule
+  value: strict CP-SAT
+  unit: ''
+  kind: derived
+  derivation: 'One worker, fixed seed, deterministic work limit; locks: none.'
+- name: depot
+  value: -95.4200,29.7467
+  unit: lon,lat
+  kind: assumed
+  derivation: Crew yard at the mean of the cluster centers
+- name: road_circuity
+  value: 1.417
+  unit: ratio
+  kind: assumed
+  derivation: US nationwide driving distance / straight-line distance
+  source: Boscoe, Henry, Zdeb (2012). A Nationwide Comparison of Driving Distance
+    Versus Straight-Line Distance to Hospitals. The Professional Geographer 64(2):188-196.
+- name: average_speed
+  value: 40.0
+  unit: km/h
+  kind: assumed
+  derivation: Urban driving including stops
+- name: travel_N
+  value: 34
+  unit: min
+  kind: derived
+  derivation: (2 x depot-to-center + 2 x mean site radius) x circuity / speed, depot
+    distance 7.30 km
+- name: travel_S
+  value: 41
+  unit: min
+  kind: derived
+  derivation: (2 x depot-to-center + 2 x mean site radius) x circuity / speed, depot
+    distance 8.85 km
+- name: travel_W
+  value: 31
+  unit: min
+  kind: derived
+  derivation: (2 x depot-to-center + 2 x mean site radius) x circuity / speed, depot
+    distance 6.77 km
+- name: deliveries
+  value: 3
+  unit: business days
+  kind: assumed
+  derivation: A delivery every N business days, sized to the planned battery days
+    until the next
+- name: battery_capacity
+  value: 13.5
+  unit: kWh
+  kind: observed
+  derivation: Powerwall 3 nominal battery energy (13.5 kWh AC)
+  source: https://energylibrary.tesla.com/docs/Public/EnergyStorage/Powerwall/3/Datasheet/en-us/Powerwall-3-Datasheet.pdf
+- name: battery_charge_limit
+  value: 5.0
+  unit: kW
+  kind: observed
+  derivation: Powerwall 3 maximum continuous charge power
+  source: https://energylibrary.tesla.com/docs/Public/EnergyStorage/Powerwall/3/Datasheet/en-us/Powerwall-3-Datasheet.pdf
+- name: battery_discharge_limit
+  value: 11.5
+  unit: kW
+  kind: observed
+  derivation: Powerwall 3 nominal output power, highest rating
+  source: https://energylibrary.tesla.com/docs/Public/EnergyStorage/Powerwall/3/Datasheet/en-us/Powerwall-3-Datasheet.pdf
+- name: battery_round_trip
+  value: 0.89
+  unit: fraction
+  kind: observed
+  derivation: Powerwall 3 solar-to-battery-to-home/grid efficiency (typical solar
+    shifting). The datasheet gives no grid-charge figure
+  source: https://energylibrary.tesla.com/docs/Public/EnergyStorage/Powerwall/3/Datasheet/en-us/Powerwall-3-Datasheet.pdf
+- name: battery_one_way_efficiency
+  value: 0.943398
+  unit: fraction
+  kind: derived
+  derivation: Charge and discharge efficiency = sqrt(round trip)
+- name: battery_reserve
+  value: 1.35
+  unit: kWh
+  kind: assumed
+  derivation: 10% of capacity held back; start and end at reserve
+- name: value_start
+  value: after battery day
+  unit: ''
+  kind: assumed
+  derivation: Energy value starts after the battery day; the install alone earns nothing
+- name: unscheduled_penalty
+  value: 30
+  unit: days
+  kind: assumed
+  derivation: Delay charged for a home left unscheduled; larger than any lateness
+    in the horizon
+- name: weather_thunder
+  value: any TS in METAR
+  unit: ''
+  kind: assumed
+  derivation: Assumed sensitivity only; this suite applies explicit synthetic disruptions,
+    not observed weather.
+- name: weather_battery_day
+  value: same rule
+  unit: ''
+  kind: assumed
+  derivation: Assumed sensitivity only; this suite applies explicit synthetic disruptions,
+    not observed weather.
+- name: weather_heavy_rain
+  value: 7.6
+  unit: mm/h
+  kind: assumed
+  derivation: Assumed sensitivity only; this suite applies explicit synthetic disruptions,
+    not observed weather.
+  source: https://glossary.ametsoc.org/wiki/Rain
+- name: weather_working_hours
+  value: 08-17
+  unit: local hour
+  kind: assumed
+  derivation: Assumed sensitivity only; this suite applies explicit synthetic disruptions,
+    not observed weather.
+- name: weather_station
+  value: HOU
+  unit: ''
+  kind: assumed
+  derivation: Assumed sensitivity only; this suite applies explicit synthetic disruptions,
+    not observed weather.
+- name: seed
+  value: 102
+  unit: ''
+  kind: assumed
+  derivation: Explicit reproducible suite specification.
+- name: crew_spec
+  value: '[]'
+  unit: ''
+  kind: assumed
+  derivation: Explicit reproducible suite specification.
+- name: objective_policy
+  value: value_aware
+  unit: ''
+  kind: assumed
+  derivation: Explicit reproducible suite specification.
+- name: qualification_lag
+  value: 0
+  unit: ''
+  kind: assumed
+  derivation: Explicit reproducible suite specification.
+- name: generator_spec
+  value: '{"battery_crews": ["BA"], "battery_durations_min": [75], "battery_start_offset":
+    1, "capacity_kwh": 13.5, "centers": {"N": [-95.4, 29.81], "S": [-95.37, 29.68],
+    "W": [-95.49, 29.75]}, "charge_kw": 5.0, "circuity": 1.417, "crew_specs": [],
+    "deadline_business_days": 6, "delivery_every_days": 3, "discharge_kw": 11.5, "evaluation_end":
+    "2018-06-24", "heavy_rain_mm_per_h": 7.6, "install_crews": ["IA", "IB"], "install_durations_min":
+    [120], "inventory_receipts": [], "lock_policy": "none", "min_gap_business_days":
+    1, "n_homes": 30, "num_workers": 1, "objective_policy": "value_aware", "overflow_days":
+    2, "plan_work_limit": 5, "qualification_lag_days": 0, "ready_window_days": 1,
+    "reserve_fraction": 0.1, "round_trip": 0.89, "scenario_id": "tight_feasible",
+    "site_spread_deg": 0.01, "solve_time_limit_s": 12, "speed_kmh": 40.0, "start":
+    "2018-06-04", "unscheduled_penalty_days": 30, "weather_station": "HOU", "window_days":
+    7, "work_end_hour": 17, "work_start_hour": 8, "workday_min": 480}'
+  unit: ''
+  kind: assumed
+  derivation: Explicit reproducible suite specification.
+provenance:
+- input: all operational and geometry files
+  kind: synthetic
+  source: Rule-based generator v3, seed 102. Not customers.
+- input: prices.parquet
+  kind: observed
+  manifest_id: ercot_np6_785_2018
+  source: https://www.ercot.com/misdownload/servlets/mirDownload?doclookupId=642564849
+- input: loads.parquet
+  kind: modeled
+  manifest_id: resstock_amy2018_tx_100
+  source: https://oedi-data-lake.s3.amazonaws.com/nrel-pds-building-stock/end-use-load-profiles-for-us-building-stock/2025/resstock_amy2018_release_1/timeseries_individual_buildings/by_state/upgrade=0/state=TX/100-0.parquet
+- input: sites.csv:profile_id
+  kind: modeled
+  manifest_id: resstock_amy2018_tx_100
+  source: https://oedi-data-lake.s3.amazonaws.com/nrel-pds-building-stock/end-use-load-profiles-for-us-building-stock/2025/resstock_amy2018_release_1/timeseries_individual_buildings/by_state/upgrade=0/state=TX/100-0.parquet

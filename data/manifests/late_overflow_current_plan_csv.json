@@ -1,0 +1,20 @@
+{
+  "dataset_id": "late_overflow_current_plan_csv",
+  "kind": "synthetic",
+  "source_url": null,
+  "release": "generator-v3-seed-109",
+  "retrieved_at": null,
+  "covered_start": "2018-06-04",
+  "covered_end": "2018-06-14",
+  "license_notes": "Synthetic benchmark data; repository MIT license.",
+  "sha256": "401cdf8ada623dcff05ee4d189093d1c594df1e47b0b4ea152ce0a7375f909dd",
+  "transformation": "Rule-based synthetic inputs; no real customers.",
+  "row_count": 24,
+  "fields": {
+    "site_id": "synthetic",
+    "job_id": "synthetic",
+    "crew_id": "synthetic",
+    "date": "synthetic",
+    "locked": "synthetic"
+  }
+}

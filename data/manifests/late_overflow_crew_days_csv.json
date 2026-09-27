@@ -1,0 +1,20 @@
+{
+  "dataset_id": "late_overflow_crew_days_csv",
+  "kind": "synthetic",
+  "source_url": null,
+  "release": "generator-v3-seed-109",
+  "retrieved_at": null,
+  "covered_start": "2018-06-04",
+  "covered_end": "2018-06-14",
+  "license_notes": "Synthetic benchmark data; repository MIT license.",
+  "sha256": "fcf364876037ab13aac92a214208bd5cd44ed14ce896e946b09ea784e694875f",
+  "transformation": "Rule-based synthetic inputs; no real customers.",
+  "row_count": 26,
+  "fields": {
+    "crew_id": "synthetic",
+    "date": "synthetic",
+    "available_min": "synthetic",
+    "skills": "synthetic",
+    "allowed_clusters": "synthetic"
+  }
+}

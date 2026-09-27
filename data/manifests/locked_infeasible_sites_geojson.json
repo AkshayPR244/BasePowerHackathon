@@ -1,0 +1,16 @@
+{
+  "dataset_id": "locked_infeasible_sites_geojson",
+  "kind": "synthetic",
+  "source_url": null,
+  "release": "generator-v3-seed-108",
+  "retrieved_at": null,
+  "covered_start": "2018-06-04",
+  "covered_end": "2018-06-15",
+  "license_notes": "Synthetic benchmark data; repository MIT license.",
+  "sha256": "413cf5627527a88568692e1b1f5e4a0f4dc58dc5a3da5f9ce14f04adf4cc973d",
+  "transformation": "Rule-based synthetic inputs; no real customers.",
+  "row_count": 12,
+  "fields": {
+    "geometry": "synthetic"
+  }
+}

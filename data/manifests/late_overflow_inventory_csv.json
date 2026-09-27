@@ -1,0 +1,18 @@
+{
+  "dataset_id": "late_overflow_inventory_csv",
+  "kind": "synthetic",
+  "source_url": null,
+  "release": "generator-v3-seed-109",
+  "retrieved_at": null,
+  "covered_start": "2018-06-04",
+  "covered_end": "2018-06-14",
+  "license_notes": "Synthetic benchmark data; repository MIT license.",
+  "sha256": "fbbe875094cc70d2a69a41a274cc68f97e1c52c2c21561807ac5f997ecac00b1",
+  "transformation": "Rule-based synthetic inputs; no real customers.",
+  "row_count": 1,
+  "fields": {
+    "configuration_id": "synthetic",
+    "available_date": "synthetic",
+    "quantity": "synthetic"
+  }
+}

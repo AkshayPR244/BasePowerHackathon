@@ -68,10 +68,10 @@ def _key(*parts):
 
 
 def disruption_start(scenario, disruption):
-    """The earliest date a disruption changes. Recovery treats it as now."""
+    """The earliest date a disruption changes, including bookings it breaks. Recovery treats it
+    as now."""
     by_site = {s.site_id: jobs_of(s) for s in scenario.sites}
     booked = {job_of_row(p, by_site): p.date for p in scenario.current_plan}
-    ready = {s.site_id: s.ready_date for s in scenario.sites}
     jobs = all_jobs(scenario)
     dates = []
     for e in disruption:
@@ -80,10 +80,17 @@ def disruption_start(scenario, disruption):
         elif e.kind == "delay_inventory":
             dates.append(e.from_date)
         elif e.kind == "change_ready_date":
-            dates += [e.ready_date, *([ready[e.site_id]] if e.site_id in ready else [])]
-            dates += [d for j, d in booked.items() if j in jobs and jobs[j].site_id == e.site_id]
+            dates.append(e.ready_date)
+            dates += [
+                d
+                for j, d in booked.items()
+                if j in jobs and jobs[j].site_id == e.site_id and d < e.ready_date
+            ]
         elif e.kind == "change_appointment":
-            dates += [e.available_from, *([booked[e.job_id]] if e.job_id in booked else [])]
+            dates.append(e.available_from)
+            d = booked.get(e.job_id)
+            if d is not None and (d < e.available_from or (e.available_to and d > e.available_to)):
+                dates.append(d)
     return min(dates, default=None)
 
 

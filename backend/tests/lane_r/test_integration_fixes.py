@@ -443,3 +443,17 @@ def test_pin_still_reports_cost():
     s = load_scenario("tiny_two_visit")
     option = service.evaluate(s, [], [PinVisit(job_id="H3-B")])
     assert any(e.constraint == "pin_visit" for e in option.explanations)
+
+
+def test_freeze_past_now_is_the_earliest_broken_booking():
+    from app.contracts.models import ChangeReadyDate
+
+    s = standard()
+    row = next(p for p in s.current_plan if p.job_id and p.job_id.endswith("-I") and not p.locked)
+    later = row.date + dt.timedelta(days=7)
+    start = service.disruption_start
+    assert start(s, [ChangeReadyDate(site_id=row.site_id, ready_date=later)]) == row.date
+    assert start(s, [ChangeAppointment(job_id=row.job_id, available_from=later)]) == row.date
+    inside = ChangeAppointment(job_id=row.job_id, available_from=row.date - dt.timedelta(days=1))
+    assert start(s, [inside]) == inside.available_from
+    assert start(s, []) is None

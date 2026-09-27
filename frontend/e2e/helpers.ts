@@ -1,11 +1,18 @@
 import { expect, type Page } from "@playwright/test";
 export async function load(page: Page) {
-  await page.goto("/");
+  await page.goto("/?scenario=tiny");
   await expect(
     page.getByText("All 5 schedulable jobs meet their deadlines.", {
       exact: false,
     }),
   ).toBeVisible();
+}
+export async function loadCanvas(page: Page) {
+  await page.goto("/");
+  await expect(page.getByTestId("impact-headline")).toContainText(
+    "visits affected",
+  );
+  await expect(page.locator(".option-card").first()).toBeVisible();
 }
 export async function recovery(page: Page) {
   await load(page);

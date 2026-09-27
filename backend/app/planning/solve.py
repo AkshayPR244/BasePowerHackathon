@@ -254,7 +254,9 @@ def _solve(scenario, req, forced, values, policy, common) -> PlanResult:
         elif mode == Mode.strict or forced:
             hint = "Try recovery mode." if mode == Mode.strict else "Force fewer homes."
             msg = f"No plan meets every deadline with this crew capacity and inventory. {hint}"
-            core = conflicting_jobs(scenario, forced if mode == Mode.recovery else set(), budget)
+            core = conflicting_jobs(
+                scenario, forced if mode == Mode.recovery else set(), budget, req.edits
+            )
             if core:
                 if mode == Mode.recovery:
                     core = [sid for sid in core if sid in forced] or core

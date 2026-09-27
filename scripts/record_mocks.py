@@ -126,6 +126,39 @@ def record_canvas_defaults(index: list, storm: list, options: dict):
         record(index, f"recovery_evaluate_storm_{name}", "POST", "/api/recovery/evaluate", body)
 
 
+def record_live_canvas(index: list):
+    """Record the live canvas baseline, its approvals, and one crew-day knockout.
+
+    Mirrors the requests in frontend/src/views/LiveRecoveryCanvas.tsx.
+    """
+    plan = client.get("/api/scenarios/standard").json()["current_plan"]
+    base = {"scenario_id": "standard", "current_plan": plan, "interactive": True}
+    options = record(
+        index,
+        "live_options_standard_baseline",
+        "POST",
+        "/api/recovery/options",
+        {**base, "revision": 0, "disruption": []},
+    )
+    for o in [options["no_action"], *options["options"]] if options else []:
+        record(
+            index,
+            f"live_approve_standard_{o['kind']}",
+            "POST",
+            "/api/recovery/approve",
+            {"scenario_id": "standard", "revision": 0, "option": o},
+        )
+    knockout = {**base, "revision": 1, "disruption": [_remove("BA", "2018-06-14")]}
+    record(index, "live_options_standard_knockout_ba", "POST", "/api/recovery/options", knockout)
+    record(
+        index,
+        "live_evaluate_standard_knockout_ba",
+        "POST",
+        "/api/recovery/evaluate",
+        {**knockout, "interventions": []},
+    )
+
+
 def _remove(crew: str, date: str) -> dict:
     return {"kind": "remove_crew_day", "crew_id": crew, "date": date}
 
@@ -196,6 +229,7 @@ def main():
     )
     if options:
         record_canvas_defaults(index, storm, options)
+    record_live_canvas(index)
     record(index, "storms", "GET", "/api/storms")
     record(index, "cases", "GET", "/api/cases")
     record(index, "season_replay", "GET", "/api/season-replay")

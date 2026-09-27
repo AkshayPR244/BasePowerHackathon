@@ -84,7 +84,14 @@ test.describe("live canvas on recorded responses", () => {
     const frontierBox = (await page.locator(".frontier-figure").boundingBox())!;
     expect(frontierBox.y).toBeGreaterThanOrEqual(planBox.y + planBox.height);
     await page.screenshot({ path: "e2e/screenshots/live-canvas.png" });
+    await expect(
+      page.getByText("ERCOT 2018 hindsight value", { exact: true }),
+    ).toBeVisible();
     await page.getByTestId("workspace-link").click();
+    await expect(page).toHaveURL(/view=workspace.*scenario=standard/);
+    await expect(page.getByTestId("shared-recovery-context")).toContainText(
+      "same scenario and operational changes",
+    );
     await expect(page.getByTestId("recovery-canvas")).toBeVisible();
     await expect(page.getByTestId("baseline-section")).toBeVisible();
     await page.getByTestId("live-canvas-link").click();
@@ -314,10 +321,10 @@ test.describe("live canvas against the live API", () => {
       page.getByText("Synthetic plan", { exact: true }),
     ).toBeVisible();
     await expect(
-      page.getByText("Costs are modeled", { exact: true }),
+      page.getByText("ERCOT 2018 hindsight value", { exact: true }),
     ).toBeVisible();
     await expect(page.locator(".cluster-key")).toContainText(
-      "N North, S South, W West",
+      "Houston service territories: N North · S South · W West",
     );
     const triggerMeanings = [
       ["knockout", "Remove this crew-day's capacity."],
@@ -471,6 +478,28 @@ test.describe("live canvas against the live API", () => {
         slot: `${anchor.parentElement?.getAttribute("data-crew-id")}|${anchor.parentElement?.getAttribute("data-date")}`,
       }));
     expect(previousSlots[origin.key ?? ""]).toBe(origin.slot);
+  });
+
+  test("advanced workspace continues the primary disruption", async ({
+    page,
+  }, info) => {
+    await openCanvas(page, info);
+    await chooseTool(page, info, "knockout");
+    await page
+      .locator(
+        '.crew-day[data-crew-id="IA"][data-date="2018-06-05"] .crew-day-action',
+      )
+      .click();
+    await waitForRecovery(page, info, "shared-context-source");
+    await page.getByTestId("workspace-link").click();
+
+    await expect(page.getByTestId("shared-recovery-context")).toContainText(
+      "Crew IA unavailable Tue 5 Jun",
+    );
+    await expect(page.getByTestId("disruption-description")).toContainText(
+      "Crew IA unavailable Tue 5 Jun",
+    );
+    await expect(page.getByTestId("recovery-canvas")).toBeVisible();
   });
 
   test("cut a crew-day to half capacity", async ({ page }, info) => {

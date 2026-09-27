@@ -10,6 +10,10 @@ import { PlanFigure, type CanvasTool } from "../components/PlanFigure";
 import { SelectedRecovery } from "../components/SelectedRecovery";
 import { TriggerRail } from "../components/TriggerRail";
 import { useTheme } from "./useTheme";
+import {
+  readSharedRecoveryContext,
+  workspaceHref,
+} from "../lib/sharedRecoveryContext";
 
 type Disruption = Schema["RecoveryOptionsRequest"]["disruption"][number];
 type Intervention = Schema["EvaluateRequest"]["interventions"][number];
@@ -33,12 +37,20 @@ interface Sandbox {
   headline: string;
 }
 
-const initialSandbox: Sandbox = {
-  revision: 0,
-  disruption: [],
-  protectedHomes: [],
-  headline: "The current plan is ready to change.",
-};
+function initialSandbox(): Sandbox {
+  const shared = readSharedRecoveryContext();
+  const canRestore = shared?.scenarioId === "standard";
+  return {
+    revision: 0,
+    disruption: canRestore ? shared.disruption : [],
+    protectedHomes: canRestore ? shared.protectedHomes : [],
+    headline:
+      canRestore &&
+      (shared.disruption.length > 0 || shared.protectedHomes.length > 0)
+        ? "Continuing the selected operational change."
+        : "The current plan is ready to change.",
+  };
+}
 
 function isValid(option: Schema["RecoveryOption"]) {
   return (
@@ -596,6 +608,11 @@ export function LiveRecoveryCanvas() {
   const consequence = recovery.data
     ? `${recovery.data.impact.affected_job_ids.length} visits displaced. With no action, ${recovery.data.no_action.counts.deadlines_missed} deadlines slip. Re-planned ${recovery.data.options.length} recovery options; ${checkedPlans} of ${totalPlans} plans passed validation.`
     : "A synthetic plan. Costs are modeled.";
+  const advancedHref = workspaceHref({
+    scenarioId: "standard",
+    disruption: sandbox.disruption,
+    protectedHomes: sandbox.protectedHomes,
+  });
 
   if (scenario.isError) {
     return (
@@ -631,7 +648,9 @@ export function LiveRecoveryCanvas() {
         </div>
         <div className="source-labels">
           {scenario.data?.config.synthetic && <span>Synthetic plan</span>}
-          <span>Costs are modeled</span>
+          <span title="Battery operating value uses historical ERCOT 2018 load-zone settlement prices; it is a hindsight benchmark, not a forecast.">
+            ERCOT 2018 hindsight value
+          </span>
           <button
             type="button"
             className="header-button"
@@ -643,10 +662,10 @@ export function LiveRecoveryCanvas() {
           </button>
           <a
             className="header-button"
-            href="?view=workspace"
+            href={advancedHref}
             data-testid="workspace-link"
           >
-            Advanced: scenario suite and baseline plan
+            Advanced: inspect this scenario and disruption
           </a>
         </div>
       </header>

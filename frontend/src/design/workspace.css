@@ -708,6 +708,26 @@ tr > *:last-child {
   font: 11px var(--font-code);
   fill: var(--ink-2);
 }
+.houston-center circle {
+  fill: var(--panel);
+  stroke: var(--ink);
+  stroke-width: 2;
+}
+.houston-center path,
+.map-compass path {
+  fill: none;
+  stroke: var(--ink);
+  stroke-width: 1.5;
+}
+.houston-center text {
+  fill: var(--ink) !important;
+  font-weight: 600;
+}
+.map-compass text {
+  fill: var(--ink) !important;
+  font-size: 9px;
+  font-weight: 600;
+}
 .map-point {
   cursor: pointer;
 }

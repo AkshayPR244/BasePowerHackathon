@@ -16,7 +16,11 @@ import { ScenarioBriefing } from "../components/ScenarioBriefing";
 import { narrativeFor } from "../narratives";
 import { presetFor } from "../scenario-presets";
 import { downloadPlan } from "../lib/export";
-import { recoveryCases } from "../lib/recovery";
+import { describeDisruption, recoveryCases } from "../lib/recovery";
+import {
+  primaryHref,
+  readSharedRecoveryContext,
+} from "../lib/sharedRecoveryContext";
 import { RecoveryCanvas } from "./Canvas";
 import { useTheme } from "./useTheme";
 
@@ -48,6 +52,9 @@ export function Workspace() {
   const { theme, toggleTheme } = useTheme();
   const narrative = narrativeFor(scenarioId);
   const preset = presetFor(scenarioId);
+  const sharedContext = readSharedRecoveryContext();
+  const shared =
+    sharedContext?.scenarioId === scenarioId ? sharedContext : undefined;
   // Suite scenarios analyze the edits the operator applied, or an empty disruption on request.
   const [baselineAnalysis, setBaselineAnalysis] = useState<number | null>(null);
   const suiteActive =
@@ -58,7 +65,9 @@ export function Workspace() {
       ? baselineAnalysis === revision
       : JSON.stringify(edits) === JSON.stringify(preset.primary_disruption));
   const disruption =
-    recoveryCases[scenarioId] ?? (suiteActive ? edits : undefined);
+    shared?.disruption ??
+    recoveryCases[scenarioId] ??
+    (suiteActive ? edits : undefined);
   useEffect(() => setBaselineAnalysis(null), [scenarioId]);
   const [baselineOpen, setBaselineOpen] = useState<Record<string, boolean>>({});
   const showBaseline = baselineOpen[scenarioId] ?? !disruption;
@@ -86,10 +95,17 @@ export function Workspace() {
     return (
       <main className="startup">Loading scenario and crew availability…</main>
     );
+  const sharedCurrentPlan = shared?.protectedHomes.length
+    ? scenario.data.current_plan.map((row) => ({
+        ...row,
+        locked: row.locked || shared.protectedHomes.includes(row.site_id),
+      }))
+    : undefined;
+  const backHref = shared ? primaryHref(shared) : location.pathname;
   return (
     <main>
       <nav className="view-switch" aria-label="Views">
-        <a href={location.pathname} data-testid="live-canvas-link">
+        <a href={backHref} data-testid="live-canvas-link">
           Back to the live recovery canvas
         </a>
       </nav>
@@ -114,6 +130,22 @@ export function Workspace() {
           }
         }}
       />
+      {shared && (
+        <aside className="panel padded" data-testid="shared-recovery-context">
+          <strong>Continuing the primary-page analysis</strong>
+          <p>{describeDisruption(shared.disruption, scenario.data)}</p>
+          {shared.protectedHomes.length > 0 && (
+            <p>
+              Protected homes: {shared.protectedHomes.join(", ")}. Their current
+              appointments remain locked in this analysis.
+            </p>
+          )}
+          <small>
+            This workspace uses the same scenario and operational changes as the
+            primary page.
+          </small>
+        </aside>
+      )}
       {preset && mockMode && (
         <p role="status" className="panel padded">
           Use live API mode to run the synthetic scenario suite.
@@ -133,6 +165,7 @@ export function Workspace() {
           scenario={scenario.data}
           disruption={disruption}
           narrative={narrative}
+          currentPlan={sharedCurrentPlan}
         />
       ) : (
         <p className="panel padded no-canvas" data-testid="no-recovery-case">

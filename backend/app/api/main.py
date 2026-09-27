@@ -4,11 +4,13 @@ import asyncio
 import logging
 import uuid
 from contextlib import asynccontextmanager
+from pathlib import Path
 
 from fastapi import FastAPI, Request, Response
 from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
+from fastapi.staticfiles import StaticFiles
 from starlette.exceptions import HTTPException as StarletteHTTPException
 
 from app.api import warm
@@ -329,3 +331,9 @@ def season_replay(response: Response) -> SeasonReplay:
     out = replay.season_replay()
     _mark(response, out.stub)
     return out
+
+
+# In the deployed image the built UI sits next to the API; mount it last so /api/* wins.
+_UI = Path(__file__).resolve().parents[3] / "frontend" / "dist"
+if _UI.is_dir():
+    app.mount("/", StaticFiles(directory=_UI, html=True), name="ui")

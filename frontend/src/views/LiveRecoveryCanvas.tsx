@@ -6,11 +6,7 @@ import type { Schema } from "../api/types";
 import { dateLabel } from "../lib/format";
 import { statusLabel, validationLabel } from "../lib/recovery";
 import { OptionFrontier } from "../components/OptionFrontier";
-import {
-  PlanFigure,
-  type CanvasTool,
-  type PlanView,
-} from "../components/PlanFigure";
+import { PlanFigure, type CanvasTool } from "../components/PlanFigure";
 import { SelectedRecovery } from "../components/SelectedRecovery";
 import { TriggerRail } from "../components/TriggerRail";
 import { useTheme } from "./useTheme";
@@ -67,7 +63,6 @@ function currentPlanForProtection(
 export function LiveRecoveryCanvas() {
   const [sandbox, setSandbox] = useState(initialSandbox);
   const [tool, setTool] = useState<CanvasTool>("knockout");
-  const [view, setView] = useState<PlanView>("crew");
   const [traceHomeId, setTraceHomeId] = useState<string | null>(null);
   const [selectedVisit, setSelectedVisit] = useState<string | null>(null);
   const [selectedOptionId, setSelectedOptionId] = useState<string | null>(null);
@@ -361,7 +356,7 @@ export function LiveRecoveryCanvas() {
         `Crew ${crewId} keeps ${half} of ${currentCapacity} min on ${dateLabel(day)}. Checking which visits move or miss their deadline.`,
       );
     } else {
-      setNotice("Choose a crew-day tool, or click a visit or home.");
+      setNotice("Choose a crew-day tool, or click a visit.");
     }
   };
 
@@ -375,7 +370,7 @@ export function LiveRecoveryCanvas() {
     const jobId = assignment.job_id ?? site.visits[0]?.job_id ?? site.site_id;
     if (tool === "knockout" || tool === "halfday") {
       if (!assignment.crew_id || !assignment.date) {
-        setNotice("Choose By crew to change a crew-day.");
+        setNotice("Click a crew-day to change its capacity.");
         return;
       }
       applyCrewTool(
@@ -551,7 +546,6 @@ export function LiveRecoveryCanvas() {
       "Clearing disruptions and restoring the current plan.",
     );
     setTool("knockout");
-    setView("crew");
     setSelectedOptionId(null);
     setSelectedVisit(null);
     setTraceHomeId(null);
@@ -709,11 +703,9 @@ export function LiveRecoveryCanvas() {
               comparisonOption={figureComparisonOption}
               disruption={figureDisruption}
               tool={tool}
-              view={view}
               traceHomeId={traceHomeId}
               selectedVisit={selectedVisit}
               disabled={showPrevious || !figureOption}
-              onView={setView}
               onCrewDay={applyCrewTool}
               onVisit={applyVisitTool}
               onTrace={(siteId) => {

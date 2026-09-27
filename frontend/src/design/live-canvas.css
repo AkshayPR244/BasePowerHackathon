@@ -192,8 +192,15 @@ p {
 
 .trigger-commands {
   display: flex;
+  flex: none;
   gap: 6px;
   margin-left: auto;
+}
+
+.trigger-commands button {
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
 }
 
 .trigger-commands button:first-child {
@@ -304,22 +311,6 @@ p {
   line-height: 1.25;
 }
 
-.view-switch {
-  display: flex;
-  gap: 3px;
-}
-
-.view-switch button {
-  padding: 4px 8px;
-  font-size: 10px;
-}
-
-.view-switch button[aria-pressed="true"] {
-  border-color: var(--plot-line);
-  background: var(--plot-line);
-  color: var(--panel);
-}
-
 .visit-key {
   display: flex;
   flex: 0 0 20px;
@@ -349,15 +340,6 @@ p {
 }
 
 .key-battery {
-  background: var(--visit-battery);
-}
-
-.key-current {
-  background: var(--panel);
-}
-
-.key-recovered {
-  border-radius: 50%;
   background: var(--visit-battery);
 }
 
@@ -450,7 +432,7 @@ p {
   position: relative;
   display: block;
   width: 100%;
-  min-height: 96px;
+  min-height: 120px;
   border: 0;
   border-right: 1px solid var(--plot-grid);
   border-bottom: 1px solid var(--hairline);
@@ -516,6 +498,7 @@ p {
   bottom: 17px;
   left: 2px;
   display: flex;
+  max-height: calc(100% - 20px);
   z-index: 2;
   flex-direction: column;
   justify-content: end;
@@ -530,6 +513,7 @@ p {
   flex-basis: 0;
   flex-shrink: 1;
   overflow: hidden;
+  container-type: size;
 }
 
 .visit-mark > button {
@@ -566,10 +550,29 @@ p {
   outline-offset: -2px;
 }
 
-.visit-mark > button small {
+.visit-mark > button .move-badge {
+  align-self: center;
   margin: 0;
-  color: inherit;
-  font-size: 7px;
+  border-radius: 2px;
+  padding: 0 3px;
+  background: var(--panel);
+  color: var(--ink);
+  font-size: 8px;
+  font-weight: 700;
+  line-height: 10px;
+}
+
+.visit-mark > button .move-badge-late {
+  color: var(--accent);
+}
+
+@container (max-height: 21px) {
+  .visit-mark > button {
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+  }
 }
 
 .visit-moved > button {
@@ -693,127 +696,6 @@ p {
   to {
     stroke-dashoffset: 0;
   }
-}
-
-.home-plot {
-  min-height: 0;
-  flex: 1 1 auto;
-  overflow: auto;
-  scrollbar-color: var(--hairline) transparent;
-}
-
-.home-axis,
-.home-row {
-  display: grid;
-  grid-template-columns: 54px minmax(0, 1fr) 72px;
-  align-items: center;
-  gap: 6px;
-}
-
-.home-axis {
-  position: sticky;
-  z-index: 3;
-  top: 0;
-  height: 26px;
-  border-bottom: 1px solid var(--hairline);
-  background: var(--panel);
-  color: var(--ink-2);
-  font-size: 9px;
-}
-
-.home-axis > div {
-  display: grid;
-  grid-template-columns: repeat(11, minmax(0, 1fr));
-}
-
-.home-axis > div > span {
-  text-align: center;
-  white-space: nowrap;
-}
-
-.home-row {
-  width: 100%;
-  height: 12px;
-  min-height: 12px !important;
-  border: 0 !important;
-  border-bottom: 1px solid var(--plot-grid) !important;
-  border-radius: 0 !important;
-  padding: 0 4px !important;
-  background: transparent !important;
-  text-align: left;
-}
-
-.home-row strong,
-.home-date {
-  overflow: hidden;
-  font-size: 9px;
-  font-weight: 400;
-  text-overflow: clip;
-  white-space: nowrap;
-}
-
-.home-date {
-  color: var(--ink-2);
-  text-align: right;
-}
-
-.home-track {
-  position: relative;
-  height: 100%;
-  border-bottom: 1px solid var(--hairline);
-}
-
-.home-deadline {
-  position: absolute;
-  z-index: 1;
-  top: -3px;
-  bottom: -3px;
-  width: 1px;
-  background: var(--plot-line);
-}
-
-.home-current,
-.home-recovered {
-  position: absolute;
-  z-index: 2;
-  top: 50%;
-  width: 7px;
-  height: 7px;
-  border: 1px solid var(--plot-line);
-  background: var(--panel);
-  transform: translate(-50%, -50%);
-}
-
-.home-recovered {
-  width: 6px;
-  height: 6px;
-  border-color: var(--visit-battery);
-  border-radius: 50%;
-  background: var(--visit-battery);
-  transition: left 240ms ease-out;
-}
-
-.home-recovered-late {
-  border-color: var(--accent);
-  background: var(--accent);
-}
-
-.home-row-late strong,
-.home-row-late .home-date {
-  color: var(--accent);
-  font-weight: 600;
-}
-
-.home-row-traced .home-track {
-  background: var(--surface-quiet);
-}
-
-.home-trace {
-  position: absolute;
-  top: 50%;
-  height: 1px;
-  background: var(--plot-line);
-  transform: translateY(-50%);
 }
 
 .trace-overlay {

@@ -28,19 +28,19 @@ const tools: {
     id: "reschedule",
     label: "Reschedule",
     detail: "Set this home's visits to start next business day.",
-    target: "Select a home",
+    target: "Select a home's visit",
   },
   {
     id: "protect",
     label: "Protect home",
     detail: "Pin its visits to their current crews and days.",
-    target: "Select a home",
+    target: "Select a home's visit",
   },
   {
     id: "trace",
     label: "Trace home",
     detail: "Compare its current and recovered battery day.",
-    target: "Select a home or visit",
+    target: "Select a home's visit",
   },
 ];
 

@@ -364,12 +364,8 @@ test.describe("live canvas against the live API", () => {
       await expect(page.getByTestId("selected-recovery")).toBeVisible();
     }
 
-    await page.getByRole("button", { name: "By home" }).click();
-    await expect(page.locator(".home-row")).toHaveCount(45);
-    await capture(page, info, "02-by-home");
-    await page.getByRole("button", { name: "By crew" }).click();
     await expect(page.locator(".crew-day").first()).toBeVisible();
-    await capture(page, info, "03-by-crew");
+    await capture(page, info, "02-by-crew");
 
     await page.getByTestId("approve-option").click();
     await expect(page.getByRole("dialog")).toBeVisible();
@@ -475,15 +471,6 @@ test.describe("live canvas against the live API", () => {
         slot: `${anchor.parentElement?.getAttribute("data-crew-id")}|${anchor.parentElement?.getAttribute("data-date")}`,
       }));
     expect(previousSlots[origin.key ?? ""]).toBe(origin.slot);
-    await page.getByRole("button", { name: "By home" }).click();
-    await expect(page.locator(".visit-key")).toContainText(
-      "Previous plan battery day",
-    );
-    await expect(page.locator(".home-row").first()).toHaveAttribute(
-      "aria-label",
-      /previous plan battery day/,
-    );
-    await capture(page, info, "04-second-change-by-home");
   });
 
   test("cut a crew-day to half capacity", async ({ page }, info) => {
@@ -504,10 +491,8 @@ test.describe("live canvas against the live API", () => {
 
   test("reschedule a home from the plan", async ({ page }, info) => {
     await openCanvas(page, info);
-    await page.getByRole("button", { name: "By home" }).click();
-    await capture(page, info, "01-by-home");
     await chooseTool(page, info, "reschedule");
-    await page.locator(".home-row").first().click();
+    await page.locator(".visit-mark > button").first().click();
     await expect(page.getByTestId("live-headline")).toContainText(
       "needs a new date",
     );
@@ -516,11 +501,9 @@ test.describe("live canvas against the live API", () => {
 
   test("protect a home from movement", async ({ page }, info) => {
     await openCanvas(page, info);
-    await page.getByRole("button", { name: "By home" }).click();
-    await capture(page, info, "01-by-home");
     await chooseTool(page, info, "protect");
-    const home = page.locator(".home-row").first();
-    const homeId = (await home.locator("strong").innerText()).trim();
+    const home = page.locator(".visit-mark > button").first();
+    const homeId = (await home.locator("span").first().innerText()).trim();
     const evaluation = page.waitForResponse(
       (response) =>
         response.url().includes("/api/recovery/evaluate") &&

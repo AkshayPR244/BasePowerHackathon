@@ -75,6 +75,31 @@ export function OptionFrontier({
     const coordinate = point(option);
     return `${coordinate.x},${coordinate.y}`;
   });
+  const overlapCounts = new Map<string, number>();
+  for (const option of plotted) {
+    const key = `${option.economics.net_impact_usd}|${option.counts.deadlines_missed}`;
+    overlapCounts.set(key, (overlapCounts.get(key) ?? 0) + 1);
+  }
+  const overlapIndexes = new Map<string, number>();
+  const plotEntries = plotted.map((option) => {
+    const origin = point(option);
+    const key = `${option.economics.net_impact_usd}|${option.counts.deadlines_missed}`;
+    const total = overlapCounts.get(key) ?? 1;
+    const index = overlapIndexes.get(key) ?? 0;
+    overlapIndexes.set(key, index + 1);
+    if (total === 1) return { option, origin, marker: origin, overlaps: false };
+    const angle = -Math.PI / 2 + (index * Math.PI * 2) / total;
+    const spread = Math.min(14, 8 + total);
+    return {
+      option,
+      origin,
+      marker: {
+        x: origin.x + Math.cos(angle) * spread,
+        y: origin.y + Math.sin(angle) * spread,
+      },
+      overlaps: true,
+    };
+  });
   const formatCost = (value: number) => money.format(value);
   const label = (option: RecoveryOption) =>
     option.kind === "no_action"
@@ -175,8 +200,7 @@ export function OptionFrontier({
                 points={frontierPoints.join(" ")}
               />
             )}
-            {plotted.map((option) => {
-              const { x, y } = point(option);
+            {plotEntries.map(({ option, origin, marker, overlaps }) => {
               const radius =
                 5 + Math.sqrt(option.counts.customers_to_reschedule) * 1.15;
               const selected = selectedId === option.option_id;
@@ -203,7 +227,41 @@ export function OptionFrontier({
                   <title>
                     {`${label(option)}, ${formatCost(option.economics.net_impact_usd)} modeled cost, ${option.counts.deadlines_missed} deadlines missed`}
                   </title>
-                  <circle cx={x} cy={y} r={radius} />
+                  {overlaps && (
+                    <line
+                      className="frontier-overlap-link"
+                      x1={origin.x}
+                      y1={origin.y}
+                      x2={marker.x}
+                      y2={marker.y}
+                    />
+                  )}
+                  <circle
+                    className="frontier-halo"
+                    cx={marker.x}
+                    cy={marker.y}
+                    r={radius + 1}
+                  />
+                  <circle
+                    className="frontier-marker"
+                    cx={marker.x}
+                    cy={marker.y}
+                    r={radius}
+                  />
+                  <text
+                    className="frontier-symbol"
+                    x={marker.x}
+                    y={marker.y}
+                    aria-hidden="true"
+                  >
+                    {{
+                      no_action: "N",
+                      rebalance: "R",
+                      overtime: "O",
+                      temporary_capacity: "+",
+                      custom: "C",
+                    }[option.kind] ?? "C"}
+                  </text>
                 </g>
               );
             })}

@@ -67,7 +67,8 @@ test.describe("live canvas on recorded responses", () => {
       .evaluateAll((points) =>
         points.map((point) => ({
           kind: point.getAttribute("data-option-kind"),
-          color: getComputedStyle(point.querySelector("circle")!).stroke,
+          color: getComputedStyle(point.querySelector(".frontier-marker")!)
+            .stroke,
         })),
       );
     expect(new Set(optionColors.map(({ kind }) => kind)).size).toBe(
@@ -330,9 +331,11 @@ test.describe("live canvas against the live API", () => {
       await expect(page.getByTestId(`tool-${tool}`)).toContainText(meaning);
     }
 
-    const optionPoints = page.locator(".frontier-point circle");
+    const optionPoints = page.locator(".frontier-point .frontier-marker");
     await expect(optionPoints.first()).toBeVisible();
-    await expect(page.locator(".frontier-point text")).toHaveCount(0);
+    await expect(page.locator(".frontier-point .frontier-symbol")).toHaveCount(
+      await optionPoints.count(),
+    );
     await expect(page.locator(".option-chip")).toHaveCount(
       await optionPoints.count(),
     );
@@ -343,7 +346,8 @@ test.describe("live canvas against the live API", () => {
       .evaluateAll((points) =>
         points.map((point) => ({
           kind: point.getAttribute("data-option-kind"),
-          color: getComputedStyle(point.querySelector("circle")!).stroke,
+          color: getComputedStyle(point.querySelector(".frontier-marker")!)
+            .stroke,
         })),
       );
     expect(new Set(optionColors.map(({ kind }) => kind)).size).toBe(

@@ -846,8 +846,8 @@ p {
 }
 
 .frontier-svg .frontier-point,
-.frontier-point circle,
-.frontier-point text {
+.frontier-marker,
+.frontier-symbol {
   pointer-events: all;
 }
 
@@ -904,29 +904,50 @@ p {
   --option-color: var(--option-custom);
 }
 
-.frontier-point circle {
-  fill: var(--option-color);
+.frontier-overlap-link {
   stroke: var(--option-color);
   stroke-width: 1.5;
-  transition: r 180ms ease;
+  stroke-dasharray: 2 2;
+  opacity: 0.9;
 }
 
-.frontier-point text {
-  fill: var(--ink);
-  font-family: var(--font-ui);
-  font-size: 10px;
+.frontier-halo {
+  fill: none;
+  stroke: var(--panel);
+  stroke-width: 6;
   pointer-events: none;
 }
 
-.frontier-point:hover circle,
-.frontier-point.frontier-selected circle {
-  stroke: var(--ink);
+.frontier-marker {
+  fill: var(--option-color);
+  stroke: var(--option-color);
   stroke-width: 2.5;
+  transition: r 180ms ease;
 }
 
-.frontier-point.frontier-no-action circle {
+.frontier-symbol {
+  fill: var(--option-marker-ink);
+  font-family: var(--font-ui);
+  font-size: 8px;
+  font-weight: 700;
+  dominant-baseline: central;
+  text-anchor: middle;
+  pointer-events: none;
+}
+
+.frontier-point:hover .frontier-marker,
+.frontier-point.frontier-selected .frontier-marker {
+  stroke: var(--ink);
+  stroke-width: 3.5;
+}
+
+.frontier-point.frontier-no-action .frontier-marker {
   fill: var(--panel);
   stroke: var(--option-color);
+}
+
+.frontier-point.frontier-no-action .frontier-symbol {
+  fill: var(--option-color);
 }
 
 .option-chips {

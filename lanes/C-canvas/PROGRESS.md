@@ -4,11 +4,12 @@
 
 Any agent or person can pick this up cold. Rewrite this block before you stop.
 
-- **Branch:** `fix/canvas` (PR to `main`). Lane work continues on `lane/C-canvas` after it merges.
+- **Branch:** `lane/C-canvas`. The live recovery canvas (C-16) merged with main in `integrate/ui-canvas`.
 - **Setup:** `cd frontend && pnpm install`
-- **Check:** `cd frontend && pnpm typecheck && pnpm test && pnpm build && pnpm exec playwright test` (mock mode). Set `PW_PORT` to run Playwright on a port other than 5173.
-- **Read first:** `AGENTS.md`, `CLAUDE.md` ("Product (read first)"), `lanes/C-canvas/BRIEF.md`, `docs/DESIGN.md`, `frontend/src/views/Canvas.tsx`, `frontend/src/lib/recovery.ts`
-- **Next:** run the live checks (`CANVAS_LIVE=1`, tests `manipulate`, `live canvas`, `assumptions`) against the new backend. The evaluation controls now send the selected crew, day, and visit. Days before the disruption date are blocked in the UI.
+- **Check:** `cd frontend && pnpm typecheck && pnpm test && pnpm build && pnpm exec playwright test` (mock mode). Set `PW_PORT` to run Playwright on a port other than 5173. Live checks: `CANVAS_LIVE=1` with a live-mode dev server and the API on port 8000.
+- **Read first:** `AGENTS.md`, `CLAUDE.md` ("Product (read first)"), `lanes/C-canvas/BRIEF.md`, `docs/DESIGN.md`, `frontend/src/views/LiveRecoveryCanvas.tsx`, `frontend/src/views/Canvas.tsx`, `frontend/src/lib/recovery.ts`
+- **Routes:** `/` opens the live recovery canvas. `/?view=workspace` and `/?scenario=<id>` open the day 1 workspace with the storm case, the scenario suite, and "Advanced: baseline plan".
+- **Next:** decide if the live canvas needs the economics assumptions panel and the scenario picker. Until then they stay in the workspace view.
 - **Then:** the next item in `lanes/C-canvas/feature_list.json` with `"passes": false`, highest priority first.
 
 ## Done
@@ -29,6 +30,7 @@ Any agent or person can pick this up cold. Rewrite this block before you stop.
 - C-13: affected homes are highlighted and counted by cluster, with no routes or storm movement.
 - C-14: number keys select options, A opens approval, and K tests a crew-day knockout.
 - C-15: the canvas remains visible in dark mode. Evidence: `frontend/e2e/screenshots/canvas-dark.png`.
+- C-16: rebuilt the default view as a trigger-driven live recovery canvas with crew/home figures, a validated option frontier, and approval. It has no weather framing. All six trigger definitions are visible. During a solve, the prior revision stays visible under a stale label with approval paused; one API-derived move path compares the previous displayed plan with the new recovery, while a stronger persistent tint marks cumulative moves from the current plan. The home timeline uses the same previous-plan baseline. Figure 2 no longer repeats option names around points; each point remains accessible and each option name is shown in its selectable chip. Disruptions and home protection call `/api/recovery/evaluate`; returned custom plans are shown only when validated at the current revision, and stale evaluator responses are ignored. All eight C-owned live Playwright flows pass at 1440×900 with screenshots after each interaction and no page scroll. Frontend unit tests (29), typecheck, build, and format check pass.
 
 - QA sweep fixes (2026-09-26, `fix/canvas`): the app opens on `standard` and the Recovery Canvas is the page. The day 1 workspace is behind "Advanced: baseline plan" and opens by default only for scenarios with no recovery case (`?scenario=tiny`). Canvas state is keyed on scenario and demo session. Approval resets on option change and ignores stale responses. The confirm dialog is a modal `<dialog>` that freezes its option. Ghosts render in lost crew-day cells. Invalid, timed-out, and unproven options are labeled, never drawn, and cannot be approved. Economics overrides keep the last good options on error and offer Reset assumptions. Evaluate sends overrides and the analysis revision. Mocks match on the full recovery request. Theme follows the system and persists. Light tokens pass AA (`--accent #c4470a`, `--st-late #8a6508`).
 - C-17 to C-21 pass in mock mode. Evidence: `frontend/e2e/screenshots/canvas-first.png`, `canvas-dark.png`.
@@ -39,3 +41,4 @@ Any agent or person can pick this up cold. Rewrite this block before you stop.
 ## Blockers
 - The live checks for C-08, C-09, and C-12 were not run in this pass. The backend was changing. Needs: a running live API on port 8000.
 - `docs/DESIGN.md` still lists the old light `--accent` and `--st-late` values. Docs are not in lane C's paths.
+- The H-owned e2e specs still test the workspace view at `/?scenario=tiny`. The live canvas has its own mock and live tests in `frontend/e2e/canvas.spec.ts`.

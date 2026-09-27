@@ -4,10 +4,9 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import "@fontsource/ibm-plex-sans/latin-400.css";
 import "@fontsource/ibm-plex-sans/latin-500.css";
 import "@fontsource/ibm-plex-sans/latin-600.css";
-import "@fontsource/ibm-plex-mono/latin-400.css";
 import "./design/tokens.css";
-import "./design/workspace.css";
-import { Workspace } from "./views/Workspace";
+import "./design/live-canvas.css";
+import { LiveRecoveryCanvas } from "./views/LiveRecoveryCanvas";
 import { mockMode } from "./api/client";
 async function main() {
   if (mockMode) await (await import("./mocks/browser")).startMocks();
@@ -22,7 +21,7 @@ async function main() {
           })
         }
       >
-        <Workspace />
+        <LiveRecoveryCanvas />
       </QueryClientProvider>
     </React.StrictMode>,
   );

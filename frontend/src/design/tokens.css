@@ -1,49 +1,64 @@
 @import "tailwindcss";
 :root {
-  --paper: #f5f1e8;
-  --panel: #fbf8f1;
-  --ink: #1b1a17;
-  --ink-2: #5a564d;
-  --hairline: #dad3c4;
-  --accent: #c4470a;
-  --st-scheduled: #2f6f4f;
-  --st-locked: #3b4a6b;
-  --st-late: #8a6508;
-  --st-unscheduled: #6b6558;
-  --st-blocked: #9b2c2c;
+  --paper: #edf2ef;
+  --panel: #fcfdfc;
+  --ink: #1b2d32;
+  --ink-2: #5c7074;
+  --hairline: #ccd8d5;
+  --accent: #b03f33;
+  --st-scheduled: #456b60;
+  --st-locked: #526c7d;
+  --st-late: var(--accent);
+  --st-unscheduled: #5f7074;
+  --st-blocked: var(--accent);
+  --visit-install: #809caf;
+  --visit-battery: #5f9188;
+  --plot-grid: #dce5e1;
+  --plot-line: #50676d;
+  --surface-quiet: #f4f7f5;
   --font-ui: "IBM Plex Sans", sans-serif;
-  --font-code: "IBM Plex Mono", monospace;
+  --font-code: "IBM Plex Sans", sans-serif;
   --space: 4px;
-  --radius: 4px;
+  --radius: 3px;
   --motion: 180ms;
 }
 [data-theme="dark"] {
-  --paper: #15140f;
-  --panel: #1c1b16;
-  --ink: #ece7da;
-  --ink-2: #a9a396;
-  --hairline: #2e2c25;
-  --accent: #ff7a2e;
-  --st-scheduled: #5dbb8a;
-  --st-locked: #8fa3cc;
-  --st-late: #e0b04a;
-  --st-unscheduled: #9a9384;
-  --st-blocked: #e06c6c;
+  --paper: #172427;
+  --panel: #202f32;
+  --ink: #edf3f1;
+  --ink-2: #b0c0c0;
+  --hairline: #3a4b4e;
+  --accent: #f07868;
+  --st-scheduled: #6eb2a1;
+  --st-locked: #94b7c4;
+  --st-late: var(--accent);
+  --st-unscheduled: #b0c0c0;
+  --st-blocked: var(--accent);
+  --visit-install: #7797aa;
+  --visit-battery: #62a498;
+  --plot-grid: #334649;
+  --plot-line: #a1b8b9;
+  --surface-quiet: #1b292c;
   color-scheme: dark;
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme]) {
-    --paper: #15140f;
-    --panel: #1c1b16;
-    --ink: #ece7da;
-    --ink-2: #a9a396;
-    --hairline: #2e2c25;
-    --accent: #ff7a2e;
-    --st-scheduled: #5dbb8a;
-    --st-locked: #8fa3cc;
-    --st-late: #e0b04a;
-    --st-unscheduled: #9a9384;
-    --st-blocked: #e06c6c;
+    --paper: #172427;
+    --panel: #202f32;
+    --ink: #edf3f1;
+    --ink-2: #b0c0c0;
+    --hairline: #3a4b4e;
+    --accent: #f07868;
+    --st-scheduled: #6eb2a1;
+    --st-locked: #94b7c4;
+    --st-late: var(--accent);
+    --st-unscheduled: #b0c0c0;
+    --st-blocked: var(--accent);
+    --visit-install: #7797aa;
+    --visit-battery: #62a498;
+    --plot-grid: #334649;
+    --plot-line: #a1b8b9;
+    --surface-quiet: #1b292c;
   }
 }
 @theme inline {

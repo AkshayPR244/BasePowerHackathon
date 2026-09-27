@@ -13,8 +13,8 @@ Rehearse on the build you will show. Change this script to match what the app do
 
 ## Before you start
 
-- Run on the live API: `make dev-live`. If the backend is down, run on recorded mocks: `make dev`. Say which one you use.
-- Open `http://localhost:8000/api/health`. Wait until `values` is `ready`.
+- For the hosted demonstration, open [bpc-rollout-planner.up.railway.app](https://bpc-rollout-planner.up.railway.app/). Confirm its [health endpoint](https://bpc-rollout-planner.up.railway.app/api/health) reports `status: ok` and `values: ready`.
+- For a local live-API demonstration, run `make dev-live` and open `http://localhost:8000/api/health`. If the backend is down, run on recorded mocks with `make dev`. Say which mode you use.
 - Run the recovery flow once before recording, so the value table is warm.
 
 ## Script

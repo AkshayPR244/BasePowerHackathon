@@ -69,6 +69,10 @@ test("baseline, linked options, plan views, and approval", async ({
 
   const optionPoints = page.locator(".frontier-point circle");
   await expect(optionPoints.first()).toBeVisible();
+  await expect(page.locator(".frontier-point text")).toHaveCount(0);
+  await expect(page.locator(".option-chip")).toHaveCount(
+    await optionPoints.count(),
+  );
   if ((await optionPoints.count()) > 1) {
     await optionPoints.nth(1).click();
     await capture(page, info, "01-selected-option");

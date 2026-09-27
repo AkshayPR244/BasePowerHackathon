@@ -97,8 +97,8 @@ export function OptionFrontier({
         </div>
       </header>
       <p className="figure-note">
-        Re-solved on each change. Lower-left is better. Dot size is customers to
-        reschedule.
+        Points match the options below. Lower-left is better. Size shows
+        customers to reschedule.
       </p>
       {plotted.length > 0 ? (
         <>
@@ -181,8 +181,6 @@ export function OptionFrontier({
                 5 + Math.sqrt(option.counts.customers_to_reschedule) * 1.15;
               const selected = selectedId === option.option_id;
               const isNoAction = option.kind === "no_action";
-              const textAnchor = x > width - 112 ? "end" : "start";
-              const labelX = x > width - 112 ? x - radius - 4 : x + radius + 4;
               return (
                 <g
                   key={option.option_id}
@@ -202,10 +200,10 @@ export function OptionFrontier({
                     }
                   }}
                 >
+                  <title>
+                    {`${label(option)}, ${formatCost(option.economics.net_impact_usd)} modeled cost, ${option.counts.deadlines_missed} deadlines missed`}
+                  </title>
                   <circle cx={x} cy={y} r={radius} />
-                  <text x={labelX} y={y - radius - 3} textAnchor={textAnchor}>
-                    {label(option)}
-                  </text>
                 </g>
               );
             })}

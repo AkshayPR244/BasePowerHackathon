@@ -1,3 +1,4 @@
+import "../design/workspace.css";
 import { useEffect, useState } from "react";
 import { mockMode } from "../api/client";
 import { usePlanner } from "../state/usePlanner";
@@ -87,6 +88,11 @@ export function Workspace() {
     );
   return (
     <main>
+      <nav className="view-switch" aria-label="Views">
+        <a href={location.pathname} data-testid="live-canvas-link">
+          Back to the live recovery canvas
+        </a>
+      </nav>
       <Header
         scenario={scenario.data}
         scenarios={scenarios.data ?? []}

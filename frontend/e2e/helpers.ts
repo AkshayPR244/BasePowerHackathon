@@ -8,7 +8,7 @@ export async function load(page: Page) {
   ).toBeVisible();
 }
 export async function loadCanvas(page: Page) {
-  await page.goto("/");
+  await page.goto("/?view=workspace");
   await expect(page.getByTestId("impact-headline")).toContainText(
     "visits affected",
   );

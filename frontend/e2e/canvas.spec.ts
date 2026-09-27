@@ -490,7 +490,7 @@ test("manipulate actions call the live evaluator", async ({ page }) => {
     if (response.url().endsWith("/api/recovery/evaluate"))
       evaluationStatuses.push(response.status());
   });
-  await page.goto("/");
+  await page.goto("/?view=workspace");
   await expect(page.getByTestId("impact-headline")).toBeVisible({
     timeout: 60_000,
   });
@@ -520,7 +520,7 @@ test("manipulate actions call the live evaluator", async ({ page }) => {
 
 test("live canvas loads recovery impact and options", async ({ page }) => {
   test.skip(process.env.CANVAS_LIVE !== "1", "Runs against the live API only.");
-  await page.goto("/");
+  await page.goto("/?view=workspace");
   await expect(page.getByText("Live API", { exact: true })).toBeVisible();
   await expect(page.getByTestId("disruption-bar")).toContainText(
     "7 visits affected",
@@ -583,7 +583,7 @@ test("assumptions edits are sent as economics overrides", async ({ page }) => {
     if (request.url().endsWith("/api/recovery/options"))
       requests.push(request.postDataJSON());
   });
-  await page.goto("/");
+  await page.goto("/?view=workspace");
   await expect(page.getByTestId("impact-headline")).toBeVisible({
     timeout: 60_000,
   });
@@ -686,5 +686,5 @@ test("theme follows the system setting until the operator picks one", async ({
   const background = await page
     .locator("body")
     .evaluate((body) => getComputedStyle(body).backgroundColor);
-  expect(background).toBe("rgb(21, 20, 15)");
+  expect(background).toBe("rgb(23, 36, 39)");
 });

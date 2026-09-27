@@ -1,7 +1,9 @@
+import datetime as dt
+
 import pytest
 
 from app.data import load_scenario
-from app.recovery.service import approve, evaluate
+from app.recovery.service import approve, evaluate, recover
 
 
 def test_approve_revalidates_and_rejects_tampered_or_stale():
@@ -52,3 +54,19 @@ def test_approved_temporary_crew_snapshot_reloads():
     approved = approve(scenario, option)
     assert current_result(approved.effective_scenario).validation.valid
     assert any(c.crew_id == "TEMP" for c in approved.effective_scenario.crew_days)
+
+
+def test_approve_accepts_an_option_after_a_browser_json_round_trip():
+    import json
+
+    from app.contracts.models import RecoveryOption, RemoveCrewDay
+
+    scenario = load_scenario("standard").model_copy(update={"revision": 1})
+    storm = [RemoveCrewDay(crew_id=c, date=dt.date(2018, 6, 14)) for c in ("IA", "IB", "BA")]
+    out = recover(scenario, storm, interactive=True)
+    option = next(o for o in out.options if "-0.0" in o.model_dump_json())
+    # JSON.stringify writes -0.0 as 0.
+    browser = RecoveryOption.model_validate(
+        json.loads(option.model_dump_json().replace("-0.0", "0"))
+    )
+    assert not approve(scenario, browser).stub

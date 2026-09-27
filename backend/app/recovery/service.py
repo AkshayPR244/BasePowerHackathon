@@ -209,7 +209,18 @@ def _digest(option):
         mode="json",
         exclude={"lowest_modeled_cost": True, "result": {"solve_ms", "stages", "message"}},
     )
-    return _key(data)
+    return _key(_no_negative_zero(data))
+
+
+def _no_negative_zero(value):
+    # JSON.stringify writes -0.0 as 0, so a browser round trip must still match.
+    if isinstance(value, dict):
+        return {k: _no_negative_zero(v) for k, v in value.items()}
+    if isinstance(value, list):
+        return [_no_negative_zero(v) for v in value]
+    if isinstance(value, float) and value == 0:
+        return 0.0
+    return value
 
 
 def _issue(base, option, source_hash):

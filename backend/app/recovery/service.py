@@ -398,6 +398,11 @@ def _label(kind, e):
     return f"Add temporary crew {e.crew_id} on {day(e.date)}"
 
 
+def _outcome(result):
+    o = result.objective
+    return (o.jobs_late + o.jobs_unscheduled, o.total_delay_days, o.changed_installs)
+
+
 def _solve_all(base, disruption, rates, original, interactive):
     """Solved plans do not depend on prices, so price changes reuse them."""
     from app.valuation.value_table import value_table
@@ -416,6 +421,15 @@ def _solve_all(base, disruption, rates, original, interactive):
     hint = _hint(base, na)
     budget = INTERACTIVE_BUDGET if interactive else base.config.solve_time_limit_s
     rebalance = _solve(base, disruption, budget / 3, hint)
+    # No action is feasible for rebalance too. Never show a rebalance that is worse than it.
+    if solved(na) and (not solved(rebalance) or _outcome(rebalance) > _outcome(na)):
+        rebalance = na.model_copy(
+            update={
+                "message": "Best found within the solve budget, not proven best. Rebalance "
+                "found no plan better than no action, so it keeps the no-action plan."
+            }
+        )
+    hint = _hint(base, rebalance) or hint
     cap = next(a.value for a in rates if a.key == "max_overtime_min")
     ot, temporary = _candidates(base, disruption, cap, original, na, CANDIDATES[interactive])
     n = max(1, len(ot) + len(temporary))

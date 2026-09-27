@@ -6,8 +6,15 @@ import shutil
 import pytest
 
 from app.api.scenarios import load_scenario
-from app.contracts.enums import Mode, PlanStatus
-from app.contracts.models import ForceInclude, MoveVisit, PlanRequest, RemoveCrewDay
+from app.contracts.enums import Algorithm, Mode, PlanStatus
+from app.contracts.models import (
+    ForceInclude,
+    MoveVisit,
+    PinVisit,
+    PlanRequest,
+    ReduceCrewDay,
+    RemoveCrewDay,
+)
 from app.planning.solve import plan
 
 
@@ -47,6 +54,33 @@ def test_value_flag_matches_the_validator(two_visit, days, unlock):
     r = run(s, [RemoveCrewDay(crew_id="B", date=D(d)) for d in days])
     assert r.validation.valid
     assert r.objective is not None
+
+
+BASELINES = [Algorithm.baseline_edf, Algorithm.baseline_nearest_cluster]
+BASELINE_CASES = {
+    "locked crew-day removed": [RemoveCrewDay(crew_id="A", date=D(5))],
+    "locked crew-day too short": [ReduceCrewDay(crew_id="A", date=D(5), available_min=60)],
+    "forced home has no legal day": [
+        ForceInclude(site_id="N-02"),
+        RemoveCrewDay(crew_id="A", date=D(4)),
+    ],
+    "forced home is blocked": [ForceInclude(site_id="S-03")],
+}
+
+
+@pytest.mark.parametrize("alg", BASELINES)
+@pytest.mark.parametrize("edits", BASELINE_CASES.values(), ids=BASELINE_CASES.keys())
+def test_baselines_report_infeasible_instead_of_invalid_plans(tiny, alg, edits):
+    r = run(tiny, edits, algorithm=alg)
+    assert r.status == PlanStatus.infeasible
+    assert r.assignments == [] and r.validation.valid
+    assert r.message.startswith(("Earliest", "Nearest"))
+
+
+@pytest.mark.parametrize("alg", BASELINES)
+def test_baselines_place_an_install_before_a_locked_battery_day(two_visit, alg):
+    r = run(two_visit, [PinVisit(job_id="H2-B")], algorithm=alg)
+    assert r.status == PlanStatus.feasible and r.validation.valid
 
 
 def test_install_may_stand_alone_in_recovery():

@@ -196,7 +196,7 @@ def build_result(
         operating_value_usd=sum(a.value_usd for a in finals),
         changed_installs=len(moved),
         travel_allowance_min=sum(u.travel_min for u in usage),
-        crew_utilization=round(busy / avail, 4) if avail else 0.0,
+        crew_utilization=min(1.0, round(busy / avail, 4)) if avail else 0.0,
         value_distinguishes_choices=not values_equal,
         visits_moved=len(moved),
         customers_to_reschedule=len({p.site_id for p in moved}),

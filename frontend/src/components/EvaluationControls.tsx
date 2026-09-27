@@ -51,7 +51,20 @@ export function EvaluationControls({
     .map((a) => a.job_id!)
     .sort();
   const [pickedVisit, setVisit] = useState("");
+  const skillOf = new Map(
+    scenario.sites.flatMap((s) =>
+      (s.visits ?? []).map((v) => [v.job_id, v.required_skill] as const),
+    ),
+  );
+  const crewSkills = new Set(
+    scenario.crew_days
+      .filter((c) => c.crew_id === crew)
+      .flatMap((c) => c.skills),
+  );
+  // The server rejects a move to a crew without the visit's skill.
+  const movable = visits.filter((v) => crewSkills.has(skillOf.get(v) ?? ""));
   const visit = visits.includes(pickedVisit) ? pickedVisit : (visits[0] ?? "");
+  const moveVisit = movable.includes(visit) ? visit : (movable[0] ?? "");
   const dateValid = !!date && date >= firstOpen && date <= lastDay;
   const disabled = pending || !crew || !dateValid;
   return (
@@ -147,15 +160,15 @@ export function EvaluationControls({
         </button>
         <button
           type="button"
-          disabled={disabled || !visit}
+          disabled={disabled || !moveVisit}
           data-testid="move-visit"
           onClick={() =>
             onEvaluate(disruption, [
-              { kind: "move_visit", job_id: visit, crew_id: crew, date },
+              { kind: "move_visit", job_id: moveVisit, crew_id: crew, date },
             ])
           }
         >
-          Move {visit || "visit"} to Crew {crew}
+          Move {moveVisit || "visit"} to Crew {crew}
         </button>
       </div>
       {pending && <p role="status">Solving recovery change…</p>}

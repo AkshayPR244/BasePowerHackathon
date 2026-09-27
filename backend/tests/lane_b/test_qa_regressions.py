@@ -9,7 +9,9 @@ from app.api.scenarios import load_scenario
 from app.compare.diff import diff_plans
 from app.contracts.enums import Algorithm, JobState, Mode, PlanStatus, ReasonCode
 from app.contracts.models import (
+    AddCrewDay,
     ChangeAppointment,
+    CounterfactualRequest,
     DelayInventory,
     ForceInclude,
     MoveVisit,
@@ -18,6 +20,7 @@ from app.contracts.models import (
     ReduceCrewDay,
     RemoveCrewDay,
 )
+from app.planning.counterfactual import counterfactual
 from app.planning.solve import plan
 
 
@@ -130,6 +133,19 @@ def test_headline_uses_the_newly_late_visit(tiny):
 
     d = diff_plans(n02_three_days_late(before), n02_three_days_late(after))
     assert d.headline.endswith("1 home misses its deadline by 1 day.")
+
+
+def test_counterfactual_with_bad_input_is_not_called_infeasible(tiny):
+    req = PlanRequest(scenario_id="tiny", revision=0, mode=Mode.recovery)
+    extra = AddCrewDay(
+        crew_id="A", date=D(4), available_min=60, skills=["install"], allowed_clusters=["N"]
+    )
+    cf = counterfactual(
+        tiny, CounterfactualRequest(request=req, base=plan(tiny, req), intervention=extra)
+    )
+    assert cf.result.status == PlanStatus.invalid_input and not cf.feasible
+    assert "infeasible" not in cf.summary and "infeasible" not in cf.diff.headline
+    assert "cannot be tested" in cf.summary
 
 
 def test_install_may_stand_alone_in_recovery():

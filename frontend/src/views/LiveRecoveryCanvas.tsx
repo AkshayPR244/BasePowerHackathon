@@ -80,15 +80,25 @@ function isValid(option: Schema["RecoveryOption"]) {
   );
 }
 
-function currentPlanForProtection(
+export function currentPlanForProtection(
   rows: PlannedInstall[],
   protectedHomes: string[],
+  disruption: Disruption[],
 ) {
   const protectedIds = new Set(protectedHomes);
-  return rows.map((row) => ({
-    ...row,
-    locked: row.locked || protectedIds.has(row.site_id),
-  }));
+  return rows.map((row) => {
+    const disrupted = disruption.some(
+      (edit) =>
+        ((edit.kind === "remove_crew_day" || edit.kind === "reduce_crew_day") &&
+          edit.crew_id === row.crew_id &&
+          edit.date === row.date) ||
+        (edit.kind === "change_appointment" && edit.job_id === row.job_id),
+    );
+    return {
+      ...row,
+      locked: protectedIds.has(row.site_id) || (row.locked && !disrupted),
+    };
+  });
 }
 
 export function LiveRecoveryCanvas() {
@@ -132,6 +142,7 @@ export function LiveRecoveryCanvas() {
     ? currentPlanForProtection(
         scenario.data.current_plan,
         sandbox.protectedHomes,
+        sandbox.disruption,
       )
     : undefined;
   const recovery = useQuery({
@@ -283,7 +294,18 @@ export function LiveRecoveryCanvas() {
       disruption,
       headline,
     }));
-    void requestEvaluation(revision, disruption, [], currentPlan);
+    void requestEvaluation(
+      revision,
+      disruption,
+      [],
+      scenario.data
+        ? currentPlanForProtection(
+            scenario.data.current_plan,
+            sandbox.protectedHomes,
+            disruption,
+          )
+        : undefined,
+    );
   };
 
   const changeProtection = (siteId: string) => {
@@ -326,7 +348,11 @@ export function LiveRecoveryCanvas() {
       sandbox.disruption,
       interventions,
       scenario.data
-        ? currentPlanForProtection(scenario.data.current_plan, protectedHomes)
+        ? currentPlanForProtection(
+            scenario.data.current_plan,
+            protectedHomes,
+            sandbox.disruption,
+          )
         : undefined,
     );
   };

@@ -8,25 +8,25 @@ skills:
   - plain-english
 ---
 
-You integrate the three lanes of Rollout Planner. You fix only glue: generated files and merge mechanics. You do not fix lane logic. You report it.
+You integrate the three lanes of Rollout Planner: R-engine, H-hardening, and C-canvas. You fix only glue: generated files and merge mechanics. You do not fix lane logic. You report it.
 
 ## Steps
 
 1. `git fetch origin`. List open lane PRs with `gh pr list`.
 2. Create `integrate/<YYYYMMDD-HHMM>` from `origin/main`.
-3. Merge in order A, then B, then C: `git merge --no-ff origin/lane/a-data`, then `lane/b-planning`, then `lane/c-ui`. Stop at the first conflict you cannot resolve with generated files alone. Report it by lane.
-4. Regenerate: `make types && make mocks` (planned targets. Fallback: `cd backend && PYTHONPATH=. uv run python ../scripts/export_openapi.py`, `./scripts/gen_types.sh`, `cd backend && PYTHONPATH=. uv run python ../scripts/record_mocks.py`). Commit the generated files as `integrate: regenerate types and mocks`.
-5. Run `make check` (planned. Fallback: each lane's fallback check from its BRIEF.md). Record each failure with its lane.
-6. Start the live stack: `make dev-live` (planned. Fallback: `cd backend && uv run uvicorn app.api.main:app --port 8000` and `cd frontend && VITE_API_MODE=live pnpm dev`). Use the `webapp-testing` skill's `with_server.py` to manage both servers.
+3. Merge in order R, then H, then C: `git merge --no-ff origin/lane/R-engine`, then `origin/lane/H-hardening`, then `origin/lane/C-canvas`. Stop at the first conflict you cannot resolve with generated files alone. Report it by lane.
+4. Regenerate: `make types && make mocks`. Commit the generated files as `integrate: regenerate types and mocks`.
+5. Run `make check`. It runs `check-contracts`, `check-backend` (ruff and every backend test suite), and `check-c`. To find the lane of a failure, run `make check-r`, `make check-h`, or `make check-c`. Record each failure with its lane.
+6. Start the live stack: `make dev-live`. It starts the backend on :8000 and the frontend in live mode, and stops both on exit. For a scripted run, `.claude/skills/webapp-testing/scripts/with_server.py` can manage both servers.
 7. Run `make e2e` with `VITE_API_MODE=live` (fallback: `cd frontend && VITE_API_MODE=live pnpm e2e`). Open the new screenshots with Read.
-8. Check the vertical slice end to end: tiny fixture, data, solver, validator, API, UI. Every plan in the UI must show `validation.checked = true` once Lane A's validator has landed.
+8. Check the recovery flow end to end on `standard`: current plan, disruption, impact, options, evaluate, approve. Every plan in the UI must show `validation.checked = true`.
 9. Push the integration branch and open one PR to main with `gh pr create`. The body lists what merged, what was regenerated, check results, e2e results, and breakages by lane.
 
 ## Report
 
 Plain text, grouped by lane:
-- `Lane A`: failures and the file each points at.
-- `Lane B`: same.
+- `Lane R`: failures and the file each points at.
+- `Lane H`: same.
 - `Lane C`: same, with screenshot paths.
 - `Contracts`: any drift between models, `openapi.json`, `generated.ts`, and recorded mocks.
 - The PR URL.

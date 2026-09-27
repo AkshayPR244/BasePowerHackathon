@@ -547,6 +547,67 @@ test.describe("live canvas against the live API", () => {
     );
   });
 
+  test("Advanced Analysis continues the primary disruption", async ({
+    page,
+  }, info) => {
+    test.setTimeout(90_000);
+    await openCanvas(page, info);
+    await chooseTool(page, info, "knockout");
+    await page
+      .locator(
+        '.crew-day[data-crew-id="IA"][data-date="2018-06-05"] .crew-day-action',
+      )
+      .click();
+    await waitForRecovery(page, info, "shared-context-source");
+    await page.getByTestId("workspace-link").click();
+
+    await expect(page.getByTestId("shared-recovery-context")).toContainText(
+      "Crew IA unavailable Tue 5 Jun",
+    );
+    const briefing = page.getByRole("region", { name: "Scenario briefing" });
+    await expect(briefing).toContainText("Crew IA unavailable Tue 5 Jun");
+    await expect(briefing).toContainText("Crew IA: unavailable on Tue 5 Jun");
+    await expect(page.getByTestId("disruption-description")).toContainText(
+      "Crew IA unavailable Tue 5 Jun",
+    );
+    await expect(page.getByTestId("recovery-canvas")).toBeVisible();
+    const scroll = await page
+      .getByTestId("plan-lanes")
+      .locator(".table-scroll")
+      .evaluate((container) => ({
+        horizontal: container.scrollWidth > container.clientWidth,
+        overflowX: getComputedStyle(container).overflowX,
+        overflowY: getComputedStyle(container).overflowY,
+      }));
+    expect(scroll).toEqual({
+      horizontal: true,
+      overflowX: "auto",
+      overflowY: "auto",
+    });
+    const calendarViewport = page
+      .getByTestId("plan-lanes")
+      .locator(".table-scroll");
+    const fixedHeight = await calendarViewport.evaluate(
+      (container) => container.clientHeight,
+    );
+    const expand = page.getByRole("button", { name: "Expand calendar" });
+    await expand.click();
+    await expect(
+      page.getByRole("button", { name: "Collapse calendar" }),
+    ).toHaveAttribute("aria-expanded", "true");
+    await expect
+      .poll(() =>
+        calendarViewport.evaluate((container) => container.clientHeight),
+      )
+      .toBeGreaterThan(fixedHeight);
+    await page.getByRole("button", { name: "Collapse calendar" }).click();
+    await expect(expand).toHaveAttribute("aria-expanded", "false");
+    await page.getByTestId("live-canvas-link").click();
+    await expect(page.getByTestId("live-headline")).toContainText(
+      "Crew IA loses Tue 5 Jun",
+    );
+  });
+
   test("cut a crew-day to half capacity", async ({ page }, info) => {
     await openCanvas(page, info);
     await chooseTool(page, info, "halfday");

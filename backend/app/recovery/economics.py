@@ -185,12 +185,12 @@ def compute(
         for label, amount, kind, basis in entries
     ]
     cost = round(sum(x.amount_usd for x in lines), 2)
-    # Both sides are measured against no action, so the ratio uses one baseline.
+    # Both sides are measured against no action. An option that also saves money costs $0.
     per_deadline = None
     if no_action_cost is not None and no_action_missed is not None:
         recovered = no_action_missed - counts.deadlines_missed
         if recovered > 0:
-            per_deadline = round((cost - no_action_cost) / recovered, 2)
+            per_deadline = round(max(0.0, cost - no_action_cost) / recovered, 2)
     return RecoveryEconomics(
         net_impact_usd=cost,
         advantage_vs_no_action_usd=round(no_action_cost - cost, 2)

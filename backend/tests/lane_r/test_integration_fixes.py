@@ -133,7 +133,8 @@ def test_recovered_cost_per_deadline_uses_no_action_baseline():
     for option in out.options:
         eco, n = option.economics, option.counts.deadlines_recovered
         if n:
-            expected = round((eco.net_impact_usd - na.economics.net_impact_usd) / n, 2)
+            extra = max(0.0, eco.net_impact_usd - na.economics.net_impact_usd)
+            expected = round(extra / n, 2)
             assert eco.cost_per_deadline_recovered_usd == pytest.approx(expected, abs=0.01)
         else:
             assert eco.cost_per_deadline_recovered_usd is None

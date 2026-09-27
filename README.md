@@ -64,6 +64,8 @@ make setup
 make dev-live
 ```
 
+Open the app at `http://localhost:5173`.
+
 - Backend env vars (`.env`):
   - `DEMO_DIR=data/demo`
   - `API_PORT=8000`
@@ -109,14 +111,14 @@ All tiny and standard inputs are synthetic until a manifest in `data/manifests/`
 
 ## Known limitations
 
-- UI status is in progress. Some flows still rely on recorded mocks.
+- UI status is in progress. Live API coverage depends on branch state. If a screen is not live-wired yet, use mock mode (`VITE_API_MODE=mock` and `make dev`).
 - Travel is a fixed allowance per crew-day. The planner does not optimize routes or stop order.
 - Weather replay is parked in `lanes/_parked/weather` and is not in the main demo flow.
 - Live external feeds and autonomous approval are out of scope in this build.
 
 ## Next steps
 
-- Complete the live API path across the full Recovery Canvas flow and keep mock parity tests.
+- Complete live API wiring for every Recovery Canvas screen so mock mode is only needed for offline demos.
 - Expand integration and e2e coverage for recovery options and approval.
 - Add more documented observed datasets and keep synthetic versus modeled labels in UI and docs.
 - Improve recovery comparisons with clearer risk and commitment impact summaries.

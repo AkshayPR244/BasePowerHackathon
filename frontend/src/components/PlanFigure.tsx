@@ -2,6 +2,7 @@ import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import type { Plan, Scenario, Schema } from "../api/types";
 import { dateLabel, datesBetween } from "../lib/format";
 import { slotsOffPlan } from "../lib/recovery";
+import { clusterKey, isHoustonScenario } from "../lib/geography";
 
 export type CanvasTool =
   "knockout" | "halfday" | "long" | "reschedule" | "protect" | "trace";
@@ -341,7 +342,10 @@ export function PlanFigure({
           <span className="trace-label">Tracing {traceHomeId}</span>
         )}
         <span className="cluster-key">
-          Synthetic home prefixes: N North, S South, W West
+          {isHoustonScenario(scenario)
+            ? "Houston service territories"
+            : "Service territories"}
+          : {clusterKey(scenario)}
         </span>
       </div>
       {view === "crew" ? (

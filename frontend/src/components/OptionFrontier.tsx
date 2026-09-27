@@ -124,7 +124,8 @@ export function OptionFrontier({
       </header>
       <p className="figure-note">
         Points match the options below. Lower-left is better. Size shows
-        customers to reschedule.
+        customers to reschedule. Adjusted cost includes operating-value changes
+        calculated from 2018 ERCOT hindsight prices.
       </p>
       {plotted.length > 0 ? (
         <>

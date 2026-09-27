@@ -609,6 +609,11 @@ test("assumptions edits are sent as economics overrides", async ({ page }) => {
 test("map inset groups affected homes by cluster", async ({ page }) => {
   await loadCanvas(page);
 
+  await expect(
+    page.getByRole("heading", { name: "Houston service clusters" }),
+  ).toBeVisible();
+  await expect(page.locator(".houston-center")).toBeVisible();
+  await expect(page.locator(".map-compass")).toBeVisible();
   const inset = page.getByTestId("affected-map-inset");
   await expect(inset).toContainText("Affected homes by cluster");
   const southCluster = inset.locator(".affected-cluster").filter({

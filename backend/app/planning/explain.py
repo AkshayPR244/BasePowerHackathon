@@ -23,6 +23,18 @@ def plural(n: int, word: str) -> str:
     return f"{n} {word}{'' if n == 1 else 's'}"
 
 
+def join_ids(ids: list[str]) -> str:
+    if len(ids) <= 2:
+        return " and ".join(ids)
+    return f"{', '.join(ids[:-1])}, and {ids[-1]}"
+
+
+def cannot_finish(ids: list[str]) -> str:
+    if len(ids) == 1:
+        return f"{ids[0]} cannot finish by its deadline."
+    return f"{join_ids(ids)} cannot finish by their deadlines."
+
+
 def blocked_detail(site: Site, reasons: list[ReasonCode], scenario: Scenario) -> str:
     sid = site.site_id
     if ReasonCode.SKILL_MISMATCH in reasons:

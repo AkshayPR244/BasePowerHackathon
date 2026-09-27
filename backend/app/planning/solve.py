@@ -141,6 +141,20 @@ def _solve(scenario, req, forced, values, policy, common) -> PlanResult:
     elig = restrict_appointments(eligibility(scenario, mode, forced), req.edits)
     stages = _stage_list(mode, policy)
 
+    stuck = sorted(forced & set(elig.blocked))
+    if stuck:
+        site = next(s for s in scenario.sites if s.site_id == stuck[0])
+        detail = explain.blocked_detail(site, elig.blocked[stuck[0]], scenario)
+        return build_result(
+            scenario=scenario,
+            elig=elig,
+            placed=None,
+            status=PlanStatus.infeasible,
+            stages=_infeasible_stages(stages),
+            message=f"{explain.cannot_finish(stuck)} {detail}",
+            **common,
+        )
+
     missing = [
         u for u in no_legal_date_jobs(scenario, elig) if mode == Mode.strict or u.site_id in forced
     ]

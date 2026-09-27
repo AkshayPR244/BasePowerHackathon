@@ -33,6 +33,12 @@ def _key(a) -> str:
     return a.job_id or a.site_id
 
 
+def _known(a, jobs: dict[str, Job]) -> bool:
+    """The assignment names a real visit of the home it claims."""
+    job = jobs.get(_key(a))
+    return job is not None and job.site_id == a.site_id
+
+
 def legal_slots(scenario: Scenario, site, job: Job | None = None) -> list:
     """Eligibility before deadline filtering, independent of competing jobs."""
     job = job or jobs_of(site)[-1]
@@ -84,7 +90,7 @@ def recompute_usage(scenario: Scenario, assignments: list[Assignment]) -> list[C
         here = [
             a
             for a in assignments
-            if _key(a) in jobs and (a.crew_id, a.date) == (cd.crew_id, cd.date)
+            if _known(a, jobs) and (a.crew_id, a.date) == (cd.crew_id, cd.date)
         ]
         used = {sites[a.site_id].cluster_id for a in here}
         result.append(
@@ -108,7 +114,7 @@ def recompute_objective(scenario: Scenario, assignments: list[Assignment], *, va
         values = {(r.site_id, r.install_date): r.value_usd for r in value_table(scenario)}
     sites = {s.site_id: s for s in scenario.sites}
     jobs = _jobs(scenario)
-    known = [a for a in assignments if _key(a) in jobs]
+    known = [a for a in assignments if _known(a, jobs)]
     at = {_key(a): a for a in known}
     finals = [a for a in known if jobs[_key(a)].final]
     final_sites = {a.site_id for a in finals}
@@ -163,6 +169,8 @@ def validate_plan(scenario: Scenario, result: PlanResult) -> ValidationReport:
 
     if result.scenario_id != scenario.scenario_id:
         add("STATE_MISMATCH", "Result and scenario IDs differ")
+    if result.scenario_hash != scenario.scenario_hash:
+        add("STATE_MISMATCH", "Result was built from a different version of the scenario")
 
     if result.status not in ("optimal", "feasible"):
         if result.assignments or result.crew_days:
@@ -185,19 +193,44 @@ def validate_plan(scenario: Scenario, result: PlanResult) -> ValidationReport:
         if p.locked and (job := job_of_row(p, by_site)):
             locks[job] = p
     forced = {e.site_id for e in result.edits if e.kind == "force_include"}
+    windows = {  # the last appointment edit for a visit wins
+        e.job_id: (e.available_from, e.available_to)
+        for e in result.edits
+        if e.kind == "change_appointment"
+    }
     assigned = {_key(a): a for a in result.assignments}
     blocked = _blocked(scenario)
     gap, origin = min_gap(scenario), scenario.config.planning_start
 
     covered = set()
+    listed: Counter = Counter()
     for u in result.unscheduled:
+        if u.site_id not in sites:
+            add("UNKNOWN_SITE", f"Unknown site {u.site_id} in the unscheduled list", u.site_id)
+            continue
         if u.job_id is None:
-            covered |= {j.job_id for j in by_site.get(u.site_id, [])}
+            keys = [j.job_id for j in by_site[u.site_id]]
         else:
-            covered.add(u.job_id)
+            job = jobs.get(u.job_id)
+            if job is None or job.site_id != u.site_id:
+                add("UNKNOWN_SITE", f"Visit {u.job_id} is not part of {u.site_id}", u.site_id)
+                continue
+            if u.visit_type != job.visit_type:
+                add(
+                    "STATE_MISMATCH",
+                    "Visit type does not match the visit",
+                    u.site_id,
+                    job_id=u.job_id,
+                )
+            keys = [u.job_id]
+        covered |= set(keys)
+        listed.update(keys)
         expected = "blocked" if u.site_id in blocked else "unscheduled"
         if u.state != expected:
             add("STATE_MISMATCH", f"Expected {expected} state", u.site_id, job_id=u.job_id)
+    for key, count in listed.items():
+        if count > 1:
+            add("DUPLICATE_ASSIGNMENT", f"Visit {key} is unscheduled more than once", job_id=key)
     for key, count in Counter(_key(a) for a in result.assignments).items():
         if key not in jobs:
             add("UNKNOWN_SITE", f"Unknown site or visit {key}", key)
@@ -258,6 +291,21 @@ def validate_plan(scenario: Scenario, result: PlanResult) -> ValidationReport:
                 )
         if a.date < site.ready_date:
             add("BEFORE_READY", "Assignment precedes readiness", a.site_id, job_id=a.job_id)
+        if (window := windows.get(job.job_id)) is not None:
+            if a.date < window[0]:
+                add(
+                    "BEFORE_READY",
+                    "Visit precedes its appointment window",
+                    a.site_id,
+                    job_id=a.job_id,
+                )
+            elif window[1] is not None and a.date > window[1]:
+                add(
+                    "AFTER_DEADLINE",
+                    "Visit is after its appointment window",
+                    a.site_id,
+                    job_id=a.job_id,
+                )
         late = max(0, (a.date - site.deadline).days) if job.final else 0
         if late and (result.mode == "strict" or a.site_id in forced):
             add("AFTER_DEADLINE", "A required deadline is missed", a.site_id, job_id=a.job_id)
@@ -306,7 +354,7 @@ def validate_plan(scenario: Scenario, result: PlanResult) -> ValidationReport:
                 crew_id=key[0],
                 date=key[1],
             )
-    finals = [a for a in result.assignments if _key(a) in jobs and jobs[_key(a)].final]
+    finals = [a for a in result.assignments if _known(a, jobs) and jobs[_key(a)].final]
     for battery in scenario.config.batteries:
         relevant = [
             a for a in finals if sites[a.site_id].configuration_id == battery.configuration_id
@@ -348,13 +396,15 @@ def validate_plan(scenario: Scenario, result: PlanResult) -> ValidationReport:
                 a.site_id,
             )
     expected = recompute_objective(scenario, result.assignments, values=values)
+    legacy = result.objective is not None and not any(s.visits for s in scenario.sites)
+    legacy = legacy and all(getattr(result.objective, f) is None for f in ADDED_OBJECTIVE_FIELDS)
     if result.objective is None:
         add("OBJECTIVE_MISMATCH", "An incumbent must include objective components")
     else:
         for field, value in expected.model_dump().items():
             actual = getattr(result.objective, field)
-            if field in ADDED_OBJECTIVE_FIELDS and actual is None:
-                continue  # results from before contract 1.1 do not carry these fields
+            if field in ADDED_OBJECTIVE_FIELDS and actual is None and legacy:
+                continue  # changed_installs already fixes these for pre-1.1 one-visit results
             # Frozen fixture utilization is rounded to four decimal places.
             tolerance = 0.000051 if field == "crew_utilization" else 1e-6
             same = (

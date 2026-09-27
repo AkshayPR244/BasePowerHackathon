@@ -17,6 +17,8 @@ def test_enumerator_expected(name, plan):
         assert actual is not None
         assert actual.optimal_count == 1
         for field, value in plan.objective.model_dump().items():
+            if value is None:
+                continue  # the frozen plans predate the added customer fields
             assert getattr(actual.objective, field) == pytest.approx(value, abs=0.000051)
         assert actual.assignments == plan.assignments
 

@@ -4,8 +4,8 @@
   "primary_disruption": [
     {
       "kind": "remove_crew_day",
-      "crew_id": "IB",
-      "date": "2018-06-04"
+      "crew_id": "IA",
+      "date": "2018-06-07"
     }
   ],
   "recovery_class": "recoverable"

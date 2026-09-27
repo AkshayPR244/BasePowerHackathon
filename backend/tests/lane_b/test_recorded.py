@@ -29,6 +29,9 @@ MODELS = {
     "recovery_options_": RecoveryOptionsResult,
     "recovery_evaluate_": RecoveryOption,
     "recovery_approve_": ApproveResult,
+    "live_options_": RecoveryOptionsResult,
+    "live_evaluate_": RecoveryOption,
+    "live_approve_": ApproveResult,
     "season_replay": SeasonReplay,
 }
 LISTS = {"scenarios": ScenarioSummary, "storms": StormEvent, "cases": Case}

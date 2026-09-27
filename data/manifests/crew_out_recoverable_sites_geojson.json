@@ -1,0 +1,16 @@
+{
+  "dataset_id": "crew_out_recoverable_sites_geojson",
+  "kind": "synthetic",
+  "source_url": null,
+  "release": "generator-v3-seed-103",
+  "retrieved_at": null,
+  "covered_start": "2018-06-04",
+  "covered_end": "2018-06-15",
+  "license_notes": "Synthetic benchmark data; repository MIT license.",
+  "sha256": "6983d0cdcae343e5e5ef98fce62dddcb4a90ab4df7951d60a8c8cb43112aa5bb",
+  "transformation": "Rule-based synthetic inputs; no real customers.",
+  "row_count": 24,
+  "fields": {
+    "geometry": "synthetic"
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "dataset_id": "crew_out_recoverable_inventory_csv",
+  "kind": "synthetic",
+  "source_url": null,
+  "release": "generator-v3-seed-103",
+  "retrieved_at": null,
+  "covered_start": "2018-06-04",
+  "covered_end": "2018-06-15",
+  "license_notes": "Synthetic benchmark data; repository MIT license.",
+  "sha256": "eb2db933cf347cb779b368b94a4613e91683e69f13856beb35cbc157cd236817",
+  "transformation": "Rule-based synthetic inputs; no real customers.",
+  "row_count": 3,
+  "fields": {
+    "configuration_id": "synthetic",
+    "available_date": "synthetic",
+    "quantity": "synthetic"
+  }
+}

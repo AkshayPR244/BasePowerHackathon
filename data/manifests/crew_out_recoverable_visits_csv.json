@@ -1,0 +1,20 @@
+{
+  "dataset_id": "crew_out_recoverable_visits_csv",
+  "kind": "synthetic",
+  "source_url": null,
+  "release": "generator-v3-seed-103",
+  "retrieved_at": null,
+  "covered_start": "2018-06-04",
+  "covered_end": "2018-06-15",
+  "license_notes": "Synthetic benchmark data; repository MIT license.",
+  "sha256": "22675572829d8204fb5417da610306f9fc09824eb5ad981b881a54dc4caaa5ea",
+  "transformation": "Rule-based synthetic inputs; no real customers.",
+  "row_count": 48,
+  "fields": {
+    "job_id": "synthetic",
+    "site_id": "synthetic",
+    "visit_type": "synthetic",
+    "duration_min": "synthetic",
+    "required_skill": "synthetic"
+  }
+}

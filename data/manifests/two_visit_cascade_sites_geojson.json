@@ -1,0 +1,16 @@
+{
+  "dataset_id": "two_visit_cascade_sites_geojson",
+  "kind": "synthetic",
+  "source_url": null,
+  "release": "generator-v3-seed-107",
+  "retrieved_at": null,
+  "covered_start": "2018-06-04",
+  "covered_end": "2018-06-15",
+  "license_notes": "Synthetic benchmark data; repository MIT license.",
+  "sha256": "7b1c290cb8a05f0982853a544714cac003ed200ea22ffc01c2f3b57526379ab5",
+  "transformation": "Rule-based synthetic inputs; no real customers.",
+  "row_count": 12,
+  "fields": {
+    "geometry": "synthetic"
+  }
+}

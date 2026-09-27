@@ -1,0 +1,25 @@
+{
+  "dataset_id": "late_overflow_sites_csv",
+  "kind": "synthetic",
+  "source_url": null,
+  "release": "generator-v3-seed-109",
+  "retrieved_at": null,
+  "covered_start": "2018-06-04",
+  "covered_end": "2018-06-14",
+  "license_notes": "Synthetic benchmark data; repository MIT license.",
+  "sha256": "b62f7149d898ac431e046359b758cd151a683bff22db322178f2fc7ef49b8219",
+  "transformation": "Rule-based synthetic inputs; no real customers.",
+  "row_count": 12,
+  "fields": {
+    "site_id": "synthetic",
+    "cluster_id": "synthetic",
+    "program_id": "synthetic",
+    "ready_date": "synthetic",
+    "deadline": "synthetic",
+    "duration_min": "synthetic",
+    "required_skill": "synthetic",
+    "configuration_id": "synthetic",
+    "load_zone": "synthetic",
+    "profile_id": "modeled"
+  }
+}

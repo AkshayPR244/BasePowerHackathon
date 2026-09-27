@@ -1,0 +1,13 @@
+{
+  "scenario_id": "two_visit_cascade",
+  "seed": 107,
+  "primary_disruption": [
+    {
+      "kind": "change_appointment",
+      "job_id": "W-01-I",
+      "available_from": "2018-06-08",
+      "available_to": "2018-06-08"
+    }
+  ],
+  "recovery_class": "recoverable"
+}

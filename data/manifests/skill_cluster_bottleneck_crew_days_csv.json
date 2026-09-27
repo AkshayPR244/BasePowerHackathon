@@ -1,0 +1,20 @@
+{
+  "dataset_id": "skill_cluster_bottleneck_crew_days_csv",
+  "kind": "synthetic",
+  "source_url": null,
+  "release": "generator-v3-seed-106",
+  "retrieved_at": null,
+  "covered_start": "2018-06-04",
+  "covered_end": "2018-06-15",
+  "license_notes": "Synthetic benchmark data; repository MIT license.",
+  "sha256": "cc8c7239bcfae6ccc914222f60a7e12275ed457f3beb14123aaee72724ca7ddf",
+  "transformation": "Rule-based synthetic inputs; no real customers.",
+  "row_count": 38,
+  "fields": {
+    "crew_id": "synthetic",
+    "date": "synthetic",
+    "available_min": "synthetic",
+    "skills": "synthetic",
+    "allowed_clusters": "synthetic"
+  }
+}

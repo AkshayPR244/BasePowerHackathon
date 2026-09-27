@@ -1,0 +1,12 @@
+{
+  "scenario_id": "skill_cluster_bottleneck",
+  "seed": 106,
+  "primary_disruption": [
+    {
+      "kind": "remove_crew_day",
+      "crew_id": "BN",
+      "date": "2018-06-08"
+    }
+  ],
+  "recovery_class": "recoverable"
+}

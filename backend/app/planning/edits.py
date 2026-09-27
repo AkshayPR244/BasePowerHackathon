@@ -1,5 +1,6 @@
 """Apply disruptions and interventions to a scenario."""
 
+import datetime as dt
 from collections.abc import Sequence
 from dataclasses import dataclass, field
 
@@ -33,8 +34,26 @@ class Edited:
     issues: list[InputIssue] = field(default_factory=list)
 
 
+GRANTED = "overtime_granted"  # config parameter prefix: "overtime_granted:<crew>:<date>"
+SKILL_WORDS = {"install": "installs", "battery": "battery days"}
+
+
 def _issue(code: InputIssueCode, message: str) -> InputIssue:
     return InputIssue(code=code, message=message, file="edits")
+
+
+def granted_overtime(scenario: Scenario) -> dict[tuple, int]:
+    """Overtime already approved into this scenario's crew-days, per (crew_id, date)."""
+    out: dict[tuple, int] = {}
+    for p in scenario.config.parameters:
+        if p.name.startswith(GRANTED + ":"):
+            _, crew, day = p.name.split(":", 2)
+            out[crew, dt.date.fromisoformat(day)] = int(float(p.value))
+    return out
+
+
+def _day(d: dt.date) -> str:
+    return f"{d:%a} {d.day} {d:%b}"
 
 
 def apply_edits(base: Scenario, edits: Sequence[Edit]) -> Edited:
@@ -47,11 +66,14 @@ def apply_edits(base: Scenario, edits: Sequence[Edit]) -> Edited:
     by_site = {s.site_id: jobs_of(s) for s in base.sites}
     forced: set[str] = set()
     issues: list[InputIssue] = []
+    removed: set[tuple] = set()
+    granted = granted_overtime(base)
 
     for e in edits:
         match e:
             case RemoveCrewDay():
                 keep = [c for c in crew_days if (c.crew_id, c.date) != (e.crew_id, e.date)]
+                removed.add((e.crew_id, e.date))
                 if len(keep) == len(crew_days):
                     issues.append(
                         _issue(
@@ -70,6 +92,28 @@ def apply_edits(base: Scenario, edits: Sequence[Edit]) -> Edited:
                     continue
                 if not set(e.allowed_clusters) <= {c.cluster_id for c in base.clusters}:
                     issues.append(_issue(InputIssueCode.UNKNOWN_REFERENCE, "Unknown crew cluster."))
+                    continue
+                if (e.crew_id, e.date) in removed:
+                    issues.append(
+                        _issue(
+                            InputIssueCode.BAD_VALUE,
+                            f"Crew {e.crew_id} is out on {_day(e.date)}. "
+                            "Temporary capacity must be a different crew.",
+                        )
+                    )
+                    continue
+                normal = max(
+                    (c.available_min for c in base.crew_days if set(c.skills) & set(e.skills)),
+                    default=max((c.available_min for c in base.crew_days), default=480),
+                )
+                if e.available_min > normal:
+                    issues.append(
+                        _issue(
+                            InputIssueCode.BAD_VALUE,
+                            f"A temporary crew-day can have at most {normal} minutes, "
+                            "one normal day.",
+                        )
+                    )
                     continue
                 if any((c.crew_id, c.date) == (e.crew_id, e.date) for c in crew_days):
                     issues.append(
@@ -146,8 +190,9 @@ def apply_edits(base: Scenario, edits: Sequence[Edit]) -> Edited:
                     )
                     minutes = cd.available_min + e.extra_min
                     slot = (e.crew_id, e.date)
+                    already = granted.get(slot, 0)
                     requested = overtime.get(slot, 0) + e.extra_min
-                    if requested > cap or minutes > original + cap:
+                    if already + requested > cap or minutes > original - already + cap:
                         issues.append(
                             _issue(
                                 InputIssueCode.BAD_VALUE,
@@ -190,10 +235,28 @@ def apply_edits(base: Scenario, edits: Sequence[Edit]) -> Edited:
                             _issue(InputIssueCode.BAD_VALUE, "Cannot move a locked visit.")
                         )
                         continue
-                    if (e.crew_id, e.date) not in {(c.crew_id, c.date) for c in crew_days}:
+                    target = next(
+                        (c for c in crew_days if (c.crew_id, c.date) == (e.crew_id, e.date)), None
+                    )
+                    if target is None:
                         issues.append(
                             _issue(
-                                InputIssueCode.UNKNOWN_REFERENCE, "Target crew-day does not exist."
+                                InputIssueCode.UNKNOWN_REFERENCE,
+                                f"Crew {e.crew_id} does not work on {_day(e.date)}.",
+                            )
+                        )
+                        continue
+                    if job.required_skill not in target.skills:
+                        what = SKILL_WORDS.get(job.required_skill, f"{job.required_skill} visits")
+                        msg = f"Crew {e.crew_id} does not do {what}."
+                        issues.append(_issue(InputIssueCode.BAD_VALUE, msg))
+                        continue
+                    cluster = sites[job.site_id].cluster_id
+                    if cluster not in target.allowed_clusters:
+                        issues.append(
+                            _issue(
+                                InputIssueCode.BAD_VALUE,
+                                f"Crew {e.crew_id} does not work in cluster {cluster}.",
                             )
                         )
                         continue

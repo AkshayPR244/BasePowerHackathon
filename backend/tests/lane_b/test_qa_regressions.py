@@ -13,6 +13,7 @@ from app.contracts.models import (
     ChangeAppointment,
     CounterfactualRequest,
     DelayInventory,
+    ExtendCrewDay,
     ForceInclude,
     MoveVisit,
     PinVisit,
@@ -20,6 +21,7 @@ from app.contracts.models import (
     ReduceCrewDay,
     RemoveCrewDay,
 )
+from app.planning import explain
 from app.planning.counterfactual import counterfactual
 from app.planning.solve import plan
 
@@ -146,6 +148,26 @@ def test_counterfactual_with_bad_input_is_not_called_infeasible(tiny):
     assert cf.result.status == PlanStatus.invalid_input and not cf.feasible
     assert "infeasible" not in cf.summary and "infeasible" not in cf.diff.headline
     assert "cannot be tested" in cf.summary
+
+
+def test_every_edit_kind_has_a_description(two_visit):
+    edits = [
+        ReduceCrewDay(crew_id="I", date=D(5), available_min=200),
+        ExtendCrewDay(crew_id="B", date=D(5), extra_min=60),
+        ChangeAppointment(job_id="H3-B", available_from=D(5), available_to=D(6)),
+        PinVisit(job_id="H1-B"),
+        MoveVisit(job_id="H3-I", crew_id="I", date=D(4)),
+    ]
+    texts = [explain.describe_edit(e, two_visit) for e in edits]
+    assert texts == [
+        "Crew I has only 200 min on Tue 5 Jun.",
+        "Crew B works 60 min overtime on Tue 5 Jun.",
+        "H3 battery day now has an appointment window from Tue 5 Jun to Wed 6 Jun.",
+        "H1 battery day stays on its current crew-day.",
+        "H3 install moves to Crew I on Mon 4 Jun.",
+    ]
+    r = run(two_visit, edits[1:4])
+    assert r.message.startswith(" ".join(texts[1:4])) and "  " not in r.message
 
 
 def test_install_may_stand_alone_in_recovery():

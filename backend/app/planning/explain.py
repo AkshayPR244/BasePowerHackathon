@@ -5,10 +5,15 @@ import datetime as dt
 from app.contracts.enums import ReasonCode
 from app.contracts.models import (
     AddCrewDay,
+    ChangeAppointment,
     ChangeReadyDate,
     DelayInventory,
     Edit,
+    ExtendCrewDay,
     ForceInclude,
+    MoveVisit,
+    PinVisit,
+    ReduceCrewDay,
     RemoveCrewDay,
     Scenario,
     Site,
@@ -127,8 +132,29 @@ def unscheduled_detail(site: Site, job=None) -> str:
     )
 
 
-def describe_edit(e: Edit) -> str:
+def visit_name(job_id: str, scenario: Scenario | None = None) -> str:
+    """'H3 install' for a two-visit home, the site_id for a one-visit home."""
+    for site in scenario.sites if scenario else []:
+        for j in jobs_of(site):
+            if j.job_id == job_id:
+                return f"{site.site_id}{visit_label(j)}"
+    return job_id
+
+
+def describe_edit(e: Edit, scenario: Scenario | None = None) -> str:
     match e:
+        case ReduceCrewDay():
+            return f"Crew {e.crew_id} has only {e.available_min} min on {day(e.date)}."
+        case ExtendCrewDay():
+            return f"Crew {e.crew_id} works {e.extra_min} min overtime on {day(e.date)}."
+        case ChangeAppointment():
+            window = window_text(e.available_from, e.available_to)
+            return f"{visit_name(e.job_id, scenario)} now has an appointment window {window}."
+        case PinVisit():
+            return f"{visit_name(e.job_id, scenario)} stays on its current crew-day."
+        case MoveVisit():
+            name = visit_name(e.job_id, scenario)
+            return f"{name} moves to Crew {e.crew_id} on {day(e.date)}."
         case RemoveCrewDay():
             return f"Crew {e.crew_id} is out {day(e.date)}."
         case AddCrewDay():
@@ -147,4 +173,4 @@ def describe_edit(e: Edit) -> str:
 
 
 def describe_edits(scenario: Scenario, edits: list[Edit]) -> str:
-    return " ".join(describe_edit(e) for e in edits)
+    return " ".join(t for e in edits if (t := describe_edit(e, scenario)))

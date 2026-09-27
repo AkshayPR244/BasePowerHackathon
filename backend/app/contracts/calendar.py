@@ -37,7 +37,9 @@ def federal_holidays(year: int) -> set[dt.date]:
     }
     if year >= 2021:
         days.add(_observed(dt.date(year, 6, 19)))  # Juneteenth
-    return days
+    # A Saturday New Year's Day is observed on Friday 31 December of the year before.
+    days.add(_observed(dt.date(year + 1, 1, 1)))
+    return {d for d in days if d.year == year}
 
 
 def is_business_day(d: dt.date) -> bool:

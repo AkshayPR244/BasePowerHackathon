@@ -248,20 +248,6 @@ export function OptionFrontier({
                     cy={marker.y}
                     r={radius}
                   />
-                  <text
-                    className="frontier-symbol"
-                    x={marker.x}
-                    y={marker.y}
-                    aria-hidden="true"
-                  >
-                    {{
-                      no_action: "N",
-                      rebalance: "R",
-                      overtime: "O",
-                      temporary_capacity: "+",
-                      custom: "C",
-                    }[option.kind] ?? "C"}
-                  </text>
                 </g>
               );
             })}

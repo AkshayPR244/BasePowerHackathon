@@ -846,8 +846,7 @@ p {
 }
 
 .frontier-svg .frontier-point,
-.frontier-marker,
-.frontier-symbol {
+.frontier-marker {
   pointer-events: all;
 }
 
@@ -925,16 +924,6 @@ p {
   transition: r 180ms ease;
 }
 
-.frontier-symbol {
-  fill: var(--option-marker-ink);
-  font-family: var(--font-ui);
-  font-size: 8px;
-  font-weight: 700;
-  dominant-baseline: central;
-  text-anchor: middle;
-  pointer-events: none;
-}
-
 .frontier-point:hover .frontier-marker,
 .frontier-point.frontier-selected .frontier-marker {
   stroke: var(--ink);
@@ -944,10 +933,6 @@ p {
 .frontier-point.frontier-no-action .frontier-marker {
   fill: var(--panel);
   stroke: var(--option-color);
-}
-
-.frontier-point.frontier-no-action .frontier-symbol {
-  fill: var(--option-color);
 }
 
 .option-chips {

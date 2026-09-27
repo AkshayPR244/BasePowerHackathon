@@ -333,9 +333,7 @@ test.describe("live canvas against the live API", () => {
 
     const optionPoints = page.locator(".frontier-point .frontier-marker");
     await expect(optionPoints.first()).toBeVisible();
-    await expect(page.locator(".frontier-point .frontier-symbol")).toHaveCount(
-      await optionPoints.count(),
-    );
+    await expect(page.locator(".frontier-point text")).toHaveCount(0);
     await expect(page.locator(".option-chip")).toHaveCount(
       await optionPoints.count(),
     );

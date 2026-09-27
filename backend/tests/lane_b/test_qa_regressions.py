@@ -6,8 +6,10 @@ import shutil
 import pytest
 
 from app.api.scenarios import load_scenario
-from app.contracts.enums import Algorithm, Mode, PlanStatus
+from app.contracts.enums import Algorithm, JobState, Mode, PlanStatus, ReasonCode
 from app.contracts.models import (
+    ChangeAppointment,
+    DelayInventory,
     ForceInclude,
     MoveVisit,
     PinVisit,
@@ -81,6 +83,20 @@ def test_baselines_report_infeasible_instead_of_invalid_plans(tiny, alg, edits):
 def test_baselines_place_an_install_before_a_locked_battery_day(two_visit, alg):
     r = run(two_visit, [PinVisit(job_id="H2-B")], algorithm=alg)
     assert r.status == PlanStatus.feasible and r.validation.valid
+
+
+def test_unscheduled_visit_names_missing_inventory(tiny):
+    r = run(tiny, [DelayInventory(configuration_id="B13", from_date=D(4), to_date=D(30))])
+    out = [u for u in r.unscheduled if u.state == JobState.unscheduled]
+    assert out and all(u.reasons == [ReasonCode.NO_INVENTORY] for u in out)
+    assert all("B13 battery" in u.detail and "hard blocker" not in u.detail for u in out)
+
+
+def test_unscheduled_visit_names_its_appointment_window(tiny):
+    r = run(tiny, [ChangeAppointment(job_id="N-02", available_from=D(9))])
+    n02 = next(u for u in r.unscheduled if u.site_id == "N-02")
+    assert n02.reasons == [ReasonCode.NO_LEGAL_DATE]
+    assert "appointment window from Sat 9 Jun" in n02.detail
 
 
 def test_install_may_stand_alone_in_recovery():

@@ -26,6 +26,7 @@ from app.contracts.models import (
 )
 from app.contracts.visits import job_of_row, jobs_of
 from app.planning import explain
+from app.planning.edits import appointment_windows
 from app.planning.model import Eligibility
 from app.validate.plan import value_distinguishes_choices
 
@@ -129,16 +130,18 @@ def build_result(
     assignments = []
     locked_jobs = locked_job_slots(scenario)
     order = sorted(elig.jobs.values(), key=lambda j: (j.site_id, j.final))
+    windows = appointment_windows(edits)
     for job in order:
         site = sites[job.site_id]
         slot = placed.get(job.job_id)
         if slot is None:
+            reasons, detail = _unscheduled_reason(scenario, sites, elig, job, placed, windows)
             unscheduled.append(
                 UnscheduledJob(
                     site_id=job.site_id,
                     state=JobState.unscheduled,
-                    reasons=[],
-                    detail=explain.unscheduled_detail(site, job),
+                    reasons=reasons,
+                    detail=detail,
                     job_id=job.assignment_job_id,
                     visit_type=job.visit_type,
                 )
@@ -208,6 +211,46 @@ def build_result(
         crew_days=usage,
         objective=objective,
     )
+
+
+def _unscheduled_reason(
+    scenario, sites, elig, job, placed, windows
+) -> tuple[list[ReasonCode], str]:
+    """The hard reason a visit is out of the plan, or a neutral note when none applies."""
+    site = sites[job.site_id]
+    what = f"{site.site_id}{explain.visit_label(job)}"
+    options = elig.any_option.get(job.job_id, [])
+    if not options:
+        if job.job_id in windows:
+            text = explain.window_detail(what, *windows[job.job_id])
+            return [ReasonCode.NO_LEGAL_DATE], text
+        return [ReasonCode.NO_LEGAL_DATE], f"{what} has no legal crew-day."
+    if job.final:
+        last = max(d for _, d in options)
+        cfg = site.configuration_id
+        got = sum(
+            r.quantity
+            for r in scenario.inventory
+            if r.configuration_id == cfg and r.available_date <= last
+        )
+        taken = sum(
+            1
+            for jid, (_, d) in placed.items()
+            if elig.jobs[jid].final
+            and d <= last
+            and sites[elig.jobs[jid].site_id].configuration_id == cfg
+        )
+        if got == 0:
+            return [ReasonCode.NO_INVENTORY], (
+                f"{what} needs a {cfg} battery. None arrives by {explain.day(last)}, "
+                "its last possible crew-day."
+            )
+        if taken >= got:
+            return [ReasonCode.NO_INVENTORY], (
+                f"{what} needs a {cfg} battery. All {explain.plural(got, 'unit')} that arrive "
+                f"by {explain.day(last)} go to other homes."
+            )
+    return [], explain.unscheduled_detail(site, job)
 
 
 def locked_job_slots(scenario: Scenario) -> dict[str, tuple[str, dt.date]]:

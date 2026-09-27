@@ -67,6 +67,11 @@ def no_legal_date_detail(site: Site, scenario: Scenario) -> str:
     )
 
 
+def window_detail(what: str, start: dt.date, end: dt.date | None) -> str:
+    window = f"from {day(start)}" if end is None else f"from {day(start)} to {day(end)}"
+    return f"{what} has an appointment window {window}. No eligible crew works in it."
+
+
 def visit_label(job) -> str:
     """'' for one-visit homes, else ' install' or ' battery day'."""
     if job is None or job.visit_type is None:

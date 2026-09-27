@@ -7,7 +7,14 @@ import pytest
 
 from app.api.scenarios import load_scenario
 from app.compare.diff import diff_plans
-from app.contracts.enums import Algorithm, JobState, Mode, PlanStatus, ReasonCode
+from app.contracts.enums import (
+    Algorithm,
+    JobState,
+    Mode,
+    ObjectivePolicy,
+    PlanStatus,
+    ReasonCode,
+)
 from app.contracts.models import (
     AddCrewDay,
     ChangeAppointment,
@@ -186,6 +193,14 @@ def test_plan_text_handles_plural_and_zero_cases(tiny, two_visit):
     moved = run(two_visit, [MoveVisit(job_id="H3-I", crew_id="I", date=D(6))])
     assert "1 visit moves, so 1 customer needs a new date." in moved.message
     assert "1 home is not scheduled." in moved.message
+
+
+def test_plan_id_names_a_non_default_policy(tiny):
+    default = run(tiny)
+    other = run(tiny, objective_policy=ObjectivePolicy.deadline_travel_only)
+    assert default.plan_id != other.plan_id
+    assert "deadline_travel_only" in other.plan_id
+    assert default.plan_id == f"tiny-r0-recovery-{tiny.scenario_hash[:8]}"
 
 
 def test_install_may_stand_alone_in_recovery():

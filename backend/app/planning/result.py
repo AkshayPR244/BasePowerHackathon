@@ -62,9 +62,18 @@ def assumptions(scenario: Scenario, values_equal: bool) -> list[Assumption]:
     return out
 
 
-def plan_id(scenario_id: str, revision: int, mode: Mode, algorithm: Algorithm, h: str) -> str:
+def plan_id(
+    scenario_id: str,
+    revision: int,
+    mode: Mode,
+    algorithm: Algorithm,
+    h: str,
+    policy: ObjectivePolicy | None = None,
+) -> str:
+    """policy: pass it only when it differs from the scenario default, so default ids stay put."""
     alg = "" if algorithm == Algorithm.cpsat else f"-{Algorithm(algorithm).value}"
-    return f"{scenario_id}-r{revision}-{Mode(mode).value}{alg}-{h[:8]}"
+    pol = "" if policy is None else f"-{ObjectivePolicy(policy).value}"
+    return f"{scenario_id}-r{revision}-{Mode(mode).value}{alg}{pol}-{h[:8]}"
 
 
 def build_result(
@@ -102,7 +111,14 @@ def build_result(
     unscheduled += extra_unscheduled or []
 
     common = dict(
-        plan_id=plan_id(scenario.scenario_id, revision, mode, algorithm, scenario.scenario_hash),
+        plan_id=plan_id(
+            scenario.scenario_id,
+            revision,
+            mode,
+            algorithm,
+            scenario.scenario_hash,
+            None if policy == scenario.config.objective_policy else policy,
+        ),
         scenario_id=scenario.scenario_id,
         scenario_hash=scenario.scenario_hash,
         revision=revision,

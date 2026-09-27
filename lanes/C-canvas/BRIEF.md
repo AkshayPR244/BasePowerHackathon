@@ -36,7 +36,8 @@ Lane C builds the Recovery Canvas: one screen where the operations manager sees 
 ## Files (as built)
 | Path | Purpose |
 |---|---|
-| `src/views/Workspace.tsx` | Canvas layout: disruption bar, cascade strip, plan lanes, option cards, selected-option panel |
+| `src/views/Canvas.tsx` | Canvas layout: disruption bar, cascade strip, plan lanes, option cards, selected-option panel |
+| `src/views/Workspace.tsx` | Page shell and the "Advanced: baseline plan" section |
 | `src/components/DisruptionBar.tsx` | One sentence plus visits affected, deadlines at risk, no-action cost |
 | `src/components/CascadeStrip.tsx` | Clickable steps that highlight visits in the lanes |
 | `src/components/CrewCalendar.tsx` | Crews as rows, days as columns, install crews above the battery crew, arcs, hatched lost capacity, diff overlays |

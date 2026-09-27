@@ -15,7 +15,7 @@ Rehearse on the build you will show. Change this script to match what the app do
 
 - Run on the live API: `make dev-live`. If the backend is down, run on recorded mocks: `make dev`. Say which one you use.
 - Open `http://localhost:8000/api/health`. Wait until `values` is `ready`.
-- Run the recovery flow once before recording. The first options call took 13.5 s in the reference run below.
+- Run the recovery flow once before recording, so the value table is warm.
 
 ## Script
 
@@ -26,9 +26,9 @@ Rehearse on the build you will show. Change this script to match what the app do
 | 0:30 | Apply the disruption: all crews out Thu 14 Jun. | "A modeled disruption: every field crew is out on Thursday." |
 | 0:45 | Read the disruption bar and the cascade strip. Click a cascade step. | Read the impact headline. "<n> visits lose their day. <n> commitments are at risk if we do nothing." |
 | 1:05 | Show the option cards: no action, rebalance, and any paid option the engine returns. | "Each option is a business action. Each one is solved and checked by an independent validator." |
-| 1:30 | Compare net impact, deadlines missed, and customers to reschedule. Point at "Lowest modeled cost". | "Rebalancing costs $<n> against the current plan, $<n> less than no action. It reschedules <n> customers." |
+| 1:30 | Compare net impact, deadlines missed, and customers to reschedule. Point at "Lowest modeled cost". | "Every crew is booked after Thursday, so rebalancing cannot help. A temporary battery crew on Friday recovers <n> deadlines for $<n> more than no action." |
 | 1:55 | Open the assumptions panel. Change one assumed number. | "Every cost has a source or the tag assumed. Change one and the ranking updates." |
-| 2:15 | Test a change: add overtime, pin a battery day, or knock out another crew-day. | "I can test my own change before I commit to it." |
+| 2:15 | Test a change: pick Crew BA, add overtime on Fri 15 Jun. | "Overtime on Friday does not help. Crew BA works the West cluster that day and the lost visits are in the South. I can test my own change before I commit to it." |
 | 2:35 | Select an option. Approve it. Read the confirm summary. | "Approval updates the plan for this analysis. It contacts no customers." |
 | 2:50 | Close. | "Every plan you saw passed the independent validator." Say this only if every plan showed Validated. |
 
@@ -36,19 +36,20 @@ The engine returns an overtime or temporary-capacity option only when it helps m
 
 ## Numbers
 
-Fill each `<n>` from the build you record, after `make freeze`. Recovery solves run under a time limit, so numbers can change from run to run.
+Fill each `<n>` from the build you record. Recovery solves use a deterministic work limit, so the same build gives the same plans. Solve times still vary by machine.
 
-One reference run: 2026-09-26, `main` at `48bd325`, in-process API (`TestClient`) on a development laptop, `interactive: false`.
+One reference run: 2026-09-26, branch `integrate/qa-fixes`, in-process API (`TestClient`) on a development laptop, `interactive: false`.
 
 | Item | Measured |
 |---|---|
 | Impact | 7 visits affected, 1440 capacity minutes lost, 7 commitments at risk under no action |
-| No action | net impact $630.25, 7 deadlines missed, 7 customers to reschedule |
-| Rebalance existing crews (Lowest modeled cost) | net impact $353.83, $276.42 better than no action, 4 deadlines missed, 18 customers to reschedule |
-| Add temporary crew on Thu 14 Jun | net impact $453.28, 0 deadlines missed, 7 customers to reschedule |
-| Overtime option | not returned in this run |
-| Options solve time | 13.5 s for the first call |
-| Test a change: Crew BA +120 min overtime Fri 15 Jun | 3.5 s, net impact $345.21, 4 deadlines missed |
+| No action (Lowest modeled cost) | net impact $630.25, 7 deadlines missed, 7 customers to reschedule |
+| Rebalance existing crews | same plan as no action. No visit before Thu 14 Jun may move, and every crew is full after it. |
+| Add temporary crew TEMP-BA on Fri 15 Jun | net impact $815.61, $185.36 more than no action, 4 deadlines missed, 3 deadlines recovered, 7 customers to reschedule |
+| Overtime option | not returned. Overtime before Thu 14 Jun is in the past, and overtime on Fri 15 Jun does not help. |
+| Options solve time | 0.5 s for the first call, 0.05 s cached |
+| Change the hourly wage to $35 | 0.06 s. Re-prices without a re-solve. Temporary crew becomes $922.33. |
+| Test a change: Crew BA +120 min overtime Fri 15 Jun | 0.2 s, net impact $800.23, 7 deadlines missed |
 
 ## Honesty checklist
 

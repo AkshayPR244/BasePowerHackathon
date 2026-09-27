@@ -13,10 +13,10 @@ All color comes from CSS variables in `frontend/src/design/tokens.css`. Tailwind
 | `--ink` | `#1B1A17` | `#ECE7DA` | primary text |
 | `--ink-2` | `#5A564D` | `#A9A396` | secondary text |
 | `--hairline` | `#DAD3C4` | `#2E2C25` | 1 px borders |
-| `--accent` | `#E8590C` | `#FF7A2E` | primary action, at-risk emphasis only |
+| `--accent` | `#C4470A` | `#FF7A2E` | primary action, at-risk emphasis only |
 | `--st-scheduled` | `#2F6F4F` | `#5DBB8A` | scheduled |
 | `--st-locked` | `#3B4A6B` | `#8FA3CC` | locked |
-| `--st-late` | `#B8860B` | `#E0B04A` | late |
+| `--st-late` | `#8A6508` | `#E0B04A` | late |
 | `--st-unscheduled` | `#6B6558` | `#9A9384` | unscheduled |
 | `--st-blocked` | `#9B2C2C` | `#E06C6C` | blocked |
 

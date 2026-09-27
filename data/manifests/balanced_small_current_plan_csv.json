@@ -7,7 +7,7 @@
   "covered_start": "2018-06-04",
   "covered_end": "2018-06-15",
   "license_notes": "Synthetic benchmark data; repository MIT license.",
-  "sha256": "d39a945fb2ddac9eee3c0372e3fbd706e5172fecf193a808b43b088ffae1aad2",
+  "sha256": "bf6e4b8f504ae57dda0dbe578319c07d9b2d13b6d6b9aa1a3853a01e7ec216c0",
   "transformation": "Rule-based synthetic inputs; no real customers.",
   "row_count": 24,
   "fields": {

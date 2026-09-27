@@ -4,12 +4,12 @@
   "primary_disruption": [
     {
       "kind": "change_ready_date",
-      "site_id": "W-01",
+      "site_id": "S-01",
       "ready_date": "2018-06-06"
     },
     {
       "kind": "change_appointment",
-      "job_id": "W-01-B",
+      "job_id": "S-01-B",
       "available_from": "2018-06-07",
       "available_to": "2018-06-07"
     }

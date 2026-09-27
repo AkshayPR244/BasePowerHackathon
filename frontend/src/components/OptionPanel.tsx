@@ -12,14 +12,12 @@ type Option = Schema["RecoveryOption"];
 
 export function OptionPanel({
   option,
-  mockLimited,
   approving,
   approval,
   error,
   onApprove,
 }: {
   option: Option | undefined;
-  mockLimited: boolean;
   approving: boolean;
   approval: Schema["ApproveResult"] | null;
   error: string | null;
@@ -36,7 +34,7 @@ export function OptionPanel({
   }, [confirming]);
   if (!option) return null;
   const valid = hasValidPlan(option);
-  const canApprove = valid && !mockLimited;
+  const canApprove = valid;
   const closeDialog = () => {
     setConfirming(null);
     approveRef.current?.focus();
@@ -119,12 +117,6 @@ export function OptionPanel({
           <p role="status" data-testid="approval-result">
             {approval.summary} {approval.stub && "Stub data."}
           </p>
-        )}
-        {valid && mockLimited && (
-          <small>
-            This option has no recorded approval response. Use the live API to
-            approve it.
-          </small>
         )}
         <button
           ref={approveRef}

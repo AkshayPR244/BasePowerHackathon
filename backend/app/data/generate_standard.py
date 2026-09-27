@@ -37,6 +37,15 @@ AMS_HEAVY_RAIN = "https://glossary.ametsoc.org/wiki/Rain"
 INSTALL, BATTERY = "install", "battery"
 
 
+@dataclass(frozen=True)
+class CrewSpec:
+    crew_id: str
+    skills: tuple[str, ...]
+    allowed_clusters: tuple[str, ...]
+    start_offset: int = 0
+    available_min: int = 480
+
+
 @dataclass
 class Spec:
     """Generator inputs. Defaults are the committed `standard` scenario."""
@@ -74,6 +83,14 @@ class Spec:
     work_end_hour: int = 17
     weather_station: str = "HOU"
     unscheduled_penalty_days: int = 30
+    crew_specs: tuple[CrewSpec, ...] = ()
+    # Optional explicit incoming receipts: business-day offset, quantity.
+    inventory_receipts: tuple[tuple[int, int], ...] = ()
+    lock_policy: str = "first_day"
+    qualification_lag_days: int = 0
+    objective_policy: str = "value_aware"
+    solve_time_limit_s: float = 15
+    num_workers: int = 8
 
 
 def _csv(path: Path, rows: list[dict]) -> None:
@@ -415,12 +432,12 @@ def generate_standard(
         "planning_start": all_days[0],
         "planning_end": all_days[-1],
         "evaluation_end": spec.evaluation_end,
-        "qualification_lag_days": 0,
+        "qualification_lag_days": spec.qualification_lag_days,
         "unscheduled_penalty_days": spec.unscheduled_penalty_days,
-        "objective_policy": "value_aware",
-        "solve_time_limit_s": 15,
+        "objective_policy": spec.objective_policy,
+        "solve_time_limit_s": spec.solve_time_limit_s,
         "random_seed": seed,
-        "num_workers": 8,
+        "num_workers": spec.num_workers,
         "synthetic": True,
         "min_gap_business_days": spec.min_gap_business_days,
         "travel_allowance_min": travel,
@@ -531,6 +548,18 @@ def generate_standard(
         for c in crews
         for d in (all_days if c in spec.install_crews else battery_days)
     ]
+    if spec.crew_specs:
+        crew_rows = [
+            dict(
+                crew_id=c.crew_id,
+                date=d,
+                available_min=c.available_min,
+                skills=";".join(c.skills),
+                allowed_clusters=";".join(c.allowed_clusters),
+            )
+            for c in spec.crew_specs
+            for d in all_days[c.start_offset :]
+        ]
     _csv(output / "crew_days.csv", crew_rows)
     header = "site_id,job_id,crew_id,date,locked\n"
     (output / "current_plan.csv").write_text(header, encoding="utf-8", newline="\n")
@@ -538,6 +567,14 @@ def generate_standard(
         output / "inventory.csv",
         [dict(configuration_id="B13", available_date=window[0], quantity=len(homes))],
     )
+    if spec.inventory_receipts:
+        _csv(
+            output / "inventory.csv",
+            [
+                dict(configuration_id="B13", available_date=all_days[i], quantity=q)
+                for i, q in spec.inventory_receipts
+            ],
+        )
     placed = _optimizer_plan(output, spec)
 
     deliveries = window[:: spec.delivery_every_days]
@@ -551,7 +588,9 @@ def generate_standard(
             job_id=jid,
             crew_id=crew,
             date=day,
-            locked="true" if day == window[0] else "false",
+            locked="true"
+            if spec.lock_policy == "all" or (spec.lock_policy == "first_day" and day == window[0])
+            else "false",
         )
         for jid, (crew, day) in placed.items()
     ]
@@ -561,6 +600,16 @@ def generate_standard(
         output / "inventory.csv",
         [dict(configuration_id="B13", available_date=d, quantity=q) for d, q in qty.items() if q],
     )
+
+    if spec.inventory_receipts:
+        _csv(
+            output / "inventory.csv",
+            [
+                dict(configuration_id="B13", available_date=all_days[i], quantity=q)
+                for i, q in spec.inventory_receipts
+            ],
+        )
+        qty = dict(spec.inventory_receipts)
 
     counts = {
         "scenario.yaml": 1,

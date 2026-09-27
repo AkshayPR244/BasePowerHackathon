@@ -10,6 +10,10 @@ import { SiteMap } from "../components/SiteMap";
 import { Inspector } from "../components/Inspector";
 import { EditControls } from "../components/EditControls";
 import { ComparePanel } from "../components/ComparePanel";
+import { PolicyComparison } from "../components/PolicyComparison";
+import { ScenarioBriefing } from "../components/ScenarioBriefing";
+import { narrativeFor } from "../narratives";
+import { presetFor } from "../scenario-presets";
 import { downloadPlan } from "../lib/export";
 import { recoveryCases } from "../lib/recovery";
 import { RecoveryCanvas } from "./Canvas";
@@ -35,12 +39,26 @@ export function Workspace() {
     solve,
     reset,
     edit,
+    replaceEdits,
     compare,
     intervention,
   } = usePlanner();
   const session = useWorkspace((s) => s.session);
   const { theme, toggleTheme } = useTheme();
-  const disruption = recoveryCases[scenarioId];
+  const narrative = narrativeFor(scenarioId);
+  const preset = presetFor(scenarioId);
+  // Suite scenarios analyze the edits the operator applied, or an empty disruption on request.
+  const [baselineAnalysis, setBaselineAnalysis] = useState<number | null>(null);
+  const suiteActive =
+    !!preset && (edits.length > 0 || baselineAnalysis === revision);
+  const primaryActive =
+    !!preset &&
+    (preset.primary_disruption.length === 0
+      ? baselineAnalysis === revision
+      : JSON.stringify(edits) === JSON.stringify(preset.primary_disruption));
+  const disruption =
+    recoveryCases[scenarioId] ?? (suiteActive ? edits : undefined);
+  useEffect(() => setBaselineAnalysis(null), [scenarioId]);
   const [baselineOpen, setBaselineOpen] = useState<Record<string, boolean>>({});
   const showBaseline = baselineOpen[scenarioId] ?? !disruption;
   useEffect(() => {
@@ -77,12 +95,38 @@ export function Workspace() {
         theme={theme}
         onTheme={toggleTheme}
       />
+      <ScenarioBriefing
+        key={scenarioId}
+        report={narrative}
+        primaryActive={primaryActive}
+        disabled={!!busy || mockMode}
+        hasDisruption={!!preset?.primary_disruption.length}
+        onApply={() => {
+          if (preset) {
+            replaceEdits(preset.primary_disruption);
+            setBaselineAnalysis(revision + 1);
+          }
+        }}
+      />
+      {preset && mockMode && (
+        <p role="status" className="panel padded">
+          Use live API mode to run the synthetic scenario suite.
+        </p>
+      )}
+      {scenarioId === "value_sensitive" && (
+        <PolicyComparison
+          key={`${scenarioId}/${revision}`}
+          scenarioId={scenarioId}
+          revision={revision}
+          edits={edits}
+        />
+      )}
       {disruption ? (
         <RecoveryCanvas
-          key={`${scenarioId}:${session}`}
+          key={`${scenarioId}:${session}:${preset ? revision : 0}`}
           scenario={scenario.data}
           disruption={disruption}
-          mockMode={mockMode}
+          narrative={narrative}
         />
       ) : (
         <p className="panel padded no-canvas" data-testid="no-recovery-case">

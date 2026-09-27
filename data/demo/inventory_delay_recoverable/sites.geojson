@@ -1,0 +1,239 @@
+{
+  "features": [
+    {
+      "geometry": {
+        "coordinates": [
+          -95.392563,
+          29.814638
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "site_id": "N-01"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -95.379865,
+          29.672502
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "site_id": "S-01"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -95.482092,
+          29.742362
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "site_id": "W-01"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -95.392755,
+          29.81163
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "site_id": "N-02"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -95.367434,
+          29.678192
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "site_id": "S-02"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -95.494833,
+          29.743594
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "site_id": "W-02"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -95.398045,
+          29.816036
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "site_id": "N-03"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -95.373163,
+          29.671442
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "site_id": "S-03"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -95.485558,
+          29.749219
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "site_id": "W-03"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -95.390074,
+          29.803586
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "site_id": "N-04"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -95.379368,
+          29.679243
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "site_id": "S-04"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -95.498757,
+          29.741436
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "site_id": "W-04"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -95.408554,
+          29.81242
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "site_id": "N-05"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -95.365608,
+          29.676205
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "site_id": "S-05"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -95.488419,
+          29.740558
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "site_id": "W-05"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -95.392387,
+          29.802498
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "site_id": "N-06"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -95.363738,
+          29.682243
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "site_id": "S-06"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -95.487267,
+          29.756876
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "site_id": "W-06"
+      },
+      "type": "Feature"
+    }
+  ],
+  "type": "FeatureCollection"
+}

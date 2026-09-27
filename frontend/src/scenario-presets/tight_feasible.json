@@ -1,0 +1,12 @@
+{
+  "scenario_id": "tight_feasible",
+  "seed": 102,
+  "primary_disruption": [
+    {
+      "kind": "remove_crew_day",
+      "crew_id": "BA",
+      "date": "2018-06-05"
+    }
+  ],
+  "recovery_class": "recoverable"
+}

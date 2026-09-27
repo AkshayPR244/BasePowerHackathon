@@ -18,6 +18,24 @@ export function OptionCard({
   shortcut: string;
   onSelect: (optionId: string) => void;
 }) {
+  if (
+    !["optimal", "feasible"].includes(option.status) ||
+    !option.result.validation.valid
+  ) {
+    return (
+      <section className="panel" aria-label="Unavailable recovery option">
+        <strong>{option.action_label}</strong>
+        <p role="status">
+          {option.status === "infeasible" ? "Infeasible" : "No validated plan"}
+        </p>
+        <p>{option.result.message}</p>
+        <p>
+          Costs and deadline outcomes are not evaluated without a feasible plan.
+        </p>
+        <button disabled>Approve unavailable</button>
+      </section>
+    );
+  }
   const crews = [
     ...new Set(option.crew_load.map((load) => load.crew_id)),
   ].sort();

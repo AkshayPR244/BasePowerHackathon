@@ -1,0 +1,12 @@
+{
+  "scenario_id": "locked_infeasible",
+  "seed": 108,
+  "primary_disruption": [
+    {
+      "kind": "remove_crew_day",
+      "crew_id": "IB",
+      "date": "2018-06-05"
+    }
+  ],
+  "recovery_class": "locked-infeasible"
+}

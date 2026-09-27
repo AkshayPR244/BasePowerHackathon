@@ -1,0 +1,16 @@
+{
+  "dataset_id": "two_visit_cascade_scenario_yaml",
+  "kind": "synthetic",
+  "source_url": null,
+  "release": "generator-v3-seed-107",
+  "retrieved_at": null,
+  "covered_start": "2018-06-04",
+  "covered_end": "2018-06-15",
+  "license_notes": "Synthetic benchmark data; repository MIT license.",
+  "sha256": "647872693407258d57c549519b3a68dc8d79849cd7f016f0a788aec391952f37",
+  "transformation": "Rule-based synthetic inputs; no real customers.",
+  "row_count": 1,
+  "fields": {
+    "config": "synthetic"
+  }
+}

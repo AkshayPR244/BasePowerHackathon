@@ -1,0 +1,142 @@
+{
+  "balanced_small": {
+    "scenario_id": "balanced_small",
+    "title": "A normal operating week",
+    "operator": "Dispatch manager",
+    "situation": "A small synthetic portfolio has room between commitments. Start by checking that every home can finish on time.",
+    "trigger": "No disruption is applied in this healthy baseline.",
+    "question": "Does the schedule leave enough room for routine operational variation?",
+    "what_to_watch": [
+      "On-time commitments and spare crew capacity",
+      "The separate install and battery visits"
+    ],
+    "success_criterion": "Compare only validated outcomes that respect inventory, skills, territories, readiness, appointments and visit precedence.",
+    "truth_label": "Synthetic installation portfolio; modeled operational disruptions and costs. Energy values use observed 2018 prices as a hindsight benchmark. No real customer records or observed weather event are used in this story."
+  },
+  "tight_feasible": {
+    "scenario_id": "tight_feasible",
+    "title": "Find the last safe margin",
+    "operator": "Capacity planner",
+    "situation": "A busy portfolio shares a tightly loaded battery crew. The original commitments are achievable.",
+    "trigger": "The busiest battery crew-day is removed in this modeled stress test.",
+    "question": "Can the team recover without exceeding its remaining capacity?",
+    "what_to_watch": [
+      "Battery crew utilization before the deadline",
+      "Late or deferred work after capacity is removed"
+    ],
+    "success_criterion": "Compare only validated outcomes that respect inventory, skills, territories, readiness, appointments and visit precedence.",
+    "truth_label": "Synthetic installation portfolio; modeled operational disruptions and costs. Energy values use observed 2018 prices as a hindsight benchmark. No real customer records or observed weather event are used in this story."
+  },
+  "crew_out_recoverable": {
+    "scenario_id": "crew_out_recoverable",
+    "title": "Protect commitments after a crew absence",
+    "operator": "Dispatch manager",
+    "situation": "The undisrupted schedule has assigned install and battery crews to every synthetic home.",
+    "trigger": "A modeled absence removes the busiest install crew-day.",
+    "question": "Which recovery protects commitments with the least appointment disruption?",
+    "what_to_watch": [
+      "Directly affected installs and their battery visits",
+      "No action versus rebalancing or useful extra capacity"
+    ],
+    "success_criterion": "Compare only validated outcomes that respect inventory, skills, territories, readiness, appointments and visit precedence.",
+    "truth_label": "Synthetic installation portfolio; modeled operational disruptions and costs. Energy values use observed 2018 prices as a hindsight benchmark. No real customer records or observed weather event are used in this story."
+  },
+  "inventory_delay_recoverable": {
+    "scenario_id": "inventory_delay_recoverable",
+    "title": "The battery delivery slips",
+    "operator": "Inventory coordinator",
+    "situation": "Battery receipts arrive in dated batches sized to the healthy plan.",
+    "trigger": "The first incoming receipt moves to the business day after its earliest booked battery visit.",
+    "question": "Can battery visits be reshuffled around the actual receipt date?",
+    "what_to_watch": [
+      "Battery visits displaced by the delayed receipt",
+      "Skills on any temporary capacity offered"
+    ],
+    "success_criterion": "Compare only validated outcomes that respect inventory, skills, territories, readiness, appointments and visit precedence.",
+    "truth_label": "Synthetic installation portfolio; modeled operational disruptions and costs. Energy values use observed 2018 prices as a hindsight benchmark. No real customer records or observed weather event are used in this story."
+  },
+  "readiness_appointment": {
+    "scenario_id": "readiness_appointment",
+    "title": "Respect when homes can host work",
+    "operator": "Scheduling coordinator",
+    "situation": "The healthy schedule assumes each synthetic home is ready and available for its visits.",
+    "trigger": "One home becomes ready later and its battery visit receives an exact appointment window.",
+    "question": "What can still be achieved while honoring both availability constraints?",
+    "what_to_watch": [
+      "Readiness date and the explicit appointment window",
+      "No work before readiness or outside the window"
+    ],
+    "success_criterion": "Compare only validated outcomes that respect inventory, skills, territories, readiness, appointments and visit precedence.",
+    "truth_label": "Synthetic installation portfolio; modeled operational disruptions and costs. Energy values use observed 2018 prices as a hindsight benchmark. No real customer records or observed weather event are used in this story."
+  },
+  "skill_cluster_bottleneck": {
+    "scenario_id": "skill_cluster_bottleneck",
+    "title": "The right crew, in the right territory",
+    "operator": "Regional dispatcher",
+    "situation": "Install and battery crews are assigned to separate North and South territories.",
+    "trigger": "The busiest battery crew-day is removed; the other territory still has its crew.",
+    "question": "Can the affected territory recover without borrowing an ineligible crew?",
+    "what_to_watch": [
+      "Crew skill and allowed territory",
+      "Useful eligible capacity rather than unsafe substitutions"
+    ],
+    "success_criterion": "Compare only validated outcomes that respect inventory, skills, territories, readiness, appointments and visit precedence.",
+    "truth_label": "Synthetic installation portfolio; modeled operational disruptions and costs. Energy values use observed 2018 prices as a hindsight benchmark. No real customer records or observed weather event are used in this story."
+  },
+  "two_visit_cascade": {
+    "scenario_id": "two_visit_cascade",
+    "title": "An install delay reaches the battery visit",
+    "operator": "Dispatch manager",
+    "situation": "Each synthetic home needs an electrical install before its battery appointment, with a two-business-day gap.",
+    "trigger": "An install appointment moves beyond its original battery date.",
+    "question": "Which downstream battery commitment must change to preserve precedence?",
+    "what_to_watch": [
+      "The moved install and its dependent battery visit",
+      "Business-day gaps, reschedules and missed deadlines"
+    ],
+    "success_criterion": "Compare only validated outcomes that respect inventory, skills, territories, readiness, appointments and visit precedence.",
+    "truth_label": "Synthetic installation portfolio; modeled operational disruptions and costs. Energy values use observed 2018 prices as a hindsight benchmark. No real customer records or observed weather event are used in this story."
+  },
+  "locked_infeasible": {
+    "scenario_id": "locked_infeasible",
+    "title": "A promise that cannot move",
+    "operator": "Operations lead",
+    "situation": "The healthy plan is fully booked and every appointment is locked.",
+    "trigger": "An install crew-day with locked bookings becomes unavailable.",
+    "question": "Can any option honor the locks, or must the operator revise the assumptions?",
+    "what_to_watch": [
+      "Infeasibility instead of silently moving a lock",
+      "Disabled approval when no feasible plan exists"
+    ],
+    "success_criterion": "Recognize the infeasible promise; do not approve or silently relax a locked visit.",
+    "truth_label": "Synthetic installation portfolio; modeled operational disruptions and costs. Energy values use observed 2018 prices as a hindsight benchmark. No real customer records or observed weather event are used in this story."
+  },
+  "late_overflow": {
+    "scenario_id": "late_overflow",
+    "title": "Finish the work after promises slip",
+    "operator": "Operations lead",
+    "situation": "The original plan finishes inside the commitment window; extra business days are available afterward.",
+    "trigger": "The battery receipt moves beyond all original deadlines.",
+    "question": "How much can be completed in overflow, and which appointments become late?",
+    "what_to_watch": [
+      "Late jobs completed in the overflow days",
+      "No inventory use before receipt and honest reschedule counts"
+    ],
+    "success_criterion": "Compare only validated outcomes that respect inventory, skills, territories, readiness, appointments and visit precedence.",
+    "truth_label": "Synthetic installation portfolio; modeled operational disruptions and costs. Energy values use observed 2018 prices as a hindsight benchmark. No real customer records or observed weather event are used in this story."
+  },
+  "value_sensitive": {
+    "scenario_id": "value_sensitive",
+    "title": "Compare commissioning order",
+    "operator": "Planning analyst",
+    "situation": "The healthy plan meets every commitment. A shared capacity stress test exposes choices between otherwise legal recovery schedules.",
+    "trigger": "The same busy battery crew-day is removed for both policy comparisons, opening alternative legal commissioning dates.",
+    "question": "Does earlier commissioning increase modeled operating margin under identical constraints?",
+    "what_to_watch": [
+      "Assignment differences between objective policies",
+      "Historical-price modeled margin, not forecast profit"
+    ],
+    "success_criterion": "Compare only validated outcomes that respect inventory, skills, territories, readiness, appointments and visit precedence.",
+    "truth_label": "Synthetic installation portfolio; modeled operational disruptions and costs. Energy values use observed 2018 prices as a hindsight benchmark. No real customer records or observed weather event are used in this story."
+  }
+}

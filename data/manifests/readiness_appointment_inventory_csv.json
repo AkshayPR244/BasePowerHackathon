@@ -1,0 +1,18 @@
+{
+  "dataset_id": "readiness_appointment_inventory_csv",
+  "kind": "synthetic",
+  "source_url": null,
+  "release": "generator-v3-seed-105",
+  "retrieved_at": null,
+  "covered_start": "2018-06-04",
+  "covered_end": "2018-06-15",
+  "license_notes": "Synthetic benchmark data; repository MIT license.",
+  "sha256": "6b039c61c2cfeb83441e9b3087d837f36b6143ac14d0620d7b148797ad252093",
+  "transformation": "Rule-based synthetic inputs; no real customers.",
+  "row_count": 2,
+  "fields": {
+    "configuration_id": "synthetic",
+    "available_date": "synthetic",
+    "quantity": "synthetic"
+  }
+}

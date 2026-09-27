@@ -1,0 +1,16 @@
+{
+  "dataset_id": "balanced_small_sites_geojson",
+  "kind": "synthetic",
+  "source_url": null,
+  "release": "generator-v3-seed-101",
+  "retrieved_at": null,
+  "covered_start": "2018-06-04",
+  "covered_end": "2018-06-15",
+  "license_notes": "Synthetic benchmark data; repository MIT license.",
+  "sha256": "eebf7c386c75b5665f22bb3ee8782b5436e7de50a56c5cae6cb587c1cada776b",
+  "transformation": "Rule-based synthetic inputs; no real customers.",
+  "row_count": 12,
+  "fields": {
+    "geometry": "synthetic"
+  }
+}

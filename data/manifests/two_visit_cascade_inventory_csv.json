@@ -1,0 +1,18 @@
+{
+  "dataset_id": "two_visit_cascade_inventory_csv",
+  "kind": "synthetic",
+  "source_url": null,
+  "release": "generator-v3-seed-107",
+  "retrieved_at": null,
+  "covered_start": "2018-06-04",
+  "covered_end": "2018-06-15",
+  "license_notes": "Synthetic benchmark data; repository MIT license.",
+  "sha256": "bfbb7532065993f0ac4d1564f0e1402c4d1b0f437710dcfde08ee51f3ac7b8cc",
+  "transformation": "Rule-based synthetic inputs; no real customers.",
+  "row_count": 1,
+  "fields": {
+    "configuration_id": "synthetic",
+    "available_date": "synthetic",
+    "quantity": "synthetic"
+  }
+}

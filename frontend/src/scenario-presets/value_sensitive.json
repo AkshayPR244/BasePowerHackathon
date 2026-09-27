@@ -1,0 +1,12 @@
+{
+  "scenario_id": "value_sensitive",
+  "seed": 110,
+  "primary_disruption": [
+    {
+      "kind": "remove_crew_day",
+      "crew_id": "BA",
+      "date": "2018-06-13"
+    }
+  ],
+  "recovery_class": "recoverable"
+}

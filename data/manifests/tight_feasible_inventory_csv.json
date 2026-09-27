@@ -1,0 +1,18 @@
+{
+  "dataset_id": "tight_feasible_inventory_csv",
+  "kind": "synthetic",
+  "source_url": null,
+  "release": "generator-v3-seed-102",
+  "retrieved_at": null,
+  "covered_start": "2018-06-04",
+  "covered_end": "2018-06-14",
+  "license_notes": "Synthetic benchmark data; repository MIT license.",
+  "sha256": "b0b27421cca4e627744b4eb1214472b6c505adc85723b74fe8d527cdd7a49303",
+  "transformation": "Rule-based synthetic inputs; no real customers.",
+  "row_count": 3,
+  "fields": {
+    "configuration_id": "synthetic",
+    "available_date": "synthetic",
+    "quantity": "synthetic"
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "dataset_id": "late_overflow_scenario_yaml",
+  "kind": "synthetic",
+  "source_url": null,
+  "release": "generator-v3-seed-109",
+  "retrieved_at": null,
+  "covered_start": "2018-06-04",
+  "covered_end": "2018-06-14",
+  "license_notes": "Synthetic benchmark data; repository MIT license.",
+  "sha256": "5a9e6a28b6e63cc2257de2d4513dd2568bb5fa6ae7d4d05bae3a2c8b76bf702d",
+  "transformation": "Rule-based synthetic inputs; no real customers.",
+  "row_count": 1,
+  "fields": {
+    "config": "synthetic"
+  }
+}

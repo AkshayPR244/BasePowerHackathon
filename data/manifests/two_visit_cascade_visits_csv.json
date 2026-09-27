@@ -1,0 +1,20 @@
+{
+  "dataset_id": "two_visit_cascade_visits_csv",
+  "kind": "synthetic",
+  "source_url": null,
+  "release": "generator-v3-seed-107",
+  "retrieved_at": null,
+  "covered_start": "2018-06-04",
+  "covered_end": "2018-06-15",
+  "license_notes": "Synthetic benchmark data; repository MIT license.",
+  "sha256": "33e79a0a80c3fa679c32f1ab211feaf149126b23d1925dd047b770b926a786a5",
+  "transformation": "Rule-based synthetic inputs; no real customers.",
+  "row_count": 24,
+  "fields": {
+    "job_id": "synthetic",
+    "site_id": "synthetic",
+    "visit_type": "synthetic",
+    "duration_min": "synthetic",
+    "required_skill": "synthetic"
+  }
+}

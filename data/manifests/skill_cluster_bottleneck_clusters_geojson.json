@@ -1,0 +1,16 @@
+{
+  "dataset_id": "skill_cluster_bottleneck_clusters_geojson",
+  "kind": "synthetic",
+  "source_url": null,
+  "release": "generator-v3-seed-106",
+  "retrieved_at": null,
+  "covered_start": "2018-06-04",
+  "covered_end": "2018-06-15",
+  "license_notes": "Synthetic benchmark data; repository MIT license.",
+  "sha256": "031b42c4abdce29fdc6f38e5b81aad0c3df2fb5d7af2e3eff19f2f59d1dde4f8",
+  "transformation": "Rule-based synthetic inputs; no real customers.",
+  "row_count": 2,
+  "fields": {
+    "geometry": "synthetic"
+  }
+}

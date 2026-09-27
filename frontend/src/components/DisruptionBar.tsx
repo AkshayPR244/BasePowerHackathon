@@ -6,9 +6,11 @@ export function DisruptionBar({
   result,
   loading,
   error,
+  truthLabel,
 }: {
   description: string;
   result: Schema["RecoveryOptionsResult"] | undefined;
+  truthLabel?: string;
   loading: boolean;
   error: string | null;
 }) {
@@ -30,6 +32,7 @@ export function DisruptionBar({
             {error ?? "Disruption impact is unavailable."}
           </p>
         )}
+        {truthLabel && <small>{truthLabel}</small>}
       </div>
       {result?.stub && <span className="badge">Stub data</span>}
       {result && (

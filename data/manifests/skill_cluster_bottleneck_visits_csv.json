@@ -1,0 +1,20 @@
+{
+  "dataset_id": "skill_cluster_bottleneck_visits_csv",
+  "kind": "synthetic",
+  "source_url": null,
+  "release": "generator-v3-seed-106",
+  "retrieved_at": null,
+  "covered_start": "2018-06-04",
+  "covered_end": "2018-06-15",
+  "license_notes": "Synthetic benchmark data; repository MIT license.",
+  "sha256": "42c118d970159742e77dd2430f28dfa729eef7c6d6b6cd780ed50b9ba45827b0",
+  "transformation": "Rule-based synthetic inputs; no real customers.",
+  "row_count": 24,
+  "fields": {
+    "job_id": "synthetic",
+    "site_id": "synthetic",
+    "visit_type": "synthetic",
+    "duration_min": "synthetic",
+    "required_skill": "synthetic"
+  }
+}

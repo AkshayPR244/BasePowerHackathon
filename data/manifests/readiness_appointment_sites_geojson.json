@@ -1,0 +1,16 @@
+{
+  "dataset_id": "readiness_appointment_sites_geojson",
+  "kind": "synthetic",
+  "source_url": null,
+  "release": "generator-v3-seed-105",
+  "retrieved_at": null,
+  "covered_start": "2018-06-04",
+  "covered_end": "2018-06-15",
+  "license_notes": "Synthetic benchmark data; repository MIT license.",
+  "sha256": "b3976b83babe62d8c5a2bd0210b02e4a077f2b1b085b36e164b5fd75cabf92be",
+  "transformation": "Rule-based synthetic inputs; no real customers.",
+  "row_count": 12,
+  "fields": {
+    "geometry": "synthetic"
+  }
+}

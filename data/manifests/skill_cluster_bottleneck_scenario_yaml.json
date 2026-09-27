@@ -1,0 +1,16 @@
+{
+  "dataset_id": "skill_cluster_bottleneck_scenario_yaml",
+  "kind": "synthetic",
+  "source_url": null,
+  "release": "generator-v3-seed-106",
+  "retrieved_at": null,
+  "covered_start": "2018-06-04",
+  "covered_end": "2018-06-15",
+  "license_notes": "Synthetic benchmark data; repository MIT license.",
+  "sha256": "106a90effaafb166e8712a2f3d85c54b722d3d11b0d17d46934bf1def6f8e2ef",
+  "transformation": "Rule-based synthetic inputs; no real customers.",
+  "row_count": 1,
+  "fields": {
+    "config": "synthetic"
+  }
+}

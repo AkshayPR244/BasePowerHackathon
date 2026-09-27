@@ -1,0 +1,6 @@
+{
+  "scenario_id": "balanced_small",
+  "seed": 101,
+  "primary_disruption": [],
+  "recovery_class": "recoverable"
+}

@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { api, unwrap } from "../api/client";
 import type { Scenario, Schema } from "../api/types";
+import type { Narrative } from "../narratives";
 import { DisruptionBar } from "../components/DisruptionBar";
 import { CascadeStrip } from "../components/CascadeStrip";
 import { OptionCard } from "../components/OptionCard";
@@ -30,11 +31,11 @@ const errorText = (cause: unknown, fallback: string) =>
 export function RecoveryCanvas({
   scenario,
   disruption,
-  mockMode,
+  narrative,
 }: {
   scenario: Scenario;
   disruption: Disruption[];
-  mockMode: boolean;
+  narrative?: Narrative;
 }) {
   const scenarioId = scenario.scenario_id;
   const [overrides, setOverrides] = useState<Record<string, number>>({});
@@ -206,6 +207,7 @@ export function RecoveryCanvas({
         result={data}
         loading={recoveryOptions.isPending}
         error={optionsError}
+        truthLabel={narrative?.truth_label}
       />
       {data && (
         <>
@@ -227,6 +229,16 @@ export function RecoveryCanvas({
                   : "Compared with no action"}
               </span>
             </div>
+            {narrative && (
+              <aside className="scenario-watch" aria-label="What to watch">
+                <strong>What to watch</strong>
+                <ul>
+                  {narrative.what_to_watch.map((item) => (
+                    <li key={item}>{item}</li>
+                  ))}
+                </ul>
+              </aside>
+            )}
             {noLowest && (
               <p className="option-note" data-testid="no-lowest-note">
                 No option has a lower modeled cost than the others. Compare
@@ -249,6 +261,11 @@ export function RecoveryCanvas({
                 />
               ))}
             </div>
+            {narrative && (
+              <p className="scenario-success">
+                Success criterion: {narrative.success_criterion}
+              </p>
+            )}
           </section>
           <div className="canvas-grid">
             <CrewCalendar
@@ -282,7 +299,6 @@ export function RecoveryCanvas({
             <aside className="canvas-side">
               <OptionPanel
                 option={selectedOption}
-                mockLimited={mockMode && selectedOption?.kind !== "rebalance"}
                 approving={approving}
                 approval={
                   approval && approval.optionId === selectedOption?.option_id

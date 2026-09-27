@@ -1,0 +1,14 @@
+{
+  "scenario_id": "late_overflow",
+  "seed": 109,
+  "primary_disruption": [
+    {
+      "kind": "delay_inventory",
+      "configuration_id": "B13",
+      "from_date": "2018-06-04",
+      "to_date": "2018-06-11",
+      "quantity": null
+    }
+  ],
+  "recovery_class": "late-but-feasible"
+}

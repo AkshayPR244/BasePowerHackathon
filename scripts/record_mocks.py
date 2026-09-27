@@ -103,7 +103,9 @@ def record_canvas_defaults(index: list, storm: list, options: dict):
     }
     for o in every:
         visits = sorted(
-            a["job_id"] for a in o["result"]["assignments"] if a["date"] >= first_open and a["job_id"]
+            a["job_id"]
+            for a in o["result"]["assignments"]
+            if a["date"] >= first_open and a["job_id"]
         )
         movable = [v for v in visits if skill.get(v) in crew_skills]
         if visits:

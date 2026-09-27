@@ -1,0 +1,16 @@
+{
+  "dataset_id": "inventory_delay_recoverable_scenario_yaml",
+  "kind": "synthetic",
+  "source_url": null,
+  "release": "generator-v3-seed-104",
+  "retrieved_at": null,
+  "covered_start": "2018-06-04",
+  "covered_end": "2018-06-15",
+  "license_notes": "Synthetic benchmark data; repository MIT license.",
+  "sha256": "83414ac2cc8e397cdcda02fb9ed4f183f6c8df09ae70860e7a08350f4b524766",
+  "transformation": "Rule-based synthetic inputs; no real customers.",
+  "row_count": 1,
+  "fields": {
+    "config": "synthetic"
+  }
+}

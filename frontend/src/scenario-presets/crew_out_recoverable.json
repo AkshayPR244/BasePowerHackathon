@@ -1,0 +1,12 @@
+{
+  "scenario_id": "crew_out_recoverable",
+  "seed": 103,
+  "primary_disruption": [
+    {
+      "kind": "remove_crew_day",
+      "crew_id": "IA",
+      "date": "2018-06-07"
+    }
+  ],
+  "recovery_class": "recoverable"
+}

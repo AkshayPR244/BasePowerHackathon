@@ -227,3 +227,35 @@ approved option's edit history and must be reapplied to future analyses.
 Recovery action lists may omit overtime/temporary capacity when the bounded search finds no
 validated operational improvement over both no action and rebalance. Render returned options;
 do not assume all three action kinds are present. Cost or option IDs alone do not establish benefit.
+
+### Lane R integration fixes (2026-09-26, no schema change)
+
+These notes supersede the earlier notes above where they differ.
+
+- **Now.** The earliest date a disruption changes, or the earliest booking it breaks, is "now".
+  Current-plan visits before now come back with `locked: true` and state `locked` in every option.
+  Crew-days before now keep only the minutes their booked visits used, so no option adds a visit
+  in the past. Evaluate rejects `move_visit` into the past, moving a past visit, and
+  `extend_crew_day` or `add_crew_day` before now, with a 422 that names the date ("Thu 14 Jun").
+- **Interventions.** Evaluate rejects disruption kinds in `interventions` with a 422.
+  `move_visit` checks the target crew's skill and cluster ("Crew IA does not do battery days.").
+  `add_crew_day` allows at most one normal day of minutes and cannot re-add a crew the disruption
+  removed on that date.
+- **Options.** Overtime and temporary capacity start from now, skip crew-days the disruption cut,
+  and never land on a day with no working crew. A paid option stays unless another returned option
+  misses no more deadlines at no more modeled cost and wins on one. Rebalance that equals no action
+  is labeled "Rebalance existing crews: same plan as no action". Ties for Lowest modeled cost go to
+  no action. Labels use human dates ("Add temporary crew TEMP-BA on Fri 15 Jun").
+- **Counts and economics.** `deadlines_recovered` is no-action misses minus this option's misses,
+  never below 0. `cost_per_deadline_recovered_usd` is the cost above no action over deadlines
+  recovered, never below 0. The deadline penalty line is never below 0. `temporary_crew_day`
+  follows `hourly_wage` × `crew_size` × 8 h unless set directly. Overrides have bounds, and
+  `crew_size` and `max_overtime_min` must be whole numbers. Infeasible options report no changes.
+- **Solver.** Recovery budgets count deterministic solver time, so the same request returns the
+  same option IDs and plans in every run. Price-only changes reuse solved plans. A result that is
+  not proven best has `proven_optimal: false` and a message that starts "Best found".
+- **Approval.** Approve compares plan content without `solve_ms`, `stages`, `message`, and
+  `lowest_modeled_cost`, so an older issue of the same option still approves. After approval,
+  this server accepts `new_current_plan` as `current_plan`, including added temporary crews and
+  overtime, until it restarts. Approved overtime counts against the per-crew-day cap through the
+  config parameters `overtime_granted:<crew>:<date>`.

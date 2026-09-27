@@ -4,41 +4,58 @@ import hashlib
 import json
 
 from app.compare.diff import diff_plans
-from app.contracts.models import CrewLoad, Explanation, RecoveryCounts, RecoveryOption
+from app.contracts.models import (
+    CrewLoad,
+    DiffSummary,
+    Explanation,
+    PlanDiff,
+    RecoveryCounts,
+    RecoveryOption,
+)
 from app.recovery.economics import compute
 
 FEASIBLE = {"optimal", "feasible"}
 
 
+def solved(result):
+    return result.status in FEASIBLE and result.objective is not None
+
+
+def _no_changes(before, after):
+    return PlanDiff(
+        before_plan_id=before.plan_id,
+        after_plan_id=after.plan_id,
+        changes=[],
+        summary=DiffSummary(
+            moved=0,
+            added=0,
+            removed=0,
+            newly_late=0,
+            value_delta_usd=0,
+            travel_delta_min=0,
+            customers_to_reschedule=0,
+        ),
+        headline="No feasible plan, so no visits change.",
+    )
+
+
 def wrap(kind, label, original, result, interventions, rates, no_action=None):
-    diff = diff_plans(original, result)
+    ok = solved(result)
+    base_ok = no_action is not None and solved(no_action.result)
     o = result.objective
-    missed = (
-        o.jobs_late + o.jobs_unscheduled if o else len({a.site_id for a in original.assignments})
-    )
-    old_ontime = (
-        {
-            a.site_id
-            for a in no_action.result.assignments
-            if a.visit_type != "install" and not a.days_late
-        }
-        if no_action
-        else set()
-    )
-    new_ontime = {
-        a.site_id for a in result.assignments if a.visit_type != "install" and not a.days_late
-    }
-    recovered = (
-        len(new_ontime - old_ontime) if no_action and no_action.result.objective and o else 0
-    )
+    # An infeasible option has no plan, so it reports no changes rather than every visit removed.
+    diff = diff_plans(original, result) if ok else _no_changes(original, result)
     moved = [c for c in diff.changes if c.kind in {"moved", "removed", "added"}]
+    missed = o.jobs_late + o.jobs_unscheduled if ok else 0
     counts = RecoveryCounts(
         deadlines_missed=missed,
-        deadlines_recovered=recovered,
-        delay_days=o.total_delay_days if o else 0,
+        deadlines_recovered=(
+            max(0, no_action.counts.deadlines_missed - missed) if ok and base_ok else 0
+        ),
+        delay_days=o.total_delay_days if ok else 0,
         visits_moved=len(moved),
         customers_to_reschedule=len({c.site_id for c in moved}),
-        unscheduled=o.jobs_unscheduled if o else missed,
+        unscheduled=o.jobs_unscheduled if ok else 0,
     )
     eco = compute(
         original,
@@ -46,7 +63,8 @@ def wrap(kind, label, original, result, interventions, rates, no_action=None):
         interventions,
         counts,
         rates,
-        no_action.economics.net_impact_usd if no_action and no_action.result.objective else None,
+        no_action.economics.net_impact_usd if base_ok else None,
+        no_action.counts.deadlines_missed if base_ok else None,
     )
     before = {(c.crew_id, c.date): c for c in original.crew_days}
     after = {(c.crew_id, c.date): c for c in result.crew_days}
@@ -78,7 +96,7 @@ def wrap(kind, label, original, result, interventions, rates, no_action=None):
         proven_optimal=result.status == "optimal",
         result=result,
         diff_vs_original=diff,
-        diff_vs_no_action=diff_plans(no_action.result, result) if no_action else None,
+        diff_vs_no_action=(diff_plans(no_action.result, result) if ok and base_ok else None),
         counts=counts,
         economics=eco,
         overtime_min=sum(e.extra_min for e in interventions if e.kind == "extend_crew_day"),
@@ -95,7 +113,9 @@ def wrap(kind, label, original, result, interventions, rates, no_action=None):
                 crew_id=c, date=d, before=load(before.get((c, d))), after=load(after.get((c, d)))
             )
             for c, d in sorted(set(before) | set(after))
-        ],
+        ]
+        if ok
+        else [],
         stub=False,
     )
 
@@ -113,4 +133,16 @@ def rank(option):
         o.travel_allowance_min,
         option.economics.net_impact_usd,
         option.option_id,
+    )
+
+
+def dominated(option, others):
+    """True when another option misses no more deadlines, costs no more, and wins on one."""
+    m, c = option.counts.deadlines_missed, option.economics.net_impact_usd
+    return any(
+        p is not option
+        and p.counts.deadlines_missed <= m
+        and p.economics.net_impact_usd <= c
+        and (p.counts.deadlines_missed < m or p.economics.net_impact_usd < c)
+        for p in others
     )

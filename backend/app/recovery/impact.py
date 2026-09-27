@@ -25,15 +25,26 @@ def analyze(base, edits, original, no_action):
             direct.add(jid)
     # For inventory disruptions identify changed final bookings, not every home of that type.
     at = {(a.job_id or a.site_id): (a.crew_id, a.date) for a in no_action.assignments}
-    if any(e.kind == "delay_inventory" for e in edits):
+    delays = [e for e in edits if e.kind == "delay_inventory"]
+    if delays and no_action.objective is not None:
         direct.update(
             a.job_id or a.site_id
             for a in original.assignments
             if a.visit_type != "install" and at.get(a.job_id or a.site_id) != (a.crew_id, a.date)
         )
+    elif delays:
+        # No repaired plan to compare: flag battery days booked inside a delayed receipt window.
+        direct.update(
+            a.job_id or a.site_id
+            for a in original.assignments
+            for e in delays
+            if a.visit_type != "install"
+            and sites[a.site_id].configuration_id == e.configuration_id
+            and e.from_date <= a.date < e.to_date
+        )
     jobs = all_jobs(base)
     homes = {jobs[j].site_id for j in direct if j in jobs and not jobs[j].final}
-    pushed = {j.job_id for j in jobs.values() if j.final and j.site_id in homes}
+    pushed = {j.job_id for j in jobs.values() if j.final and j.site_id in homes} - direct
     ontime = {
         a.site_id for a in no_action.assignments if a.visit_type != "install" and not a.days_late
     }

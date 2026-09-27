@@ -41,6 +41,27 @@ interface Sandbox {
   headline: string;
 }
 
+function restoredHeadline(disruption: Disruption[], protectedHomes: string[]) {
+  if (disruption.length === 1) {
+    const edit = disruption[0];
+    if (edit.kind === "remove_crew_day")
+      return `Crew ${edit.crew_id} loses ${dateLabel(edit.date)}.`;
+    if (edit.kind === "reduce_crew_day")
+      return `Crew ${edit.crew_id} is reduced to ${edit.available_min} minutes on ${dateLabel(edit.date)}.`;
+    if (edit.kind === "delay_inventory")
+      return `${edit.configuration_id} inventory moves to ${dateLabel(edit.to_date)}.`;
+    if (edit.kind === "change_ready_date")
+      return `${edit.site_id} is not ready until ${dateLabel(edit.ready_date)}.`;
+    if (edit.kind === "change_appointment")
+      return `${edit.job_id} needs a new appointment window.`;
+  }
+  if (disruption.length > 0)
+    return `Continuing ${disruption.length} operational changes.`;
+  if (protectedHomes.length > 0)
+    return `${protectedHomes.length} ${protectedHomes.length === 1 ? "home is" : "homes are"} protected.`;
+  return "The current plan is ready to change.";
+}
+
 function initialSandbox(): Sandbox {
   const shared = readSharedRecoveryContext();
   const canRestore = shared?.scenarioId === "standard";
@@ -48,11 +69,9 @@ function initialSandbox(): Sandbox {
     revision: 0,
     disruption: canRestore ? shared.disruption : [],
     protectedHomes: canRestore ? shared.protectedHomes : [],
-    headline:
-      canRestore &&
-      (shared.disruption.length > 0 || shared.protectedHomes.length > 0)
-        ? "Continuing the selected operational change."
-        : "The current plan is ready to change.",
+    headline: canRestore
+      ? restoredHeadline(shared.disruption, shared.protectedHomes)
+      : "The current plan is ready to change.",
   };
 }
 
@@ -653,26 +672,29 @@ export function LiveRecoveryCanvas() {
           )}
         </div>
         <div className="source-labels">
-          {scenario.data?.config.synthetic && <span>Synthetic plan</span>}
-          <span title="Battery operating value uses historical ERCOT 2018 load-zone settlement prices; it is a hindsight benchmark, not a forecast.">
-            ERCOT 2018 hindsight value
-          </span>
-          <button
-            type="button"
-            className="header-button"
-            onClick={toggleTheme}
-            aria-label={`Use ${theme === "dark" ? "light" : "dark"} theme`}
-            data-testid="theme-toggle"
-          >
-            {theme === "dark" ? "Light" : "Dark"}
-          </button>
+          <div className="source-badges" aria-label="Data provenance">
+            {scenario.data?.config.synthetic && <span>Synthetic plan</span>}
+            <span title="Battery operating value uses historical ERCOT 2018 load-zone settlement prices; it is a hindsight benchmark, not a forecast.">
+              ERCOT 2018 hindsight value
+            </span>
+          </div>
           <a
-            className="header-button"
+            className="advanced-analysis-button"
             href={advancedHref}
             data-testid="workspace-link"
           >
-            Advanced: inspect this scenario and disruption
+            Open Advanced Analysis
           </a>
+          <button
+            type="button"
+            className="theme-icon-button"
+            onClick={toggleTheme}
+            aria-label={`Use ${theme === "dark" ? "light" : "dark"} theme`}
+            title={`Use ${theme === "dark" ? "light" : "dark"} theme`}
+            data-testid="theme-toggle"
+          >
+            <span aria-hidden="true">{theme === "dark" ? "☀" : "☾"}</span>
+          </button>
         </div>
       </header>
 

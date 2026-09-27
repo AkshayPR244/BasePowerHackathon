@@ -46,6 +46,7 @@ export function CrewCalendar({
     { siteId: string; path: string }[]
   >([]);
   const [canvasSize, setCanvasSize] = useState({ width: 0, height: 0 });
+  const [expanded, setExpanded] = useState(false);
   const workDates = new Set([
     ...scenario.crew_days.map((c) => c.date),
     ...(plan?.crew_days.map((c) => c.date) ?? []),
@@ -154,10 +155,22 @@ export function CrewCalendar({
     container.scrollLeft = Math.max(0, offset);
   }, [focusColumn, scenario]);
   return (
-    <section className="panel calendar" data-testid="plan-lanes">
+    <section
+      className={`panel calendar ${expanded ? "calendar-expanded" : ""}`}
+      data-testid="plan-lanes"
+    >
       <div className="panel-heading">
         <h2>{title}</h2>
-        <span>{crews.length} crews · daily capacity, not arrival times</span>
+        <div className="calendar-heading-actions">
+          <span>{crews.length} crews · daily capacity, not arrival times</span>
+          <button
+            type="button"
+            aria-expanded={expanded}
+            onClick={() => setExpanded((current) => !current)}
+          >
+            {expanded ? "Collapse calendar" : "Expand calendar"}
+          </button>
+        </div>
       </div>
       {notice && (
         <p className="calendar-notice" role="status">

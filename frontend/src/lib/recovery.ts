@@ -71,6 +71,27 @@ export function describeDisruption(
   return `Modeled disruption: ${text}.`;
 }
 
+export function disruptionResources(disruption: Disruption[]): string[] {
+  return disruption.flatMap((edit) => {
+    switch (edit.kind) {
+      case "remove_crew_day":
+        return `Crew ${edit.crew_id}: unavailable on ${dateLabel(edit.date)}`;
+      case "reduce_crew_day":
+        return `Crew ${edit.crew_id}: only ${edit.available_min} minutes available on ${dateLabel(edit.date)}`;
+      case "delay_inventory":
+        return `${edit.configuration_id} inventory: ${edit.quantity ?? "entire"} receipt delayed from ${dateLabel(edit.from_date)} to ${dateLabel(edit.to_date)}`;
+      case "change_ready_date":
+        return `${edit.site_id}: site unavailable until ${dateLabel(edit.ready_date)}`;
+      case "change_appointment":
+        return [
+          `${edit.job_id}: customer window limited to ${dateLabel(edit.available_from)}${edit.available_to ? `–${dateLabel(edit.available_to)}` : ""}`,
+        ];
+      default:
+        return [];
+    }
+  });
+}
+
 export function statusLabel(option: Option): string {
   switch (option.status) {
     case "optimal":

@@ -104,7 +104,13 @@ p {
   align-items: center;
 }
 
-.source-labels span {
+.source-badges {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.source-badges > span {
   border: 1px solid var(--hairline);
   border-radius: 2px;
   padding: 5px 8px;
@@ -114,21 +120,35 @@ p {
   white-space: nowrap;
 }
 
-.live-app .header-button {
-  border: 1px solid var(--hairline);
+.live-app .advanced-analysis-button {
+  border: 1px solid var(--plot-line);
   border-radius: 2px;
-  padding: 4px 8px;
-  background: var(--panel);
-  color: var(--ink);
+  padding: 8px 12px;
+  background: var(--plot-line);
+  color: var(--panel);
   font: inherit;
-  font-size: 11px;
+  font-size: 12px;
+  font-weight: 600;
   white-space: nowrap;
   text-decoration: none;
   cursor: pointer;
 }
 
-.live-app .header-button:hover {
-  border-color: var(--plot-line);
+.live-app .advanced-analysis-button:hover {
+  filter: brightness(1.08);
+  transform: translateY(-1px);
+}
+
+.live-app .theme-icon-button {
+  display: grid;
+  width: 34px;
+  height: 34px;
+  flex: 0 0 34px;
+  place-items: center;
+  border-radius: 50%;
+  padding: 0;
+  font-size: 18px;
+  line-height: 1;
 }
 
 .trigger-rail {
@@ -1256,6 +1276,13 @@ p {
     align-items: flex-start;
     flex-direction: column;
     gap: 8px;
+  }
+  .source-labels {
+    width: 100%;
+    flex-wrap: wrap;
+  }
+  .theme-icon-button {
+    margin-left: auto;
   }
   .trigger-rail {
     align-items: flex-start;

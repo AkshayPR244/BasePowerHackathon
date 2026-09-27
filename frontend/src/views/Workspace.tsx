@@ -16,7 +16,15 @@ import { ScenarioBriefing } from "../components/ScenarioBriefing";
 import { narrativeFor } from "../narratives";
 import { presetFor } from "../scenario-presets";
 import { downloadPlan } from "../lib/export";
-import { recoveryCases } from "../lib/recovery";
+import {
+  describeDisruption,
+  disruptionResources,
+  recoveryCases,
+} from "../lib/recovery";
+import {
+  primaryHref,
+  readSharedRecoveryContext,
+} from "../lib/sharedRecoveryContext";
 import { RecoveryCanvas } from "./Canvas";
 import { useTheme } from "./useTheme";
 
@@ -48,24 +56,28 @@ export function Workspace() {
   const { theme, toggleTheme } = useTheme();
   const narrative = narrativeFor(scenarioId);
   const preset = presetFor(scenarioId);
+  const sharedContext = readSharedRecoveryContext();
+  const shared =
+    sharedContext?.scenarioId === scenarioId ? sharedContext : undefined;
   // Suite scenarios analyze the edits the operator applied, or an empty disruption on request.
   const [baselineAnalysis, setBaselineAnalysis] = useState<number | null>(null);
   const suiteActive =
     !!preset && (edits.length > 0 || baselineAnalysis === revision);
-  const primaryActive =
-    !!preset &&
-    (preset.primary_disruption.length === 0
-      ? baselineAnalysis === revision
-      : JSON.stringify(edits) === JSON.stringify(preset.primary_disruption));
+  const primaryActive = shared
+    ? shared.disruption.length > 0
+    : !!preset &&
+      (preset.primary_disruption.length === 0
+        ? baselineAnalysis === revision
+        : JSON.stringify(edits) === JSON.stringify(preset.primary_disruption));
   const disruption =
-    recoveryCases[scenarioId] ?? (suiteActive ? edits : undefined);
+    shared?.disruption ??
+    recoveryCases[scenarioId] ??
+    (suiteActive ? edits : undefined);
   useEffect(() => setBaselineAnalysis(null), [scenarioId]);
   const [baselineOpen, setBaselineOpen] = useState<Record<string, boolean>>({});
   const showBaseline = baselineOpen[scenarioId] ?? !disruption;
   useEffect(() => {
-    document.title = disruption
-      ? "Recovery Canvas · Rollout Planner"
-      : "Rollout Planner";
+    document.title = disruption ? "Recovery Canvas · SlackLine" : "SlackLine";
   }, [disruption]);
   if (scenario.isError || scenarios.isError)
     return (
@@ -86,11 +98,59 @@ export function Workspace() {
     return (
       <main className="startup">Loading scenario and crew availability…</main>
     );
+  const sharedCurrentPlan = shared?.protectedHomes.length
+    ? scenario.data.current_plan.map((row) => ({
+        ...row,
+        locked: row.locked || shared.protectedHomes.includes(row.site_id),
+      }))
+    : undefined;
+  const sharedDescription = shared?.disruption.length
+    ? describeDisruption(shared.disruption, scenario.data)
+    : undefined;
+  const sharedBannerCopy = sharedDescription
+    ? {
+        trigger: sharedDescription,
+        whatWentWrong: `The operator applied this modeled change to the working plan: ${sharedDescription.replace(/^Modeled disruption:\s*/i, "")}`,
+        unavailableResources: disruptionResources(shared?.disruption ?? []),
+        question:
+          "Which validated recovery best protects deadlines while limiting customer appointment changes?",
+      }
+    : undefined;
+  const briefingNarrative =
+    narrative ??
+    (shared
+      ? {
+          scenario_id: scenarioId,
+          title: "Live disruption analysis",
+          operator: "Dispatch manager",
+          situation: "The current operational plan is ready for analysis.",
+          trigger:
+            sharedDescription ??
+            "No operational disruption is currently applied.",
+          what_went_wrong:
+            sharedDescription ??
+            "No operational disruption is currently applied.",
+          unavailable_resources: disruptionResources(shared.disruption),
+          question:
+            "Which validated recovery best protects deadlines while limiting customer appointment changes?",
+          what_to_watch: [
+            "Affected visits and dependent battery work",
+            "No-action impact versus validated recovery options",
+            "Customer appointments that must move",
+          ],
+          success_criterion:
+            "Protect commitments without violating inventory, skills, crew limits, appointments, or locks.",
+          truth_label:
+            "Synthetic installation portfolio; operational impacts and costs are modeled.",
+        }
+      : undefined);
+  const backHref = shared ? primaryHref(shared) : location.pathname;
   return (
     <main>
-      <nav className="view-switch" aria-label="Views">
-        <a href={location.pathname} data-testid="live-canvas-link">
-          Back to the live recovery canvas
+      <nav className="advanced-nav" aria-label="Analysis navigation">
+        <strong>Advanced Analysis</strong>
+        <a href={backHref} data-testid="live-canvas-link">
+          ← Back to main planner
         </a>
       </nav>
       <Header
@@ -103,10 +163,11 @@ export function Workspace() {
       />
       <ScenarioBriefing
         key={scenarioId}
-        report={narrative}
+        report={briefingNarrative}
         primaryActive={primaryActive}
         disabled={!!busy || mockMode}
         hasDisruption={!!preset?.primary_disruption.length}
+        activeCopy={sharedBannerCopy}
         onApply={() => {
           if (preset) {
             replaceEdits(preset.primary_disruption);
@@ -114,6 +175,22 @@ export function Workspace() {
           }
         }}
       />
+      {shared && (
+        <aside className="panel padded" data-testid="shared-recovery-context">
+          <strong>Continuing the primary-page analysis</strong>
+          <p>{sharedDescription}</p>
+          {shared.protectedHomes.length > 0 && (
+            <p>
+              Protected homes: {shared.protectedHomes.join(", ")}. Their current
+              appointments remain locked in this analysis.
+            </p>
+          )}
+          <small>
+            Advanced Analysis uses the same scenario and operational changes as
+            the main planner.
+          </small>
+        </aside>
+      )}
       {preset && mockMode && (
         <p role="status" className="panel padded">
           Use live API mode to run the synthetic scenario suite.
@@ -133,6 +210,7 @@ export function Workspace() {
           scenario={scenario.data}
           disruption={disruption}
           narrative={narrative}
+          currentPlan={sharedCurrentPlan}
         />
       ) : (
         <p className="panel padded no-canvas" data-testid="no-recovery-case">
@@ -151,7 +229,7 @@ export function Workspace() {
         }}
       >
         <summary>
-          <strong>Advanced: baseline plan</strong>
+          <strong>Baseline plan</strong>
           <span>Strict plan, metrics, site list, map, compare and export</span>
         </summary>
         {showBaseline && (

@@ -8,8 +8,10 @@ import "./design/tokens.css";
 import { mockMode } from "./api/client";
 // Each view loads its own stylesheet, so the two layouts never share a page.
 const params = new URLSearchParams(location.search);
+const requestedView = params.get("view");
 const View =
-  params.get("view") === "workspace" || params.has("scenario")
+  requestedView === "workspace" ||
+  (requestedView !== "primary" && params.has("scenario"))
     ? lazy(() =>
         import("./views/Workspace").then((m) => ({ default: m.Workspace })),
       )

@@ -1,4 +1,4 @@
-# Rollout Planner UI
+# SlackLine UI
 
 Operator workspace for installation plans, disruptions, recovery, and explanations. The default demo uses Lane B's recorded responses. It does not run an optimizer or contact customers.
 

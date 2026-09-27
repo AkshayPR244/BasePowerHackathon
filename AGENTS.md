@@ -1,6 +1,6 @@
-# Rollout Planner · agent rules
+# SlackLine · agent rules
 
-Rollout Planner is a deterministic disruption-recovery planner for installation operations. It shows what broke, how the disruption cascades through the current plan, what feasible recovery actions exist, what each costs or saves relative to doing nothing, and lets the operations manager review, test changes, and approve. Product rules, vocabulary, and scope: `CLAUDE.md`, "Product (read first)".
+SlackLine is a deterministic disruption-recovery planner for installation operations. It shows what broke, how the disruption cascades through the current plan, what feasible recovery actions exist, what each costs or saves relative to doing nothing, and lets the operations manager review, test changes, and approve. Product rules, vocabulary, and scope: `CLAUDE.md`, "Product (read first)".
 
 Hackathon build. About 40 hours. Three lanes build in parallel. Spec: `docs/SPEC.md`. Decisions: `docs/DECISIONS.md`.
 

@@ -1,6 +1,6 @@
 # Demo script (3 minutes)
 
-Rollout Planner is a deterministic disruption-recovery planner for installation operations. It shows what broke, how the disruption cascades through the current plan, what recovery actions exist, what each costs or saves compared with no action, and lets the operations manager test changes and approve.
+SlackLine is a deterministic disruption-recovery planner for installation operations. It shows what broke, how the disruption cascades through the current plan, what recovery actions exist, what each costs or saves compared with no action, and lets the operations manager test changes and approve.
 
 Rehearse on the build you will show. Change this script to match what the app does on that build.
 

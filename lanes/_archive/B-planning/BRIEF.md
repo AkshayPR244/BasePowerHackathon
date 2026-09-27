@@ -1,7 +1,7 @@
 # Lane B · Planning and API
 
 ## Mission
-Rollout Planner is a planning and recovery analysis tool for residential battery installers. It takes an installation plan plus a disruption (crew out, late shipment, slipped approval), finds the best recovery, and explains what is at risk and why.
+SlackLine is a planning and recovery analysis tool for residential battery installers. It takes an installation plan plus a disruption (crew out, late shipment, slipped approval), finds the best recovery, and explains what is at risk and why.
 
 Lane B turns the current plan plus disruptions into the best feasible recovery, validated, fast enough to re-plan live, and serves it over HTTP.
 

@@ -28,7 +28,7 @@ def generate(scenario_id, data_root=None, manifest_root=None, presets_root=None)
     entry = SUITE[scenario_id]
     source = ROOT / "data/demo/standard"
     # Build away from the discoverable demo directory; failed generation cannot break listing.
-    with tempfile.TemporaryDirectory(prefix="rollout-suite-") as scratch:
+    with tempfile.TemporaryDirectory(prefix="slackline-suite-") as scratch:
         staging = Path(scratch) / scenario_id
         staging.mkdir()
         copied = []

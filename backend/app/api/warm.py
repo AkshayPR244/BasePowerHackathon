@@ -12,7 +12,7 @@ from app.valuation import value_table as valuation
 
 _state: dict[str, str] = {"values": "not_started"}
 _lock = threading.Lock()
-log = logging.getLogger("rollout.api")
+log = logging.getLogger("slackline.api")
 
 
 def status() -> dict[str, str]:

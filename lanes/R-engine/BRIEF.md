@@ -1,13 +1,13 @@
 # Lane R · Recovery engine
 
 ## Mission
-Rollout Planner is a deterministic disruption-recovery planner for installation operations. It shows what broke, how the disruption cascades through the current plan, what feasible recovery actions exist, what each costs or saves relative to doing nothing, and lets the operations manager review, test changes, and approve. R is the product, C is the experience, H makes it demo-safe. Weather replay is a parked nice-to-have (`lanes/_parked/weather`).
+SlackLine is a deterministic disruption-recovery planner for installation operations. It shows what broke, how the disruption cascades through the current plan, what feasible recovery actions exist, what each costs or saves relative to doing nothing, and lets the operations manager review, test changes, and approve. R is the product, C is the experience, H makes it demo-safe. Weather replay is a parked nice-to-have (`lanes/_parked/weather`).
 
 Lane R builds the product: given the current plan and a known disruption, return the impact, the no-action outcome, and a short list of feasible recovery actions. Each action is solved, validated, priced, and labeled as a business action ("Crew IB +2h overtime"). The operator can test any manual change and approve an option.
 
 ## Current state
 - Done on `main`: the two-visit `standard` scenario (45 homes, install crews IA and IB, battery crew BA, battery side at 84.6% and the bottleneck). The CP-SAT planner with strict and recovery modes and the independent validator on every plan. EDF and nearest-cluster baselines. Compare and counterfactual endpoints. Energy value table from ERCOT 2018.
-- Frozen in this scaffold: every recovery contract (see `docs/CONTRACTS.md`), the stub service `backend/app/recovery/service.py` (reads `backend/app/recovery/fixtures/*.json`), and stub endpoints `POST /api/recovery/options`, `/evaluate`, `/approve`. Stubs send `stub=true` and the header `X-Rollout-Stub: true`.
+- Frozen in this scaffold: every recovery contract (see `docs/CONTRACTS.md`), the stub service `backend/app/recovery/service.py` (reads `backend/app/recovery/fixtures/*.json`), and stub endpoints `POST /api/recovery/options`, `/evaluate`, `/approve`. Stubs send `stub=true` and the header `X-SlackLine-Stub: true`.
 - Not built: everything behind the stubs. The new edits return `invalid_input` "not implemented yet" from `POST /api/plans`.
 
 ## Owns
@@ -71,7 +71,7 @@ Lane R builds the product: given the current plan and a known disruption, return
 ## Definition of done
 - `recover()` on `standard` with battery crew BA out Thu 7 Jun returns no action plus three action options, every one validated, with impact, counts, economics, and explanations.
 - `evaluate()` handles each new edit. `approve()` returns a plan that loads as `current_plan`.
-- `stub=false` on every recovery response. No `X-Rollout-Stub` header.
+- `stub=false` on every recovery response. No `X-SlackLine-Stub` header.
 - Lane check passes (below). `make check-contracts`, `make check-a`, `make check-b` pass.
 
 ## Lane check

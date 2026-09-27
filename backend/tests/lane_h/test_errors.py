@@ -25,7 +25,7 @@ def test_500_is_generic_with_request_id(monkeypatch, caplog, error, code):
         raise error
 
     monkeypatch.setattr(main, "plan", crash)
-    with caplog.at_level(logging.ERROR, logger="rollout.api"):
+    with caplog.at_level(logging.ERROR, logger="slackline.api"):
         r = client.post("/api/plans", json=BODY)
     assert r.status_code == 500
     err = ApiError.model_validate(r.json())

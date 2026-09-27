@@ -1,6 +1,6 @@
 # Contracts
 
-Rollout Planner is a planning and recovery analysis tool for residential battery installers. It takes an installation plan plus a disruption (a crew out, reduced capacity, a readiness change, or an appointment change), finds the best recovery, and explains what is at risk and why.
+SlackLine is a planning and recovery analysis tool for residential battery installers. It takes an installation plan plus a disruption (a crew out, reduced capacity, a readiness change, or an appointment change), finds the best recovery, and explains what is at risk and why.
 
 The Pydantic models in `backend/app/contracts/` are the only definition of shared types. OpenAPI and TypeScript types are generated from them. Nobody hand-writes shared types.
 
@@ -56,7 +56,7 @@ The API is stateless. The server stores no plans. The client sends back what it 
 | Method and path | Request | Response | Notes |
 |---|---|---|---|
 | `GET /api/health` | none | `{status, values, ...}` | `values` is not_started, warming, ready, or failed |
-| `GET /api/scenarios` | none | `list[ScenarioSummary]` | Bundled scenarios. A scenario that fails to load is left out and named in the header `X-Rollout-Broken-Scenarios` |
+| `GET /api/scenarios` | none | `list[ScenarioSummary]` | Bundled scenarios. A scenario that fails to load is left out and named in the header `X-SlackLine-Broken-Scenarios` |
 | `GET /api/scenarios/{scenario_id}` | none | `Scenario` | 404 if unknown. 422 `ApiError` with `input_issues` if the files fail validation |
 | `POST /api/plans` | `PlanRequest` | `PlanResult` | Baselines use `algorithm`. `status=invalid_input` carries `input_issues` |
 | `POST /api/plans/compare` | `CompareRequest {before, after}` | `PlanDiff` | Both are full `PlanResult`s |
@@ -70,7 +70,7 @@ The recovery endpoints are listed under "Recovery and weather seams" below.
 - 422 `invalid_input`: a scenario, or the current plan stored in it, did not load. The message has a request ID and no file paths.
 - 500 `internal_error` or `invalid_plan`: a server fault. The message is generic and has a request ID. The same ID is in the `X-Request-ID` header and in the server log.
 
-CORS allows the Vite dev server (:5173) and preview server (:4173) on localhost and 127.0.0.1. It exposes `X-Rollout-Stub` and `X-Request-ID`.
+CORS allows the Vite dev server (:5173) and preview server (:4173) on localhost and 127.0.0.1. It exposes `X-SlackLine-Stub` and `X-Request-ID`.
 
 ## Semantics
 
@@ -159,7 +159,7 @@ All ten edits work. The recovery endpoints accept only the five disruption kinds
 - `app.recovery.service.recover(scenario, disruption, current_plan=None, economics=None, interactive=False) -> RecoveryOptionsResult`, plus `evaluate(...)` and `approve(...)`. A parked weather replay may call `recover()` later.
 - `app.replay.service.storms()`, `cases()`, `season_replay()`.
 
-**Live and stub.** The recovery endpoints are live. They solve and validate on every call and return `stub: false`. The weather endpoints are stubs. They return fixtures from `backend/app/replay/fixtures/`, built by `scripts/build_stubs.py` from real planner results on `standard` for the 14 Jun 2018 storm case, with earliest-deadline-first standing in for no action. Their economics are placeholders. Storm events are real observations. Every stub payload has `stub: true`, and the endpoint sets the header `X-Rollout-Stub: true`. The UI shows a stub label while `stub` is true.
+**Live and stub.** The recovery endpoints are live. They solve and validate on every call and return `stub: false`. The weather endpoints are stubs. They return fixtures from `backend/app/replay/fixtures/`, built by `scripts/build_stubs.py` from real planner results on `standard` for the 14 Jun 2018 storm case, with earliest-deadline-first standing in for no action. Their economics are placeholders. Storm events are real observations. Every stub payload has `stub: true`, and the endpoint sets the header `X-SlackLine-Stub: true`. The UI shows a stub label while `stub` is true.
 
 ## Regenerating
 

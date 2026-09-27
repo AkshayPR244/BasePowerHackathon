@@ -32,22 +32,31 @@ export function RecoveryCanvas({
   scenario,
   disruption,
   narrative,
+  currentPlan,
 }: {
   scenario: Scenario;
   disruption: Disruption[];
   narrative?: Narrative;
+  currentPlan?: Schema["PlannedInstall"][];
 }) {
   const scenarioId = scenario.scenario_id;
   const [overrides, setOverrides] = useState<Record<string, number>>({});
   const [requestRevision, setRequestRevision] = useState(1);
   const recoveryOptions = useQuery({
-    queryKey: ["recovery-options", scenarioId, disruption, overrides],
+    queryKey: [
+      "recovery-options",
+      scenarioId,
+      disruption,
+      currentPlan,
+      overrides,
+    ],
     queryFn: async () =>
       unwrap(
         await api.POST("/api/recovery/options", {
           body: {
             scenario_id: scenarioId,
             revision: requestRevision,
+            current_plan: currentPlan,
             disruption,
             economics_overrides: Object.keys(overrides).length
               ? overrides
@@ -132,6 +141,7 @@ export function RecoveryCanvas({
           body: {
             scenario_id: scenarioId,
             revision: data.revision,
+            current_plan: currentPlan,
             disruption: changedDisruption,
             interventions,
             economics_overrides: Object.keys(overrides).length

@@ -1,13 +1,13 @@
 # Lane H · UI hardening
 
 ## Mission
-Rollout Planner is a deterministic disruption-recovery planner for installation operations. It shows what broke, how the disruption cascades through the current plan, what feasible recovery actions exist, what each costs or saves relative to doing nothing, and lets the operations manager review, test changes, and approve. R is the product, C is the experience, H makes it demo-safe. Weather replay is a parked nice-to-have (`lanes/_parked/weather`).
+SlackLine is a deterministic disruption-recovery planner for installation operations. It shows what broke, how the disruption cascades through the current plan, what feasible recovery actions exist, what each costs or saves relative to doing nothing, and lets the operations manager review, test changes, and approve. R is the product, C is the experience, H makes it demo-safe. Weather replay is a parked nice-to-have (`lanes/_parked/weather`).
 
 Lane H makes the recovery flow demo-safe and trustworthy end to end: live API wiring, error and loading states, stub and validation honesty, tests, accessibility, performance at demo resolution, and the freeze and record tooling. H does not build new canvas features (that is C) or engine logic (that is R). When H needs a change in one of C's components, H writes it to `lanes/C-canvas/NEEDS.md`.
 
 ## Current state
 - Done on `main`: the day 1 workspace (PR #5), recorded mocks, and MSW in recorded and live modes. Frontend e2e: 4 of 5 pass. `e2e/shell.spec.ts` and `src/lib/export.test.ts` fail on a stale "Not validated" expectation (plans are validated now).
-- Frozen in this scaffold: the recovery contracts and stub endpoints. Stub payloads carry `stub: true`, and the endpoints send `X-Rollout-Stub: true`. `tests/contract/test_seams.py` covers them.
+- Frozen in this scaffold: the recovery contracts and stub endpoints. Stub payloads carry `stub: true`, and the endpoints send `X-SlackLine-Stub: true`. `tests/contract/test_seams.py` covers them.
 - Known defects H owns:
   - The 500 handler returns exception text to the client (`backend/app/api/main.py`, `_unexpected`).
   - The late-shipment example is still in `README.md`, `docs/DEMO.md`, `docs/CONTRACTS.md`, `scripts/record_mocks.py`, and the recorded mocks.
@@ -15,7 +15,7 @@ Lane H makes the recovery flow demo-safe and trustworthy end to end: live API wi
 ## Owns
 - `frontend/e2e/` except C's `canvas*.spec.ts`, and `frontend/playwright.config.ts`
 - Frontend test infrastructure and test files outside C's components, views, and state (C writes the tests for its own features)
-- `frontend/src/api/client.ts` (ApiError parsing, stub detection from the `stub` field and the `X-Rollout-Stub` header, the revision guard)
+- `frontend/src/api/client.ts` (ApiError parsing, stub detection from the `stub` field and the `X-SlackLine-Stub` header, the revision guard)
 - `frontend/src/mocks/handlers.ts`
 - Exception handlers in `backend/app/api/main.py` (only those)
 - `backend/tests/lane_h/`
@@ -54,7 +54,7 @@ Lane H makes the recovery flow demo-safe and trustworthy end to end: live API wi
 ### P0 (in order)
 1. **500 errors**: a generic ApiError message with a request ID (also in the `X-Request-ID` header). Details go to the server log only.
 2. **Late shipment removed** from README, `docs/DEMO.md`, `docs/CONTRACTS.md`, the demo recordings in `scripts/record_mocks.py`, and the recorded mocks. It stays in the API and the tests.
-3. **Stub honesty**: `client.ts` exposes `isStub` from the payload `stub` field or the `X-Rollout-Stub` header. C shows a visible stub label (ask through NEEDS.md). An e2e check asserts the label while stubs are live.
+3. **Stub honesty**: `client.ts` exposes `isStub` from the payload `stub` field or the `X-SlackLine-Stub` header. C shows a visible stub label (ask through NEEDS.md). An e2e check asserts the label while stubs are live.
 4. **Validation honesty**: every plan the UI shows carries `validation.checked` and `validation.valid`. The UI says "Validated" only when both are true. Fix the stale "Not validated" expectations in `src/lib/export.test.ts` and `e2e/shell.spec.ts`.
 5. **Error and loading states**: show the ApiError message, a progress line with text (never a bare spinner), and drop responses whose revision is older than the current one. Vitest for `client.ts` and the store.
 6. **Live-API e2e** of the core recovery flow: load `standard`, apply a disruption, get options, select one, approve. Run with `VITE_API_MODE=live` against `make api`. Screenshots to `frontend/e2e/screenshots/`.

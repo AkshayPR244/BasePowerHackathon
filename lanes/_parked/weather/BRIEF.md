@@ -5,7 +5,7 @@
 > The stub endpoints `GET /api/storms`, `GET /api/cases`, `GET /api/season-replay` and the stub service `backend/app/replay/` stay frozen as they are. They return `stub: true`. No lane owns them until weather returns. There is no `init.sh` on purpose, so nobody launches this lane by accident.
 
 ## Mission
-Rollout Planner is a deterministic disruption-recovery planner for installation operations. It shows what broke, how the disruption cascades through the current plan, what feasible recovery actions exist, what each costs or saves relative to doing nothing, and lets the operations manager review, test changes, and approve. R is the product, C is the experience, H makes it demo-safe. Weather replay is a parked nice-to-have (`lanes/_parked/weather`).
+SlackLine is a deterministic disruption-recovery planner for installation operations. It shows what broke, how the disruption cascades through the current plan, what feasible recovery actions exist, what each costs or saves relative to doing nothing, and lets the operations manager review, test changes, and approve. R is the product, C is the experience, H makes it demo-safe. Weather replay is a parked nice-to-have (`lanes/_parked/weather`).
 
 Lane W produces the evidence. It turns real Houston Hobby storm observations into modeled disruptions, replays the whole June–July 2018 season through the recovery engine, compares no action against recovery, and stress-tests the result. It also owns trust: honest wording, error handling, docs, and the freeze script.
 
@@ -15,7 +15,7 @@ Wording rule for every data file, API field, UI string, and doc: "This replay ap
 - On `main`: the weather rule and METAR parser in `backend/app/data/weather.py` (`lost_reasons`), tested in `backend/tests/lane_a/test_first_principles.py`. Observed Hobby METAR files sit in gitignored `data/raw/weather/` with no manifest.
 - Weekdays the rule marks as lost in June–July 2018: 06-14, 06-20, 06-25, 06-27, 06-28, 07-04 (holiday), 07-05, 07-09, 07-12, 07-31.
 - July 4 2018 sums to 145 mm of METAR rain in work hours. Check for double-counted accumulations before you use it.
-- Frozen in this scaffold: `StormEvent`, `Case`, `SeasonReplay`, `SeasonReplayEvent`, `SeasonTotals`, `StressTest` contracts. Stub service `backend/app/replay/service.py` (`storms()`, `cases()`, `season_replay()` read `backend/app/replay/fixtures/*.json`). Stub endpoints `GET /api/storms`, `/api/cases`, `/api/season-replay` with `stub=true` and the header `X-Rollout-Stub: true`.
+- Frozen in this scaffold: `StormEvent`, `Case`, `SeasonReplay`, `SeasonReplayEvent`, `SeasonTotals`, `StressTest` contracts. Stub service `backend/app/replay/service.py` (`storms()`, `cases()`, `season_replay()` read `backend/app/replay/fixtures/*.json`). Stub endpoints `GET /api/storms`, `/api/cases`, `/api/season-replay` with `stub=true` and the header `X-SlackLine-Stub: true`.
 - Known trust gaps on `main`: the 500 handler in `backend/app/api/main.py` (`_unexpected`) returns exception text to the client. "Late shipment" still appears in `README.md`, `docs/DEMO.md`, `docs/CONTRACTS.md`, `scripts/record_mocks.py`, and the recorded mocks.
 
 ## Owns

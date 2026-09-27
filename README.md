@@ -1,4 +1,4 @@
-# Rollout Planner
+# SlackLine
 
 A planning and recovery analysis tool for residential battery installers like Base. It takes an installation plan plus a disruption (a crew out, reduced capacity, a readiness change, or an appointment change), finds the best recovery, and explains which commitments are at risk and why.
 
@@ -8,7 +8,7 @@ Status: the planner and recovery workspace run end to end, covering data loading
 
 ## Live application
 
-**[Open the deployed Rollout Planner](https://bpc-rollout-planner.up.railway.app/)**
+**[Open the deployed SlackLine](https://bpc-rollout-planner.up.railway.app/)**
 
 The Railway deployment serves the built React application and FastAPI backend from the same origin. Its [health endpoint](https://bpc-rollout-planner.up.railway.app/api/health) reports API and valuation-table readiness.
 

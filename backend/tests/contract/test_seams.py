@@ -46,7 +46,7 @@ def test_recovery_options_seam():
     for o in [result.no_action, *result.options]:
         assert o.result.validation.checked and o.result.validation.valid
     if result.stub:
-        assert r.headers["x-rollout-stub"] == "true"
+        assert r.headers["x-slackline-stub"] == "true"
 
 
 def test_evaluate_and_approve_seam():

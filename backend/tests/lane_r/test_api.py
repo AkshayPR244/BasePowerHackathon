@@ -15,7 +15,7 @@ def test_live_options_evaluate_and_approve():
     response = client.post("/api/recovery/options", json=request)
     assert response.status_code == 200, response.text
     out = response.json()
-    assert not out["stub"] and "x-rollout-stub" not in response.headers
+    assert not out["stub"] and "x-slackline-stub" not in response.headers
     assert out["revision"] == 3
     manual = client.post(
         "/api/recovery/evaluate",

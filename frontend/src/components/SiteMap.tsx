@@ -1,5 +1,11 @@
 import { Status } from "../design/status";
 import type { Plan, Scenario } from "../api/types";
+import {
+  clusterDirection,
+  clusterKey,
+  HOUSTON_CENTER,
+  isHoustonScenario,
+} from "../lib/geography";
 export function SiteMap({
   scenario,
   plan,
@@ -28,9 +34,11 @@ export function SiteMap({
     affectedJobIds.some(
       (jobId) => jobId === siteId || jobId.startsWith(`${siteId}-`),
     );
+  const houston = isHoustonScenario(scenario);
   const coords = [
     ...sites.map((s) => [s.lon!, s.lat!]),
     ...scenario.clusters.flatMap((c) => c.outline ?? []),
+    ...(houston ? [[HOUSTON_CENTER.lon, HOUSTON_CENTER.lat]] : []),
   ];
   if (!coords.length)
     return (
@@ -38,20 +46,28 @@ export function SiteMap({
     );
   const xs = coords.map((p) => p[0]),
     ys = coords.map((p) => p[1]);
-  const minX = Math.min(...xs),
-    maxY = Math.max(...ys),
-    spanX = Math.max(...xs) - minX || 1,
-    spanY = maxY - Math.min(...ys) || 1;
+  const centerX = houston
+      ? HOUSTON_CENTER.lon
+      : (Math.min(...xs) + Math.max(...xs)) / 2,
+    centerY = houston
+      ? HOUSTON_CENTER.lat
+      : (Math.min(...ys) + Math.max(...ys)) / 2,
+    halfX = Math.max(...xs.map((value) => Math.abs(value - centerX)), 0.01),
+    halfY = Math.max(...ys.map((value) => Math.abs(value - centerY)), 0.01),
+    minX = centerX - halfX,
+    maxY = centerY + halfY,
+    spanX = halfX * 2,
+    spanY = halfY * 2;
   const scale = Math.min(480 / spanX, 210 / spanY),
     x = (v: number) => 40 + (v - minX) * scale,
     y = (v: number) => 30 + (maxY - v) * scale;
   return (
     <section className="panel">
       <div className="panel-heading">
-        <h2>Service clusters</h2>
+        <h2>{houston ? "Houston service clusters" : "Service clusters"}</h2>
         <span>
           {scenario.config.synthetic ? "Synthetic geometry" : "Source geometry"}{" "}
-          · select a site
+          · {clusterKey(scenario)} · select a site
         </span>
       </div>
       <div className={compact ? "map-layout compact" : "map-layout"}>
@@ -59,8 +75,36 @@ export function SiteMap({
           className="site-map"
           viewBox={`0 0 ${spanX * scale + 100} 270`}
           role="img"
-          aria-label="Sites and service clusters"
+          aria-label={`${houston ? "Houston-centered " : ""}sites and service clusters`}
         >
+          {houston && (
+            <g
+              className="houston-center"
+              transform={`translate(${x(HOUSTON_CENTER.lon)},${y(HOUSTON_CENTER.lat)})`}
+              aria-label="Houston center"
+            >
+              <circle r="5" />
+              <path d="M -9 0 H 9 M 0 -9 V 9" />
+              <text x="9" y="-9">
+                Houston center
+              </text>
+            </g>
+          )}
+          <g className="map-compass" aria-hidden="true">
+            <path d="M 24 47 V 17 M 24 17 L 19 25 M 24 17 L 29 25" />
+            <text x="24" y="12" textAnchor="middle">
+              N
+            </text>
+            <text x="38" y="36" textAnchor="middle">
+              E
+            </text>
+            <text x="24" y="58" textAnchor="middle">
+              S
+            </text>
+            <text x="10" y="36" textAnchor="middle">
+              W
+            </text>
+          </g>
           {scenario.clusters.map((c) => (
             <g key={c.cluster_id}>
               <polygon
@@ -73,7 +117,7 @@ export function SiteMap({
                 x={x(c.outline?.[0]?.[0] ?? minX) + 10}
                 y={y(c.outline?.[0]?.[1] ?? maxY) + 20}
               >
-                {c.name}
+                {c.cluster_id} · {clusterDirection(c.cluster_id, c.name)}
               </text>
             </g>
           ))}

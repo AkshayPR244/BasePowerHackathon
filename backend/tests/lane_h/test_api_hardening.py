@@ -85,7 +85,7 @@ def test_scenario_load_error_hides_paths(monkeypatch, caplog):
         raise OSError(SECRET)
 
     monkeypatch.setattr(main, "load_scenario", broken)
-    with caplog.at_level(logging.ERROR, logger="rollout.api"):
+    with caplog.at_level(logging.ERROR, logger="slackline.api"):
         r = client.get("/api/scenarios/tiny")
     err = _error(r, 422, "invalid_input")
     assert r.headers["x-request-id"] in err.message
@@ -105,7 +105,7 @@ def test_scenario_list_skips_a_broken_scenario(monkeypatch):
     assert r.status_code == 200
     ids = [s["scenario_id"] for s in r.json()]
     assert "tiny" not in ids and "standard" in ids
-    assert r.headers["x-rollout-broken-scenarios"] == "tiny"
+    assert r.headers["x-slackline-broken-scenarios"] == "tiny"
     assert SECRET not in r.text
 
 
@@ -184,7 +184,7 @@ def test_cors_allows_preview_and_exposes_headers():
     assert pre.headers["access-control-allow-origin"] == "http://localhost:4173"
     r = client.get("/api/health", headers={"Origin": "http://localhost:5173"})
     exposed = r.headers["access-control-expose-headers"].lower()
-    assert "x-rollout-stub" in exposed and "x-request-id" in exposed
+    assert "x-slackline-stub" in exposed and "x-request-id" in exposed
 
 
 def test_scenario_cache_returns_private_copies_and_sees_file_changes(tmp_path, monkeypatch):

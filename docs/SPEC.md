@@ -1,4 +1,4 @@
-# Rollout Planner
+# SlackLine
 
 **A public-data prototype for scheduling residential battery deployments and explaining recovery decisions.**
 
@@ -295,4 +295,4 @@ Include a public repository, verified quick start, architecture description, dat
 
 Known limitations: constructed demand and resources; representative rather than measured household profiles; simplified travel and single-stage jobs; assumed qualification lag; no live integrations; hindsight prices; gross operating margin rather than total business profit; no evidence that Base lacks equivalent internal tools.
 
-Suggested pitch: **“Rollout Planner turns a public-data deployment scenario into a feasible installation plan, explains the consequences of disruptions, and measures when earlier commissioning creates additional modeled energy value.”**
+Suggested pitch: **“SlackLine turns a public-data deployment scenario into a feasible installation plan, explains the consequences of disruptions, and measures when earlier commissioning creates additional modeled energy value.”**

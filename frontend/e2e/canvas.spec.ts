@@ -16,8 +16,8 @@ async function patchMocks(page: Page, patches: Record<string, Patch>) {
   await page.addInitScript((source) => {
     const parsed = JSON.parse(source) as Record<string, Patch>;
     (
-      window as unknown as { __rolloutMockPatches: unknown }
-    ).__rolloutMockPatches = Object.fromEntries(
+      window as unknown as { __slackLineMockPatches: unknown }
+    ).__slackLineMockPatches = Object.fromEntries(
       Object.entries(parsed).map(([path, patch]) => [
         path,
         {
@@ -556,6 +556,13 @@ test("option thumbnails compare crew load by day", async ({ page }) => {
   await expect(
     cards.first().getByLabel("Crew load before and after"),
   ).toBeVisible();
+  await expect(cards.first()).toContainText("Crew workload before and after");
+  await expect(cards.first().getByLabel("Workload legend")).toContainText(
+    "Before",
+  );
+  await expect(cards.first().getByLabel("Workload legend")).toContainText(
+    "After",
+  );
 
   await page.screenshot({
     path: "e2e/screenshots/canvas-thumbnails.png",
@@ -609,6 +616,11 @@ test("assumptions edits are sent as economics overrides", async ({ page }) => {
 test("map inset groups affected homes by cluster", async ({ page }) => {
   await loadCanvas(page);
 
+  await expect(
+    page.getByRole("heading", { name: "Houston service clusters" }),
+  ).toBeVisible();
+  await expect(page.locator(".houston-center")).toBeVisible();
+  await expect(page.locator(".map-compass")).toBeVisible();
   const inset = page.getByTestId("affected-map-inset");
   await expect(inset).toContainText("Affected homes by cluster");
   const southCluster = inset.locator(".affected-cluster").filter({

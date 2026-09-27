@@ -13,6 +13,7 @@ from app.contracts.models import (
     Scenario,
     Site,
 )
+from app.contracts.visits import gap_ok, jobs_of, min_gap
 
 
 def day(d: dt.date) -> str:
@@ -55,20 +56,60 @@ def blocked_detail(site: Site, reasons: list[ReasonCode], scenario: Scenario) ->
     return f"{sid} has no legal crew-day."
 
 
-def no_legal_date_detail(site: Site, scenario: Scenario) -> str:
+def no_legal_date_detail(site: Site, scenario: Scenario, windows: dict | None = None) -> str:
+    """Why a home cannot finish by its deadline: readiness, crews, appointments, or the gap."""
+    sid, due = site.site_id, f"{site.site_id} is due {day(site.deadline)}."
     if site.ready_date > site.deadline:
-        return (
-            f"{site.site_id} is due {day(site.deadline)} but is not ready until "
-            f"{day(site.ready_date)}."
-        )
-    return (
-        f"{site.site_id} is due {day(site.deadline)}. No crew that serves "
-        f"{site.cluster_id} works on or before that day."
+        return f"{sid} is due {day(site.deadline)} but is not ready until {day(site.ready_date)}."
+    windows = windows or {}
+    jobs = jobs_of(site)
+    days = {j.job_id: _legal_days(scenario, site, j) for j in jobs}
+    final = jobs[-1]
+    by_deadline = [d for d in days[final.job_id] if d <= site.deadline]
+    if not by_deadline:
+        return f"{due} No crew that serves {site.cluster_id} works on or before that day."
+    fitted = {j.job_id: _in_window(days[j.job_id], windows.get(j.job_id)) for j in jobs}
+    in_window = [d for d in fitted[final.job_id] if d <= site.deadline]
+    if not in_window:
+        label = "Its battery day" if final.visit_type else "Its visit"
+        return f"{due} {label} has an appointment window {window_text(*windows[final.job_id])}."
+    if len(jobs) == 2:
+        gap, origin = min_gap(scenario), scenario.config.planning_start
+        if not any(gap_ok(i, b, gap, origin) for i in fitted[jobs[0].job_id] for b in in_window):
+            return (
+                f"{due} Its install must come at least {plural(gap, 'business day')} "
+                "before the battery day. No install crew-day fits."
+            )
+    return f"{due} No legal crew-day remains by then."
+
+
+def _legal_days(scenario: Scenario, site: Site, job) -> list[dt.date]:
+    c = scenario.config
+    return sorted(
+        {
+            cd.date
+            for cd in scenario.crew_days
+            if c.planning_start <= cd.date <= c.planning_end
+            and cd.date >= site.ready_date
+            and job.required_skill in cd.skills
+            and site.cluster_id in cd.allowed_clusters
+        }
     )
 
 
+def _in_window(days: list[dt.date], window) -> list[dt.date]:
+    if window is None:
+        return days
+    start, end = window
+    return [d for d in days if d >= start and (end is None or d <= end)]
+
+
+def window_text(start: dt.date, end: dt.date | None) -> str:
+    return f"from {day(start)}" if end is None else f"from {day(start)} to {day(end)}"
+
+
 def window_detail(what: str, start: dt.date, end: dt.date | None) -> str:
-    window = f"from {day(start)}" if end is None else f"from {day(start)} to {day(end)}"
+    window = window_text(start, end)
     return f"{what} has an appointment window {window}. No eligible crew works in it."
 
 

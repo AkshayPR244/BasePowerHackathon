@@ -99,6 +99,22 @@ def test_unscheduled_visit_names_its_appointment_window(tiny):
     assert "appointment window from Sat 9 Jun" in n02.detail
 
 
+def test_no_legal_date_names_the_install_gap(two_visit):
+    sites = [
+        s.model_copy(update={"deadline": D(4)}) if s.site_id == "H1" else s for s in two_visit.sites
+    ]
+    r = run(unlocked(two_visit).model_copy(update={"sites": sites}), mode=Mode.strict)
+    assert r.status == PlanStatus.infeasible
+    assert "Its install must come at least 1 business day before the battery day" in r.message
+    assert "No crew that serves" not in r.message
+
+
+def test_no_legal_date_names_the_appointment_window(tiny):
+    r = run(tiny, [ChangeAppointment(job_id="N-02", available_from=D(5))], Mode.strict)
+    assert r.status == PlanStatus.infeasible
+    assert "N-02 is due Mon 4 Jun. Its visit has an appointment window from Tue 5 Jun." in r.message
+
+
 def test_install_may_stand_alone_in_recovery():
     s = load_scenario("standard")
     r = run(s, [MoveVisit(job_id="W-03-I", crew_id="IA", date=D(15))])

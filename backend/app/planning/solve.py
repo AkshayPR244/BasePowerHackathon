@@ -163,7 +163,9 @@ def _solve(scenario, req, forced, values, policy, common) -> PlanResult:
         )
 
     missing = [
-        u for u in no_legal_date_jobs(scenario, elig) if mode == Mode.strict or u.site_id in forced
+        u
+        for u in no_legal_date_jobs(scenario, elig, req.edits)
+        if mode == Mode.strict or u.site_id in forced
     ]
     if missing:
         ids = ", ".join(u.site_id for u in missing)

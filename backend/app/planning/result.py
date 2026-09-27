@@ -262,14 +262,17 @@ def locked_job_slots(scenario: Scenario) -> dict[str, tuple[str, dt.date]]:
     return out
 
 
-def no_legal_date_jobs(scenario: Scenario, elig: Eligibility) -> list[UnscheduledJob]:
+def no_legal_date_jobs(
+    scenario: Scenario, elig: Eligibility, edits: list[Edit] | None = None
+) -> list[UnscheduledJob]:
     sites = {s.site_id: s for s in scenario.sites}
+    windows = appointment_windows(edits or [])
     return [
         UnscheduledJob(
             site_id=sid,
             state=JobState.unscheduled,
             reasons=[ReasonCode.NO_LEGAL_DATE],
-            detail=explain.no_legal_date_detail(sites[sid], scenario),
+            detail=explain.no_legal_date_detail(sites[sid], scenario, windows),
         )
         for sid in sorted({j.site_id for j in elig.jobs.values()})
         if any(not elig.options[j.job_id] for j in elig.jobs_of_site(sid))

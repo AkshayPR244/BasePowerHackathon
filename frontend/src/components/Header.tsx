@@ -58,7 +58,7 @@ export function Header({
           R/
         </span>
         <div>
-          <h1>Rollout Planner</h1>
+          <h1>SlackLine</h1>
           <span className="eyebrow">OPERATIONS / RECOVERY CANVAS</span>
         </div>
       </div>

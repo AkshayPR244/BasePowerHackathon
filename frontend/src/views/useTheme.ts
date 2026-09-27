@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 
 type Theme = "light" | "dark";
-const storageKey = "rollout-planner-theme";
+const storageKey = "slackline-theme";
 
 function storedTheme(): Theme | null {
   try {

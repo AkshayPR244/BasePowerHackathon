@@ -66,9 +66,9 @@ type MockPatch = {
 const patchFor = (path: string): MockPatch | undefined =>
   (
     globalThis as {
-      __rolloutMockPatches?: Record<string, MockPatch>;
+      __slackLineMockPatches?: Record<string, MockPatch>;
     }
-  ).__rolloutMockPatches?.[path];
+  ).__slackLineMockPatches?.[path];
 export const handlers = ["GET", "POST"].map((method) =>
   (method === "GET" ? http.get : http.post)("*/api/*", async ({ request }) => {
     const path = new URL(request.url).pathname;

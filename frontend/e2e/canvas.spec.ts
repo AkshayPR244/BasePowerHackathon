@@ -16,8 +16,8 @@ async function patchMocks(page: Page, patches: Record<string, Patch>) {
   await page.addInitScript((source) => {
     const parsed = JSON.parse(source) as Record<string, Patch>;
     (
-      window as unknown as { __rolloutMockPatches: unknown }
-    ).__rolloutMockPatches = Object.fromEntries(
+      window as unknown as { __slackLineMockPatches: unknown }
+    ).__slackLineMockPatches = Object.fromEntries(
       Object.entries(parsed).map(([path, patch]) => [
         path,
         {

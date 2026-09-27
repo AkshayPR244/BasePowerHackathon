@@ -42,7 +42,7 @@ The R-recovery, W-weather, and H-hardening scaffold was reverted before any comm
 
 ## Stubbed (seams frozen in this scaffold)
 
-- Endpoints return fixtures with `stub: true` and the header `X-Rollout-Stub: true`:
+- Endpoints return fixtures with `stub: true` and the header `X-SlackLine-Stub: true`:
   - `POST /api/recovery/options`, `/evaluate`, `/approve`
   - `GET /api/storms`, `/api/cases`, `/api/season-replay`
 - **Fixtures** (`scripts/build_stubs.py`) use real planner results on `standard` for the 14 Jun 2018 storm case (all three crews out):

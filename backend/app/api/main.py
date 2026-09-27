@@ -49,7 +49,7 @@ async def lifespan(_: FastAPI):
 
 
 app = FastAPI(
-    title="Rollout Planner API",
+    title="SlackLine API",
     description="Plan and disruption in, best recovery and its impact out.",
     version="1.0.0",
     separate_input_output_schemas=False,
@@ -60,7 +60,7 @@ app.add_middleware(
     allow_origins=[f"http://{h}:{p}" for h in ("localhost", "127.0.0.1") for p in (5173, 4173)],
     allow_methods=["*"],
     allow_headers=["*"],
-    expose_headers=["X-Rollout-Stub", "X-Request-ID"],
+    expose_headers=["X-SlackLine-Stub", "X-Request-ID"],
 )
 
 ERRORS = {
@@ -94,7 +94,7 @@ async def _api_error(_: Request, exc: ApiException) -> JSONResponse:
     return response
 
 
-log = logging.getLogger("rollout.api")
+log = logging.getLogger("slackline.api")
 
 
 def _logged(what: str, exc: BaseException) -> str:
@@ -189,7 +189,7 @@ def list_scenarios(response: Response) -> list[ScenarioSummary]:
             _logged(f"scenario {sid} did not load", e)
             broken.append(sid)
     if broken:
-        response.headers["X-Rollout-Broken-Scenarios"] = ",".join(broken)
+        response.headers["X-SlackLine-Broken-Scenarios"] = ",".join(broken)
     return good
 
 
@@ -221,12 +221,12 @@ async def run_counterfactual(req: CounterfactualRequest) -> CounterfactualResult
     return await asyncio.to_thread(counterfactual, scenario, req)
 
 
-# Stubbed seams. Each response sets X-Rollout-Stub while any part is still a stub.
+# Stubbed seams. Each response sets X-SlackLine-Stub while any part is still a stub.
 
 
 def _mark(response: Response, stub: bool) -> None:
     if stub:
-        response.headers["X-Rollout-Stub"] = "true"
+        response.headers["X-SlackLine-Stub"] = "true"
 
 
 def _raised_in_recovery(exc: BaseException) -> bool:

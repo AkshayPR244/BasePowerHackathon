@@ -1,7 +1,7 @@
 # Lane A · Data, Valuation, Truth
 
 ## Mission
-Rollout Planner is a planning and recovery analysis tool for residential battery installers. It takes an installation plan plus a disruption (crew out, late shipment, slipped approval), finds the best recovery, and explains what is at risk and why.
+SlackLine is a planning and recovery analysis tool for residential battery installers. It takes an installation plan plus a disruption (crew out, late shipment, slipped approval), finds the best recovery, and explains what is at risk and why.
 
 Lane A gives every other lane inputs it can trust and a validator that tells the truth about any plan or recovery.
 

@@ -77,9 +77,7 @@ export function Workspace() {
   const [baselineOpen, setBaselineOpen] = useState<Record<string, boolean>>({});
   const showBaseline = baselineOpen[scenarioId] ?? !disruption;
   useEffect(() => {
-    document.title = disruption
-      ? "Recovery Canvas · Rollout Planner"
-      : "Rollout Planner";
+    document.title = disruption ? "Recovery Canvas · SlackLine" : "SlackLine";
   }, [disruption]);
   if (scenario.isError || scenarios.isError)
     return (

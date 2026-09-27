@@ -1,6 +1,7 @@
 """Business days: weekdays that are not US federal holidays (observed dates)."""
 
 import datetime as dt
+from functools import lru_cache
 
 
 def _nth_weekday(year: int, month: int, weekday: int, n: int) -> dt.date:
@@ -22,7 +23,8 @@ def _observed(d: dt.date) -> dt.date:
     return d
 
 
-def federal_holidays(year: int) -> set[dt.date]:
+@lru_cache(maxsize=64)
+def federal_holidays(year: int) -> frozenset[dt.date]:
     days = {
         _observed(dt.date(year, 1, 1)),
         _nth_weekday(year, 1, 0, 3),  # Martin Luther King Jr. Day
@@ -37,7 +39,7 @@ def federal_holidays(year: int) -> set[dt.date]:
     }
     if year >= 2021:
         days.add(_observed(dt.date(year, 6, 19)))  # Juneteenth
-    return days
+    return frozenset(days)
 
 
 def is_business_day(d: dt.date) -> bool:
@@ -53,6 +55,7 @@ def business_days(start: dt.date, count: int) -> list[dt.date]:
     return out
 
 
+@lru_cache(maxsize=4096)
 def business_ordinal(d: dt.date, origin: dt.date) -> int:
     """Business days in (origin, d]. Non-business days share the previous business day's number."""
     lo, hi, sign = (origin, d, 1) if d >= origin else (d, origin, -1)

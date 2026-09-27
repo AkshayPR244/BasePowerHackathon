@@ -564,6 +564,29 @@ header {
   position: relative;
   overflow: auto;
 }
+.calendar .table-scroll {
+  height: 420px;
+  overflow-x: auto;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-gutter: stable;
+}
+.calendar.calendar-expanded .table-scroll {
+  height: min(78vh, 900px);
+}
+.calendar-heading-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.calendar-heading-actions button {
+  white-space: nowrap;
+}
+.calendar thead th {
+  position: sticky;
+  z-index: 3;
+  top: 0;
+}
 .visit-arcs {
   position: absolute;
   top: 0;
@@ -1014,7 +1037,7 @@ footer {
 .calendar table th:first-child {
   position: sticky;
   left: 0;
-  z-index: 2;
+  z-index: 4;
 }
 .calendar thead th.focus-day {
   border-bottom: 2px solid var(--ink);
@@ -1153,6 +1176,34 @@ footer {
 .scenario-success {
   margin: 12px 16px;
   font-weight: 600;
+}
+.advanced-nav {
+  position: sticky;
+  z-index: 20;
+  top: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  border-bottom: 1px solid var(--hairline);
+  padding: 10px 16px;
+  background: var(--panel);
+}
+.advanced-nav strong {
+  font-size: 14px;
+}
+.advanced-nav a {
+  border: 1px solid var(--ink);
+  border-radius: var(--radius);
+  padding: 7px 11px;
+  color: var(--ink);
+  font-size: 12px;
+  font-weight: 600;
+  text-decoration: none;
+}
+.advanced-nav a:hover {
+  background: var(--ink);
+  color: var(--panel);
 }
 .view-switch {
   display: flex;

@@ -5,12 +5,19 @@ export function ScenarioBriefing({
   onApply,
   disabled,
   hasDisruption,
+  activeCopy,
 }: {
   report: Narrative | undefined;
   primaryActive: boolean;
   onApply: () => void;
   disabled: boolean;
   hasDisruption: boolean;
+  activeCopy?: {
+    trigger: string;
+    whatWentWrong: string;
+    unavailableResources: string[];
+    question: string;
+  };
 }) {
   if (!report) return null;
   return (
@@ -21,13 +28,17 @@ export function ScenarioBriefing({
           <strong>{report.title}</strong>
         </summary>
         <div className="briefing-body">
-          <p>{primaryActive ? report.trigger : report.situation}</p>
+          <p>
+            {primaryActive
+              ? (activeCopy?.trigger ?? report.trigger)
+              : report.situation}
+          </p>
           <div className="briefing-incident" aria-label="Operational impact">
             <div>
               <span className="eyebrow">What went wrong</span>
               <strong>
                 {primaryActive
-                  ? report.what_went_wrong
+                  ? (activeCopy?.whatWentWrong ?? report.what_went_wrong)
                   : "Nothing yet — this is the healthy starting plan."}
               </strong>
             </div>
@@ -37,7 +48,10 @@ export function ScenarioBriefing({
               </span>
               {primaryActive ? (
                 <ul>
-                  {report.unavailable_resources.map((resource) => (
+                  {(
+                    activeCopy?.unavailableResources ??
+                    report.unavailable_resources
+                  ).map((resource) => (
                     <li key={resource}>{resource}</li>
                   ))}
                 </ul>
@@ -51,7 +65,7 @@ export function ScenarioBriefing({
           </div>
           {primaryActive && (
             <p>
-              <strong>{report.question}</strong>
+              <strong>{activeCopy?.question ?? report.question}</strong>
             </p>
           )}
           {!primaryActive && (

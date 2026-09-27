@@ -60,12 +60,47 @@ test.describe("live canvas on recorded responses", () => {
       page.getByText("Synthetic plan", { exact: true }),
     ).toBeVisible();
     await expect(page.locator("body")).not.toContainText("storm");
+    const optionChips = page.locator(".option-chip");
+    await expect(optionChips.first()).toHaveCSS("min-height", "40px");
+    const optionColors = await page
+      .locator(".frontier-point")
+      .evaluateAll((points) =>
+        points.map((point) => ({
+          kind: point.getAttribute("data-option-kind"),
+          color: getComputedStyle(point.querySelector(".frontier-marker")!)
+            .stroke,
+        })),
+      );
+    expect(new Set(optionColors.map(({ kind }) => kind)).size).toBe(
+      optionColors.length,
+    );
+    expect(
+      new Set(optionColors.map(({ color }) => color).filter(Boolean)).size,
+    ).toBe(optionColors.length);
+    expect(
+      (await page.locator(".frontier-svg").boundingBox())!.height,
+    ).toBeGreaterThanOrEqual(300);
+    const planBox = (await page.locator(".plan-figure").boundingBox())!;
+    const frontierBox = (await page.locator(".frontier-figure").boundingBox())!;
+    expect(frontierBox.y).toBeGreaterThanOrEqual(planBox.y + planBox.height);
     await page.screenshot({ path: "e2e/screenshots/live-canvas.png" });
     await page.getByTestId("workspace-link").click();
     await expect(page.getByTestId("recovery-canvas")).toBeVisible();
     await expect(page.getByTestId("baseline-section")).toBeVisible();
     await page.getByTestId("live-canvas-link").click();
     await expect(page.getByTestId("live-recovery-canvas")).toBeVisible();
+  });
+
+  test("random trigger uses the supported recorded disruption", async ({
+    page,
+  }) => {
+    await openMockCanvas(page);
+    await page.getByRole("button", { name: "Random trigger" }).click();
+    await expect(page.getByTestId("live-headline")).toHaveText(
+      "Crew BA loses Thu 14 Jun.",
+    );
+    await expect(page.getByTestId("live-results")).toBeVisible();
+    await expect(page.getByRole("alert")).toHaveCount(0);
   });
 
   test("knocked-out crew-day shows ghosts and derived text", async ({
@@ -81,7 +116,7 @@ test.describe("live canvas on recorded responses", () => {
       "7 visits displaced",
     );
     await expect(
-      chip(page, "temporary_capacity").getByText("Lowest modeled cost"),
+      chip(page, "temporary_capacity").getByText("Lowest adjusted cost"),
     ).toBeVisible();
     await expect(page.locator("body")).not.toContainText("storm");
     await page.screenshot({ path: "e2e/screenshots/live-canvas-knockout.png" });
@@ -227,7 +262,8 @@ test.describe("live canvas against the live API", () => {
     expect(dimensions.width).toBe(1440);
     expect(dimensions.height).toBe(900);
     expect(dimensions.documentWidth).toBeLessThanOrEqual(1440);
-    expect(dimensions.documentHeight).toBeLessThanOrEqual(900);
+    expect(dimensions.documentHeight).toBeGreaterThanOrEqual(900);
+    expect(dimensions.documentHeight).toBeLessThanOrEqual(1400);
     await page.screenshot({ path: info.outputPath(`${name}.png`) });
   }
 
@@ -295,13 +331,29 @@ test.describe("live canvas against the live API", () => {
       await expect(page.getByTestId(`tool-${tool}`)).toContainText(meaning);
     }
 
-    const optionPoints = page.locator(".frontier-point circle");
+    const optionPoints = page.locator(".frontier-point .frontier-marker");
     await expect(optionPoints.first()).toBeVisible();
     await expect(page.locator(".frontier-point text")).toHaveCount(0);
     await expect(page.locator(".option-chip")).toHaveCount(
       await optionPoints.count(),
     );
     const optionChips = page.locator(".option-chip");
+    await expect(optionChips.first()).toHaveCSS("min-height", "40px");
+    const optionColors = await page
+      .locator(".frontier-point")
+      .evaluateAll((points) =>
+        points.map((point) => ({
+          kind: point.getAttribute("data-option-kind"),
+          color: getComputedStyle(point.querySelector(".frontier-marker")!)
+            .stroke,
+        })),
+      );
+    expect(new Set(optionColors.map(({ kind }) => kind)).size).toBe(
+      optionColors.length,
+    );
+    expect(
+      new Set(optionColors.map(({ color }) => color).filter(Boolean)).size,
+    ).toBe(optionColors.length);
     for (let index = 0; index < (await optionChips.count()); index += 1) {
       await optionChips.nth(index).click();
       await expectVisibleCrewSkills(page);

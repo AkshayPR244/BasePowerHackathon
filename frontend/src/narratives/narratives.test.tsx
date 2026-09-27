@@ -16,6 +16,8 @@ describe("frontend-only scenario briefings", () => {
       expect(report.scenario_id).toBe(id);
       expect(presetFor(id)?.scenario_id).toBe(id);
       expect(report.what_to_watch.length).toBeGreaterThan(0);
+      expect(report.what_went_wrong).toBeTruthy();
+      expect(report.unavailable_resources.length).toBeGreaterThan(0);
       for (const value of Object.values(report))
         expect(value.length).toBeGreaterThan(0);
     }
@@ -49,6 +51,13 @@ describe("frontend-only scenario briefings", () => {
       expect(html).toContain(report.truth_label);
       expect(html).toContain(active ? report.trigger : report.situation);
       expect(html).not.toContain(active ? report.situation : report.trigger);
+      expect(html).toContain("What went wrong");
+      expect(html).toContain("Unavailable or constrained resources");
+      expect(html).toContain(
+        active
+          ? report.what_went_wrong
+          : "Nothing yet — this is the healthy starting plan.",
+      );
       expect(html).toContain('<details open="">');
     }
   });

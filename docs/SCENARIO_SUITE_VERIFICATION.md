@@ -36,26 +36,26 @@ The live preview at `http://127.0.0.1:5174` was inspected in the in-app browser.
 
 The suite tests regenerate each scenario into a temporary directory and compare every operational input byte, generated manifest, primary-disruption preset, scenario hash, and solved current plan with the committed artifacts. Prepared Parquet files are compared byte-for-byte with the existing valid `standard` price/load inputs. Narrative prose is deliberately excluded from generation and is verified as frontend-only metadata.
 
-## Regenerated on `integrate/qa-fixes` (2026-09-26)
+## Regenerated after main integration (2026-09-27)
 
-The committed suite did not match its own generator on this machine: `scenario.yaml` was written with CRLF on Windows, and the solved current plans differed. The generator now writes LF on every platform. `python -m app.data.generate_scenarios --all` gives identical files under two different `PYTHONHASHSEED` values. The committed data, manifests, presets, and the payloads in `SCENARIO_SUITE.md` come from that run.
+The main integration combined generated plans from one planner revision with generator code from another. The suite was regenerated with the merged planner. `python -m app.data.generate_scenarios --all` now reproduces every committed operational file, manifest, preset, scenario hash, and current plan byte-for-byte. The payloads in `SCENARIO_SUITE.md` match that run.
 
 Recovery now freezes every visit before the earliest disruption date (R-19). The suite checks recovery options against that prepared scenario (`prepared_scenario`), not against the base scenario plus edits.
 
 - `cd backend && uv run pytest -q tests/scenario_suite`: 21 passed.
 
-Recovery outcomes on this build, measured in-process. Sections above record the earlier build.
+Recovery outcomes on this build, measured in-process:
 
 | Scenario | No action | Best returned option |
 |---|---|---|
 | `tight_feasible` | 5 deadlines missed | temporary capacity, 0 missed. Overtime misses 3. |
-| `crew_out_recoverable` | 0 missed | rebalance, 0 missed |
+| `crew_out_recoverable` | 4 deadlines missed | rebalance, 0 missed |
 | `inventory_delay_recoverable` | 0 missed | rebalance, 0 missed |
 | `readiness_appointment` | 1 missed, 1 unscheduled | rebalance, 0 missed |
 | `skill_cluster_bottleneck` | 0 missed | rebalance, 0 missed |
 | `two_visit_cascade` | 0 missed | rebalance, 0 missed |
 | `locked_infeasible` | infeasible | every option infeasible |
 | `late_overflow` | 12 missed, 0 unscheduled | rebalance, 12 missed |
-| `value_sensitive` | 0 missed | rebalance, 0 missed |
+| `value_sensitive` | 7 deadlines missed | temporary capacity, 0 missed |
 
-`crew_out_recoverable` now removes Crew IB on Mon 4 Jun, the busiest install day in the regenerated plan. No action already keeps every commitment there, so the scenario no longer shows a miss under no action.
+`crew_out_recoverable` removes Crew IA on Thu 7 Jun, the busiest install day in the regenerated plan. No action misses four commitments; rebalancing recovers all four without violating skills, capacity, inventory, locks, appointments, or precedence.

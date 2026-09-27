@@ -241,7 +241,7 @@ export function RecoveryCanvas({
             )}
             {noLowest && (
               <p className="option-note" data-testid="no-lowest-note">
-                No option has a lower modeled cost than the others. Compare
+                No option has a lower adjusted cost than the others. Compare
                 deadlines missed and customers to reschedule.
               </p>
             )}

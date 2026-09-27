@@ -214,7 +214,7 @@ test("ghosts render in lost crew-day cells", async ({ page }) => {
   await expect(stormCell).not.toContainText("No visits planned");
 });
 
-test("options show modeled cost, customer impact, overtime, and lowest cost", async ({
+test("options show adjusted cost, customer impact, overtime, and lowest cost", async ({
   page,
 }) => {
   await loadCanvas(page);
@@ -225,10 +225,13 @@ test("options show modeled cost, customer impact, overtime, and lowest cost", as
   const rebalance = options.locator('[data-option-kind="rebalance"]');
   const temporary = options.locator('[data-option-kind="temporary_capacity"]');
   const noAction = options.locator('[data-option-kind="no_action"]');
-  await expect(temporary).toContainText("Lowest modeled cost");
+  await expect(temporary).toContainText("Lowest adjusted cost");
   await expect(noAction.getByTestId("option-cost")).toContainText("$630.25");
-  await expect(noAction).not.toContainText("Lowest modeled cost");
-  await expect(rebalance).not.toContainText("Lowest modeled cost");
+  await expect(
+    noAction.getByTestId("option-cost").locator("strong"),
+  ).toHaveClass(/cost-positive/);
+  await expect(noAction).not.toContainText("Lowest adjusted cost");
+  await expect(rebalance).not.toContainText("Lowest adjusted cost");
   await expect(rebalance).toContainText("same plan as no action");
   await expect(temporary.getByTestId("option-customers")).toContainText("7");
   await expect(temporary.getByTestId("option-cost")).toContainText("$458.40");
@@ -259,7 +262,7 @@ test("no lowest-cost option still renders every card with deadlines", async ({
   });
   await loadCanvas(page);
   await expect(page.getByTestId("no-lowest-note")).toBeVisible();
-  await expect(page.getByText("Lowest modeled cost")).toHaveCount(0);
+  await expect(page.getByText("Lowest adjusted cost")).toHaveCount(0);
   const cards = page.locator(".option-card");
   await expect(cards).toHaveCount(3);
   for (const card of await cards.all()) {

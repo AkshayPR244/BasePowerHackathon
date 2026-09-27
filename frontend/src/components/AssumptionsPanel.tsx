@@ -83,7 +83,7 @@ export function AssumptionsPanel({
         )}
         {recalculating && (
           <p role="status" data-testid="economics-recalculating">
-            Recalculating modeled costs…
+            Recalculating adjusted costs…
           </p>
         )}
         <div className="actions">
@@ -100,7 +100,7 @@ export function AssumptionsPanel({
             }}
             data-testid="apply-economics"
           >
-            Apply modeled costs
+            Apply adjusted costs
           </button>
           <button
             type="button"

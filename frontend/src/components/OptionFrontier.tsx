@@ -1,4 +1,5 @@
 import type { Schema } from "../api/types";
+import { adjustedCostClass } from "../lib/format";
 
 type RecoveryOption = Schema["RecoveryOption"];
 
@@ -75,6 +76,31 @@ export function OptionFrontier({
     const coordinate = point(option);
     return `${coordinate.x},${coordinate.y}`;
   });
+  const overlapCounts = new Map<string, number>();
+  for (const option of plotted) {
+    const key = `${option.economics.net_impact_usd}|${option.counts.deadlines_missed}`;
+    overlapCounts.set(key, (overlapCounts.get(key) ?? 0) + 1);
+  }
+  const overlapIndexes = new Map<string, number>();
+  const plotEntries = plotted.map((option) => {
+    const origin = point(option);
+    const key = `${option.economics.net_impact_usd}|${option.counts.deadlines_missed}`;
+    const total = overlapCounts.get(key) ?? 1;
+    const index = overlapIndexes.get(key) ?? 0;
+    overlapIndexes.set(key, index + 1);
+    if (total === 1) return { option, origin, marker: origin, overlaps: false };
+    const angle = -Math.PI / 2 + (index * Math.PI * 2) / total;
+    const spread = Math.min(14, 8 + total);
+    return {
+      option,
+      origin,
+      marker: {
+        x: origin.x + Math.cos(angle) * spread,
+        y: origin.y + Math.sin(angle) * spread,
+      },
+      overlaps: true,
+    };
+  });
   const formatCost = (value: number) => money.format(value);
   const label = (option: RecoveryOption) =>
     option.kind === "no_action"
@@ -106,7 +132,7 @@ export function OptionFrontier({
             className="frontier-svg"
             viewBox={`0 0 ${width} ${height}`}
             role="group"
-            aria-label="Modeled cost by deadlines missed; dot size shows customers to reschedule"
+            aria-label="Adjusted cost versus the original plan by deadlines missed; dot size shows customers to reschedule"
           >
             {[0, 0.5, 1].map((fraction) => {
               const y = top + plotHeight * (1 - fraction);
@@ -160,7 +186,7 @@ export function OptionFrontier({
               y={height - 4}
               textAnchor="middle"
             >
-              Modeled cost
+              Adjusted cost vs original plan
             </text>
             <text
               className="plot-axis-label"
@@ -175,8 +201,7 @@ export function OptionFrontier({
                 points={frontierPoints.join(" ")}
               />
             )}
-            {plotted.map((option) => {
-              const { x, y } = point(option);
+            {plotEntries.map(({ option, origin, marker, overlaps }) => {
               const radius =
                 5 + Math.sqrt(option.counts.customers_to_reschedule) * 1.15;
               const selected = selectedId === option.option_id;
@@ -186,11 +211,11 @@ export function OptionFrontier({
                   key={option.option_id}
                   role="button"
                   tabIndex={0}
-                  aria-label={`${label(option)}, ${formatCost(option.economics.net_impact_usd)} modeled cost, ${option.counts.deadlines_missed} deadlines missed, ${option.counts.customers_to_reschedule} customers to reschedule`}
+                  aria-label={`${label(option)}, ${formatCost(option.economics.net_impact_usd)} adjusted cost versus the original plan, ${option.counts.deadlines_missed} deadlines missed, ${option.counts.customers_to_reschedule} customers to reschedule`}
                   aria-pressed={selected}
                   data-option-id={option.option_id}
                   data-option-kind={option.kind}
-                  className={`frontier-point ${isNoAction ? "frontier-no-action" : ""} ${selected ? "frontier-selected" : ""}`}
+                  className={`frontier-point ${adjustedCostClass(option.economics.net_impact_usd)} ${isNoAction ? "frontier-no-action" : ""} ${selected ? "frontier-selected" : ""}`}
                   style={{ pointerEvents: "all" }}
                   onClick={() => onSelect(option.option_id)}
                   onKeyDown={(event) => {
@@ -201,9 +226,29 @@ export function OptionFrontier({
                   }}
                 >
                   <title>
-                    {`${label(option)}, ${formatCost(option.economics.net_impact_usd)} modeled cost, ${option.counts.deadlines_missed} deadlines missed`}
+                    {`${label(option)}, ${formatCost(option.economics.net_impact_usd)} adjusted cost versus the original plan, ${option.counts.deadlines_missed} deadlines missed`}
                   </title>
-                  <circle cx={x} cy={y} r={radius} />
+                  {overlaps && (
+                    <line
+                      className="frontier-overlap-link"
+                      x1={origin.x}
+                      y1={origin.y}
+                      x2={marker.x}
+                      y2={marker.y}
+                    />
+                  )}
+                  <circle
+                    className="frontier-halo"
+                    cx={marker.x}
+                    cy={marker.y}
+                    r={radius + 1}
+                  />
+                  <circle
+                    className="frontier-marker"
+                    cx={marker.x}
+                    cy={marker.y}
+                    r={radius}
+                  />
                 </g>
               );
             })}
@@ -218,9 +263,12 @@ export function OptionFrontier({
                 className={`option-chip ${selectedId === option.option_id ? "option-chip-selected" : ""}`}
                 onClick={() => onSelect(option.option_id)}
               >
-                {label(option)}
+                <span className="option-chip-heading">
+                  <span className="option-chip-swatch" aria-hidden="true" />
+                  <span>{label(option)}</span>
+                </span>
                 {option.lowest_modeled_cost && (
-                  <small>Lowest modeled cost</small>
+                  <small>Lowest adjusted cost</small>
                 )}
               </button>
             ))}

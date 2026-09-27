@@ -4,9 +4,9 @@
 
 body {
   margin: 0;
-  height: 100dvh;
+  min-height: 100dvh;
   min-width: 760px;
-  overflow: hidden;
+  overflow: auto;
   background: var(--paper);
   color: var(--ink);
   font-family: var(--font-ui);
@@ -22,14 +22,14 @@ p {
 .live-app {
   display: grid;
   width: 100%;
-  height: 100dvh;
+  min-height: 100dvh;
   max-width: none;
   min-height: 0;
   grid-template-rows: auto auto minmax(0, 1fr) auto;
   gap: 10px;
   margin: 0;
   padding: 12px 20px 10px;
-  overflow: hidden;
+  overflow: visible;
   background: var(--paper);
   font-family: var(--font-ui);
 }
@@ -205,9 +205,17 @@ p {
 .live-figures {
   display: grid;
   min-height: 0;
-  grid-template-columns: minmax(0, 1.8fr) minmax(350px, 0.88fr);
+  grid-template-columns: 1fr;
   gap: 18px;
-  overflow: hidden;
+  overflow: visible;
+}
+
+.plan-figure {
+  min-height: 520px;
+}
+
+.options-column {
+  min-height: 440px;
 }
 
 .live-figures.figures-stale {
@@ -830,15 +838,15 @@ p {
 .frontier-svg {
   display: block;
   width: 100%;
-  height: min(33vh, 290px);
-  flex: 0 0 auto;
+  height: auto;
+  min-height: 240px;
+  flex: 1 1 300px;
   overflow: visible;
   pointer-events: none;
 }
 
 .frontier-svg .frontier-point,
-.frontier-point circle,
-.frontier-point text {
+.frontier-marker {
   pointer-events: all;
 }
 
@@ -865,33 +873,74 @@ p {
 }
 
 .frontier-point {
+  --option-color: var(--option-custom);
   cursor: pointer;
   pointer-events: all;
 }
 
-.frontier-point circle {
-  fill: var(--visit-battery);
-  stroke: var(--visit-battery);
-  stroke-width: 1.5;
-  transition: r 180ms ease;
+.frontier-point[data-option-kind="no_action"],
+.option-chip[data-option-kind="no_action"] {
+  --option-color: var(--option-no-action);
 }
 
-.frontier-point text {
-  fill: var(--ink);
-  font-family: var(--font-ui);
-  font-size: 10px;
+.frontier-point[data-option-kind="rebalance"],
+.option-chip[data-option-kind="rebalance"] {
+  --option-color: var(--option-rebalance);
+}
+
+.frontier-point[data-option-kind="overtime"],
+.option-chip[data-option-kind="overtime"] {
+  --option-color: var(--option-overtime);
+}
+
+.frontier-point[data-option-kind="temporary_capacity"],
+.option-chip[data-option-kind="temporary_capacity"] {
+  --option-color: var(--option-temporary-capacity);
+}
+
+.frontier-point[data-option-kind="custom"],
+.option-chip[data-option-kind="custom"] {
+  --option-color: var(--option-custom);
+}
+
+.frontier-overlap-link {
+  stroke: var(--option-color);
+  stroke-width: 1.5;
+  stroke-dasharray: 2 2;
+  opacity: 0.9;
+}
+
+.frontier-halo {
+  fill: none;
+  stroke: var(--panel);
+  stroke-width: 6;
   pointer-events: none;
 }
 
-.frontier-point:hover circle,
-.frontier-point.frontier-selected circle {
-  stroke: var(--ink);
-  stroke-width: 2.5;
+.frontier-point.cost-negative .frontier-halo {
+  stroke: var(--cost-negative);
 }
 
-.frontier-point.frontier-no-action circle {
+.frontier-point.cost-positive .frontier-halo {
+  stroke: var(--cost-positive);
+}
+
+.frontier-marker {
+  fill: var(--option-color);
+  stroke: var(--option-color);
+  stroke-width: 2.5;
+  transition: r 180ms ease;
+}
+
+.frontier-point:hover .frontier-marker,
+.frontier-point.frontier-selected .frontier-marker {
+  stroke: var(--ink);
+  stroke-width: 3.5;
+}
+
+.frontier-point.frontier-no-action .frontier-marker {
   fill: var(--panel);
-  stroke: var(--plot-line);
+  stroke: var(--option-color);
 }
 
 .option-chips {
@@ -903,24 +952,47 @@ p {
 }
 
 .option-chip {
+  --option-color: var(--option-custom);
   display: inline-flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 2px;
-  padding: 4px 7px !important;
-  font-size: 10px !important;
+  justify-content: center;
+  min-height: 40px;
+  gap: 4px;
+  padding: 7px 10px !important;
+  font-size: 12px !important;
+  line-height: 1.2;
+}
+
+.option-chip-heading {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-weight: 600;
+}
+
+.option-chip-swatch {
+  width: 10px;
+  height: 10px;
+  flex: 0 0 auto;
+  border: 2px solid var(--option-color);
+  border-radius: 50%;
+  background: var(--option-color);
+}
+
+.option-chip[data-option-kind="no_action"] .option-chip-swatch {
+  background: var(--panel);
 }
 
 .option-chip-selected {
-  border-color: var(--ink) !important;
-  background: var(--ink) !important;
-  color: var(--panel) !important;
+  border-color: var(--option-color) !important;
+  box-shadow: inset 0 -3px 0 var(--option-color);
 }
 
 .option-chip small {
   margin: 0;
   color: inherit;
-  font-size: 8px;
+  font-size: 10px;
 }
 
 .size-note,
@@ -936,6 +1008,18 @@ p {
 .request-error,
 .promise-risk {
   color: var(--accent) !important;
+}
+
+.cost-negative {
+  color: var(--cost-negative) !important;
+}
+
+.cost-positive {
+  color: var(--cost-positive) !important;
+}
+
+.cost-neutral {
+  color: var(--ink) !important;
 }
 
 .validation-warning {
@@ -965,7 +1049,7 @@ p {
   gap: 7px;
   border-top: 1px solid var(--ink);
   padding: 8px 2px 0;
-  overflow: hidden;
+  overflow: visible;
 }
 
 .selected-summary {
@@ -1183,16 +1267,6 @@ p {
   .trigger-commands {
     margin-left: 0;
   }
-  .live-figures {
-    grid-template-columns: 1fr;
-    overflow: visible;
-  }
-  .plan-figure {
-    min-height: 520px;
-  }
-  .options-column {
-    min-height: 440px;
-  }
   .selected-summary {
     grid-template-columns: 1fr;
   }
@@ -1201,9 +1275,6 @@ p {
   }
   .selected-foot {
     grid-template-columns: 1fr;
-  }
-  .selected-recovery {
-    overflow: visible;
   }
 }
 

@@ -30,3 +30,6 @@ export const money = (value: number) =>
     currency: "USD",
     maximumFractionDigits: 2,
   }).format(value);
+
+export const adjustedCostClass = (value: number) =>
+  value < 0 ? "cost-negative" : value > 0 ? "cost-positive" : "cost-neutral";

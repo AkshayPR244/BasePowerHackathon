@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import type { Schema } from "../api/types";
 import { statusLabel, unproven } from "../lib/recovery";
+import { adjustedCostClass } from "../lib/format";
 
 type RecoveryOption = Schema["RecoveryOption"];
 
@@ -120,8 +121,12 @@ export function SelectedRecovery({
             <small>Visits moved</small>
           </span>
           <span>
-            <strong>{currency.format(option.economics.net_impact_usd)}</strong>
-            <small>Modeled cost</small>
+            <strong
+              className={adjustedCostClass(option.economics.net_impact_usd)}
+            >
+              {currency.format(option.economics.net_impact_usd)}
+            </strong>
+            <small>Adjusted cost vs original</small>
           </span>
         </div>
         <button

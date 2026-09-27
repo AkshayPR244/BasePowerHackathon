@@ -182,6 +182,11 @@ def _prepare(scenario, current_plan, economics, disruption=()):
     return base, original, rates
 
 
+def prepared_scenario(scenario, disruption, current_plan=None):
+    """The scenario recovery solves on: the past frozen and the overtime cap set."""
+    return _prepare(scenario, current_plan, None, disruption)[0]
+
+
 def _close_past(base, original, now):
     """Past crew-days keep only the minutes their booked visits used, so nothing new lands there."""
     used = {(c.crew_id, c.date): c.onsite_min + c.travel_min for c in original.crew_days}
@@ -372,7 +377,8 @@ def _candidates(base, disruption, cap, original, no_action, limits=(4, 4)):
     ids = {c.crew_id for c in base.crew_days}
     templates = {}
     for c in sorted(base.crew_days, key=lambda c: (c.date, c.crew_id)):
-        if c.available_min > 0:
+        # Past crew-days are closed down to the minutes they used, so they are not a full day.
+        if c.available_min > 0 and (now is None or c.date >= now):
             templates.setdefault((tuple(sorted(c.skills)), tuple(sorted(c.allowed_clusters))), c)
     for d in sorted({c.date for c in base.crew_days}):
         # Never add a crew on a day the disruption closed for every crew, such as a storm day.

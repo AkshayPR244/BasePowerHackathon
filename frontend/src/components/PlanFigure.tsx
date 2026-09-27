@@ -365,30 +365,27 @@ export function PlanFigure({
                               (entry.job_id ?? entry.site_id) === key &&
                               entry.kind === "moved",
                           );
+                          const move =
+                            cumulativeChange?.before && cumulativeChange.after
+                              ? {
+                                  before: cumulativeChange.before,
+                                  after: cumulativeChange.after,
+                                }
+                              : null;
                           const crewSwap =
-                            change?.before &&
-                            change.after &&
-                            change.before.crew_id !== change.after.crew_id;
-                          const shiftDays =
-                            change?.before && change.after && !crewSwap
-                              ? Math.max(
-                                  0,
-                                  Math.round(
-                                    (Date.parse(
-                                      `${change.after.date}T12:00:00Z`,
-                                    ) -
-                                      Date.parse(
-                                        `${change.before.date}T12:00:00Z`,
-                                      )) /
-                                      86400000,
-                                  ),
-                                )
-                              : 0;
-                          const moveLabel = crewSwap
-                            ? "crew swap"
-                            : change?.before && change.after
-                              ? `+${shiftDays}d`
-                              : "";
+                            move?.before.crew_id !== move?.after.crew_id;
+                          const shiftDays = move
+                            ? Math.round(
+                                (Date.parse(`${move.after.date}T12:00:00Z`) -
+                                  Date.parse(`${move.before.date}T12:00:00Z`)) /
+                                  86400000,
+                              )
+                            : 0;
+                          const moveLabel = !move
+                            ? ""
+                            : crewSwap && shiftDays === 0
+                              ? "crew swap"
+                              : `${shiftDays < 0 ? "-" : "+"}${Math.abs(shiftDays)}d`;
                           return (
                             <span
                               key={key}

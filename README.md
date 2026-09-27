@@ -4,7 +4,15 @@ A planning and recovery analysis tool for residential battery installers like Ba
 
 It is not a customer booking tool. It does not pick appointments or send anything to customers.
 
-Status: the backend works end to end. It covers data loading, input checks, battery valuation, the CP-SAT planner, the independent validator, baselines, diffs, counterfactuals, and the API. The UI is in progress. Spec: [`docs/SPEC.md`](docs/SPEC.md).
+Status: the planner and recovery workspace run end to end, covering data loading, input checks, battery valuation, CP-SAT planning, independent validation, baselines, diffs, counterfactuals, the API, and the deployed UI. Spec: [`docs/SPEC.md`](docs/SPEC.md).
+
+## Live application
+
+**[Open the deployed Rollout Planner](https://bpc-rollout-planner.up.railway.app/)**
+
+The Railway deployment serves the built React application and FastAPI backend from the same origin. Its [health endpoint](https://bpc-rollout-planner.up.railway.app/api/health) reports API and valuation-table readiness.
+
+The hosted application is a hackathon demonstration. It uses representative synthetic installation portfolios and modeled operational disruptions; its costs, schedules, and recovery outcomes are not Base production data or customer commitments. See [Assumptions and interpretation](#assumptions-and-interpretation) before using its results.
 
 ## Quick start
 
@@ -53,6 +61,8 @@ flowchart LR
 
 ## How to reproduce the demo
 
+The public demonstration is available at **[bpc-rollout-planner.up.railway.app](https://bpc-rollout-planner.up.railway.app/)**. To run the same application locally:
+
 1. Copy both sample env files.
 2. Start backend and frontend.
 3. Open the UI and run the disruption flow.
@@ -77,6 +87,7 @@ Open the app at `http://localhost:5173`.
   - Run `make dev` instead of `make dev-live`
 - API keys: none are required for this repo. Data is local files plus recorded mocks.
 - Demo script: [`docs/DEMO.md`](docs/DEMO.md)
+- Production deployment: Railway builds the repository `Dockerfile`; `railway.json` contains the service configuration.
 
 ## Datasets and provenance
 

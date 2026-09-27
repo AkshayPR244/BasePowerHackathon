@@ -7,7 +7,7 @@ import pytest
 
 from app.api.scenarios import load_scenario
 from app.contracts.enums import Mode, PlanStatus
-from app.contracts.models import ForceInclude, PlanRequest, RemoveCrewDay
+from app.contracts.models import ForceInclude, MoveVisit, PlanRequest, RemoveCrewDay
 from app.planning.solve import plan
 
 
@@ -47,6 +47,15 @@ def test_value_flag_matches_the_validator(two_visit, days, unlock):
     r = run(s, [RemoveCrewDay(crew_id="B", date=D(d)) for d in days])
     assert r.validation.valid
     assert r.objective is not None
+
+
+def test_install_may_stand_alone_in_recovery():
+    s = load_scenario("standard")
+    r = run(s, [MoveVisit(job_id="W-03-I", crew_id="IA", date=D(15))])
+    assert r.status in (PlanStatus.optimal, PlanStatus.feasible) and r.validation.valid
+    install = next(a for a in r.assignments if a.job_id == "W-03-I")
+    assert (install.crew_id, install.date) == ("IA", D(15))
+    assert "W-03-B" not in {a.job_id for a in r.assignments}
 
 
 def test_missing_prices_give_a_valid_zero_value_plan(tmp_path, monkeypatch):

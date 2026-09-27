@@ -419,6 +419,11 @@ test("scenario round trip resets the canvas and never shows another scenario's p
   await expect(page.locator('[data-testid^="visit-S-02-"]')).toHaveCount(0);
   await expect(page.getByTestId("visit-N-01")).toBeVisible();
 
+  const solves: string[] = [];
+  page.on("request", (request) => {
+    if (new URL(request.url()).pathname === "/api/plans")
+      solves.push(request.postDataJSON().scenario_id);
+  });
   await scenario.selectOption("standard");
   await expect(page.getByTestId("impact-headline")).toBeVisible();
   await expect(rebalanceCard(page)).toHaveAttribute("aria-pressed", "true");
@@ -426,6 +431,9 @@ test("scenario round trip resets the canvas and never shows another scenario's p
     "aria-pressed",
     "false",
   );
+  await page.getByTestId("baseline-section").locator("summary").click();
+  await expect(page.getByText("Strict plan", { exact: true })).toBeVisible();
+  expect(solves).toEqual(["standard"]);
 });
 
 test("assumption edits reject empty or negative values and recover from errors", async ({

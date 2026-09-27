@@ -81,10 +81,10 @@ def _summary(req: CounterfactualRequest, result: PlanResult, diff: PlanDiff, fea
         verb = "becomes" if len(displaced) == 1 else "become"
         parts.append(f"{', '.join(displaced)} {verb} late instead.")
     if o and o.jobs_late == 0 and o.jobs_unscheduled == o.jobs_blocked:
-        parts.append("No job is late.")
+        parts.append("No home is late.")
     elif o:
-        parts.append(f"{plural(o.jobs_late, 'job')} late.")
+        parts.append(f"{plural(o.jobs_late, 'home')} {'is' if o.jobs_late == 1 else 'are'} late.")
     moved = diff.summary.moved
     if moved:
-        parts.append(f"{plural(moved, 'job')} {'moves' if moved == 1 else 'move'}.")
+        parts.append(f"{plural(moved, 'visit')} {'moves' if moved == 1 else 'move'}.")
     return " ".join(parts)

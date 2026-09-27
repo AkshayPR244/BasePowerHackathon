@@ -11,6 +11,7 @@ from app.contracts.enums import Algorithm, JobState, Mode, PlanStatus, ReasonCod
 from app.contracts.models import (
     AddCrewDay,
     ChangeAppointment,
+    ChangeReadyDate,
     CounterfactualRequest,
     DelayInventory,
     ExtendCrewDay,
@@ -168,6 +169,23 @@ def test_every_edit_kind_has_a_description(two_visit):
     ]
     r = run(two_visit, edits[1:4])
     assert r.message.startswith(" ".join(texts[1:4])) and "  " not in r.message
+
+
+def test_plan_text_handles_plural_and_zero_cases(tiny, two_visit):
+    two_forced = [
+        RemoveCrewDay(crew_id="A", date=D(4)),
+        ForceInclude(site_id="N-02"),
+        ChangeReadyDate(site_id="S-02", ready_date=D(6)),
+        ForceInclude(site_id="S-02"),
+    ]
+    r = run(tiny, two_forced)
+    assert r.message.startswith("N-02 and S-02 cannot finish by their deadlines.")
+    none_left = run(unlocked(two_visit), [RemoveCrewDay(crew_id="B", date=D(d)) for d in (4, 5, 6)])
+    assert "No home can be scheduled." in none_left.message
+    assert "All 0" not in none_left.message and "3 homes are blocked" in none_left.message
+    moved = run(two_visit, [MoveVisit(job_id="H3-I", crew_id="I", date=D(6))])
+    assert "1 visit moves, so 1 customer needs a new date." in moved.message
+    assert "1 home is not scheduled." in moved.message
 
 
 def test_install_may_stand_alone_in_recovery():

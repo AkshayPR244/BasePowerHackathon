@@ -83,7 +83,7 @@ def run_baseline(scenario: Scenario, req: PlanRequest, forced, values, policy) -
     assert o is not None
     late, uns = o.jobs_late, o.jobs_unscheduled - o.jobs_blocked
     outcome = (
-        "Every schedulable job meets its deadline."
+        "Every schedulable home meets its deadline."
         if not late and not uns
         else f"{late} late, {uns} not scheduled."
     )

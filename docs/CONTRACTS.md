@@ -4,7 +4,7 @@ Rollout Planner is a planning and recovery analysis tool for residential battery
 
 The Pydantic models in `backend/app/contracts/` are the only definition of shared types. OpenAPI and TypeScript types are generated from them. Nobody hand-writes shared types.
 
-Status: the models are frozen as of the scaffold commit. The API app, the OpenAPI export, the type generation, and the recorded mocks are planned lane items (Lane B-01, B-02, C-02). Commands below marked "planned" do not exist until those items land.
+Status: the models are frozen. Changes are additive only and follow the change protocol below. The API app, the OpenAPI export, the type generation, and the recorded mocks exist. `make types` and `make mocks` regenerate them.
 
 ## Files
 
@@ -14,8 +14,10 @@ Status: the models are frozen as of the scaffold commit. The API app, the OpenAP
 | `backend/app/contracts/enums.py` | All enums |
 | `backend/app/contracts/units.py` | Annotated unit types, `SCHEDULING_TZ = "America/Chicago"` |
 | `backend/app/contracts/hashing.py` | `scenario_hash(scenario, edits=())` |
-| `contracts/openapi.json` | Generated from the FastAPI app (planned, Lane B) |
-| `frontend/src/api/generated.ts` | Generated from `openapi.json` (planned, Lane C) |
+| `backend/app/contracts/visits.py` | Expands homes into crew visits (`Job`, `jobs_of`, `all_jobs`, `job_of_row`, `min_gap`, `gap_ok`). Shared by the planner and the validator |
+| `backend/app/contracts/calendar.py` | Business days: weekdays that are not US federal holidays (`is_business_day`, `business_days`, `business_ordinal`) |
+| `contracts/openapi.json` | Generated from the FastAPI app (`make types`) |
+| `frontend/src/api/generated.ts` | Generated from `openapi.json` (`make types`) |
 | `contracts/CHANGE_REQUESTS.md` | Log of every contract change and proposal |
 
 Every model inherits `Contract`: extra fields are rejected and NaN or infinity fail validation.
@@ -38,7 +40,7 @@ Calculate at full precision. Round only for display.
 ## Models by role
 
 - Inputs: `Site`, `Cluster`, `CrewDay`, `InventoryReceipt`, `PlannedInstall`, `BatteryConfig`, `ProvenanceNote`, `ScenarioConfig`, `Scenario`, `ScenarioSummary`.
-- Edits (discriminated by `kind`, union type `Edit`). Disruptions: `RemoveCrewDay`, `DelayInventory`, `ChangeReadyDate`. Interventions: `AddCrewDay`, `ForceInclude`.
+- Edits (discriminated by `kind`, union type `Edit`). Disruptions: `RemoveCrewDay`, `ReduceCrewDay`, `DelayInventory`, `ChangeReadyDate`, `ChangeAppointment`. Interventions: `AddCrewDay`, `ExtendCrewDay`, `ForceInclude`, `PinVisit`, `MoveVisit`.
 - The current plan: `Scenario.current_plan` is a list of `PlannedInstall` (site_id, crew_id, date, locked).
 - Plan: `PlanRequest`, `PlanResult`, `Assignment`, `UnscheduledJob`, `CrewDayUsage`, `StageMeta`, `ObjectiveComponents`, `ValidationReport`, `ValidationIssue`, `Assumption`, `InputIssue`.
 - Compare and counterfactual: `CompareRequest`, `PlanDiff`, `PlanChange`, `Slot`, `DiffSummary`, `CounterfactualRequest`, `CounterfactualResult`.
@@ -53,13 +55,22 @@ The API is stateless. The server stores no plans. The client sends back what it 
 
 | Method and path | Request | Response | Notes |
 |---|---|---|---|
-| `GET /api/scenarios` | none | `list[ScenarioSummary]` | Bundled scenarios |
+| `GET /api/health` | none | `{status, values, ...}` | `values` is not_started, warming, ready, or failed |
+| `GET /api/scenarios` | none | `list[ScenarioSummary]` | Bundled scenarios. A scenario that fails to load is left out and named in the header `X-Rollout-Broken-Scenarios` |
 | `GET /api/scenarios/{scenario_id}` | none | `Scenario` | 404 if unknown. 422 `ApiError` with `input_issues` if the files fail validation |
 | `POST /api/plans` | `PlanRequest` | `PlanResult` | Baselines use `algorithm`. `status=invalid_input` carries `input_issues` |
 | `POST /api/plans/compare` | `CompareRequest {before, after}` | `PlanDiff` | Both are full `PlanResult`s |
-| `POST /api/plans/counterfactual` | `CounterfactualRequest {request, base, intervention}` | `CounterfactualResult` | Solves `request` plus `intervention`, diffs against `base` |
+| `POST /api/plans/counterfactual` | `CounterfactualRequest {request, base, intervention}` | `CounterfactualResult` | Solves `request` plus `intervention`, diffs against `base`. 422 `scenario_mismatch` if `base` comes from another scenario |
 
-A stub may answer 501 with an `ApiError` body for requests it cannot serve yet.
+The recovery endpoints are listed under "Recovery and weather seams" below.
+
+**Errors.** Every error body is an `ApiError {code, message, input_issues}`.
+- 422 `invalid_request`: the body fails the schema, or it is too large. A request can carry at most 200 edits, disruption items, or interventions. `revision` can be at most 2^53 - 1.
+- 422 `invalid_recovery`: the recovery engine rejects the input, for example an unknown crew or an unknown economic assumption.
+- 422 `invalid_input`: a scenario, or the current plan stored in it, did not load. The message has a request ID and no file paths.
+- 500 `internal_error` or `invalid_plan`: a server fault. The message is generic and has a request ID. The same ID is in the `X-Request-ID` header and in the server log.
+
+CORS allows the Vite dev server (:5173) and preview server (:4173) on localhost and 127.0.0.1. It exposes `X-Rollout-Stub` and `X-Request-ID`.
 
 ## Semantics
 
@@ -105,24 +116,26 @@ The battery day comes at least `config.min_gap_business_days` business days afte
 
 Scenarios with two-visit homes: `standard`, `tiny_two_visit`. `tiny` stays one-visit.
 
-### Recovery and weather seams (contract 1.2, additive, stubbed)
+### Recovery and weather seams (contract 1.2, additive)
 
 The recovery flow: current plan, then a known disruption, then impact analysis, then recovery options, each solved and validated, then comparison, review, and approval.
 
 **Edits.** All share the discriminated `Edit` union, so `/api/plans` and the recovery endpoints accept the same list.
 
-| Role | kind | Fields | State |
-|---|---|---|---|
-| Disruption: crew unavailable | `remove_crew_day` | crew_id, date | works |
-| Disruption: reduced capacity | `reduce_crew_day` | crew_id, date, available_min | not implemented (lane R) |
-| Disruption: readiness change | `change_ready_date` | site_id, ready_date | works |
-| Disruption: appointment change | `change_appointment` | job_id, available_from, available_to? | not implemented (lane R) |
-| Intervention: overtime | `extend_crew_day` | crew_id, date, extra_min | not implemented (lane R) |
-| Intervention: temporary capacity | `add_crew_day` | crew_id, date, available_min, skills, allowed_clusters | works |
-| Intervention: pin a visit | `pin_visit` | job_id | not implemented (lane R) |
-| Intervention: move a visit | `move_visit` | job_id, crew_id, date | not implemented (lane R) |
+| Role | kind | Fields |
+|---|---|---|
+| Disruption: crew unavailable | `remove_crew_day` | crew_id, date |
+| Disruption: reduced capacity | `reduce_crew_day` | crew_id, date, available_min |
+| Disruption: readiness change | `change_ready_date` | site_id, ready_date |
+| Disruption: appointment change | `change_appointment` | job_id, available_from, available_to? |
+| Disruption: late inventory | `delay_inventory` | configuration_id, from_date, to_date, quantity? |
+| Intervention: overtime | `extend_crew_day` | crew_id, date, extra_min |
+| Intervention: temporary capacity | `add_crew_day` | crew_id, date, available_min, skills, allowed_clusters |
+| Intervention: force a home in | `force_include` | site_id |
+| Intervention: pin a visit | `pin_visit` | job_id |
+| Intervention: move a visit | `move_visit` | job_id, crew_id, date |
 
-Until lane R lands them, the unimplemented edits return `status: invalid_input` with "Edit <kind> is not implemented yet."
+All ten edits work. The recovery endpoints accept only the five disruption kinds in `disruption`. Interventions go in `interventions`.
 
 **Recovery models**
 - `RecoveryOption`: `option_id`, `kind` (no_action, rebalance, overtime, temporary_capacity, custom), `action_label` (a business action such as "Crew IB +2h overtime", never "Plan 3"), `intervention_edits`, `status`, `proven_optimal`, `result` (a full validated `PlanResult`), `diff_vs_original`, `diff_vs_no_action` (null on the no-action option), `counts`, `economics`, `overtime_min`, `explanations`, `crew_load`, `lowest_modeled_cost` (label it "Lowest modeled cost", never "Recommended"), `stub`.
@@ -134,8 +147,8 @@ Until lane R lands them, the unimplemented edits return `status: invalid_input` 
 
 **Recovery endpoints**
 - `POST /api/recovery/options`: `RecoveryOptionsRequest {scenario_id, revision, current_plan?, disruption, economics_overrides?, interactive}` returns `RecoveryOptionsResult {revision, scenario_hash, impact, no_action, options, economic_assumptions, assumptions, stub}`. `revision` is echoed.
-- `POST /api/recovery/evaluate`: `EvaluateRequest {scenario_id, revision, current_plan?, disruption, interventions, interactive}` returns one `RecoveryOption` of kind `custom`. Use it for knock-out, overtime stretch, drag, and pin.
-- `POST /api/recovery/approve`: `ApproveRequest {scenario_id, revision, option}` returns `ApproveResult {new_current_plan, summary, stub}`.
+- `POST /api/recovery/evaluate`: `EvaluateRequest {scenario_id, revision, current_plan?, disruption, interventions, economics_overrides?, interactive}` returns one `RecoveryOption` of kind `custom`. Use it for knock-out, overtime stretch, drag, and pin.
+- `POST /api/recovery/approve`: `ApproveRequest {scenario_id, revision, option}` returns `ApproveResult {new_current_plan, effective_scenario?, summary, stub}`.
 
 **Weather evidence** (parked nice-to-have: these endpoints stay frozen stubs until weather returns)
 - `GET /api/storms` returns `StormEvent[] {event_id, date, rainfall_mm, max_wind_kmh, thunder_hours, source, stub}`. Observed at Houston Hobby.
@@ -146,16 +159,16 @@ Until lane R lands them, the unimplemented edits return `status: invalid_input` 
 - `app.recovery.service.recover(scenario, disruption, current_plan=None, economics=None, interactive=False) -> RecoveryOptionsResult`, plus `evaluate(...)` and `approve(...)`. A parked weather replay may call `recover()` later.
 - `app.replay.service.storms()`, `cases()`, `season_replay()`.
 
-**Stubs.** Until lanes R and W replace them, these return fixtures from `backend/app/recovery/fixtures/` and `backend/app/replay/fixtures/`, built by `scripts/build_stubs.py`. The fixtures use real planner results on `standard` for the 14 Jun 2018 storm case, with earliest-deadline-first standing in for no action. Economics and explanations are placeholders. Storm events are real observations. Every stub payload has `stub: true`, and the endpoint sets the header `X-Rollout-Stub: true`. The UI shows a stub label while `stub` is true.
+**Live and stub.** The recovery endpoints are live. They solve and validate on every call and return `stub: false`. The weather endpoints are stubs. They return fixtures from `backend/app/replay/fixtures/`, built by `scripts/build_stubs.py` from real planner results on `standard` for the 14 Jun 2018 storm case, with earliest-deadline-first standing in for no action. Their economics are placeholders. Storm events are real observations. Every stub payload has `stub: true`, and the endpoint sets the header `X-Rollout-Stub: true`. The UI shows a stub label while `stub` is true.
 
-## Regenerating (planned)
+## Regenerating
 
 ```bash
 make types   # contracts/openapi.json, then frontend/src/api/generated.ts
 make mocks   # frontend/src/mocks/recorded/*.json and index.json
 ```
 
-Until the Makefile targets exist:
+The same steps by hand:
 
 ```bash
 cd backend && PYTHONPATH=. uv run python ../scripts/export_openapi.py

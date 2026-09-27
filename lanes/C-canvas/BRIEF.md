@@ -33,16 +33,16 @@ Lane C builds the Recovery Canvas: one screen where the operations manager sees 
 - Stable `data-testid` hooks on the disruption bar, cascade steps, option cards, and Approve, so Lane H can write e2e specs.
 - Screenshots for each item (H owns the spec files. C may ask H for a spec or add screenshots through H's specs).
 
-## Files to create (suggested)
+## Files (as built)
 | Path | Purpose |
 |---|---|
-| `src/views/Canvas.tsx` | Canvas layout: disruption bar, cascade strip, plan lanes, option cards, selected-option panel |
+| `src/views/Workspace.tsx` | Canvas layout: disruption bar, cascade strip, plan lanes, option cards, selected-option panel |
 | `src/components/DisruptionBar.tsx` | One sentence plus visits affected, deadlines at risk, no-action cost |
 | `src/components/CascadeStrip.tsx` | Clickable steps that highlight visits in the lanes |
-| `src/components/PlanLanes.tsx` | Crews as rows, days as columns, install crews above the battery crew, arcs, hatched lost capacity, diff overlays |
+| `src/components/CrewCalendar.tsx` | Crews as rows, days as columns, install crews above the battery crew, arcs, hatched lost capacity, diff overlays |
 | `src/components/OptionCard.tsx` | Action label, net impact, advantage vs no action, deadlines, customers to reschedule, overtime, "Lowest modeled cost" |
 | `src/components/OptionPanel.tsx` | Plain-sentence changes, pinned headline numbers, Approve with a confirm summary |
-| `src/state/recovery.ts` | Selected option, disruption, interventions, revision |
+| `src/state/store.ts`, `src/state/usePlanner.ts` | Selected option, disruption, interventions, revision, and the API calls |
 
 ## Scope
 

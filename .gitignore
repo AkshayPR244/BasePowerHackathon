@@ -10,6 +10,8 @@ node_modules/
 frontend/dist/
 frontend/test-results/
 frontend/playwright-report/
+frontend/blob-report/
+frontend/coverage/
 
 # Data
 data/raw/
@@ -23,5 +25,6 @@ AGENT_STOP
 STEER.md
 .claude/settings.local.json
 .claude/.evidence-reads
+.claude/worktrees/
 
 .DS_Store

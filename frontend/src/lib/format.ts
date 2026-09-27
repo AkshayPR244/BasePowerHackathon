@@ -1,10 +1,23 @@
-export const dateLabel = (date: string) =>
-  new Date(`${date}T12:00:00Z`).toLocaleDateString("en-GB", {
-    weekday: "short",
-    day: "numeric",
-    month: "short",
-    timeZone: "UTC",
-  });
+const weekdays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+const months = [
+  "Jan",
+  "Feb",
+  "Mar",
+  "Apr",
+  "May",
+  "Jun",
+  "Jul",
+  "Aug",
+  "Sep",
+  "Oct",
+  "Nov",
+  "Dec",
+];
+// Fixed "Thu 14 Jun" format: Intl output varies by browser and locale.
+export const dateLabel = (date: string) => {
+  const day = new Date(`${date}T12:00:00Z`);
+  return `${weekdays[day.getUTCDay()]} ${day.getUTCDate()} ${months[day.getUTCMonth()]}`;
+};
 export function datesBetween(start: string, end: string) {
   const dates: string[] = [];
   for (let t = Date.parse(start); t <= Date.parse(end); t += 86400000)

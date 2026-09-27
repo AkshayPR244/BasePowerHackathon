@@ -42,7 +42,13 @@ export function OptionCard({
             className={`badge ${valid && !unproven(option) ? "" : "warning"}`}
             data-testid="option-status"
           >
-            {statusLabel(option)} · {validationLabel(option)}
+            {statusLabel(option)}
+          </span>
+          <span
+            className={`badge ${option.result.validation.checked && option.result.validation.valid ? "" : "warning"}`}
+            data-testid="option-validation"
+          >
+            {validationLabel(option)}
           </span>
           {option.stub && <span className="badge">Stub data</span>}
         </span>

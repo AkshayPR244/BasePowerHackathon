@@ -12,6 +12,7 @@ import {
   slotsOffPlan,
   statusLabel,
   temporaryCrewId,
+  validationLabel,
   type Option,
 } from "./recovery";
 
@@ -57,6 +58,9 @@ test("approves and draws only validated plans with a solution", () => {
   expect(
     statusLabel({ ...rebalance, status: "feasible", proven_optimal: false }),
   ).toBe("Best found, not proven");
+  expect(
+    validationLabel({ ...rebalance, status: "timeout_no_incumbent" }),
+  ).toBe("Validator checked · No plan to draw");
 });
 
 test("treats empty and negative assumption input as invalid", () => {

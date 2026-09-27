@@ -8,9 +8,9 @@ Status: the planner and recovery workspace run end to end, covering data loading
 
 ## Live application
 
-**[Open the deployed SlackLine](https://bpc-rollout-planner.up.railway.app/)**
+**[Open the deployed SlackLine](https://slackline.up.railway.app/)**
 
-The Railway deployment serves the built React application and FastAPI backend from the same origin. Its [health endpoint](https://bpc-rollout-planner.up.railway.app/api/health) reports API and valuation-table readiness.
+The Railway deployment serves the built React application and FastAPI backend from the same origin. Its [health endpoint](https://slackline.up.railway.app/api/health) reports API and valuation-table readiness.
 
 The hosted application is a hackathon demonstration. It uses representative synthetic installation portfolios and modeled operational disruptions; its costs, schedules, and recovery outcomes are not Base production data or customer commitments. See [Assumptions and interpretation](#assumptions-and-interpretation) before using its results.
 
@@ -61,7 +61,7 @@ flowchart LR
 
 ## How to reproduce the demo
 
-The public demonstration is available at **[bpc-rollout-planner.up.railway.app](https://bpc-rollout-planner.up.railway.app/)**. To run the same application locally:
+The public demonstration is available at **[slackline.up.railway.app](https://slackline.up.railway.app/)**. To run the same application locally:
 
 1. Copy both sample env files.
 2. Start backend and frontend.

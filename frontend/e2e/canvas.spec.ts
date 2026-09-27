@@ -239,7 +239,9 @@ test("options show adjusted cost, customer impact, overtime, and lowest cost", a
     await expect(card.locator(".option-details")).toContainText(
       /No overtime|\d+ min overtime/,
     );
-    await expect(card.getByTestId("option-status")).toContainText("Validated");
+    await expect(card.getByTestId("option-validation")).toContainText(
+      "Validator checked",
+    );
   }
 
   await page.screenshot({
@@ -397,8 +399,8 @@ test("invalid and unproven options are labeled and never drawn or approved", asy
   const temporary = page.locator(
     '.option-card[data-option-kind="temporary_capacity"]',
   );
-  await expect(temporary.getByTestId("option-status")).toContainText(
-    "1 violations",
+  await expect(temporary.getByTestId("option-validation")).toContainText(
+    "Validator found 1 violation",
   );
   await temporary.click();
   await expect(page.getByTestId("approve-option")).toBeDisabled();
@@ -663,7 +665,7 @@ test("keyboard keys select options, approve, and knock out a crew-day", async ({
   expect(evaluations[0].interventions).toEqual([]);
   await expect(
     page.getByTestId("evaluation-controls").locator(".evaluation-result"),
-  ).toContainText("Validated");
+  ).toContainText("Validator checked");
 });
 
 test("dark canvas preserves readable recovery controls", async ({ page }) => {

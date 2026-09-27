@@ -4,7 +4,7 @@ Operator workspace for installation plans, disruptions, recovery, and explanatio
 
 ## Deployed application
 
-Open **[https://bpc-rollout-planner.up.railway.app/](https://bpc-rollout-planner.up.railway.app/)** for the hosted live-API build. Railway serves this Vite application and the FastAPI backend from one origin. The deployment uses representative synthetic portfolios and modeled disruptions for demonstration; it is not connected to customer, CRM, dispatch, or production operations data.
+Open **[https://slackline.up.railway.app/](https://slackline.up.railway.app/)** for the hosted live-API build. Railway serves this Vite application and the FastAPI backend from one origin. The deployment uses representative synthetic portfolios and modeled disruptions for demonstration; it is not connected to customer, CRM, dispatch, or production operations data.
 
 ## Run
 
@@ -20,7 +20,7 @@ Open http://localhost:5173. No API keys or backend needed. Fonts and recorded da
 
 For the API, start the backend on port 8000 and run `VITE_API_MODE=live pnpm dev`. Vite proxies `/api` to that port. Set this environment variable before building a live deployment as well; a static deployment must provide its own same-origin `/api` reverse proxy.
 
-The repository's Railway deployment uses the root `Dockerfile` and `railway.json`, which build the frontend in live mode and serve it through the backend service. Check the deployed service at [`/api/health`](https://bpc-rollout-planner.up.railway.app/api/health).
+The repository's Railway deployment uses the root `Dockerfile` and `railway.json`, which build the frontend in live mode and serve it through the backend service. Check the deployed service at [`/api/health`](https://slackline.up.railway.app/api/health).
 
 ## Demonstrate
 

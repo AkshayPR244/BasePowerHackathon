@@ -4,9 +4,9 @@
 
 body {
   margin: 0;
-  min-height: 100dvh;
+  height: 100dvh;
   min-width: 760px;
-  overflow: auto;
+  overflow: hidden;
   background: var(--paper);
   color: var(--ink);
   font-family: var(--font-ui);
@@ -22,14 +22,14 @@ p {
 .live-app {
   display: grid;
   width: 100%;
-  min-height: 100dvh;
+  height: 100dvh;
   max-width: none;
   min-height: 0;
   grid-template-rows: auto auto minmax(0, 1fr) auto;
   gap: 10px;
   margin: 0;
   padding: 12px 20px 10px;
-  overflow: visible;
+  overflow: hidden;
   background: var(--paper);
   font-family: var(--font-ui);
 }
@@ -233,16 +233,17 @@ p {
   display: grid;
   min-height: 0;
   grid-template-columns: 1fr;
-  gap: 18px;
-  overflow: visible;
+  grid-template-rows: minmax(0, 1fr) minmax(0, 0.92fr);
+  gap: 10px;
+  overflow: hidden;
 }
 
 .plan-figure {
-  min-height: 520px;
+  min-height: 0;
 }
 
 .options-column {
-  min-height: 440px;
+  min-height: 0;
 }
 
 .live-figures.figures-stale {
@@ -741,7 +742,7 @@ p {
   display: block;
   width: 100%;
   height: auto;
-  min-height: 240px;
+  min-height: 150px;
   flex: 1 1 300px;
   overflow: visible;
   pointer-events: none;

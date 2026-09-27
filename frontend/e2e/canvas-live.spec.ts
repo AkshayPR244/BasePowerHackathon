@@ -79,7 +79,7 @@ test.describe("live canvas on recorded responses", () => {
     ).toBe(optionColors.length);
     expect(
       (await page.locator(".frontier-svg").boundingBox())!.height,
-    ).toBeGreaterThanOrEqual(300);
+    ).toBeGreaterThanOrEqual(150);
     const planBox = (await page.locator(".plan-figure").boundingBox())!;
     const frontierBox = (await page.locator(".frontier-figure").boundingBox())!;
     expect(frontierBox.y).toBeGreaterThanOrEqual(planBox.y + planBox.height);
@@ -222,7 +222,7 @@ test.describe("live canvas on recorded responses", () => {
       page.locator('.frontier-point[data-option-kind="temporary_capacity"]'),
     ).toHaveCount(0);
     await expect(page.getByTestId("withheld-option")).toContainText(
-      "Timed out (no plan found) · Not validated",
+      "Timed out (no plan found) · Validator not run",
     );
     await chip(page, "rebalance").click();
     await expect(page.getByTestId("unproven-note")).toContainText(
@@ -246,6 +246,18 @@ test.describe("live canvas on recorded responses", () => {
     await page.reload();
     await expect(page.getByTestId("live-results")).toBeVisible();
     expect(await background()).toBe("rgb(237, 242, 239)");
+  });
+
+  test("shows when the local development server disconnects", async ({
+    page,
+  }) => {
+    await openMockCanvas(page);
+    await page.evaluate(() => window.dispatchEvent(new Event("offline")));
+    await expect(
+      page
+        .getByRole("alert")
+        .filter({ hasText: "Local SlackLine server disconnected" }),
+    ).toBeVisible({ timeout: 6_000 });
   });
 });
 
@@ -275,8 +287,7 @@ test.describe("live canvas against the live API", () => {
     expect(dimensions.width).toBe(1440);
     expect(dimensions.height).toBe(900);
     expect(dimensions.documentWidth).toBeLessThanOrEqual(1440);
-    expect(dimensions.documentHeight).toBeGreaterThanOrEqual(900);
-    expect(dimensions.documentHeight).toBeLessThanOrEqual(1400);
+    expect(dimensions.documentHeight).toBe(900);
     await page.screenshot({ path: info.outputPath(`${name}.png`) });
   }
 
@@ -571,6 +582,40 @@ test.describe("live canvas against the live API", () => {
       "needs a new date",
     );
     await waitForRecovery(page, info, "03-home-rescheduled");
+  });
+
+  test("day-zero disruptions retain an actionable recovery", async ({
+    page,
+  }, info) => {
+    test.setTimeout(120_000);
+    const cases = [
+      { tool: "knockout", target: "crew", label: "knockout" },
+      { tool: "halfday", target: "crew", label: "half-day" },
+      { tool: "long", target: "N-01", label: "runs-long" },
+      { tool: "reschedule", target: "N-01", label: "reschedule-N-01" },
+      { tool: "reschedule", target: "S-04", label: "reschedule-S-04" },
+    ];
+    for (const scenario of cases) {
+      await openCanvas(page, info);
+      await chooseTool(page, info, scenario.tool);
+      if (scenario.target === "crew") {
+        await page
+          .locator(
+            '.crew-day[data-crew-id="IA"][data-date="2018-06-04"] .crew-day-action',
+          )
+          .click();
+      } else {
+        await page
+          .locator(
+            `.visit-mark > button[aria-label^="${scenario.target} install,"]`,
+          )
+          .first()
+          .click();
+      }
+      await waitForRecovery(page, info, `day-zero-${scenario.label}`);
+      await expect(page.locator(".option-chip").first()).toBeVisible();
+      await expect(page.getByTestId("approve-option")).toBeEnabled();
+    }
   });
 
   test("protect a home from movement", async ({ page }, info) => {

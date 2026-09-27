@@ -1,4 +1,20 @@
 @import "tailwindcss";
+.development-server-alert {
+  position: fixed;
+  z-index: 10000;
+  right: 12px;
+  bottom: 12px;
+  max-width: min(420px, calc(100vw - 24px));
+  border: 1px solid #8f251a;
+  border-radius: 3px;
+  padding: 10px 12px;
+  background: #fff1ef;
+  color: #6d1c14;
+  font:
+    600 13px/1.35 "IBM Plex Sans",
+    sans-serif;
+  box-shadow: 0 4px 18px rgb(0 0 0 / 0.18);
+}
 :root {
   --paper: #edf2ef;
   --panel: #fcfdfc;

@@ -1222,6 +1222,15 @@ footer {
 .advanced-nav strong {
   font-size: 14px;
 }
+.advanced-nav > span {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+.advanced-nav small {
+  color: var(--ink-2);
+  font-size: 11px;
+}
 .advanced-nav a {
   border: 1px solid var(--ink);
   border-radius: var(--radius);

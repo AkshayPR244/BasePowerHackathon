@@ -148,7 +148,10 @@ export function Workspace() {
   return (
     <main>
       <nav className="advanced-nav" aria-label="Analysis navigation">
-        <strong>Advanced Analysis</strong>
+        <span>
+          <strong>Advanced Analysis</strong>
+          <small>Scrollable workspace</small>
+        </span>
         <a href={backHref} data-testid="live-canvas-link">
           ← Back to main planner
         </a>

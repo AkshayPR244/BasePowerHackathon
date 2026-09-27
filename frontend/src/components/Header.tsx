@@ -14,10 +14,10 @@ export function Validation({ plan }: { plan: Plan }) {
       className={`badge ${!plan.validation.checked || !plan.validation.valid ? "warning" : ""}`}
     >
       {!plan.validation.checked
-        ? "Not validated"
+        ? "Validator not run"
         : plan.validation.valid
-          ? "Validated"
-          : `${plan.validation.issues.length} violations`}
+          ? "Validator checked"
+          : `Validator found ${plan.validation.issues.length} ${plan.validation.issues.length === 1 ? "violation" : "violations"}`}
     </span>
   );
 }

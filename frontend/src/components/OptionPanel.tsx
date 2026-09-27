@@ -48,7 +48,13 @@ export function OptionPanel({
       <div className="panel-heading">
         <h2>Selected option</h2>
         <span className="badge" data-testid="option-panel-status">
-          {statusLabel(option)} · {validationLabel(option)}
+          {statusLabel(option)}
+        </span>
+        <span
+          className={`badge ${option.result.validation.checked && option.result.validation.valid ? "" : "warning"}`}
+          data-testid="option-panel-validation"
+        >
+          {validationLabel(option)}
         </span>
         {option.stub && <span className="badge">Stub data</span>}
       </div>

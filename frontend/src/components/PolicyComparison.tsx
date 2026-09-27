@@ -72,7 +72,12 @@ export function PolicyComparison({
       {plans.map((p) => (
         <p key={p.objective_policy}>
           {p.objective_policy}: {p.status} ·{" "}
-          {p.validation.valid ? "Validated" : "Not validated"} ·{" "}
+          {p.validation.checked
+            ? p.validation.valid
+              ? "Validator checked"
+              : `Validator found ${p.validation.issues.length} ${p.validation.issues.length === 1 ? "violation" : "violations"}`
+            : "Validator not run"}{" "}
+          ·{" "}
           {p.objective
             ? money(p.objective.operating_value_usd) +
               " modeled operating margin"

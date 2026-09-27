@@ -18,24 +18,6 @@ export function OptionCard({
   shortcut: string;
   onSelect: (optionId: string) => void;
 }) {
-  if (
-    !["optimal", "feasible"].includes(option.status) ||
-    !option.result.validation.valid
-  ) {
-    return (
-      <section className="panel" aria-label="Unavailable recovery option">
-        <strong>{option.action_label}</strong>
-        <p role="status">
-          {option.status === "infeasible" ? "Infeasible" : "No validated plan"}
-        </p>
-        <p>{option.result.message}</p>
-        <p>
-          Costs and deadline outcomes are not evaluated without a feasible plan.
-        </p>
-        <button disabled>Approve unavailable</button>
-      </section>
-    );
-  }
   const crews = [
     ...new Set(option.crew_load.map((load) => load.crew_id)),
   ].sort();
@@ -65,24 +47,33 @@ export function OptionCard({
           {option.stub && <span className="badge">Stub data</span>}
         </span>
       </span>
-      <span className="option-numbers">
-        <span data-testid="option-cost">
-          <strong>{money(option.economics.net_impact_usd)}</strong>
-          <small>Modeled cost</small>
+      {valid ? (
+        <span className="option-numbers">
+          <span data-testid="option-cost">
+            <strong>{money(option.economics.net_impact_usd)}</strong>
+            <small>Modeled cost</small>
+          </span>
+          <span>
+            <strong>
+              {money(option.economics.advantage_vs_no_action_usd)}
+            </strong>
+            <small>Advantage vs no action</small>
+          </span>
+          <span data-testid="option-deadlines">
+            <strong>{option.counts.deadlines_missed}</strong>
+            <small>Deadlines missed</small>
+          </span>
+          <span data-testid="option-customers">
+            <strong>{option.counts.customers_to_reschedule}</strong>
+            <small>Customers to reschedule</small>
+          </span>
         </span>
-        <span>
-          <strong>{money(option.economics.advantage_vs_no_action_usd)}</strong>
-          <small>Advantage vs no action</small>
+      ) : (
+        <span className="option-numbers" data-testid="option-not-evaluated">
+          Costs and deadline outcomes are not evaluated without a validated
+          plan.
         </span>
-        <span data-testid="option-deadlines">
-          <strong>{option.counts.deadlines_missed}</strong>
-          <small>Deadlines missed</small>
-        </span>
-        <span data-testid="option-customers">
-          <strong>{option.counts.customers_to_reschedule}</strong>
-          <small>Customers to reschedule</small>
-        </span>
-      </span>
+      )}
       <span className="option-details">
         {option.overtime_min > 0
           ? `${option.overtime_min} min overtime`

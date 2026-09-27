@@ -1,15 +1,15 @@
 {
-  "option_id": "custom-2201c6b846f2e0f1",
+  "option_id": "custom-96040afef7f5ff76",
   "kind": "custom",
   "action_label": "Evaluate manual recovery changes",
   "intervention_edits": [],
   "status": "optimal",
   "proven_optimal": true,
   "result": {
-    "plan_id": "standard-r2-recovery-d87deead",
+    "plan_id": "standard-r1-recovery-63743567",
     "scenario_id": "standard",
-    "scenario_hash": "d87deead20582f7fc6f711ebb5777ad7557412cf74e3b971fd48595134092d18",
-    "revision": 2,
+    "scenario_hash": "63743567e94172788d891bc174ff372304a1d7cfe7361a26affa54bc0626aeb4",
+    "revision": 1,
     "mode": "recovery",
     "algorithm": "cpsat",
     "objective_policy": "value_aware",
@@ -28,10 +28,15 @@
         "kind": "remove_crew_day",
         "crew_id": "BA",
         "date": "2018-06-14"
+      },
+      {
+        "kind": "remove_crew_day",
+        "crew_id": "IA",
+        "date": "2018-06-15"
       }
     ],
     "status": "optimal",
-    "message": "Crew IA is out Thu 14 Jun. Crew IB is out Thu 14 Jun. Crew BA is out Thu 14 Jun. 7 homes are not scheduled. 7 visits move, so 7 customers need a new date.",
+    "message": "Crew IA is out Thu 14 Jun. Crew IB is out Thu 14 Jun. Crew BA is out Thu 14 Jun. Crew IA is out Fri 15 Jun. 7 homes are not scheduled. 7 visits move, so 7 customers need a new date.",
     "stages": [
       {
         "name": "jobs_late_or_unscheduled",
@@ -39,7 +44,7 @@
         "value": 7.0,
         "bound": 7.0,
         "gap": 0.0,
-        "elapsed_ms": 31
+        "elapsed_ms": 16
       },
       {
         "name": "total_delay",
@@ -47,7 +52,7 @@
         "value": 210.0,
         "bound": 210.0,
         "gap": 0.0,
-        "elapsed_ms": 16
+        "elapsed_ms": 14
       },
       {
         "name": "changed_installs",
@@ -55,7 +60,7 @@
         "value": 7.0,
         "bound": 7.0,
         "gap": 0.0,
-        "elapsed_ms": 14
+        "elapsed_ms": 0
       },
       {
         "name": "operating_value",
@@ -63,7 +68,7 @@
         "value": 3506.2,
         "bound": 3506.2,
         "gap": 0.0,
-        "elapsed_ms": 0
+        "elapsed_ms": 14
       },
       {
         "name": "travel",
@@ -71,7 +76,7 @@
         "value": 823.0,
         "bound": 823.0,
         "gap": 0.0,
-        "elapsed_ms": 0
+        "elapsed_ms": 16
       }
     ],
     "assignments": [
@@ -1094,14 +1099,6 @@
         "available_min": 0
       },
       {
-        "crew_id": "IA",
-        "date": "2018-06-15",
-        "cluster_id": null,
-        "onsite_min": 0,
-        "travel_min": 0,
-        "available_min": 480
-      },
-      {
         "crew_id": "IB",
         "date": "2018-06-04",
         "cluster_id": "S",
@@ -1183,7 +1180,7 @@
       "operating_value_usd": 3506.263625525328,
       "changed_installs": 7,
       "travel_allowance_min": 823,
-      "crew_utilization": 0.9055,
+      "crew_utilization": 0.9484,
       "value_distinguishes_choices": true,
       "visits_moved": 7,
       "customers_to_reschedule": 7
@@ -1207,11 +1204,11 @@
         "kind": "assumed"
       }
     ],
-    "solve_ms": 187
+    "solve_ms": 219
   },
   "diff_vs_original": {
-    "before_plan_id": "standard-r2-recovery-c2f8ba65",
-    "after_plan_id": "standard-r2-recovery-d87deead",
+    "before_plan_id": "standard-r1-recovery-c2f8ba65",
+    "after_plan_id": "standard-r1-recovery-63743567",
     "changes": [
       {
         "site_id": "S-02",
@@ -1324,8 +1321,8 @@
     "headline": "7 jobs dropped."
   },
   "diff_vs_no_action": {
-    "before_plan_id": "standard-r2-recovery-d87deead",
-    "after_plan_id": "standard-r2-recovery-d87deead",
+    "before_plan_id": "standard-r1-recovery-63743567",
+    "after_plan_id": "standard-r1-recovery-63743567",
     "changes": [],
     "summary": {
       "moved": 0,

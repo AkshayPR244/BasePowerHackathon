@@ -14,7 +14,7 @@
     }
   ],
   "status": "feasible",
-  "message": "Crew BA is out Thu 7 Jun. 4 jobs not scheduled. 4 visits move, so 4 customers need a new date. The time limit ended before the solver proved this plan is the best.",
+  "message": "Crew BA is out Thu 7 Jun. 4 homes are not scheduled. 4 visits move, so 4 customers need a new date. The time limit ended before the solver proved this plan is the best.",
   "stages": [
     {
       "name": "jobs_late_or_unscheduled",
@@ -22,7 +22,7 @@
       "value": 4.0,
       "bound": 4.0,
       "gap": 0.0,
-      "elapsed_ms": 1758
+      "elapsed_ms": 4734
     },
     {
       "name": "total_delay",
@@ -30,7 +30,7 @@
       "value": 120.0,
       "bound": 90.0,
       "gap": 0.25,
-      "elapsed_ms": 6627
+      "elapsed_ms": 5171
     },
     {
       "name": "changed_installs",
@@ -38,7 +38,7 @@
       "value": 4.0,
       "bound": 4.0,
       "gap": 0.0,
-      "elapsed_ms": 32
+      "elapsed_ms": 139
     },
     {
       "name": "operating_value",
@@ -46,7 +46,7 @@
       "value": 3758.52,
       "bound": 3758.52,
       "gap": 0.0,
-      "elapsed_ms": 4
+      "elapsed_ms": 14
     },
     {
       "name": "travel",
@@ -54,7 +54,7 @@
       "value": 831.0,
       "bound": 831.0,
       "gap": 0.0,
-      "elapsed_ms": 4
+      "elapsed_ms": 31
     }
   ],
   "assignments": [
@@ -1212,5 +1212,5 @@
       "kind": "assumed"
     }
   ],
-  "solve_ms": 8660
+  "solve_ms": 10203
 }

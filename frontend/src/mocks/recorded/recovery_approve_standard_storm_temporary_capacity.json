@@ -232,6 +232,13 @@
       "job_id": "S-02-I"
     },
     {
+      "site_id": "S-02",
+      "crew_id": "TEMP-BA",
+      "date": "2018-06-15",
+      "locked": false,
+      "job_id": "S-02-B"
+    },
+    {
       "site_id": "S-03",
       "crew_id": "IB",
       "date": "2018-06-13",
@@ -281,6 +288,13 @@
       "job_id": "S-07-I"
     },
     {
+      "site_id": "S-07",
+      "crew_id": "TEMP-BA",
+      "date": "2018-06-15",
+      "locked": false,
+      "job_id": "S-07-B"
+    },
+    {
       "site_id": "S-08",
       "crew_id": "IB",
       "date": "2018-06-04",
@@ -321,6 +335,13 @@
       "date": "2018-06-07",
       "locked": true,
       "job_id": "S-11-I"
+    },
+    {
+      "site_id": "S-11",
+      "crew_id": "TEMP-BA",
+      "date": "2018-06-15",
+      "locked": false,
+      "job_id": "S-11-B"
     },
     {
       "site_id": "S-12",
@@ -584,7 +605,7 @@
   ],
   "effective_scenario": {
     "scenario_id": "standard",
-    "scenario_hash": "542809b81ec6b869cacc5e999e1417a37278e900b3c592570d54a96a5771b9c9",
+    "scenario_hash": "58bb68da07a0f39399fe96efe0bf1159dec9dcb271c4ec36da2bb2295ebddf7f",
     "revision": 1,
     "config": {
       "name": "standard synthetic two-visit recovery benchmark",
@@ -2586,6 +2607,19 @@
           "S",
           "W"
         ]
+      },
+      {
+        "crew_id": "TEMP-BA",
+        "date": "2018-06-15",
+        "available_min": 274,
+        "skills": [
+          "battery"
+        ],
+        "allowed_clusters": [
+          "N",
+          "S",
+          "W"
+        ]
       }
     ],
     "inventory": [
@@ -2843,6 +2877,13 @@
         "job_id": "S-02-I"
       },
       {
+        "site_id": "S-02",
+        "crew_id": "TEMP-BA",
+        "date": "2018-06-15",
+        "locked": false,
+        "job_id": "S-02-B"
+      },
+      {
         "site_id": "S-03",
         "crew_id": "IB",
         "date": "2018-06-13",
@@ -2892,6 +2933,13 @@
         "job_id": "S-07-I"
       },
       {
+        "site_id": "S-07",
+        "crew_id": "TEMP-BA",
+        "date": "2018-06-15",
+        "locked": false,
+        "job_id": "S-07-B"
+      },
+      {
         "site_id": "S-08",
         "crew_id": "IB",
         "date": "2018-06-04",
@@ -2932,6 +2980,13 @@
         "date": "2018-06-07",
         "locked": true,
         "job_id": "S-11-I"
+      },
+      {
+        "site_id": "S-11",
+        "crew_id": "TEMP-BA",
+        "date": "2018-06-15",
+        "locked": false,
+        "job_id": "S-11-B"
       },
       {
         "site_id": "S-12",

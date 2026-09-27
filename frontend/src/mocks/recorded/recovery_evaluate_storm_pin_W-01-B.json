@@ -1,15 +1,20 @@
 {
-  "option_id": "custom-2201c6b846f2e0f1",
+  "option_id": "custom-4e06c70d41fd49b0",
   "kind": "custom",
   "action_label": "Evaluate manual recovery changes",
-  "intervention_edits": [],
+  "intervention_edits": [
+    {
+      "kind": "pin_visit",
+      "job_id": "W-01-B"
+    }
+  ],
   "status": "optimal",
   "proven_optimal": true,
   "result": {
-    "plan_id": "standard-r2-recovery-d87deead",
+    "plan_id": "standard-r1-recovery-110e2b45",
     "scenario_id": "standard",
-    "scenario_hash": "d87deead20582f7fc6f711ebb5777ad7557412cf74e3b971fd48595134092d18",
-    "revision": 2,
+    "scenario_hash": "110e2b45956fc7e820fb44c6119b371d7061056b0f122198d4555202b22096fe",
+    "revision": 1,
     "mode": "recovery",
     "algorithm": "cpsat",
     "objective_policy": "value_aware",
@@ -28,10 +33,14 @@
         "kind": "remove_crew_day",
         "crew_id": "BA",
         "date": "2018-06-14"
+      },
+      {
+        "kind": "pin_visit",
+        "job_id": "W-01-B"
       }
     ],
     "status": "optimal",
-    "message": "Crew IA is out Thu 14 Jun. Crew IB is out Thu 14 Jun. Crew BA is out Thu 14 Jun. 7 homes are not scheduled. 7 visits move, so 7 customers need a new date.",
+    "message": "Crew IA is out Thu 14 Jun. Crew IB is out Thu 14 Jun. Crew BA is out Thu 14 Jun. W-01 battery day stays on its current crew-day. 7 homes are not scheduled. 7 visits move, so 7 customers need a new date.",
     "stages": [
       {
         "name": "jobs_late_or_unscheduled",
@@ -39,7 +48,7 @@
         "value": 7.0,
         "bound": 7.0,
         "gap": 0.0,
-        "elapsed_ms": 31
+        "elapsed_ms": 16
       },
       {
         "name": "total_delay",
@@ -47,7 +56,7 @@
         "value": 210.0,
         "bound": 210.0,
         "gap": 0.0,
-        "elapsed_ms": 16
+        "elapsed_ms": 0
       },
       {
         "name": "changed_installs",
@@ -55,7 +64,7 @@
         "value": 7.0,
         "bound": 7.0,
         "gap": 0.0,
-        "elapsed_ms": 14
+        "elapsed_ms": 0
       },
       {
         "name": "operating_value",
@@ -63,7 +72,7 @@
         "value": 3506.2,
         "bound": 3506.2,
         "gap": 0.0,
-        "elapsed_ms": 0
+        "elapsed_ms": 14
       },
       {
         "name": "travel",
@@ -71,7 +80,7 @@
         "value": 823.0,
         "bound": 823.0,
         "gap": 0.0,
-        "elapsed_ms": 0
+        "elapsed_ms": 16
       }
     ],
     "assignments": [
@@ -619,7 +628,7 @@
         "site_id": "W-01",
         "crew_id": "BA",
         "date": "2018-06-15",
-        "state": "scheduled",
+        "state": "locked",
         "days_late": 0,
         "value_usd": 89.3039064063406,
         "job_id": "W-01-B",
@@ -1207,11 +1216,11 @@
         "kind": "assumed"
       }
     ],
-    "solve_ms": 187
+    "solve_ms": 202
   },
   "diff_vs_original": {
-    "before_plan_id": "standard-r2-recovery-c2f8ba65",
-    "after_plan_id": "standard-r2-recovery-d87deead",
+    "before_plan_id": "standard-r1-recovery-c2f8ba65",
+    "after_plan_id": "standard-r1-recovery-110e2b45",
     "changes": [
       {
         "site_id": "S-02",
@@ -1310,6 +1319,23 @@
         "note": "S-12 battery day is no longer scheduled.",
         "job_id": "S-12-B",
         "visit_type": "battery_day"
+      },
+      {
+        "site_id": "W-01",
+        "kind": "state_changed",
+        "before": {
+          "crew_id": "BA",
+          "date": "2018-06-15"
+        },
+        "after": {
+          "crew_id": "BA",
+          "date": "2018-06-15"
+        },
+        "before_state": "scheduled",
+        "after_state": "locked",
+        "note": "W-01 battery day changes from scheduled to locked.",
+        "job_id": "W-01-B",
+        "visit_type": "battery_day"
       }
     ],
     "summary": {
@@ -1324,9 +1350,27 @@
     "headline": "7 jobs dropped."
   },
   "diff_vs_no_action": {
-    "before_plan_id": "standard-r2-recovery-d87deead",
-    "after_plan_id": "standard-r2-recovery-d87deead",
-    "changes": [],
+    "before_plan_id": "standard-r1-recovery-d87deead",
+    "after_plan_id": "standard-r1-recovery-110e2b45",
+    "changes": [
+      {
+        "site_id": "W-01",
+        "kind": "state_changed",
+        "before": {
+          "crew_id": "BA",
+          "date": "2018-06-15"
+        },
+        "after": {
+          "crew_id": "BA",
+          "date": "2018-06-15"
+        },
+        "before_state": "scheduled",
+        "after_state": "locked",
+        "note": "W-01 battery day changes from scheduled to locked.",
+        "job_id": "W-01-B",
+        "visit_type": "battery_day"
+      }
+    ],
     "summary": {
       "moved": 0,
       "added": 0,
@@ -1431,6 +1475,11 @@
       "job_id": "S-12-B",
       "text": "S-12 battery day is no longer scheduled. Joint recovery constraints: crew skill, capacity, inventory, appointment windows, locks, and visit precedence; no unique cause inferred.",
       "constraint": "joint_constraints"
+    },
+    {
+      "job_id": "W-01-B",
+      "text": "Protecting this set of visits changes modeled cost by $0.00 vs the computed unpinned option; this is not a proven minimum protection cost.",
+      "constraint": "pin_visit"
     }
   ],
   "crew_load": [

@@ -1,0 +1,164 @@
+{
+  "option_id": "custom-7a9cd3c30be5e327",
+  "kind": "custom",
+  "action_label": "Evaluate manual recovery changes",
+  "intervention_edits": [
+    {
+      "kind": "pin_visit",
+      "job_id": "S-02-B"
+    }
+  ],
+  "status": "infeasible",
+  "proven_optimal": false,
+  "result": {
+    "plan_id": "standard-r1-recovery-bda5406d",
+    "scenario_id": "standard",
+    "scenario_hash": "bda5406dcafcf2a18d1b6d0f18577d20577d114aca96d2a3447bdf37128ea420",
+    "revision": 1,
+    "mode": "recovery",
+    "algorithm": "cpsat",
+    "objective_policy": "value_aware",
+    "edits": [
+      {
+        "kind": "remove_crew_day",
+        "crew_id": "IA",
+        "date": "2018-06-14"
+      },
+      {
+        "kind": "remove_crew_day",
+        "crew_id": "IB",
+        "date": "2018-06-14"
+      },
+      {
+        "kind": "remove_crew_day",
+        "crew_id": "BA",
+        "date": "2018-06-14"
+      },
+      {
+        "kind": "pin_visit",
+        "job_id": "S-02-B"
+      }
+    ],
+    "status": "infeasible",
+    "message": "Locked install S-02 cannot keep its crew-day after these changes. Unlock it or undo the disruption.",
+    "stages": [
+      {
+        "name": "jobs_late_or_unscheduled",
+        "status": "infeasible",
+        "value": null,
+        "bound": null,
+        "gap": null,
+        "elapsed_ms": 0
+      },
+      {
+        "name": "total_delay",
+        "status": "skipped",
+        "value": null,
+        "bound": null,
+        "gap": null,
+        "elapsed_ms": 0
+      },
+      {
+        "name": "changed_installs",
+        "status": "skipped",
+        "value": null,
+        "bound": null,
+        "gap": null,
+        "elapsed_ms": 0
+      },
+      {
+        "name": "operating_value",
+        "status": "skipped",
+        "value": null,
+        "bound": null,
+        "gap": null,
+        "elapsed_ms": 0
+      },
+      {
+        "name": "travel",
+        "status": "skipped",
+        "value": null,
+        "bound": null,
+        "gap": null,
+        "elapsed_ms": 0
+      }
+    ],
+    "assignments": [],
+    "unscheduled": [
+      {
+        "site_id": "S-02",
+        "state": "locked",
+        "reasons": [
+          "LOCK_CONFLICT"
+        ],
+        "detail": "S-02 is locked to a crew-day it can no longer use.",
+        "job_id": null,
+        "visit_type": null
+      }
+    ],
+    "crew_days": [],
+    "objective": null,
+    "validation": {
+      "checked": true,
+      "valid": true,
+      "issues": [],
+      "validator": "independent-v1:no-incumbent-shape"
+    },
+    "input_issues": [],
+    "assumptions": [
+      {
+        "key": "synthetic_inputs",
+        "text": "All inputs in this scenario are synthetic.",
+        "kind": "synthetic"
+      },
+      {
+        "key": "travel_allowance",
+        "text": "Travel is a fixed allowance per active crew-day and cluster, not a routed drive time.",
+        "kind": "assumed"
+      }
+    ],
+    "solve_ms": 31
+  },
+  "diff_vs_original": {
+    "before_plan_id": "standard-r1-recovery-c2f8ba65",
+    "after_plan_id": "standard-r1-recovery-bda5406d",
+    "changes": [],
+    "summary": {
+      "moved": 0,
+      "added": 0,
+      "removed": 0,
+      "newly_late": 0,
+      "value_delta_usd": 0.0,
+      "travel_delta_min": 0,
+      "customers_to_reschedule": 0
+    },
+    "headline": "No feasible plan, so no visits change."
+  },
+  "diff_vs_no_action": null,
+  "counts": {
+    "deadlines_missed": 0,
+    "deadlines_recovered": 0,
+    "delay_days": 0,
+    "visits_moved": 0,
+    "customers_to_reschedule": 0,
+    "unscheduled": 0
+  },
+  "economics": {
+    "net_impact_usd": 0.0,
+    "advantage_vs_no_action_usd": 0.0,
+    "cost_per_deadline_recovered_usd": null,
+    "lines": [
+      {
+        "label": "Not evaluated",
+        "amount_usd": 0.0,
+        "kind": "other",
+        "basis": "No feasible schedule; not eligible for cost ranking."
+      }
+    ]
+  },
+  "overtime_min": 0,
+  "explanations": [],
+  "crew_load": [],
+  "lowest_modeled_cost": false,
+  "stub": false
+}

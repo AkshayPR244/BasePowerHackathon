@@ -1,15 +1,22 @@
 {
-  "option_id": "custom-2201c6b846f2e0f1",
+  "option_id": "custom-a5a9baafa332d56a",
   "kind": "custom",
   "action_label": "Evaluate manual recovery changes",
-  "intervention_edits": [],
+  "intervention_edits": [
+    {
+      "kind": "extend_crew_day",
+      "crew_id": "IA",
+      "date": "2018-06-15",
+      "extra_min": 120
+    }
+  ],
   "status": "optimal",
   "proven_optimal": true,
   "result": {
-    "plan_id": "standard-r2-recovery-d87deead",
+    "plan_id": "standard-r1-recovery-e7b1b124",
     "scenario_id": "standard",
-    "scenario_hash": "d87deead20582f7fc6f711ebb5777ad7557412cf74e3b971fd48595134092d18",
-    "revision": 2,
+    "scenario_hash": "e7b1b12485c3609b46202559d5af62f39a90ddae15cec534719f6be41fcf8da3",
+    "revision": 1,
     "mode": "recovery",
     "algorithm": "cpsat",
     "objective_policy": "value_aware",
@@ -28,10 +35,16 @@
         "kind": "remove_crew_day",
         "crew_id": "BA",
         "date": "2018-06-14"
+      },
+      {
+        "kind": "extend_crew_day",
+        "crew_id": "IA",
+        "date": "2018-06-15",
+        "extra_min": 120
       }
     ],
     "status": "optimal",
-    "message": "Crew IA is out Thu 14 Jun. Crew IB is out Thu 14 Jun. Crew BA is out Thu 14 Jun. 7 homes are not scheduled. 7 visits move, so 7 customers need a new date.",
+    "message": "Crew IA is out Thu 14 Jun. Crew IB is out Thu 14 Jun. Crew BA is out Thu 14 Jun. Crew IA works 120 min overtime on Fri 15 Jun. 7 homes are not scheduled. 7 visits move, so 7 customers need a new date.",
     "stages": [
       {
         "name": "jobs_late_or_unscheduled",
@@ -39,7 +52,7 @@
         "value": 7.0,
         "bound": 7.0,
         "gap": 0.0,
-        "elapsed_ms": 31
+        "elapsed_ms": 14
       },
       {
         "name": "total_delay",
@@ -55,7 +68,7 @@
         "value": 7.0,
         "bound": 7.0,
         "gap": 0.0,
-        "elapsed_ms": 14
+        "elapsed_ms": 0
       },
       {
         "name": "operating_value",
@@ -63,7 +76,7 @@
         "value": 3506.2,
         "bound": 3506.2,
         "gap": 0.0,
-        "elapsed_ms": 0
+        "elapsed_ms": 14
       },
       {
         "name": "travel",
@@ -1099,7 +1112,7 @@
         "cluster_id": null,
         "onsite_min": 0,
         "travel_min": 0,
-        "available_min": 480
+        "available_min": 600
       },
       {
         "crew_id": "IB",
@@ -1183,7 +1196,7 @@
       "operating_value_usd": 3506.263625525328,
       "changed_installs": 7,
       "travel_allowance_min": 823,
-      "crew_utilization": 0.9055,
+      "crew_utilization": 0.8953,
       "value_distinguishes_choices": true,
       "visits_moved": 7,
       "customers_to_reschedule": 7
@@ -1207,11 +1220,11 @@
         "kind": "assumed"
       }
     ],
-    "solve_ms": 187
+    "solve_ms": 218
   },
   "diff_vs_original": {
-    "before_plan_id": "standard-r2-recovery-c2f8ba65",
-    "after_plan_id": "standard-r2-recovery-d87deead",
+    "before_plan_id": "standard-r1-recovery-c2f8ba65",
+    "after_plan_id": "standard-r1-recovery-e7b1b124",
     "changes": [
       {
         "site_id": "S-02",
@@ -1324,8 +1337,8 @@
     "headline": "7 jobs dropped."
   },
   "diff_vs_no_action": {
-    "before_plan_id": "standard-r2-recovery-d87deead",
-    "after_plan_id": "standard-r2-recovery-d87deead",
+    "before_plan_id": "standard-r1-recovery-d87deead",
+    "after_plan_id": "standard-r1-recovery-e7b1b124",
     "changes": [],
     "summary": {
       "moved": 0,
@@ -1347,8 +1360,8 @@
     "unscheduled": 7
   },
   "economics": {
-    "net_impact_usd": 630.25,
-    "advantage_vs_no_action_usd": 0.0,
+    "net_impact_usd": 800.23,
+    "advantage_vs_no_action_usd": -169.98,
     "cost_per_deadline_recovered_usd": null,
     "lines": [
       {
@@ -1359,9 +1372,9 @@
       },
       {
         "label": "Overtime",
-        "amount_usd": 0.0,
+        "amount_usd": 169.98,
         "kind": "labor",
-        "basis": "0 authorized minutes / 60 \u00d7 $28.33/person-hour \u00d7 2.0 people \u00d7 1.5. Charged for authorized capacity, including idle minutes."
+        "basis": "120 authorized minutes / 60 \u00d7 $28.33/person-hour \u00d7 2.0 people \u00d7 1.5. Charged for authorized capacity, including idle minutes."
       },
       {
         "label": "Temporary capacity",
@@ -1395,7 +1408,7 @@
       }
     ]
   },
-  "overtime_min": 0,
+  "overtime_min": 120,
   "explanations": [
     {
       "job_id": "S-02-B",

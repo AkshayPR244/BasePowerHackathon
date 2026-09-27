@@ -22,6 +22,33 @@ export function ScenarioBriefing({
         </summary>
         <div className="briefing-body">
           <p>{primaryActive ? report.trigger : report.situation}</p>
+          <div className="briefing-incident" aria-label="Operational impact">
+            <div>
+              <span className="eyebrow">What went wrong</span>
+              <strong>
+                {primaryActive
+                  ? report.what_went_wrong
+                  : "Nothing yet — this is the healthy starting plan."}
+              </strong>
+            </div>
+            <div>
+              <span className="eyebrow">
+                Unavailable or constrained resources
+              </span>
+              {primaryActive ? (
+                <ul>
+                  {report.unavailable_resources.map((resource) => (
+                    <li key={resource}>{resource}</li>
+                  ))}
+                </ul>
+              ) : (
+                <strong>
+                  None. All planned crews, inventory, and customer windows are
+                  available.
+                </strong>
+              )}
+            </div>
+          </div>
           {primaryActive && (
             <p>
               <strong>{report.question}</strong>

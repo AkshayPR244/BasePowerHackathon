@@ -1,7 +1,7 @@
 import "../design/live-canvas.css";
 import { useEffect, useRef, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { api, unwrap } from "../api/client";
+import { api, mockMode, unwrap } from "../api/client";
 import type { Schema } from "../api/types";
 import { dateLabel } from "../lib/format";
 import { statusLabel, validationLabel } from "../lib/recovery";
@@ -483,6 +483,30 @@ export function LiveRecoveryCanvas() {
     );
     if (days.length === 0) {
       setNotice("No crew-day can take another trigger.");
+      return;
+    }
+    if (mockMode) {
+      const recorded = days.find(
+        (day) => day.crew_id === "BA" && day.date === "2018-06-14",
+      );
+      if (!recorded) {
+        setNotice(
+          "The recorded demo trigger is unavailable. Reset the demo or use the live API.",
+        );
+        return;
+      }
+      setTool("knockout");
+      applyChange(
+        `Crew ${recorded.crew_id} loses ${dateLabel(recorded.date)}.`,
+        [
+          {
+            kind: "remove_crew_day",
+            crew_id: recorded.crew_id,
+            date: recorded.date,
+          },
+        ],
+        `Crew ${recorded.crew_id} has no capacity on ${dateLabel(recorded.date)}. Reassigning its visits and checking deadlines.`,
+      );
       return;
     }
     const choice = days[Math.floor(Math.random() * days.length)];

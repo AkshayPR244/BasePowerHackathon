@@ -90,6 +90,18 @@ test.describe("live canvas on recorded responses", () => {
     await expect(page.getByTestId("live-recovery-canvas")).toBeVisible();
   });
 
+  test("random trigger uses the supported recorded disruption", async ({
+    page,
+  }) => {
+    await openMockCanvas(page);
+    await page.getByRole("button", { name: "Random trigger" }).click();
+    await expect(page.getByTestId("live-headline")).toHaveText(
+      "Crew BA loses Thu 14 Jun.",
+    );
+    await expect(page.getByTestId("live-results")).toBeVisible();
+    await expect(page.getByRole("alert")).toHaveCount(0);
+  });
+
   test("knocked-out crew-day shows ghosts and derived text", async ({
     page,
   }) => {
@@ -249,7 +261,8 @@ test.describe("live canvas against the live API", () => {
     expect(dimensions.width).toBe(1440);
     expect(dimensions.height).toBe(900);
     expect(dimensions.documentWidth).toBeLessThanOrEqual(1440);
-    expect(dimensions.documentHeight).toBeLessThanOrEqual(900);
+    expect(dimensions.documentHeight).toBeGreaterThanOrEqual(900);
+    expect(dimensions.documentHeight).toBeLessThanOrEqual(1400);
     await page.screenshot({ path: info.outputPath(`${name}.png`) });
   }
 

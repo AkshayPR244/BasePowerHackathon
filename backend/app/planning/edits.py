@@ -78,7 +78,7 @@ def apply_edits(base: Scenario, edits: Sequence[Edit]) -> Edited:
                     issues.append(
                         _issue(
                             InputIssueCode.UNKNOWN_REFERENCE,
-                            f"Crew {e.crew_id} has no working day on {e.date}.",
+                            f"Crew {e.crew_id} has no working day on {_day(e.date)}.",
                         )
                     )
                 crew_days = keep
@@ -92,6 +92,14 @@ def apply_edits(base: Scenario, edits: Sequence[Edit]) -> Edited:
                     continue
                 if not set(e.allowed_clusters) <= {c.cluster_id for c in base.clusters}:
                     issues.append(_issue(InputIssueCode.UNKNOWN_REFERENCE, "Unknown crew cluster."))
+                    continue
+                if e.available_min <= 0 or not e.skills or not e.allowed_clusters:
+                    issues.append(
+                        _issue(
+                            InputIssueCode.BAD_VALUE,
+                            "A temporary crew-day needs minutes, a skill, and a cluster.",
+                        )
+                    )
                     continue
                 if (e.crew_id, e.date) in removed:
                     issues.append(
@@ -119,7 +127,7 @@ def apply_edits(base: Scenario, edits: Sequence[Edit]) -> Edited:
                     issues.append(
                         _issue(
                             InputIssueCode.DUPLICATE_ID,
-                            f"Crew {e.crew_id} already works on {e.date}.",
+                            f"Crew {e.crew_id} already works on {_day(e.date)}.",
                         )
                     )
                     continue
@@ -286,7 +294,8 @@ def _delay(
 ) -> tuple[list[InventoryReceipt], InputIssue | None]:
     if e.to_date < e.from_date:
         return inventory, _issue(
-            InputIssueCode.DATE_ORDER, f"Cannot delay inventory from {e.from_date} to {e.to_date}."
+            InputIssueCode.DATE_ORDER,
+            f"Cannot delay inventory from {_day(e.from_date)} to {_day(e.to_date)}.",
         )
     hits = [
         r
@@ -296,14 +305,14 @@ def _delay(
     if not hits:
         return inventory, _issue(
             InputIssueCode.UNKNOWN_REFERENCE,
-            f"No {e.configuration_id} receipt on {e.from_date}.",
+            f"No {e.configuration_id} receipt on {_day(e.from_date)}.",
         )
     total = sum(r.quantity for r in hits)
     moved = total if e.quantity is None else e.quantity
     if moved > total:
         return inventory, _issue(
             InputIssueCode.BAD_VALUE,
-            f"Cannot delay {moved} units. Only {total} arrive on {e.from_date}.",
+            f"Cannot delay {moved} units. Only {total} arrive on {_day(e.from_date)}.",
         )
     rest = [r for r in inventory if r not in hits]
     if total - moved:

@@ -246,6 +246,13 @@
       "job_id": "S-03-I"
     },
     {
+      "site_id": "S-03",
+      "crew_id": "TEMP-BA",
+      "date": "2018-06-15",
+      "locked": false,
+      "job_id": "S-03-B"
+    },
+    {
       "site_id": "S-04",
       "crew_id": "IB",
       "date": "2018-06-04",
@@ -279,6 +286,13 @@
       "date": "2018-06-07",
       "locked": true,
       "job_id": "S-06-I"
+    },
+    {
+      "site_id": "S-06",
+      "crew_id": "TEMP-BA",
+      "date": "2018-06-15",
+      "locked": false,
+      "job_id": "S-06-B"
     },
     {
       "site_id": "S-07",
@@ -316,6 +330,13 @@
       "job_id": "S-09-I"
     },
     {
+      "site_id": "S-09",
+      "crew_id": "TEMP-BA",
+      "date": "2018-06-15",
+      "locked": false,
+      "job_id": "S-09-B"
+    },
+    {
       "site_id": "S-10",
       "crew_id": "IB",
       "date": "2018-06-07",
@@ -349,6 +370,13 @@
       "date": "2018-06-07",
       "locked": true,
       "job_id": "S-12-I"
+    },
+    {
+      "site_id": "S-12",
+      "crew_id": "TEMP-BA",
+      "date": "2018-06-15",
+      "locked": false,
+      "job_id": "S-12-B"
     },
     {
       "site_id": "S-13",
@@ -605,7 +633,7 @@
   ],
   "effective_scenario": {
     "scenario_id": "standard",
-    "scenario_hash": "58bb68da07a0f39399fe96efe0bf1159dec9dcb271c4ec36da2bb2295ebddf7f",
+    "scenario_hash": "81666064a22d46e3304c49dab6fd4c3fa64e245b6986f5ef7029b445e9269277",
     "revision": 1,
     "config": {
       "name": "standard synthetic two-visit recovery benchmark",
@@ -2611,7 +2639,7 @@
       {
         "crew_id": "TEMP-BA",
         "date": "2018-06-15",
-        "available_min": 274,
+        "available_min": 480,
         "skills": [
           "battery"
         ],
@@ -2891,6 +2919,13 @@
         "job_id": "S-03-I"
       },
       {
+        "site_id": "S-03",
+        "crew_id": "TEMP-BA",
+        "date": "2018-06-15",
+        "locked": false,
+        "job_id": "S-03-B"
+      },
+      {
         "site_id": "S-04",
         "crew_id": "IB",
         "date": "2018-06-04",
@@ -2924,6 +2959,13 @@
         "date": "2018-06-07",
         "locked": true,
         "job_id": "S-06-I"
+      },
+      {
+        "site_id": "S-06",
+        "crew_id": "TEMP-BA",
+        "date": "2018-06-15",
+        "locked": false,
+        "job_id": "S-06-B"
       },
       {
         "site_id": "S-07",
@@ -2961,6 +3003,13 @@
         "job_id": "S-09-I"
       },
       {
+        "site_id": "S-09",
+        "crew_id": "TEMP-BA",
+        "date": "2018-06-15",
+        "locked": false,
+        "job_id": "S-09-B"
+      },
+      {
         "site_id": "S-10",
         "crew_id": "IB",
         "date": "2018-06-07",
@@ -2994,6 +3043,13 @@
         "date": "2018-06-07",
         "locked": true,
         "job_id": "S-12-I"
+      },
+      {
+        "site_id": "S-12",
+        "crew_id": "TEMP-BA",
+        "date": "2018-06-15",
+        "locked": false,
+        "job_id": "S-12-B"
       },
       {
         "site_id": "S-13",

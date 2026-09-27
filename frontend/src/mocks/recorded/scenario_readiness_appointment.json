@@ -1,6 +1,6 @@
 {
   "scenario_id": "readiness_appointment",
-  "scenario_hash": "d901ba62bfc5288e97c4512d6585f6c34082790b5999bb9cfbbd0bc5dbfc8ef1",
+  "scenario_hash": "c58ddcf4d079d26827ee8dcbd1788564090dd4a6076dc487164192a257f40f06",
   "revision": 0,
   "config": {
     "name": "readiness_appointment synthetic two-visit recovery benchmark",
@@ -1165,116 +1165,116 @@
   ],
   "current_plan": [
     {
-      "site_id": "W-01",
-      "crew_id": "IA",
-      "date": "2018-06-05",
-      "locked": false,
-      "job_id": "W-01-I"
-    },
-    {
-      "site_id": "W-02",
-      "crew_id": "IA",
-      "date": "2018-06-05",
-      "locked": false,
-      "job_id": "W-02-I"
-    },
-    {
-      "site_id": "W-03",
-      "crew_id": "IA",
-      "date": "2018-06-05",
-      "locked": false,
-      "job_id": "W-03-I"
-    },
-    {
-      "site_id": "W-04",
-      "crew_id": "IA",
-      "date": "2018-06-05",
-      "locked": false,
-      "job_id": "W-04-I"
-    },
-    {
-      "site_id": "W-01",
-      "crew_id": "BA",
-      "date": "2018-06-06",
-      "locked": false,
-      "job_id": "W-01-B"
-    },
-    {
-      "site_id": "W-02",
-      "crew_id": "BA",
-      "date": "2018-06-06",
-      "locked": false,
-      "job_id": "W-02-B"
-    },
-    {
-      "site_id": "W-03",
-      "crew_id": "BA",
-      "date": "2018-06-06",
-      "locked": false,
-      "job_id": "W-03-B"
-    },
-    {
-      "site_id": "W-04",
-      "crew_id": "BA",
-      "date": "2018-06-06",
-      "locked": false,
-      "job_id": "W-04-B"
-    },
-    {
       "site_id": "S-01",
       "crew_id": "IA",
-      "date": "2018-06-06",
+      "date": "2018-06-05",
       "locked": false,
       "job_id": "S-01-I"
     },
     {
       "site_id": "S-02",
       "crew_id": "IA",
-      "date": "2018-06-06",
+      "date": "2018-06-05",
       "locked": false,
       "job_id": "S-02-I"
     },
     {
       "site_id": "S-03",
       "crew_id": "IA",
-      "date": "2018-06-06",
+      "date": "2018-06-05",
       "locked": false,
       "job_id": "S-03-I"
     },
     {
       "site_id": "S-04",
       "crew_id": "IA",
-      "date": "2018-06-06",
+      "date": "2018-06-05",
       "locked": false,
       "job_id": "S-04-I"
     },
     {
       "site_id": "S-01",
       "crew_id": "BA",
-      "date": "2018-06-07",
+      "date": "2018-06-06",
       "locked": false,
       "job_id": "S-01-B"
     },
     {
       "site_id": "S-02",
       "crew_id": "BA",
-      "date": "2018-06-07",
+      "date": "2018-06-06",
       "locked": false,
       "job_id": "S-02-B"
     },
     {
       "site_id": "S-03",
       "crew_id": "BA",
-      "date": "2018-06-07",
+      "date": "2018-06-06",
       "locked": false,
       "job_id": "S-03-B"
     },
     {
       "site_id": "S-04",
       "crew_id": "BA",
-      "date": "2018-06-07",
+      "date": "2018-06-06",
       "locked": false,
       "job_id": "S-04-B"
+    },
+    {
+      "site_id": "W-01",
+      "crew_id": "IA",
+      "date": "2018-06-06",
+      "locked": false,
+      "job_id": "W-01-I"
+    },
+    {
+      "site_id": "W-02",
+      "crew_id": "IA",
+      "date": "2018-06-06",
+      "locked": false,
+      "job_id": "W-02-I"
+    },
+    {
+      "site_id": "W-03",
+      "crew_id": "IA",
+      "date": "2018-06-06",
+      "locked": false,
+      "job_id": "W-03-I"
+    },
+    {
+      "site_id": "W-04",
+      "crew_id": "IA",
+      "date": "2018-06-06",
+      "locked": false,
+      "job_id": "W-04-I"
+    },
+    {
+      "site_id": "W-01",
+      "crew_id": "BA",
+      "date": "2018-06-07",
+      "locked": false,
+      "job_id": "W-01-B"
+    },
+    {
+      "site_id": "W-02",
+      "crew_id": "BA",
+      "date": "2018-06-07",
+      "locked": false,
+      "job_id": "W-02-B"
+    },
+    {
+      "site_id": "W-03",
+      "crew_id": "BA",
+      "date": "2018-06-07",
+      "locked": false,
+      "job_id": "W-03-B"
+    },
+    {
+      "site_id": "W-04",
+      "crew_id": "BA",
+      "date": "2018-06-07",
+      "locked": false,
+      "job_id": "W-04-B"
     },
     {
       "site_id": "N-01",

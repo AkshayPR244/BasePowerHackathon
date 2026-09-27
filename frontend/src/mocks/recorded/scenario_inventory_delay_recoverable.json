@@ -1,6 +1,6 @@
 {
   "scenario_id": "inventory_delay_recoverable",
-  "scenario_hash": "aec12d21c2c9c85dde5136fdce1dedeb29dfa04cc7debcfc11a04250b0e6a885",
+  "scenario_hash": "f0ab0b4a7ecaf516ae6995d2694327f0ce0d1fc350644d15b5fd1a4dd217f08e",
   "revision": 0,
   "config": {
     "name": "inventory_delay_recoverable synthetic two-visit recovery benchmark",
@@ -1323,266 +1323,266 @@
     {
       "configuration_id": "B13",
       "available_date": "2018-06-04",
-      "quantity": 6
+      "quantity": 12
     },
     {
       "configuration_id": "B13",
       "available_date": "2018-06-07",
-      "quantity": 12
+      "quantity": 6
     }
   ],
   "current_plan": [
     {
-      "site_id": "N-02",
-      "crew_id": "IB",
+      "site_id": "W-02",
+      "crew_id": "IA",
       "date": "2018-06-04",
       "locked": false,
-      "job_id": "N-02-I"
-    },
-    {
-      "site_id": "N-05",
-      "crew_id": "IB",
-      "date": "2018-06-04",
-      "locked": false,
-      "job_id": "N-05-I"
-    },
-    {
-      "site_id": "N-01",
-      "crew_id": "IA",
-      "date": "2018-06-05",
-      "locked": false,
-      "job_id": "N-01-I"
-    },
-    {
-      "site_id": "N-03",
-      "crew_id": "IA",
-      "date": "2018-06-05",
-      "locked": false,
-      "job_id": "N-03-I"
-    },
-    {
-      "site_id": "N-04",
-      "crew_id": "IA",
-      "date": "2018-06-05",
-      "locked": false,
-      "job_id": "N-04-I"
-    },
-    {
-      "site_id": "N-06",
-      "crew_id": "IA",
-      "date": "2018-06-05",
-      "locked": false,
-      "job_id": "N-06-I"
+      "job_id": "W-02-I"
     },
     {
       "site_id": "W-03",
-      "crew_id": "IB",
-      "date": "2018-06-05",
+      "crew_id": "IA",
+      "date": "2018-06-04",
       "locked": false,
       "job_id": "W-03-I"
     },
     {
       "site_id": "W-05",
-      "crew_id": "IB",
-      "date": "2018-06-05",
+      "crew_id": "IA",
+      "date": "2018-06-04",
       "locked": false,
       "job_id": "W-05-I"
     },
     {
-      "site_id": "N-01",
-      "crew_id": "BA",
-      "date": "2018-06-06",
-      "locked": false,
-      "job_id": "N-01-B"
-    },
-    {
-      "site_id": "N-02",
-      "crew_id": "BA",
-      "date": "2018-06-06",
-      "locked": false,
-      "job_id": "N-02-B"
-    },
-    {
-      "site_id": "N-03",
-      "crew_id": "BA",
-      "date": "2018-06-06",
-      "locked": false,
-      "job_id": "N-03-B"
-    },
-    {
-      "site_id": "N-04",
-      "crew_id": "BA",
-      "date": "2018-06-06",
-      "locked": false,
-      "job_id": "N-04-B"
-    },
-    {
-      "site_id": "N-05",
-      "crew_id": "BA",
-      "date": "2018-06-06",
-      "locked": false,
-      "job_id": "N-05-B"
-    },
-    {
-      "site_id": "N-06",
-      "crew_id": "BA",
-      "date": "2018-06-06",
-      "locked": false,
-      "job_id": "N-06-B"
-    },
-    {
-      "site_id": "W-01",
-      "crew_id": "IA",
-      "date": "2018-06-07",
-      "locked": false,
-      "job_id": "W-01-I"
-    },
-    {
-      "site_id": "W-02",
-      "crew_id": "IA",
-      "date": "2018-06-07",
-      "locked": false,
-      "job_id": "W-02-I"
-    },
-    {
-      "site_id": "W-04",
-      "crew_id": "IA",
-      "date": "2018-06-07",
-      "locked": false,
-      "job_id": "W-04-I"
-    },
-    {
       "site_id": "W-06",
       "crew_id": "IA",
-      "date": "2018-06-07",
+      "date": "2018-06-04",
       "locked": false,
       "job_id": "W-06-I"
     },
     {
       "site_id": "W-01",
+      "crew_id": "IB",
+      "date": "2018-06-04",
+      "locked": false,
+      "job_id": "W-01-I"
+    },
+    {
+      "site_id": "W-04",
+      "crew_id": "IB",
+      "date": "2018-06-04",
+      "locked": false,
+      "job_id": "W-04-I"
+    },
+    {
+      "site_id": "W-01",
       "crew_id": "BA",
-      "date": "2018-06-08",
+      "date": "2018-06-05",
       "locked": false,
       "job_id": "W-01-B"
     },
     {
       "site_id": "W-02",
       "crew_id": "BA",
-      "date": "2018-06-08",
+      "date": "2018-06-05",
       "locked": false,
       "job_id": "W-02-B"
     },
     {
       "site_id": "W-03",
       "crew_id": "BA",
-      "date": "2018-06-08",
+      "date": "2018-06-05",
       "locked": false,
       "job_id": "W-03-B"
     },
     {
       "site_id": "W-04",
       "crew_id": "BA",
-      "date": "2018-06-08",
+      "date": "2018-06-05",
       "locked": false,
       "job_id": "W-04-B"
     },
     {
       "site_id": "W-05",
       "crew_id": "BA",
-      "date": "2018-06-08",
+      "date": "2018-06-05",
       "locked": false,
       "job_id": "W-05-B"
     },
     {
       "site_id": "W-06",
       "crew_id": "BA",
-      "date": "2018-06-08",
+      "date": "2018-06-05",
       "locked": false,
       "job_id": "W-06-B"
     },
     {
       "site_id": "S-02",
       "crew_id": "IA",
-      "date": "2018-06-08",
+      "date": "2018-06-05",
       "locked": false,
       "job_id": "S-02-I"
     },
     {
       "site_id": "S-03",
       "crew_id": "IA",
-      "date": "2018-06-08",
+      "date": "2018-06-05",
       "locked": false,
       "job_id": "S-03-I"
     },
     {
-      "site_id": "S-05",
-      "crew_id": "IA",
-      "date": "2018-06-08",
-      "locked": false,
-      "job_id": "S-05-I"
-    },
-    {
-      "site_id": "S-06",
-      "crew_id": "IA",
-      "date": "2018-06-08",
-      "locked": false,
-      "job_id": "S-06-I"
-    },
-    {
-      "site_id": "S-01",
-      "crew_id": "IB",
-      "date": "2018-06-08",
-      "locked": false,
-      "job_id": "S-01-I"
-    },
-    {
       "site_id": "S-04",
-      "crew_id": "IB",
-      "date": "2018-06-08",
+      "crew_id": "IA",
+      "date": "2018-06-05",
       "locked": false,
       "job_id": "S-04-I"
     },
     {
       "site_id": "S-01",
+      "crew_id": "IB",
+      "date": "2018-06-05",
+      "locked": false,
+      "job_id": "S-01-I"
+    },
+    {
+      "site_id": "S-05",
+      "crew_id": "IB",
+      "date": "2018-06-05",
+      "locked": false,
+      "job_id": "S-05-I"
+    },
+    {
+      "site_id": "S-06",
+      "crew_id": "IB",
+      "date": "2018-06-05",
+      "locked": false,
+      "job_id": "S-06-I"
+    },
+    {
+      "site_id": "S-01",
       "crew_id": "BA",
-      "date": "2018-06-11",
+      "date": "2018-06-06",
       "locked": false,
       "job_id": "S-01-B"
     },
     {
       "site_id": "S-02",
       "crew_id": "BA",
-      "date": "2018-06-11",
+      "date": "2018-06-06",
       "locked": false,
       "job_id": "S-02-B"
     },
     {
       "site_id": "S-03",
       "crew_id": "BA",
-      "date": "2018-06-11",
+      "date": "2018-06-06",
       "locked": false,
       "job_id": "S-03-B"
     },
     {
       "site_id": "S-04",
       "crew_id": "BA",
-      "date": "2018-06-11",
+      "date": "2018-06-06",
       "locked": false,
       "job_id": "S-04-B"
     },
     {
       "site_id": "S-05",
       "crew_id": "BA",
-      "date": "2018-06-11",
+      "date": "2018-06-06",
       "locked": false,
       "job_id": "S-05-B"
     },
     {
       "site_id": "S-06",
       "crew_id": "BA",
-      "date": "2018-06-11",
+      "date": "2018-06-06",
       "locked": false,
       "job_id": "S-06-B"
+    },
+    {
+      "site_id": "N-01",
+      "crew_id": "IA",
+      "date": "2018-06-06",
+      "locked": false,
+      "job_id": "N-01-I"
+    },
+    {
+      "site_id": "N-02",
+      "crew_id": "IA",
+      "date": "2018-06-06",
+      "locked": false,
+      "job_id": "N-02-I"
+    },
+    {
+      "site_id": "N-03",
+      "crew_id": "IA",
+      "date": "2018-06-06",
+      "locked": false,
+      "job_id": "N-03-I"
+    },
+    {
+      "site_id": "N-05",
+      "crew_id": "IA",
+      "date": "2018-06-06",
+      "locked": false,
+      "job_id": "N-05-I"
+    },
+    {
+      "site_id": "N-04",
+      "crew_id": "IB",
+      "date": "2018-06-06",
+      "locked": false,
+      "job_id": "N-04-I"
+    },
+    {
+      "site_id": "N-06",
+      "crew_id": "IB",
+      "date": "2018-06-06",
+      "locked": false,
+      "job_id": "N-06-I"
+    },
+    {
+      "site_id": "N-01",
+      "crew_id": "BA",
+      "date": "2018-06-07",
+      "locked": false,
+      "job_id": "N-01-B"
+    },
+    {
+      "site_id": "N-02",
+      "crew_id": "BA",
+      "date": "2018-06-07",
+      "locked": false,
+      "job_id": "N-02-B"
+    },
+    {
+      "site_id": "N-03",
+      "crew_id": "BA",
+      "date": "2018-06-07",
+      "locked": false,
+      "job_id": "N-03-B"
+    },
+    {
+      "site_id": "N-04",
+      "crew_id": "BA",
+      "date": "2018-06-07",
+      "locked": false,
+      "job_id": "N-04-B"
+    },
+    {
+      "site_id": "N-05",
+      "crew_id": "BA",
+      "date": "2018-06-07",
+      "locked": false,
+      "job_id": "N-05-B"
+    },
+    {
+      "site_id": "N-06",
+      "crew_id": "BA",
+      "date": "2018-06-07",
+      "locked": false,
+      "job_id": "N-06-B"
     }
   ]
 }

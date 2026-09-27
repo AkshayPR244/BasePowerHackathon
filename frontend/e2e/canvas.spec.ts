@@ -225,12 +225,13 @@ test("options show modeled cost, customer impact, overtime, and lowest cost", as
   const rebalance = options.locator('[data-option-kind="rebalance"]');
   const temporary = options.locator('[data-option-kind="temporary_capacity"]');
   const noAction = options.locator('[data-option-kind="no_action"]');
-  await expect(noAction).toContainText("Lowest modeled cost");
+  await expect(temporary).toContainText("Lowest modeled cost");
   await expect(noAction.getByTestId("option-cost")).toContainText("$630.25");
+  await expect(noAction).not.toContainText("Lowest modeled cost");
   await expect(rebalance).not.toContainText("Lowest modeled cost");
   await expect(rebalance).toContainText("same plan as no action");
   await expect(temporary.getByTestId("option-customers")).toContainText("7");
-  await expect(temporary.getByTestId("option-cost")).toContainText("$815.61");
+  await expect(temporary.getByTestId("option-cost")).toContainText("$458.40");
   for (const card of await cards.all()) {
     await expect(card.locator(".option-details")).toContainText(
       /No overtime|\d+ min overtime/,
@@ -282,7 +283,7 @@ test("approve confirms the selected recovery option", async ({ page }) => {
   await temporaryCard(page).click();
   const panel = page.getByTestId("option-panel");
   await expect(panel).toContainText("Add temporary crew TEMP-BA on Fri 15 Jun");
-  await expect(panel).toContainText("$815.61");
+  await expect(panel).toContainText("$458.40");
   await page.getByTestId("approve-option").click();
   const dialog = page.getByRole("dialog");
   await expect(dialog).toContainText("7 customers to reschedule");
@@ -353,7 +354,7 @@ test("confirm dialog is modal and approves the option it opened for", async ({
     expect(await focusInDialog()).toBe(true);
   }
   await page.keyboard.press("2");
-  await expect(noActionCard(page)).toHaveAttribute("aria-pressed", "true");
+  await expect(temporaryCard(page)).toHaveAttribute("aria-pressed", "true");
   await page.keyboard.press("Escape");
   await expect(dialog).toBeHidden();
   await expect(approve).toBeFocused();
@@ -364,7 +365,7 @@ test("confirm dialog is modal and approves the option it opened for", async ({
   await dialog.getByRole("button", { name: "Confirm approval" }).click();
   await expect(page.getByTestId("approval-result")).toBeVisible();
   expect(approvals).toHaveLength(1);
-  expect(approvals[0].option.option_id).toMatch(/^no_action-/);
+  expect(approvals[0].option.option_id).toMatch(/^temporary_capacity-/);
 });
 
 test("invalid and unproven options are labeled and never drawn or approved", async ({
@@ -438,7 +439,7 @@ test("scenario round trip resets the canvas and never shows another scenario's p
   });
   await scenario.selectOption("standard");
   await expect(page.getByTestId("impact-headline")).toBeVisible();
-  await expect(noActionCard(page)).toHaveAttribute("aria-pressed", "true");
+  await expect(temporaryCard(page)).toHaveAttribute("aria-pressed", "true");
   await expect(page.getByTestId("cascade-direct")).toHaveAttribute(
     "aria-pressed",
     "false",

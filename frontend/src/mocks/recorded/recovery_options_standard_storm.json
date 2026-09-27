@@ -1609,7 +1609,7 @@
         "after": 0.0
       }
     ],
-    "lowest_modeled_cost": true,
+    "lowest_modeled_cost": false,
     "stub": false
   },
   "options": [
@@ -1654,7 +1654,7 @@
             "value": 7.0,
             "bound": 7.0,
             "gap": 0.0,
-            "elapsed_ms": 62
+            "elapsed_ms": 46
           },
           {
             "name": "total_delay",
@@ -1670,7 +1670,7 @@
             "value": 7.0,
             "bound": 7.0,
             "gap": 0.0,
-            "elapsed_ms": 15
+            "elapsed_ms": 32
           },
           {
             "name": "operating_value",
@@ -1678,7 +1678,7 @@
             "value": 3506.2,
             "bound": 3506.2,
             "gap": 0.0,
-            "elapsed_ms": 16
+            "elapsed_ms": 15
           },
           {
             "name": "travel",
@@ -1686,7 +1686,7 @@
             "value": 823.0,
             "bound": 823.0,
             "gap": 0.0,
-            "elapsed_ms": 30
+            "elapsed_ms": 16
           }
         ],
         "assignments": [
@@ -2822,7 +2822,7 @@
             "kind": "assumed"
           }
         ],
-        "solve_ms": 515
+        "solve_ms": 531
       },
       "diff_vs_original": {
         "before_plan_id": "standard-r1-recovery-c2f8ba65",
@@ -3228,7 +3228,7 @@
       "stub": false
     },
     {
-      "option_id": "temporary_capacity-1ec3e944a29f940e",
+      "option_id": "temporary_capacity-946fd3db9ccec001",
       "kind": "temporary_capacity",
       "action_label": "Add temporary crew TEMP-BA on Fri 15 Jun",
       "intervention_edits": [
@@ -3236,7 +3236,7 @@
           "kind": "add_crew_day",
           "crew_id": "TEMP-BA",
           "date": "2018-06-15",
-          "available_min": 274,
+          "available_min": 480,
           "skills": [
             "battery"
           ],
@@ -3250,9 +3250,9 @@
       "status": "optimal",
       "proven_optimal": true,
       "result": {
-        "plan_id": "standard-r1-recovery-cd6b29f6",
+        "plan_id": "standard-r1-recovery-ed2c386f",
         "scenario_id": "standard",
-        "scenario_hash": "cd6b29f6979b1a9da326df5453386f3ae7f90ab3c70af91b044f389ba346777b",
+        "scenario_hash": "ed2c386f8136c139d20e4a83b8a897f0dbdd8504463727ebb69a883bf9d70b01",
         "revision": 1,
         "mode": "recovery",
         "algorithm": "cpsat",
@@ -3277,7 +3277,7 @@
             "kind": "add_crew_day",
             "crew_id": "TEMP-BA",
             "date": "2018-06-15",
-            "available_min": 274,
+            "available_min": 480,
             "skills": [
               "battery"
             ],
@@ -3289,7 +3289,7 @@
           }
         ],
         "status": "optimal",
-        "message": "Crew IA is out Thu 14 Jun. Crew IB is out Thu 14 Jun. Crew BA is out Thu 14 Jun. Crew TEMP-BA is added on Fri 15 Jun. 4 homes are not scheduled. 7 visits move, so 7 customers need a new date.",
+        "message": "Crew IA is out Thu 14 Jun. Crew IB is out Thu 14 Jun. Crew BA is out Thu 14 Jun. Crew TEMP-BA is added on Fri 15 Jun. S-03 battery day is 1 day late on Fri 15 Jun. S-06 battery day is 1 day late on Fri 15 Jun. S-09 battery day is 1 day late on Fri 15 Jun. S-12 battery day is 1 day late on Fri 15 Jun. 7 visits move, so 7 customers need a new date.",
         "stages": [
           {
             "name": "jobs_late_or_unscheduled",
@@ -3297,13 +3297,13 @@
             "value": 4.0,
             "bound": 4.0,
             "gap": 0.0,
-            "elapsed_ms": 30
+            "elapsed_ms": 46
           },
           {
             "name": "total_delay",
             "status": "optimal",
-            "value": 120.0,
-            "bound": 120.0,
+            "value": 4.0,
+            "bound": 4.0,
             "gap": 0.0,
             "elapsed_ms": 30
           },
@@ -3318,10 +3318,10 @@
           {
             "name": "operating_value",
             "status": "optimal",
-            "value": 3774.1,
-            "bound": 3774.1,
+            "value": 4131.3,
+            "bound": 4131.3,
             "gap": 0.0,
-            "elapsed_ms": 31
+            "elapsed_ms": 30
           },
           {
             "name": "travel",
@@ -3329,7 +3329,7 @@
             "value": 864.0,
             "bound": 864.0,
             "gap": 0.0,
-            "elapsed_ms": 16
+            "elapsed_ms": 30
           }
         ],
         "assignments": [
@@ -3684,6 +3684,16 @@
             "visit_type": "install"
           },
           {
+            "site_id": "S-03",
+            "crew_id": "TEMP-BA",
+            "date": "2018-06-15",
+            "state": "late",
+            "days_late": 1,
+            "value_usd": 89.3039064063406,
+            "job_id": "S-03-B",
+            "visit_type": "battery_day"
+          },
+          {
             "site_id": "S-04",
             "crew_id": "IB",
             "date": "2018-06-04",
@@ -3732,6 +3742,16 @@
             "value_usd": 0.0,
             "job_id": "S-06-I",
             "visit_type": "install"
+          },
+          {
+            "site_id": "S-06",
+            "crew_id": "TEMP-BA",
+            "date": "2018-06-15",
+            "state": "late",
+            "days_late": 1,
+            "value_usd": 89.3039064063406,
+            "job_id": "S-06-B",
+            "visit_type": "battery_day"
           },
           {
             "site_id": "S-07",
@@ -3784,6 +3804,16 @@
             "visit_type": "install"
           },
           {
+            "site_id": "S-09",
+            "crew_id": "TEMP-BA",
+            "date": "2018-06-15",
+            "state": "late",
+            "days_late": 1,
+            "value_usd": 89.3039064063406,
+            "job_id": "S-09-B",
+            "visit_type": "battery_day"
+          },
+          {
             "site_id": "S-10",
             "crew_id": "IB",
             "date": "2018-06-07",
@@ -3832,6 +3862,16 @@
             "value_usd": 0.0,
             "job_id": "S-12-I",
             "visit_type": "install"
+          },
+          {
+            "site_id": "S-12",
+            "crew_id": "TEMP-BA",
+            "date": "2018-06-15",
+            "state": "late",
+            "days_late": 1,
+            "value_usd": 89.3039064063406,
+            "job_id": "S-12-B",
+            "visit_type": "battery_day"
           },
           {
             "site_id": "S-13",
@@ -4194,40 +4234,7 @@
             "visit_type": "battery_day"
           }
         ],
-        "unscheduled": [
-          {
-            "site_id": "S-03",
-            "state": "unscheduled",
-            "reasons": [],
-            "detail": "S-03 battery day is not in the best recovery. No single hard blocker applies. Force it in to see what it displaces.",
-            "job_id": "S-03-B",
-            "visit_type": "battery_day"
-          },
-          {
-            "site_id": "S-06",
-            "state": "unscheduled",
-            "reasons": [],
-            "detail": "S-06 battery day is not in the best recovery. No single hard blocker applies. Force it in to see what it displaces.",
-            "job_id": "S-06-B",
-            "visit_type": "battery_day"
-          },
-          {
-            "site_id": "S-09",
-            "state": "unscheduled",
-            "reasons": [],
-            "detail": "S-09 battery day is not in the best recovery. No single hard blocker applies. Force it in to see what it displaces.",
-            "job_id": "S-09-B",
-            "visit_type": "battery_day"
-          },
-          {
-            "site_id": "S-12",
-            "state": "unscheduled",
-            "reasons": [],
-            "detail": "S-12 battery day is not in the best recovery. No single hard blocker applies. Force it in to see what it displaces.",
-            "job_id": "S-12-B",
-            "visit_type": "battery_day"
-          }
-        ],
+        "unscheduled": [],
         "crew_days": [
           {
             "crew_id": "BA",
@@ -4441,21 +4448,21 @@
             "crew_id": "TEMP-BA",
             "date": "2018-06-15",
             "cluster_id": "S",
-            "onsite_min": 180,
+            "onsite_min": 435,
             "travel_min": 41,
-            "available_min": 274
+            "available_min": 480
           }
         ],
         "objective": {
           "jobs_on_time": 41,
-          "jobs_late": 0,
-          "jobs_unscheduled": 4,
+          "jobs_late": 4,
+          "jobs_unscheduled": 0,
           "jobs_blocked": 0,
-          "total_delay_days": 0,
-          "operating_value_usd": 3774.17534474435,
+          "total_delay_days": 4,
+          "operating_value_usd": 4131.390970369712,
           "changed_installs": 7,
           "travel_allowance_min": 864,
-          "crew_utilization": 0.903,
+          "crew_utilization": 0.9092,
           "value_distinguishes_choices": true,
           "visits_moved": 7,
           "customers_to_reschedule": 7
@@ -4479,11 +4486,11 @@
             "kind": "assumed"
           }
         ],
-        "solve_ms": 437
+        "solve_ms": 594
       },
       "diff_vs_original": {
         "before_plan_id": "standard-r1-recovery-c2f8ba65",
-        "after_plan_id": "standard-r1-recovery-cd6b29f6",
+        "after_plan_id": "standard-r1-recovery-ed2c386f",
         "changes": [
           {
             "site_id": "S-02",
@@ -4504,29 +4511,35 @@
           },
           {
             "site_id": "S-03",
-            "kind": "removed",
+            "kind": "moved",
             "before": {
               "crew_id": "BA",
               "date": "2018-06-14"
             },
-            "after": null,
+            "after": {
+              "crew_id": "TEMP-BA",
+              "date": "2018-06-15"
+            },
             "before_state": "scheduled",
-            "after_state": "unscheduled",
-            "note": "S-03 battery day is no longer scheduled.",
+            "after_state": "late",
+            "note": "S-03 battery day moves from Crew BA Thu 14 Jun to Crew TEMP-BA Fri 15 Jun. 1 day late.",
             "job_id": "S-03-B",
             "visit_type": "battery_day"
           },
           {
             "site_id": "S-06",
-            "kind": "removed",
+            "kind": "moved",
             "before": {
               "crew_id": "BA",
               "date": "2018-06-14"
             },
-            "after": null,
+            "after": {
+              "crew_id": "TEMP-BA",
+              "date": "2018-06-15"
+            },
             "before_state": "scheduled",
-            "after_state": "unscheduled",
-            "note": "S-06 battery day is no longer scheduled.",
+            "after_state": "late",
+            "note": "S-06 battery day moves from Crew BA Thu 14 Jun to Crew TEMP-BA Fri 15 Jun. 1 day late.",
             "job_id": "S-06-B",
             "visit_type": "battery_day"
           },
@@ -4549,15 +4562,18 @@
           },
           {
             "site_id": "S-09",
-            "kind": "removed",
+            "kind": "moved",
             "before": {
               "crew_id": "BA",
               "date": "2018-06-14"
             },
-            "after": null,
+            "after": {
+              "crew_id": "TEMP-BA",
+              "date": "2018-06-15"
+            },
             "before_state": "scheduled",
-            "after_state": "unscheduled",
-            "note": "S-09 battery day is no longer scheduled.",
+            "after_state": "late",
+            "note": "S-09 battery day moves from Crew BA Thu 14 Jun to Crew TEMP-BA Fri 15 Jun. 1 day late.",
             "job_id": "S-09-B",
             "visit_type": "battery_day"
           },
@@ -4580,33 +4596,36 @@
           },
           {
             "site_id": "S-12",
-            "kind": "removed",
+            "kind": "moved",
             "before": {
               "crew_id": "BA",
               "date": "2018-06-14"
             },
-            "after": null,
+            "after": {
+              "crew_id": "TEMP-BA",
+              "date": "2018-06-15"
+            },
             "before_state": "scheduled",
-            "after_state": "unscheduled",
-            "note": "S-12 battery day is no longer scheduled.",
+            "after_state": "late",
+            "note": "S-12 battery day moves from Crew BA Thu 14 Jun to Crew TEMP-BA Fri 15 Jun. 1 day late.",
             "job_id": "S-12-B",
             "visit_type": "battery_day"
           }
         ],
         "summary": {
-          "moved": 3,
+          "moved": 7,
           "added": 0,
-          "removed": 4,
-          "newly_late": 0,
-          "value_delta_usd": -362.3343243475747,
+          "removed": 0,
+          "newly_late": 4,
+          "value_delta_usd": -5.1186987222126845,
           "travel_delta_min": 0,
           "customers_to_reschedule": 7
         },
-        "headline": "3 visits move, 7 customers to reschedule. 4 jobs dropped."
+        "headline": "7 visits move, 7 customers to reschedule. 4 homes miss their deadlines."
       },
       "diff_vs_no_action": {
         "before_plan_id": "standard-r1-recovery-d87deead",
-        "after_plan_id": "standard-r1-recovery-cd6b29f6",
+        "after_plan_id": "standard-r1-recovery-ed2c386f",
         "changes": [
           {
             "site_id": "S-02",
@@ -4620,6 +4639,34 @@
             "after_state": "scheduled",
             "note": "S-02 battery day is now scheduled on Crew TEMP-BA Fri 15 Jun.",
             "job_id": "S-02-B",
+            "visit_type": "battery_day"
+          },
+          {
+            "site_id": "S-03",
+            "kind": "added",
+            "before": null,
+            "after": {
+              "crew_id": "TEMP-BA",
+              "date": "2018-06-15"
+            },
+            "before_state": "unscheduled",
+            "after_state": "late",
+            "note": "S-03 battery day is now scheduled on Crew TEMP-BA Fri 15 Jun.",
+            "job_id": "S-03-B",
+            "visit_type": "battery_day"
+          },
+          {
+            "site_id": "S-06",
+            "kind": "added",
+            "before": null,
+            "after": {
+              "crew_id": "TEMP-BA",
+              "date": "2018-06-15"
+            },
+            "before_state": "unscheduled",
+            "after_state": "late",
+            "note": "S-06 battery day is now scheduled on Crew TEMP-BA Fri 15 Jun.",
+            "job_id": "S-06-B",
             "visit_type": "battery_day"
           },
           {
@@ -4637,6 +4684,20 @@
             "visit_type": "battery_day"
           },
           {
+            "site_id": "S-09",
+            "kind": "added",
+            "before": null,
+            "after": {
+              "crew_id": "TEMP-BA",
+              "date": "2018-06-15"
+            },
+            "before_state": "unscheduled",
+            "after_state": "late",
+            "note": "S-09 battery day is now scheduled on Crew TEMP-BA Fri 15 Jun.",
+            "job_id": "S-09-B",
+            "visit_type": "battery_day"
+          },
+          {
             "site_id": "S-11",
             "kind": "added",
             "before": null,
@@ -4649,31 +4710,45 @@
             "note": "S-11 battery day is now scheduled on Crew TEMP-BA Fri 15 Jun.",
             "job_id": "S-11-B",
             "visit_type": "battery_day"
+          },
+          {
+            "site_id": "S-12",
+            "kind": "added",
+            "before": null,
+            "after": {
+              "crew_id": "TEMP-BA",
+              "date": "2018-06-15"
+            },
+            "before_state": "unscheduled",
+            "after_state": "late",
+            "note": "S-12 battery day is now scheduled on Crew TEMP-BA Fri 15 Jun.",
+            "job_id": "S-12-B",
+            "visit_type": "battery_day"
           }
         ],
         "summary": {
           "moved": 0,
-          "added": 3,
+          "added": 7,
           "removed": 0,
-          "newly_late": 0,
-          "value_delta_usd": 267.91171921902196,
+          "newly_late": 4,
+          "value_delta_usd": 625.127344844384,
           "travel_delta_min": 41,
           "customers_to_reschedule": 0
         },
-        "headline": "3 jobs added."
+        "headline": "7 jobs added. 4 homes miss their deadlines."
       },
       "counts": {
         "deadlines_missed": 4,
         "deadlines_recovered": 3,
-        "delay_days": 0,
+        "delay_days": 4,
         "visits_moved": 7,
         "customers_to_reschedule": 7,
-        "unscheduled": 4
+        "unscheduled": 0
       },
       "economics": {
-        "net_impact_usd": 815.61,
-        "advantage_vs_no_action_usd": -185.36,
-        "cost_per_deadline_recovered_usd": 61.79,
+        "net_impact_usd": 458.4,
+        "advantage_vs_no_action_usd": 171.85,
+        "cost_per_deadline_recovered_usd": 0.0,
         "lines": [
           {
             "label": "Existing crew labor",
@@ -4695,7 +4770,7 @@
           },
           {
             "label": "Lost modeled operating value",
-            "amount_usd": 362.33,
+            "amount_usd": 5.12,
             "kind": "value",
             "basis": "Original minus option gross operating margin over the same evaluation horizon; 2018 hindsight prices, not forecast profit. Wage inputs are 2023 dollars without inflation conversion; illustrative comparison."
           },
@@ -4728,12 +4803,12 @@
         },
         {
           "job_id": "S-03-B",
-          "text": "S-03 battery day is no longer scheduled. Joint recovery constraints: crew skill, capacity, inventory, appointment windows, locks, and visit precedence; no unique cause inferred.",
+          "text": "S-03 battery day moves from Crew BA Thu 14 Jun to Crew TEMP-BA Fri 15 Jun. 1 day late. Joint recovery constraints: crew skill, capacity, inventory, appointment windows, locks, and visit precedence; no unique cause inferred.",
           "constraint": "joint_constraints"
         },
         {
           "job_id": "S-06-B",
-          "text": "S-06 battery day is no longer scheduled. Joint recovery constraints: crew skill, capacity, inventory, appointment windows, locks, and visit precedence; no unique cause inferred.",
+          "text": "S-06 battery day moves from Crew BA Thu 14 Jun to Crew TEMP-BA Fri 15 Jun. 1 day late. Joint recovery constraints: crew skill, capacity, inventory, appointment windows, locks, and visit precedence; no unique cause inferred.",
           "constraint": "joint_constraints"
         },
         {
@@ -4743,7 +4818,7 @@
         },
         {
           "job_id": "S-09-B",
-          "text": "S-09 battery day is no longer scheduled. Joint recovery constraints: crew skill, capacity, inventory, appointment windows, locks, and visit precedence; no unique cause inferred.",
+          "text": "S-09 battery day moves from Crew BA Thu 14 Jun to Crew TEMP-BA Fri 15 Jun. 1 day late. Joint recovery constraints: crew skill, capacity, inventory, appointment windows, locks, and visit precedence; no unique cause inferred.",
           "constraint": "joint_constraints"
         },
         {
@@ -4753,7 +4828,7 @@
         },
         {
           "job_id": "S-12-B",
-          "text": "S-12 battery day is no longer scheduled. Joint recovery constraints: crew skill, capacity, inventory, appointment windows, locks, and visit precedence; no unique cause inferred.",
+          "text": "S-12 battery day moves from Crew BA Thu 14 Jun to Crew TEMP-BA Fri 15 Jun. 1 day late. Joint recovery constraints: crew skill, capacity, inventory, appointment windows, locks, and visit precedence; no unique cause inferred.",
           "constraint": "joint_constraints"
         }
       ],
@@ -4936,10 +5011,10 @@
           "crew_id": "TEMP-BA",
           "date": "2018-06-15",
           "before": 0.0,
-          "after": 0.8065693430656934
+          "after": 0.9916666666666667
         }
       ],
-      "lowest_modeled_cost": false,
+      "lowest_modeled_cost": true,
       "stub": false
     }
   ],

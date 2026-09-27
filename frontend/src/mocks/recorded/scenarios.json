@@ -2,7 +2,7 @@
   {
     "scenario_id": "balanced_small",
     "name": "balanced_small synthetic two-visit recovery benchmark",
-    "scenario_hash": "3a14ed9f05b2427e29b34db04c467b39e5d59fdd5c20f2dce1bcfee0e54fc90f",
+    "scenario_hash": "e9aed379e779f106fb506556a7974825df7ed8f34b38591f0a5c653fc5d16ffd",
     "planning_start": "2018-06-04",
     "planning_end": "2018-06-15",
     "n_sites": 12,
@@ -13,7 +13,7 @@
   {
     "scenario_id": "crew_out_recoverable",
     "name": "crew_out_recoverable synthetic two-visit recovery benchmark",
-    "scenario_hash": "2eb6914612519c39c29bd21852eed9fde46189130f4ea52e75c2efd88258a39b",
+    "scenario_hash": "5df1d37981263a66cf1861c0bae5e54614d69b067232ae0efe83804d6b7ad65d",
     "planning_start": "2018-06-04",
     "planning_end": "2018-06-15",
     "n_sites": 24,
@@ -24,7 +24,7 @@
   {
     "scenario_id": "inventory_delay_recoverable",
     "name": "inventory_delay_recoverable synthetic two-visit recovery benchmark",
-    "scenario_hash": "aec12d21c2c9c85dde5136fdce1dedeb29dfa04cc7debcfc11a04250b0e6a885",
+    "scenario_hash": "f0ab0b4a7ecaf516ae6995d2694327f0ce0d1fc350644d15b5fd1a4dd217f08e",
     "planning_start": "2018-06-04",
     "planning_end": "2018-06-15",
     "n_sites": 18,
@@ -35,7 +35,7 @@
   {
     "scenario_id": "late_overflow",
     "name": "late_overflow synthetic two-visit recovery benchmark",
-    "scenario_hash": "2fdab9a80ffb725fc337f2a1ae38e1d2f2105153650388aaa5e65923352bcc5c",
+    "scenario_hash": "f8f421703725a4fde4a18edc50edcf2ae014f3885d512b59fcf475c75eaab321",
     "planning_start": "2018-06-04",
     "planning_end": "2018-06-14",
     "n_sites": 12,
@@ -46,7 +46,7 @@
   {
     "scenario_id": "locked_infeasible",
     "name": "locked_infeasible synthetic two-visit recovery benchmark",
-    "scenario_hash": "f71e1ce61ba68fb5455b96280dd51dfbc67b99fa54b8c7cc2b24fe6b7f23f68c",
+    "scenario_hash": "f666d9e7f5f643d2c2cffd347593e20807b0d2155a11d5b39c8fb3968dc1a489",
     "planning_start": "2018-06-04",
     "planning_end": "2018-06-15",
     "n_sites": 12,
@@ -57,7 +57,7 @@
   {
     "scenario_id": "readiness_appointment",
     "name": "readiness_appointment synthetic two-visit recovery benchmark",
-    "scenario_hash": "d901ba62bfc5288e97c4512d6585f6c34082790b5999bb9cfbbd0bc5dbfc8ef1",
+    "scenario_hash": "c58ddcf4d079d26827ee8dcbd1788564090dd4a6076dc487164192a257f40f06",
     "planning_start": "2018-06-04",
     "planning_end": "2018-06-15",
     "n_sites": 12,
@@ -68,7 +68,7 @@
   {
     "scenario_id": "skill_cluster_bottleneck",
     "name": "skill_cluster_bottleneck synthetic two-visit recovery benchmark",
-    "scenario_hash": "f3568d0cba7e12b55483aec26dba9a1baba52be0a4a57d3789626895304adc93",
+    "scenario_hash": "301bc88d4e69905d63ba6b0c31d1fe45f7e9d9955cc33aea9d33bf2bc044d2e9",
     "planning_start": "2018-06-04",
     "planning_end": "2018-06-15",
     "n_sites": 12,
@@ -90,7 +90,7 @@
   {
     "scenario_id": "tight_feasible",
     "name": "tight_feasible synthetic two-visit recovery benchmark",
-    "scenario_hash": "1990f71693e9db4088175a256a0ddede91b9de06bcd356e4a9ed51c96dc995a3",
+    "scenario_hash": "a236e114f950891e9eb6743b234170eae183d02abf38f0335b4f2ffebab645d3",
     "planning_start": "2018-06-04",
     "planning_end": "2018-06-14",
     "n_sites": 30,
@@ -134,7 +134,7 @@
   {
     "scenario_id": "value_sensitive",
     "name": "value_sensitive synthetic two-visit recovery benchmark",
-    "scenario_hash": "c4df4c3b09737dfa4020a91e4cc16bcf78c6caa22b515702fb89099fbae96510",
+    "scenario_hash": "45e713cafaed8244c98f2a812ef1c1570801fbf8d68fbb4b236b9eda5e19a60c",
     "planning_start": "2018-06-04",
     "planning_end": "2018-06-15",
     "n_sites": 12,

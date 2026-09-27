@@ -1,0 +1,3053 @@
+{
+  "revision": 0,
+  "scenario_hash": "3debd604decfed3bf36441f1371a29c7daf0f277de1ac1a271b8e0bdc8cd3bd9",
+  "impact": {
+    "headline": "0 visits affected; 0 capacity minutes lost; 0 commitments at risk under no action.",
+    "affected_job_ids": [],
+    "lost_capacity_min": 0,
+    "cascade": [
+      {
+        "kind": "disruption",
+        "label": "0 known operational changes",
+        "job_ids": []
+      },
+      {
+        "kind": "direct",
+        "label": "Visits using changed resources or availability",
+        "job_ids": []
+      },
+      {
+        "kind": "pushed",
+        "label": "Dependent battery days to review",
+        "job_ids": []
+      },
+      {
+        "kind": "commitment",
+        "label": "Commitments missed under no action",
+        "job_ids": []
+      }
+    ],
+    "deadlines_at_risk": 0
+  },
+  "no_action": {
+    "option_id": "no_action-87e08655646b4733",
+    "kind": "no_action",
+    "action_label": "Keep original crews; wait for their next open slot",
+    "intervention_edits": [],
+    "status": "feasible",
+    "proven_optimal": false,
+    "result": {
+      "plan_id": "standard-r0-recovery-3debd604",
+      "scenario_id": "standard",
+      "scenario_hash": "3debd604decfed3bf36441f1371a29c7daf0f277de1ac1a271b8e0bdc8cd3bd9",
+      "revision": 0,
+      "mode": "recovery",
+      "algorithm": "cpsat",
+      "objective_policy": "value_aware",
+      "edits": [],
+      "status": "feasible",
+      "message": "No action: displaced visits wait for their original crew's next open slot. Retained bookings do not move; visits without a slot stay unscheduled.",
+      "stages": [],
+      "assignments": [
+        {
+          "site_id": "N-01",
+          "crew_id": "IA",
+          "date": "2018-06-04",
+          "state": "locked",
+          "days_late": 0,
+          "value_usd": 0.0,
+          "job_id": "N-01-I",
+          "visit_type": "install"
+        },
+        {
+          "site_id": "N-01",
+          "crew_id": "BA",
+          "date": "2018-06-05",
+          "state": "scheduled",
+          "days_late": 0,
+          "value_usd": 95.87358655551603,
+          "job_id": "N-01-B",
+          "visit_type": "battery_day"
+        },
+        {
+          "site_id": "N-02",
+          "crew_id": "IB",
+          "date": "2018-06-08",
+          "state": "scheduled",
+          "days_late": 0,
+          "value_usd": 0.0,
+          "job_id": "N-02-I",
+          "visit_type": "install"
+        },
+        {
+          "site_id": "N-02",
+          "crew_id": "BA",
+          "date": "2018-06-11",
+          "state": "scheduled",
+          "days_late": 0,
+          "value_usd": 92.01481278027819,
+          "job_id": "N-02-B",
+          "visit_type": "battery_day"
+        },
+        {
+          "site_id": "N-03",
+          "crew_id": "IA",
+          "date": "2018-06-04",
+          "state": "locked",
+          "days_late": 0,
+          "value_usd": 0.0,
+          "job_id": "N-03-I",
+          "visit_type": "install"
+        },
+        {
+          "site_id": "N-03",
+          "crew_id": "BA",
+          "date": "2018-06-05",
+          "state": "scheduled",
+          "days_late": 0,
+          "value_usd": 95.87358655551603,
+          "job_id": "N-03-B",
+          "visit_type": "battery_day"
+        },
+        {
+          "site_id": "N-04",
+          "crew_id": "IB",
+          "date": "2018-06-12",
+          "state": "scheduled",
+          "days_late": 0,
+          "value_usd": 0.0,
+          "job_id": "N-04-I",
+          "visit_type": "install"
+        },
+        {
+          "site_id": "N-04",
+          "crew_id": "BA",
+          "date": "2018-06-13",
+          "state": "scheduled",
+          "days_late": 0,
+          "value_usd": 90.30207467654311,
+          "job_id": "N-04-B",
+          "visit_type": "battery_day"
+        },
+        {
+          "site_id": "N-05",
+          "crew_id": "IA",
+          "date": "2018-06-08",
+          "state": "scheduled",
+          "days_late": 0,
+          "value_usd": 0.0,
+          "job_id": "N-05-I",
+          "visit_type": "install"
+        },
+        {
+          "site_id": "N-05",
+          "crew_id": "BA",
+          "date": "2018-06-11",
+          "state": "scheduled",
+          "days_late": 0,
+          "value_usd": 92.01481278027819,
+          "job_id": "N-05-B",
+          "visit_type": "battery_day"
+        },
+        {
+          "site_id": "N-06",
+          "crew_id": "IB",
+          "date": "2018-06-08",
+          "state": "scheduled",
+          "days_late": 0,
+          "value_usd": 0.0,
+          "job_id": "N-06-I",
+          "visit_type": "install"
+        },
+        {
+          "site_id": "N-06",
+          "crew_id": "BA",
+          "date": "2018-06-13",
+          "state": "scheduled",
+          "days_late": 0,
+          "value_usd": 90.30207467654311,
+          "job_id": "N-06-B",
+          "visit_type": "battery_day"
+        },
+        {
+          "site_id": "N-07",
+          "crew_id": "IB",
+          "date": "2018-06-06",
+          "state": "scheduled",
+          "days_late": 0,
+          "value_usd": 0.0,
+          "job_id": "N-07-I",
+          "visit_type": "install"
+        },
+        {
+          "site_id": "N-07",
+          "crew_id": "BA",
+          "date": "2018-06-11",
+          "state": "scheduled",
+          "days_late": 0,
+          "value_usd": 92.01481278027819,
+          "job_id": "N-07-B",
+          "visit_type": "battery_day"
+        },
+        {
+          "site_id": "N-08",
+          "crew_id": "IB",
+          "date": "2018-06-12",
+          "state": "scheduled",
+          "days_late": 0,
+          "value_usd": 0.0,
+          "job_id": "N-08-I",
+          "visit_type": "install"
+        },
+        {
+          "site_id": "N-08",
+          "crew_id": "BA",
+          "date": "2018-06-13",
+          "state": "scheduled",
+          "days_late": 0,
+          "value_usd": 90.30207467654311,
+          "job_id": "N-08-B",
+          "visit_type": "battery_day"
+        },
+        {
+          "site_id": "N-09",
+          "crew_id": "IA",
+          "date": "2018-06-04",
+          "state": "locked",
+          "days_late": 0,
+          "value_usd": 0.0,
+          "job_id": "N-09-I",
+          "visit_type": "install"
+        },
+        {
+          "site_id": "N-09",
+          "crew_id": "BA",
+          "date": "2018-06-05",
+          "state": "scheduled",
+          "days_late": 0,
+          "value_usd": 95.87358655551603,
+          "job_id": "N-09-B",
+          "visit_type": "battery_day"
+        },
+        {
+          "site_id": "N-10",
+          "crew_id": "IB",
+          "date": "2018-06-06",
+          "state": "scheduled",
+          "days_late": 0,
+          "value_usd": 0.0,
+          "job_id": "N-10-I",
+          "visit_type": "install"
+        },
+        {
+          "site_id": "N-10",
+          "crew_id": "BA",
+          "date": "2018-06-11",
+          "state": "scheduled",
+          "days_late": 0,
+          "value_usd": 92.01481278027819,
+          "job_id": "N-10-B",
+          "visit_type": "battery_day"
+        },
+        {
+          "site_id": "N-11",
+          "crew_id": "IB",
+          "date": "2018-06-06",
+          "state": "scheduled",
+          "days_late": 0,
+          "value_usd": 0.0,
+          "job_id": "N-11-I",
+          "visit_type": "install"
+        },
+        {
+          "site_id": "N-11",
+          "crew_id": "BA",
+          "date": "2018-06-13",
+          "state": "scheduled",
+          "days_late": 0,
+          "value_usd": 90.30207467654311,
+          "job_id": "N-11-B",
+          "visit_type": "battery_day"
+        },
+        {
+          "site_id": "N-12",
+          "crew_id": "IA",
+          "date": "2018-06-08",
+          "state": "scheduled",
+          "days_late": 0,
+          "value_usd": 0.0,
+          "job_id": "N-12-I",
+          "visit_type": "install"
+        },
+        {
+          "site_id": "N-12",
+          "crew_id": "BA",
+          "date": "2018-06-13",
+          "state": "scheduled",
+          "days_late": 0,
+          "value_usd": 90.30207467654311,
+          "job_id": "N-12-B",
+          "visit_type": "battery_day"
+        },
+        {
+          "site_id": "N-13",
+          "crew_id": "IB",
+          "date": "2018-06-08",
+          "state": "scheduled",
+          "days_late": 0,
+          "value_usd": 0.0,
+          "job_id": "N-13-I",
+          "visit_type": "install"
+        },
+        {
+          "site_id": "N-13",
+          "crew_id": "BA",
+          "date": "2018-06-11",
+          "state": "scheduled",
+          "days_late": 0,
+          "value_usd": 92.01481278027819,
+          "job_id": "N-13-B",
+          "visit_type": "battery_day"
+        },
+        {
+          "site_id": "N-14",
+          "crew_id": "IA",
+          "date": "2018-06-08",
+          "state": "scheduled",
+          "days_late": 0,
+          "value_usd": 0.0,
+          "job_id": "N-14-I",
+          "visit_type": "install"
+        },
+        {
+          "site_id": "N-14",
+          "crew_id": "BA",
+          "date": "2018-06-11",
+          "state": "scheduled",
+          "days_late": 0,
+          "value_usd": 92.01481278027819,
+          "job_id": "N-14-B",
+          "visit_type": "battery_day"
+        },
+        {
+          "site_id": "N-15",
+          "crew_id": "IB",
+          "date": "2018-06-12",
+          "state": "scheduled",
+          "days_late": 0,
+          "value_usd": 0.0,
+          "job_id": "N-15-I",
+          "visit_type": "install"
+        },
+        {
+          "site_id": "N-15",
+          "crew_id": "BA",
+          "date": "2018-06-13",
+          "state": "scheduled",
+          "days_late": 0,
+          "value_usd": 90.30207467654311,
+          "job_id": "N-15-B",
+          "visit_type": "battery_day"
+        },
+        {
+          "site_id": "S-01",
+          "crew_id": "IA",
+          "date": "2018-06-07",
+          "state": "scheduled",
+          "days_late": 0,
+          "value_usd": 0.0,
+          "job_id": "S-01-I",
+          "visit_type": "install"
+        },
+        {
+          "site_id": "S-01",
+          "crew_id": "BA",
+          "date": "2018-06-08",
+          "state": "scheduled",
+          "days_late": 0,
+          "value_usd": 93.23169979972167,
+          "job_id": "S-01-B",
+          "visit_type": "battery_day"
+        },
+        {
+          "site_id": "S-02",
+          "crew_id": "IB",
+          "date": "2018-06-07",
+          "state": "scheduled",
+          "days_late": 0,
+          "value_usd": 0.0,
+          "job_id": "S-02-I",
+          "visit_type": "install"
+        },
+        {
+          "site_id": "S-02",
+          "crew_id": "BA",
+          "date": "2018-06-14",
+          "state": "scheduled",
+          "days_late": 0,
+          "value_usd": 90.03514908094232,
+          "job_id": "S-02-B",
+          "visit_type": "battery_day"
+        },
+        {
+          "site_id": "S-03",
+          "crew_id": "IB",
+          "date": "2018-06-13",
+          "state": "scheduled",
+          "days_late": 0,
+          "value_usd": 0.0,
+          "job_id": "S-03-I",
+          "visit_type": "install"
+        },
+        {
+          "site_id": "S-03",
+          "crew_id": "BA",
+          "date": "2018-06-14",
+          "state": "scheduled",
+          "days_late": 0,
+          "value_usd": 90.03514908094232,
+          "job_id": "S-03-B",
+          "visit_type": "battery_day"
+        },
+        {
+          "site_id": "S-04",
+          "crew_id": "IB",
+          "date": "2018-06-04",
+          "state": "locked",
+          "days_late": 0,
+          "value_usd": 0.0,
+          "job_id": "S-04-I",
+          "visit_type": "install"
+        },
+        {
+          "site_id": "S-04",
+          "crew_id": "BA",
+          "date": "2018-06-06",
+          "state": "scheduled",
+          "days_late": 0,
+          "value_usd": 95.23750522307856,
+          "job_id": "S-04-B",
+          "visit_type": "battery_day"
+        },
+        {
+          "site_id": "S-05",
+          "crew_id": "IB",
+          "date": "2018-06-05",
+          "state": "scheduled",
+          "days_late": 0,
+          "value_usd": 0.0,
+          "job_id": "S-05-I",
+          "visit_type": "install"
+        },
+        {
+          "site_id": "S-05",
+          "crew_id": "BA",
+          "date": "2018-06-08",
+          "state": "scheduled",
+          "days_late": 0,
+          "value_usd": 93.23169979972167,
+          "job_id": "S-05-B",
+          "visit_type": "battery_day"
+        },
+        {
+          "site_id": "S-06",
+          "crew_id": "IB",
+          "date": "2018-06-07",
+          "state": "scheduled",
+          "days_late": 0,
+          "value_usd": 0.0,
+          "job_id": "S-06-I",
+          "visit_type": "install"
+        },
+        {
+          "site_id": "S-06",
+          "crew_id": "BA",
+          "date": "2018-06-14",
+          "state": "scheduled",
+          "days_late": 0,
+          "value_usd": 90.03514908094232,
+          "job_id": "S-06-B",
+          "visit_type": "battery_day"
+        },
+        {
+          "site_id": "S-07",
+          "crew_id": "IB",
+          "date": "2018-06-13",
+          "state": "scheduled",
+          "days_late": 0,
+          "value_usd": 0.0,
+          "job_id": "S-07-I",
+          "visit_type": "install"
+        },
+        {
+          "site_id": "S-07",
+          "crew_id": "BA",
+          "date": "2018-06-14",
+          "state": "scheduled",
+          "days_late": 0,
+          "value_usd": 90.03514908094232,
+          "job_id": "S-07-B",
+          "visit_type": "battery_day"
+        },
+        {
+          "site_id": "S-08",
+          "crew_id": "IB",
+          "date": "2018-06-04",
+          "state": "locked",
+          "days_late": 0,
+          "value_usd": 0.0,
+          "job_id": "S-08-I",
+          "visit_type": "install"
+        },
+        {
+          "site_id": "S-08",
+          "crew_id": "BA",
+          "date": "2018-06-06",
+          "state": "scheduled",
+          "days_late": 0,
+          "value_usd": 95.23750522307856,
+          "job_id": "S-08-B",
+          "visit_type": "battery_day"
+        },
+        {
+          "site_id": "S-09",
+          "crew_id": "IB",
+          "date": "2018-06-13",
+          "state": "scheduled",
+          "days_late": 0,
+          "value_usd": 0.0,
+          "job_id": "S-09-I",
+          "visit_type": "install"
+        },
+        {
+          "site_id": "S-09",
+          "crew_id": "BA",
+          "date": "2018-06-14",
+          "state": "scheduled",
+          "days_late": 0,
+          "value_usd": 90.03514908094232,
+          "job_id": "S-09-B",
+          "visit_type": "battery_day"
+        },
+        {
+          "site_id": "S-10",
+          "crew_id": "IB",
+          "date": "2018-06-07",
+          "state": "scheduled",
+          "days_late": 0,
+          "value_usd": 0.0,
+          "job_id": "S-10-I",
+          "visit_type": "install"
+        },
+        {
+          "site_id": "S-10",
+          "crew_id": "BA",
+          "date": "2018-06-08",
+          "state": "scheduled",
+          "days_late": 0,
+          "value_usd": 93.23169979972167,
+          "job_id": "S-10-B",
+          "visit_type": "battery_day"
+        },
+        {
+          "site_id": "S-11",
+          "crew_id": "IA",
+          "date": "2018-06-07",
+          "state": "scheduled",
+          "days_late": 0,
+          "value_usd": 0.0,
+          "job_id": "S-11-I",
+          "visit_type": "install"
+        },
+        {
+          "site_id": "S-11",
+          "crew_id": "BA",
+          "date": "2018-06-14",
+          "state": "scheduled",
+          "days_late": 0,
+          "value_usd": 90.03514908094232,
+          "job_id": "S-11-B",
+          "visit_type": "battery_day"
+        },
+        {
+          "site_id": "S-12",
+          "crew_id": "IB",
+          "date": "2018-06-07",
+          "state": "scheduled",
+          "days_late": 0,
+          "value_usd": 0.0,
+          "job_id": "S-12-I",
+          "visit_type": "install"
+        },
+        {
+          "site_id": "S-12",
+          "crew_id": "BA",
+          "date": "2018-06-14",
+          "state": "scheduled",
+          "days_late": 0,
+          "value_usd": 90.03514908094232,
+          "job_id": "S-12-B",
+          "visit_type": "battery_day"
+        },
+        {
+          "site_id": "S-13",
+          "crew_id": "IB",
+          "date": "2018-06-05",
+          "state": "scheduled",
+          "days_late": 0,
+          "value_usd": 0.0,
+          "job_id": "S-13-I",
+          "visit_type": "install"
+        },
+        {
+          "site_id": "S-13",
+          "crew_id": "BA",
+          "date": "2018-06-06",
+          "state": "scheduled",
+          "days_late": 0,
+          "value_usd": 95.23750522307856,
+          "job_id": "S-13-B",
+          "visit_type": "battery_day"
+        },
+        {
+          "site_id": "S-14",
+          "crew_id": "IB",
+          "date": "2018-06-05",
+          "state": "scheduled",
+          "days_late": 0,
+          "value_usd": 0.0,
+          "job_id": "S-14-I",
+          "visit_type": "install"
+        },
+        {
+          "site_id": "S-14",
+          "crew_id": "BA",
+          "date": "2018-06-08",
+          "state": "scheduled",
+          "days_late": 0,
+          "value_usd": 93.23169979972167,
+          "job_id": "S-14-B",
+          "visit_type": "battery_day"
+        },
+        {
+          "site_id": "S-15",
+          "crew_id": "IA",
+          "date": "2018-06-07",
+          "state": "scheduled",
+          "days_late": 0,
+          "value_usd": 0.0,
+          "job_id": "S-15-I",
+          "visit_type": "install"
+        },
+        {
+          "site_id": "S-15",
+          "crew_id": "BA",
+          "date": "2018-06-08",
+          "state": "scheduled",
+          "days_late": 0,
+          "value_usd": 93.23169979972167,
+          "job_id": "S-15-B",
+          "visit_type": "battery_day"
+        },
+        {
+          "site_id": "W-01",
+          "crew_id": "IA",
+          "date": "2018-06-12",
+          "state": "scheduled",
+          "days_late": 0,
+          "value_usd": 0.0,
+          "job_id": "W-01-I",
+          "visit_type": "install"
+        },
+        {
+          "site_id": "W-01",
+          "crew_id": "BA",
+          "date": "2018-06-15",
+          "state": "scheduled",
+          "days_late": 0,
+          "value_usd": 89.3039064063406,
+          "job_id": "W-01-B",
+          "visit_type": "battery_day"
+        },
+        {
+          "site_id": "W-02",
+          "crew_id": "IA",
+          "date": "2018-06-11",
+          "state": "scheduled",
+          "days_late": 0,
+          "value_usd": 0.0,
+          "job_id": "W-02-I",
+          "visit_type": "install"
+        },
+        {
+          "site_id": "W-02",
+          "crew_id": "BA",
+          "date": "2018-06-15",
+          "state": "scheduled",
+          "days_late": 0,
+          "value_usd": 89.3039064063406,
+          "job_id": "W-02-B",
+          "visit_type": "battery_day"
+        },
+        {
+          "site_id": "W-03",
+          "crew_id": "IA",
+          "date": "2018-06-05",
+          "state": "scheduled",
+          "days_late": 0,
+          "value_usd": 0.0,
+          "job_id": "W-03-I",
+          "visit_type": "install"
+        },
+        {
+          "site_id": "W-03",
+          "crew_id": "BA",
+          "date": "2018-06-07",
+          "state": "scheduled",
+          "days_late": 0,
+          "value_usd": 94.49075274012043,
+          "job_id": "W-03-B",
+          "visit_type": "battery_day"
+        },
+        {
+          "site_id": "W-04",
+          "crew_id": "IB",
+          "date": "2018-06-11",
+          "state": "scheduled",
+          "days_late": 0,
+          "value_usd": 0.0,
+          "job_id": "W-04-I",
+          "visit_type": "install"
+        },
+        {
+          "site_id": "W-04",
+          "crew_id": "BA",
+          "date": "2018-06-15",
+          "state": "scheduled",
+          "days_late": 0,
+          "value_usd": 89.3039064063406,
+          "job_id": "W-04-B",
+          "visit_type": "battery_day"
+        },
+        {
+          "site_id": "W-05",
+          "crew_id": "IA",
+          "date": "2018-06-11",
+          "state": "scheduled",
+          "days_late": 0,
+          "value_usd": 0.0,
+          "job_id": "W-05-I",
+          "visit_type": "install"
+        },
+        {
+          "site_id": "W-05",
+          "crew_id": "BA",
+          "date": "2018-06-12",
+          "state": "scheduled",
+          "days_late": 0,
+          "value_usd": 91.81681541029651,
+          "job_id": "W-05-B",
+          "visit_type": "battery_day"
+        },
+        {
+          "site_id": "W-06",
+          "crew_id": "IB",
+          "date": "2018-06-11",
+          "state": "scheduled",
+          "days_late": 0,
+          "value_usd": 0.0,
+          "job_id": "W-06-I",
+          "visit_type": "install"
+        },
+        {
+          "site_id": "W-06",
+          "crew_id": "BA",
+          "date": "2018-06-15",
+          "state": "scheduled",
+          "days_late": 0,
+          "value_usd": 89.3039064063406,
+          "job_id": "W-06-B",
+          "visit_type": "battery_day"
+        },
+        {
+          "site_id": "W-07",
+          "crew_id": "IA",
+          "date": "2018-06-05",
+          "state": "scheduled",
+          "days_late": 0,
+          "value_usd": 0.0,
+          "job_id": "W-07-I",
+          "visit_type": "install"
+        },
+        {
+          "site_id": "W-07",
+          "crew_id": "BA",
+          "date": "2018-06-12",
+          "state": "scheduled",
+          "days_late": 0,
+          "value_usd": 91.81681541029651,
+          "job_id": "W-07-B",
+          "visit_type": "battery_day"
+        },
+        {
+          "site_id": "W-08",
+          "crew_id": "IB",
+          "date": "2018-06-11",
+          "state": "scheduled",
+          "days_late": 0,
+          "value_usd": 0.0,
+          "job_id": "W-08-I",
+          "visit_type": "install"
+        },
+        {
+          "site_id": "W-08",
+          "crew_id": "BA",
+          "date": "2018-06-12",
+          "state": "scheduled",
+          "days_late": 0,
+          "value_usd": 91.81681541029651,
+          "job_id": "W-08-B",
+          "visit_type": "battery_day"
+        },
+        {
+          "site_id": "W-09",
+          "crew_id": "IA",
+          "date": "2018-06-06",
+          "state": "scheduled",
+          "days_late": 0,
+          "value_usd": 0.0,
+          "job_id": "W-09-I",
+          "visit_type": "install"
+        },
+        {
+          "site_id": "W-09",
+          "crew_id": "BA",
+          "date": "2018-06-07",
+          "state": "scheduled",
+          "days_late": 0,
+          "value_usd": 94.49075274012043,
+          "job_id": "W-09-B",
+          "visit_type": "battery_day"
+        },
+        {
+          "site_id": "W-10",
+          "crew_id": "IA",
+          "date": "2018-06-06",
+          "state": "scheduled",
+          "days_late": 0,
+          "value_usd": 0.0,
+          "job_id": "W-10-I",
+          "visit_type": "install"
+        },
+        {
+          "site_id": "W-10",
+          "crew_id": "BA",
+          "date": "2018-06-07",
+          "state": "scheduled",
+          "days_late": 0,
+          "value_usd": 94.49075274012043,
+          "job_id": "W-10-B",
+          "visit_type": "battery_day"
+        },
+        {
+          "site_id": "W-11",
+          "crew_id": "IA",
+          "date": "2018-06-12",
+          "state": "scheduled",
+          "days_late": 0,
+          "value_usd": 0.0,
+          "job_id": "W-11-I",
+          "visit_type": "install"
+        },
+        {
+          "site_id": "W-11",
+          "crew_id": "BA",
+          "date": "2018-06-15",
+          "state": "scheduled",
+          "days_late": 0,
+          "value_usd": 89.3039064063406,
+          "job_id": "W-11-B",
+          "visit_type": "battery_day"
+        },
+        {
+          "site_id": "W-12",
+          "crew_id": "IA",
+          "date": "2018-06-11",
+          "state": "scheduled",
+          "days_late": 0,
+          "value_usd": 0.0,
+          "job_id": "W-12-I",
+          "visit_type": "install"
+        },
+        {
+          "site_id": "W-12",
+          "crew_id": "BA",
+          "date": "2018-06-12",
+          "state": "scheduled",
+          "days_late": 0,
+          "value_usd": 91.81681541029651,
+          "job_id": "W-12-B",
+          "visit_type": "battery_day"
+        },
+        {
+          "site_id": "W-13",
+          "crew_id": "IA",
+          "date": "2018-06-05",
+          "state": "scheduled",
+          "days_late": 0,
+          "value_usd": 0.0,
+          "job_id": "W-13-I",
+          "visit_type": "install"
+        },
+        {
+          "site_id": "W-13",
+          "crew_id": "BA",
+          "date": "2018-06-12",
+          "state": "scheduled",
+          "days_late": 0,
+          "value_usd": 91.81681541029651,
+          "job_id": "W-13-B",
+          "visit_type": "battery_day"
+        },
+        {
+          "site_id": "W-14",
+          "crew_id": "IA",
+          "date": "2018-06-12",
+          "state": "scheduled",
+          "days_late": 0,
+          "value_usd": 0.0,
+          "job_id": "W-14-I",
+          "visit_type": "install"
+        },
+        {
+          "site_id": "W-14",
+          "crew_id": "BA",
+          "date": "2018-06-15",
+          "state": "scheduled",
+          "days_late": 0,
+          "value_usd": 89.3039064063406,
+          "job_id": "W-14-B",
+          "visit_type": "battery_day"
+        },
+        {
+          "site_id": "W-15",
+          "crew_id": "IA",
+          "date": "2018-06-06",
+          "state": "scheduled",
+          "days_late": 0,
+          "value_usd": 0.0,
+          "job_id": "W-15-I",
+          "visit_type": "install"
+        },
+        {
+          "site_id": "W-15",
+          "crew_id": "BA",
+          "date": "2018-06-07",
+          "state": "scheduled",
+          "days_late": 0,
+          "value_usd": 94.49075274012043,
+          "job_id": "W-15-B",
+          "visit_type": "battery_day"
+        }
+      ],
+      "unscheduled": [],
+      "crew_days": [
+        {
+          "crew_id": "BA",
+          "date": "2018-06-05",
+          "cluster_id": "N",
+          "onsite_min": 240,
+          "travel_min": 34,
+          "available_min": 480
+        },
+        {
+          "crew_id": "BA",
+          "date": "2018-06-06",
+          "cluster_id": "S",
+          "onsite_min": 255,
+          "travel_min": 41,
+          "available_min": 480
+        },
+        {
+          "crew_id": "BA",
+          "date": "2018-06-07",
+          "cluster_id": "W",
+          "onsite_min": 330,
+          "travel_min": 33,
+          "available_min": 480
+        },
+        {
+          "crew_id": "BA",
+          "date": "2018-06-08",
+          "cluster_id": "S",
+          "onsite_min": 390,
+          "travel_min": 41,
+          "available_min": 480
+        },
+        {
+          "crew_id": "BA",
+          "date": "2018-06-11",
+          "cluster_id": "N",
+          "onsite_min": 435,
+          "travel_min": 34,
+          "available_min": 480
+        },
+        {
+          "crew_id": "BA",
+          "date": "2018-06-12",
+          "cluster_id": "W",
+          "onsite_min": 420,
+          "travel_min": 33,
+          "available_min": 480
+        },
+        {
+          "crew_id": "BA",
+          "date": "2018-06-13",
+          "cluster_id": "N",
+          "onsite_min": 420,
+          "travel_min": 34,
+          "available_min": 480
+        },
+        {
+          "crew_id": "BA",
+          "date": "2018-06-14",
+          "cluster_id": "S",
+          "onsite_min": 435,
+          "travel_min": 41,
+          "available_min": 480
+        },
+        {
+          "crew_id": "BA",
+          "date": "2018-06-15",
+          "cluster_id": "W",
+          "onsite_min": 405,
+          "travel_min": 33,
+          "available_min": 480
+        },
+        {
+          "crew_id": "IA",
+          "date": "2018-06-04",
+          "cluster_id": "N",
+          "onsite_min": 420,
+          "travel_min": 34,
+          "available_min": 480
+        },
+        {
+          "crew_id": "IA",
+          "date": "2018-06-05",
+          "cluster_id": "W",
+          "onsite_min": 360,
+          "travel_min": 33,
+          "available_min": 480
+        },
+        {
+          "crew_id": "IA",
+          "date": "2018-06-06",
+          "cluster_id": "W",
+          "onsite_min": 330,
+          "travel_min": 33,
+          "available_min": 480
+        },
+        {
+          "crew_id": "IA",
+          "date": "2018-06-07",
+          "cluster_id": "S",
+          "onsite_min": 390,
+          "travel_min": 41,
+          "available_min": 480
+        },
+        {
+          "crew_id": "IA",
+          "date": "2018-06-08",
+          "cluster_id": "N",
+          "onsite_min": 420,
+          "travel_min": 34,
+          "available_min": 480
+        },
+        {
+          "crew_id": "IA",
+          "date": "2018-06-11",
+          "cluster_id": "W",
+          "onsite_min": 390,
+          "travel_min": 33,
+          "available_min": 480
+        },
+        {
+          "crew_id": "IA",
+          "date": "2018-06-12",
+          "cluster_id": "W",
+          "onsite_min": 390,
+          "travel_min": 33,
+          "available_min": 480
+        },
+        {
+          "crew_id": "IA",
+          "date": "2018-06-13",
+          "cluster_id": null,
+          "onsite_min": 0,
+          "travel_min": 0,
+          "available_min": 480
+        },
+        {
+          "crew_id": "IA",
+          "date": "2018-06-14",
+          "cluster_id": null,
+          "onsite_min": 0,
+          "travel_min": 0,
+          "available_min": 480
+        },
+        {
+          "crew_id": "IA",
+          "date": "2018-06-15",
+          "cluster_id": null,
+          "onsite_min": 0,
+          "travel_min": 0,
+          "available_min": 480
+        },
+        {
+          "crew_id": "IB",
+          "date": "2018-06-04",
+          "cluster_id": "S",
+          "onsite_min": 360,
+          "travel_min": 41,
+          "available_min": 480
+        },
+        {
+          "crew_id": "IB",
+          "date": "2018-06-05",
+          "cluster_id": "S",
+          "onsite_min": 420,
+          "travel_min": 41,
+          "available_min": 480
+        },
+        {
+          "crew_id": "IB",
+          "date": "2018-06-06",
+          "cluster_id": "N",
+          "onsite_min": 360,
+          "travel_min": 34,
+          "available_min": 480
+        },
+        {
+          "crew_id": "IB",
+          "date": "2018-06-07",
+          "cluster_id": "S",
+          "onsite_min": 420,
+          "travel_min": 41,
+          "available_min": 480
+        },
+        {
+          "crew_id": "IB",
+          "date": "2018-06-08",
+          "cluster_id": "N",
+          "onsite_min": 390,
+          "travel_min": 34,
+          "available_min": 480
+        },
+        {
+          "crew_id": "IB",
+          "date": "2018-06-11",
+          "cluster_id": "W",
+          "onsite_min": 420,
+          "travel_min": 33,
+          "available_min": 480
+        },
+        {
+          "crew_id": "IB",
+          "date": "2018-06-12",
+          "cluster_id": "N",
+          "onsite_min": 390,
+          "travel_min": 34,
+          "available_min": 480
+        },
+        {
+          "crew_id": "IB",
+          "date": "2018-06-13",
+          "cluster_id": "S",
+          "onsite_min": 420,
+          "travel_min": 41,
+          "available_min": 480
+        },
+        {
+          "crew_id": "IB",
+          "date": "2018-06-14",
+          "cluster_id": null,
+          "onsite_min": 0,
+          "travel_min": 0,
+          "available_min": 480
+        },
+        {
+          "crew_id": "IB",
+          "date": "2018-06-15",
+          "cluster_id": null,
+          "onsite_min": 0,
+          "travel_min": 0,
+          "available_min": 480
+        }
+      ],
+      "objective": {
+        "jobs_on_time": 45,
+        "jobs_late": 0,
+        "jobs_unscheduled": 0,
+        "jobs_blocked": 0,
+        "total_delay_days": 0,
+        "operating_value_usd": 4136.5096690919245,
+        "changed_installs": 0,
+        "travel_allowance_min": 864,
+        "crew_utilization": 0.7237,
+        "value_distinguishes_choices": true,
+        "visits_moved": 0,
+        "customers_to_reschedule": 0
+      },
+      "validation": {
+        "checked": true,
+        "valid": true,
+        "issues": [],
+        "validator": "independent-v1"
+      },
+      "input_issues": [],
+      "assumptions": [
+        {
+          "key": "synthetic_inputs",
+          "text": "All inputs in this scenario are synthetic.",
+          "kind": "synthetic"
+        },
+        {
+          "key": "travel_allowance",
+          "text": "Travel is a fixed allowance per active crew-day and cluster, not a routed drive time.",
+          "kind": "assumed"
+        }
+      ],
+      "solve_ms": 0
+    },
+    "diff_vs_original": {
+      "before_plan_id": "standard-r0-recovery-3debd604",
+      "after_plan_id": "standard-r0-recovery-3debd604",
+      "changes": [],
+      "summary": {
+        "moved": 0,
+        "added": 0,
+        "removed": 0,
+        "newly_late": 0,
+        "value_delta_usd": 0.0,
+        "travel_delta_min": 0,
+        "customers_to_reschedule": 0
+      },
+      "headline": "No jobs change."
+    },
+    "diff_vs_no_action": null,
+    "counts": {
+      "deadlines_missed": 0,
+      "deadlines_recovered": 0,
+      "delay_days": 0,
+      "visits_moved": 0,
+      "customers_to_reschedule": 0,
+      "unscheduled": 0
+    },
+    "economics": {
+      "net_impact_usd": 0.0,
+      "advantage_vs_no_action_usd": 0.0,
+      "cost_per_deadline_recovered_usd": null,
+      "lines": [
+        {
+          "label": "Existing crew labor",
+          "amount_usd": 0.0,
+          "kind": "labor",
+          "basis": "Existing roster is paid regardless of utilization; no claimed savings from uncompleted visits."
+        },
+        {
+          "label": "Overtime",
+          "amount_usd": 0.0,
+          "kind": "labor",
+          "basis": "0 authorized minutes / 60 \u00d7 $28.33/person-hour \u00d7 2.0 people \u00d7 1.5. Charged for authorized capacity, including idle minutes."
+        },
+        {
+          "label": "Temporary capacity",
+          "amount_usd": 0.0,
+          "kind": "labor",
+          "basis": "0 added crew-days \u00d7 $453.28/day; full day charged."
+        },
+        {
+          "label": "Lost modeled operating value",
+          "amount_usd": 0.0,
+          "kind": "value",
+          "basis": "Original minus option gross operating margin over the same evaluation horizon; 2018 hindsight prices, not forecast profit. Wage inputs are 2023 dollars without inflation conversion; illustrative comparison."
+        },
+        {
+          "label": "Incremental travel",
+          "amount_usd": 0.0,
+          "kind": "other",
+          "basis": "Difference in fixed travel allowance minutes \u00d7 $0.0/min; no route mileage."
+        },
+        {
+          "label": "Deadline penalty",
+          "amount_usd": 0.0,
+          "kind": "penalty",
+          "basis": "Additional missed homes vs the original plan, never below 0, \u00d7 $0.0; default disabled."
+        },
+        {
+          "label": "Customer rescheduling",
+          "amount_usd": 0.0,
+          "kind": "other",
+          "basis": "0 distinct customers \u00d7 $0.0; default disabled."
+        }
+      ]
+    },
+    "overtime_min": 0,
+    "explanations": [],
+    "crew_load": [
+      {
+        "crew_id": "BA",
+        "date": "2018-06-05",
+        "before": 0.5708333333333333,
+        "after": 0.5708333333333333
+      },
+      {
+        "crew_id": "BA",
+        "date": "2018-06-06",
+        "before": 0.6166666666666667,
+        "after": 0.6166666666666667
+      },
+      {
+        "crew_id": "BA",
+        "date": "2018-06-07",
+        "before": 0.75625,
+        "after": 0.75625
+      },
+      {
+        "crew_id": "BA",
+        "date": "2018-06-08",
+        "before": 0.8979166666666667,
+        "after": 0.8979166666666667
+      },
+      {
+        "crew_id": "BA",
+        "date": "2018-06-11",
+        "before": 0.9770833333333333,
+        "after": 0.9770833333333333
+      },
+      {
+        "crew_id": "BA",
+        "date": "2018-06-12",
+        "before": 0.94375,
+        "after": 0.94375
+      },
+      {
+        "crew_id": "BA",
+        "date": "2018-06-13",
+        "before": 0.9458333333333333,
+        "after": 0.9458333333333333
+      },
+      {
+        "crew_id": "BA",
+        "date": "2018-06-14",
+        "before": 0.9916666666666667,
+        "after": 0.9916666666666667
+      },
+      {
+        "crew_id": "BA",
+        "date": "2018-06-15",
+        "before": 0.9125,
+        "after": 0.9125
+      },
+      {
+        "crew_id": "IA",
+        "date": "2018-06-04",
+        "before": 0.9458333333333333,
+        "after": 0.9458333333333333
+      },
+      {
+        "crew_id": "IA",
+        "date": "2018-06-05",
+        "before": 0.81875,
+        "after": 0.81875
+      },
+      {
+        "crew_id": "IA",
+        "date": "2018-06-06",
+        "before": 0.75625,
+        "after": 0.75625
+      },
+      {
+        "crew_id": "IA",
+        "date": "2018-06-07",
+        "before": 0.8979166666666667,
+        "after": 0.8979166666666667
+      },
+      {
+        "crew_id": "IA",
+        "date": "2018-06-08",
+        "before": 0.9458333333333333,
+        "after": 0.9458333333333333
+      },
+      {
+        "crew_id": "IA",
+        "date": "2018-06-11",
+        "before": 0.88125,
+        "after": 0.88125
+      },
+      {
+        "crew_id": "IA",
+        "date": "2018-06-12",
+        "before": 0.88125,
+        "after": 0.88125
+      },
+      {
+        "crew_id": "IA",
+        "date": "2018-06-13",
+        "before": 0.0,
+        "after": 0.0
+      },
+      {
+        "crew_id": "IA",
+        "date": "2018-06-14",
+        "before": 0.0,
+        "after": 0.0
+      },
+      {
+        "crew_id": "IA",
+        "date": "2018-06-15",
+        "before": 0.0,
+        "after": 0.0
+      },
+      {
+        "crew_id": "IB",
+        "date": "2018-06-04",
+        "before": 0.8354166666666667,
+        "after": 0.8354166666666667
+      },
+      {
+        "crew_id": "IB",
+        "date": "2018-06-05",
+        "before": 0.9604166666666667,
+        "after": 0.9604166666666667
+      },
+      {
+        "crew_id": "IB",
+        "date": "2018-06-06",
+        "before": 0.8208333333333333,
+        "after": 0.8208333333333333
+      },
+      {
+        "crew_id": "IB",
+        "date": "2018-06-07",
+        "before": 0.9604166666666667,
+        "after": 0.9604166666666667
+      },
+      {
+        "crew_id": "IB",
+        "date": "2018-06-08",
+        "before": 0.8833333333333333,
+        "after": 0.8833333333333333
+      },
+      {
+        "crew_id": "IB",
+        "date": "2018-06-11",
+        "before": 0.94375,
+        "after": 0.94375
+      },
+      {
+        "crew_id": "IB",
+        "date": "2018-06-12",
+        "before": 0.8833333333333333,
+        "after": 0.8833333333333333
+      },
+      {
+        "crew_id": "IB",
+        "date": "2018-06-13",
+        "before": 0.9604166666666667,
+        "after": 0.9604166666666667
+      },
+      {
+        "crew_id": "IB",
+        "date": "2018-06-14",
+        "before": 0.0,
+        "after": 0.0
+      },
+      {
+        "crew_id": "IB",
+        "date": "2018-06-15",
+        "before": 0.0,
+        "after": 0.0
+      }
+    ],
+    "lowest_modeled_cost": true,
+    "stub": false
+  },
+  "options": [
+    {
+      "option_id": "rebalance-92103d16ffd31407",
+      "kind": "rebalance",
+      "action_label": "Rebalance existing crews: same plan as no action",
+      "intervention_edits": [],
+      "status": "optimal",
+      "proven_optimal": true,
+      "result": {
+        "plan_id": "standard-r0-recovery-3debd604",
+        "scenario_id": "standard",
+        "scenario_hash": "3debd604decfed3bf36441f1371a29c7daf0f277de1ac1a271b8e0bdc8cd3bd9",
+        "revision": 0,
+        "mode": "recovery",
+        "algorithm": "cpsat",
+        "objective_policy": "value_aware",
+        "edits": [],
+        "status": "optimal",
+        "message": "All 45 schedulable jobs meet their deadlines.",
+        "stages": [
+          {
+            "name": "jobs_late_or_unscheduled",
+            "status": "optimal",
+            "value": 0.0,
+            "bound": 0.0,
+            "gap": 0.0,
+            "elapsed_ms": 78
+          },
+          {
+            "name": "total_delay",
+            "status": "optimal",
+            "value": 0.0,
+            "bound": 0.0,
+            "gap": 0.0,
+            "elapsed_ms": 62
+          },
+          {
+            "name": "changed_installs",
+            "status": "optimal",
+            "value": 0.0,
+            "bound": 0.0,
+            "gap": 0.0,
+            "elapsed_ms": 77
+          },
+          {
+            "name": "operating_value",
+            "status": "optimal",
+            "value": 4136.48,
+            "bound": 4136.48,
+            "gap": 0.0,
+            "elapsed_ms": 16
+          },
+          {
+            "name": "travel",
+            "status": "optimal",
+            "value": 864.0,
+            "bound": 864.0,
+            "gap": 0.0,
+            "elapsed_ms": 16
+          }
+        ],
+        "assignments": [
+          {
+            "site_id": "N-01",
+            "crew_id": "IA",
+            "date": "2018-06-04",
+            "state": "locked",
+            "days_late": 0,
+            "value_usd": 0.0,
+            "job_id": "N-01-I",
+            "visit_type": "install"
+          },
+          {
+            "site_id": "N-01",
+            "crew_id": "BA",
+            "date": "2018-06-05",
+            "state": "scheduled",
+            "days_late": 0,
+            "value_usd": 95.87358655551603,
+            "job_id": "N-01-B",
+            "visit_type": "battery_day"
+          },
+          {
+            "site_id": "N-02",
+            "crew_id": "IB",
+            "date": "2018-06-08",
+            "state": "scheduled",
+            "days_late": 0,
+            "value_usd": 0.0,
+            "job_id": "N-02-I",
+            "visit_type": "install"
+          },
+          {
+            "site_id": "N-02",
+            "crew_id": "BA",
+            "date": "2018-06-11",
+            "state": "scheduled",
+            "days_late": 0,
+            "value_usd": 92.01481278027819,
+            "job_id": "N-02-B",
+            "visit_type": "battery_day"
+          },
+          {
+            "site_id": "N-03",
+            "crew_id": "IA",
+            "date": "2018-06-04",
+            "state": "locked",
+            "days_late": 0,
+            "value_usd": 0.0,
+            "job_id": "N-03-I",
+            "visit_type": "install"
+          },
+          {
+            "site_id": "N-03",
+            "crew_id": "BA",
+            "date": "2018-06-05",
+            "state": "scheduled",
+            "days_late": 0,
+            "value_usd": 95.87358655551603,
+            "job_id": "N-03-B",
+            "visit_type": "battery_day"
+          },
+          {
+            "site_id": "N-04",
+            "crew_id": "IB",
+            "date": "2018-06-12",
+            "state": "scheduled",
+            "days_late": 0,
+            "value_usd": 0.0,
+            "job_id": "N-04-I",
+            "visit_type": "install"
+          },
+          {
+            "site_id": "N-04",
+            "crew_id": "BA",
+            "date": "2018-06-13",
+            "state": "scheduled",
+            "days_late": 0,
+            "value_usd": 90.30207467654311,
+            "job_id": "N-04-B",
+            "visit_type": "battery_day"
+          },
+          {
+            "site_id": "N-05",
+            "crew_id": "IA",
+            "date": "2018-06-08",
+            "state": "scheduled",
+            "days_late": 0,
+            "value_usd": 0.0,
+            "job_id": "N-05-I",
+            "visit_type": "install"
+          },
+          {
+            "site_id": "N-05",
+            "crew_id": "BA",
+            "date": "2018-06-11",
+            "state": "scheduled",
+            "days_late": 0,
+            "value_usd": 92.01481278027819,
+            "job_id": "N-05-B",
+            "visit_type": "battery_day"
+          },
+          {
+            "site_id": "N-06",
+            "crew_id": "IB",
+            "date": "2018-06-08",
+            "state": "scheduled",
+            "days_late": 0,
+            "value_usd": 0.0,
+            "job_id": "N-06-I",
+            "visit_type": "install"
+          },
+          {
+            "site_id": "N-06",
+            "crew_id": "BA",
+            "date": "2018-06-13",
+            "state": "scheduled",
+            "days_late": 0,
+            "value_usd": 90.30207467654311,
+            "job_id": "N-06-B",
+            "visit_type": "battery_day"
+          },
+          {
+            "site_id": "N-07",
+            "crew_id": "IB",
+            "date": "2018-06-06",
+            "state": "scheduled",
+            "days_late": 0,
+            "value_usd": 0.0,
+            "job_id": "N-07-I",
+            "visit_type": "install"
+          },
+          {
+            "site_id": "N-07",
+            "crew_id": "BA",
+            "date": "2018-06-11",
+            "state": "scheduled",
+            "days_late": 0,
+            "value_usd": 92.01481278027819,
+            "job_id": "N-07-B",
+            "visit_type": "battery_day"
+          },
+          {
+            "site_id": "N-08",
+            "crew_id": "IB",
+            "date": "2018-06-12",
+            "state": "scheduled",
+            "days_late": 0,
+            "value_usd": 0.0,
+            "job_id": "N-08-I",
+            "visit_type": "install"
+          },
+          {
+            "site_id": "N-08",
+            "crew_id": "BA",
+            "date": "2018-06-13",
+            "state": "scheduled",
+            "days_late": 0,
+            "value_usd": 90.30207467654311,
+            "job_id": "N-08-B",
+            "visit_type": "battery_day"
+          },
+          {
+            "site_id": "N-09",
+            "crew_id": "IA",
+            "date": "2018-06-04",
+            "state": "locked",
+            "days_late": 0,
+            "value_usd": 0.0,
+            "job_id": "N-09-I",
+            "visit_type": "install"
+          },
+          {
+            "site_id": "N-09",
+            "crew_id": "BA",
+            "date": "2018-06-05",
+            "state": "scheduled",
+            "days_late": 0,
+            "value_usd": 95.87358655551603,
+            "job_id": "N-09-B",
+            "visit_type": "battery_day"
+          },
+          {
+            "site_id": "N-10",
+            "crew_id": "IB",
+            "date": "2018-06-06",
+            "state": "scheduled",
+            "days_late": 0,
+            "value_usd": 0.0,
+            "job_id": "N-10-I",
+            "visit_type": "install"
+          },
+          {
+            "site_id": "N-10",
+            "crew_id": "BA",
+            "date": "2018-06-11",
+            "state": "scheduled",
+            "days_late": 0,
+            "value_usd": 92.01481278027819,
+            "job_id": "N-10-B",
+            "visit_type": "battery_day"
+          },
+          {
+            "site_id": "N-11",
+            "crew_id": "IB",
+            "date": "2018-06-06",
+            "state": "scheduled",
+            "days_late": 0,
+            "value_usd": 0.0,
+            "job_id": "N-11-I",
+            "visit_type": "install"
+          },
+          {
+            "site_id": "N-11",
+            "crew_id": "BA",
+            "date": "2018-06-13",
+            "state": "scheduled",
+            "days_late": 0,
+            "value_usd": 90.30207467654311,
+            "job_id": "N-11-B",
+            "visit_type": "battery_day"
+          },
+          {
+            "site_id": "N-12",
+            "crew_id": "IA",
+            "date": "2018-06-08",
+            "state": "scheduled",
+            "days_late": 0,
+            "value_usd": 0.0,
+            "job_id": "N-12-I",
+            "visit_type": "install"
+          },
+          {
+            "site_id": "N-12",
+            "crew_id": "BA",
+            "date": "2018-06-13",
+            "state": "scheduled",
+            "days_late": 0,
+            "value_usd": 90.30207467654311,
+            "job_id": "N-12-B",
+            "visit_type": "battery_day"
+          },
+          {
+            "site_id": "N-13",
+            "crew_id": "IB",
+            "date": "2018-06-08",
+            "state": "scheduled",
+            "days_late": 0,
+            "value_usd": 0.0,
+            "job_id": "N-13-I",
+            "visit_type": "install"
+          },
+          {
+            "site_id": "N-13",
+            "crew_id": "BA",
+            "date": "2018-06-11",
+            "state": "scheduled",
+            "days_late": 0,
+            "value_usd": 92.01481278027819,
+            "job_id": "N-13-B",
+            "visit_type": "battery_day"
+          },
+          {
+            "site_id": "N-14",
+            "crew_id": "IA",
+            "date": "2018-06-08",
+            "state": "scheduled",
+            "days_late": 0,
+            "value_usd": 0.0,
+            "job_id": "N-14-I",
+            "visit_type": "install"
+          },
+          {
+            "site_id": "N-14",
+            "crew_id": "BA",
+            "date": "2018-06-11",
+            "state": "scheduled",
+            "days_late": 0,
+            "value_usd": 92.01481278027819,
+            "job_id": "N-14-B",
+            "visit_type": "battery_day"
+          },
+          {
+            "site_id": "N-15",
+            "crew_id": "IB",
+            "date": "2018-06-12",
+            "state": "scheduled",
+            "days_late": 0,
+            "value_usd": 0.0,
+            "job_id": "N-15-I",
+            "visit_type": "install"
+          },
+          {
+            "site_id": "N-15",
+            "crew_id": "BA",
+            "date": "2018-06-13",
+            "state": "scheduled",
+            "days_late": 0,
+            "value_usd": 90.30207467654311,
+            "job_id": "N-15-B",
+            "visit_type": "battery_day"
+          },
+          {
+            "site_id": "S-01",
+            "crew_id": "IA",
+            "date": "2018-06-07",
+            "state": "scheduled",
+            "days_late": 0,
+            "value_usd": 0.0,
+            "job_id": "S-01-I",
+            "visit_type": "install"
+          },
+          {
+            "site_id": "S-01",
+            "crew_id": "BA",
+            "date": "2018-06-08",
+            "state": "scheduled",
+            "days_late": 0,
+            "value_usd": 93.23169979972167,
+            "job_id": "S-01-B",
+            "visit_type": "battery_day"
+          },
+          {
+            "site_id": "S-02",
+            "crew_id": "IB",
+            "date": "2018-06-07",
+            "state": "scheduled",
+            "days_late": 0,
+            "value_usd": 0.0,
+            "job_id": "S-02-I",
+            "visit_type": "install"
+          },
+          {
+            "site_id": "S-02",
+            "crew_id": "BA",
+            "date": "2018-06-14",
+            "state": "scheduled",
+            "days_late": 0,
+            "value_usd": 90.03514908094232,
+            "job_id": "S-02-B",
+            "visit_type": "battery_day"
+          },
+          {
+            "site_id": "S-03",
+            "crew_id": "IB",
+            "date": "2018-06-13",
+            "state": "scheduled",
+            "days_late": 0,
+            "value_usd": 0.0,
+            "job_id": "S-03-I",
+            "visit_type": "install"
+          },
+          {
+            "site_id": "S-03",
+            "crew_id": "BA",
+            "date": "2018-06-14",
+            "state": "scheduled",
+            "days_late": 0,
+            "value_usd": 90.03514908094232,
+            "job_id": "S-03-B",
+            "visit_type": "battery_day"
+          },
+          {
+            "site_id": "S-04",
+            "crew_id": "IB",
+            "date": "2018-06-04",
+            "state": "locked",
+            "days_late": 0,
+            "value_usd": 0.0,
+            "job_id": "S-04-I",
+            "visit_type": "install"
+          },
+          {
+            "site_id": "S-04",
+            "crew_id": "BA",
+            "date": "2018-06-06",
+            "state": "scheduled",
+            "days_late": 0,
+            "value_usd": 95.23750522307856,
+            "job_id": "S-04-B",
+            "visit_type": "battery_day"
+          },
+          {
+            "site_id": "S-05",
+            "crew_id": "IB",
+            "date": "2018-06-05",
+            "state": "scheduled",
+            "days_late": 0,
+            "value_usd": 0.0,
+            "job_id": "S-05-I",
+            "visit_type": "install"
+          },
+          {
+            "site_id": "S-05",
+            "crew_id": "BA",
+            "date": "2018-06-08",
+            "state": "scheduled",
+            "days_late": 0,
+            "value_usd": 93.23169979972167,
+            "job_id": "S-05-B",
+            "visit_type": "battery_day"
+          },
+          {
+            "site_id": "S-06",
+            "crew_id": "IB",
+            "date": "2018-06-07",
+            "state": "scheduled",
+            "days_late": 0,
+            "value_usd": 0.0,
+            "job_id": "S-06-I",
+            "visit_type": "install"
+          },
+          {
+            "site_id": "S-06",
+            "crew_id": "BA",
+            "date": "2018-06-14",
+            "state": "scheduled",
+            "days_late": 0,
+            "value_usd": 90.03514908094232,
+            "job_id": "S-06-B",
+            "visit_type": "battery_day"
+          },
+          {
+            "site_id": "S-07",
+            "crew_id": "IB",
+            "date": "2018-06-13",
+            "state": "scheduled",
+            "days_late": 0,
+            "value_usd": 0.0,
+            "job_id": "S-07-I",
+            "visit_type": "install"
+          },
+          {
+            "site_id": "S-07",
+            "crew_id": "BA",
+            "date": "2018-06-14",
+            "state": "scheduled",
+            "days_late": 0,
+            "value_usd": 90.03514908094232,
+            "job_id": "S-07-B",
+            "visit_type": "battery_day"
+          },
+          {
+            "site_id": "S-08",
+            "crew_id": "IB",
+            "date": "2018-06-04",
+            "state": "locked",
+            "days_late": 0,
+            "value_usd": 0.0,
+            "job_id": "S-08-I",
+            "visit_type": "install"
+          },
+          {
+            "site_id": "S-08",
+            "crew_id": "BA",
+            "date": "2018-06-06",
+            "state": "scheduled",
+            "days_late": 0,
+            "value_usd": 95.23750522307856,
+            "job_id": "S-08-B",
+            "visit_type": "battery_day"
+          },
+          {
+            "site_id": "S-09",
+            "crew_id": "IB",
+            "date": "2018-06-13",
+            "state": "scheduled",
+            "days_late": 0,
+            "value_usd": 0.0,
+            "job_id": "S-09-I",
+            "visit_type": "install"
+          },
+          {
+            "site_id": "S-09",
+            "crew_id": "BA",
+            "date": "2018-06-14",
+            "state": "scheduled",
+            "days_late": 0,
+            "value_usd": 90.03514908094232,
+            "job_id": "S-09-B",
+            "visit_type": "battery_day"
+          },
+          {
+            "site_id": "S-10",
+            "crew_id": "IB",
+            "date": "2018-06-07",
+            "state": "scheduled",
+            "days_late": 0,
+            "value_usd": 0.0,
+            "job_id": "S-10-I",
+            "visit_type": "install"
+          },
+          {
+            "site_id": "S-10",
+            "crew_id": "BA",
+            "date": "2018-06-08",
+            "state": "scheduled",
+            "days_late": 0,
+            "value_usd": 93.23169979972167,
+            "job_id": "S-10-B",
+            "visit_type": "battery_day"
+          },
+          {
+            "site_id": "S-11",
+            "crew_id": "IA",
+            "date": "2018-06-07",
+            "state": "scheduled",
+            "days_late": 0,
+            "value_usd": 0.0,
+            "job_id": "S-11-I",
+            "visit_type": "install"
+          },
+          {
+            "site_id": "S-11",
+            "crew_id": "BA",
+            "date": "2018-06-14",
+            "state": "scheduled",
+            "days_late": 0,
+            "value_usd": 90.03514908094232,
+            "job_id": "S-11-B",
+            "visit_type": "battery_day"
+          },
+          {
+            "site_id": "S-12",
+            "crew_id": "IB",
+            "date": "2018-06-07",
+            "state": "scheduled",
+            "days_late": 0,
+            "value_usd": 0.0,
+            "job_id": "S-12-I",
+            "visit_type": "install"
+          },
+          {
+            "site_id": "S-12",
+            "crew_id": "BA",
+            "date": "2018-06-14",
+            "state": "scheduled",
+            "days_late": 0,
+            "value_usd": 90.03514908094232,
+            "job_id": "S-12-B",
+            "visit_type": "battery_day"
+          },
+          {
+            "site_id": "S-13",
+            "crew_id": "IB",
+            "date": "2018-06-05",
+            "state": "scheduled",
+            "days_late": 0,
+            "value_usd": 0.0,
+            "job_id": "S-13-I",
+            "visit_type": "install"
+          },
+          {
+            "site_id": "S-13",
+            "crew_id": "BA",
+            "date": "2018-06-06",
+            "state": "scheduled",
+            "days_late": 0,
+            "value_usd": 95.23750522307856,
+            "job_id": "S-13-B",
+            "visit_type": "battery_day"
+          },
+          {
+            "site_id": "S-14",
+            "crew_id": "IB",
+            "date": "2018-06-05",
+            "state": "scheduled",
+            "days_late": 0,
+            "value_usd": 0.0,
+            "job_id": "S-14-I",
+            "visit_type": "install"
+          },
+          {
+            "site_id": "S-14",
+            "crew_id": "BA",
+            "date": "2018-06-08",
+            "state": "scheduled",
+            "days_late": 0,
+            "value_usd": 93.23169979972167,
+            "job_id": "S-14-B",
+            "visit_type": "battery_day"
+          },
+          {
+            "site_id": "S-15",
+            "crew_id": "IA",
+            "date": "2018-06-07",
+            "state": "scheduled",
+            "days_late": 0,
+            "value_usd": 0.0,
+            "job_id": "S-15-I",
+            "visit_type": "install"
+          },
+          {
+            "site_id": "S-15",
+            "crew_id": "BA",
+            "date": "2018-06-08",
+            "state": "scheduled",
+            "days_late": 0,
+            "value_usd": 93.23169979972167,
+            "job_id": "S-15-B",
+            "visit_type": "battery_day"
+          },
+          {
+            "site_id": "W-01",
+            "crew_id": "IA",
+            "date": "2018-06-12",
+            "state": "scheduled",
+            "days_late": 0,
+            "value_usd": 0.0,
+            "job_id": "W-01-I",
+            "visit_type": "install"
+          },
+          {
+            "site_id": "W-01",
+            "crew_id": "BA",
+            "date": "2018-06-15",
+            "state": "scheduled",
+            "days_late": 0,
+            "value_usd": 89.3039064063406,
+            "job_id": "W-01-B",
+            "visit_type": "battery_day"
+          },
+          {
+            "site_id": "W-02",
+            "crew_id": "IA",
+            "date": "2018-06-11",
+            "state": "scheduled",
+            "days_late": 0,
+            "value_usd": 0.0,
+            "job_id": "W-02-I",
+            "visit_type": "install"
+          },
+          {
+            "site_id": "W-02",
+            "crew_id": "BA",
+            "date": "2018-06-15",
+            "state": "scheduled",
+            "days_late": 0,
+            "value_usd": 89.3039064063406,
+            "job_id": "W-02-B",
+            "visit_type": "battery_day"
+          },
+          {
+            "site_id": "W-03",
+            "crew_id": "IA",
+            "date": "2018-06-05",
+            "state": "scheduled",
+            "days_late": 0,
+            "value_usd": 0.0,
+            "job_id": "W-03-I",
+            "visit_type": "install"
+          },
+          {
+            "site_id": "W-03",
+            "crew_id": "BA",
+            "date": "2018-06-07",
+            "state": "scheduled",
+            "days_late": 0,
+            "value_usd": 94.49075274012043,
+            "job_id": "W-03-B",
+            "visit_type": "battery_day"
+          },
+          {
+            "site_id": "W-04",
+            "crew_id": "IB",
+            "date": "2018-06-11",
+            "state": "scheduled",
+            "days_late": 0,
+            "value_usd": 0.0,
+            "job_id": "W-04-I",
+            "visit_type": "install"
+          },
+          {
+            "site_id": "W-04",
+            "crew_id": "BA",
+            "date": "2018-06-15",
+            "state": "scheduled",
+            "days_late": 0,
+            "value_usd": 89.3039064063406,
+            "job_id": "W-04-B",
+            "visit_type": "battery_day"
+          },
+          {
+            "site_id": "W-05",
+            "crew_id": "IA",
+            "date": "2018-06-11",
+            "state": "scheduled",
+            "days_late": 0,
+            "value_usd": 0.0,
+            "job_id": "W-05-I",
+            "visit_type": "install"
+          },
+          {
+            "site_id": "W-05",
+            "crew_id": "BA",
+            "date": "2018-06-12",
+            "state": "scheduled",
+            "days_late": 0,
+            "value_usd": 91.81681541029651,
+            "job_id": "W-05-B",
+            "visit_type": "battery_day"
+          },
+          {
+            "site_id": "W-06",
+            "crew_id": "IB",
+            "date": "2018-06-11",
+            "state": "scheduled",
+            "days_late": 0,
+            "value_usd": 0.0,
+            "job_id": "W-06-I",
+            "visit_type": "install"
+          },
+          {
+            "site_id": "W-06",
+            "crew_id": "BA",
+            "date": "2018-06-15",
+            "state": "scheduled",
+            "days_late": 0,
+            "value_usd": 89.3039064063406,
+            "job_id": "W-06-B",
+            "visit_type": "battery_day"
+          },
+          {
+            "site_id": "W-07",
+            "crew_id": "IA",
+            "date": "2018-06-05",
+            "state": "scheduled",
+            "days_late": 0,
+            "value_usd": 0.0,
+            "job_id": "W-07-I",
+            "visit_type": "install"
+          },
+          {
+            "site_id": "W-07",
+            "crew_id": "BA",
+            "date": "2018-06-12",
+            "state": "scheduled",
+            "days_late": 0,
+            "value_usd": 91.81681541029651,
+            "job_id": "W-07-B",
+            "visit_type": "battery_day"
+          },
+          {
+            "site_id": "W-08",
+            "crew_id": "IB",
+            "date": "2018-06-11",
+            "state": "scheduled",
+            "days_late": 0,
+            "value_usd": 0.0,
+            "job_id": "W-08-I",
+            "visit_type": "install"
+          },
+          {
+            "site_id": "W-08",
+            "crew_id": "BA",
+            "date": "2018-06-12",
+            "state": "scheduled",
+            "days_late": 0,
+            "value_usd": 91.81681541029651,
+            "job_id": "W-08-B",
+            "visit_type": "battery_day"
+          },
+          {
+            "site_id": "W-09",
+            "crew_id": "IA",
+            "date": "2018-06-06",
+            "state": "scheduled",
+            "days_late": 0,
+            "value_usd": 0.0,
+            "job_id": "W-09-I",
+            "visit_type": "install"
+          },
+          {
+            "site_id": "W-09",
+            "crew_id": "BA",
+            "date": "2018-06-07",
+            "state": "scheduled",
+            "days_late": 0,
+            "value_usd": 94.49075274012043,
+            "job_id": "W-09-B",
+            "visit_type": "battery_day"
+          },
+          {
+            "site_id": "W-10",
+            "crew_id": "IA",
+            "date": "2018-06-06",
+            "state": "scheduled",
+            "days_late": 0,
+            "value_usd": 0.0,
+            "job_id": "W-10-I",
+            "visit_type": "install"
+          },
+          {
+            "site_id": "W-10",
+            "crew_id": "BA",
+            "date": "2018-06-07",
+            "state": "scheduled",
+            "days_late": 0,
+            "value_usd": 94.49075274012043,
+            "job_id": "W-10-B",
+            "visit_type": "battery_day"
+          },
+          {
+            "site_id": "W-11",
+            "crew_id": "IA",
+            "date": "2018-06-12",
+            "state": "scheduled",
+            "days_late": 0,
+            "value_usd": 0.0,
+            "job_id": "W-11-I",
+            "visit_type": "install"
+          },
+          {
+            "site_id": "W-11",
+            "crew_id": "BA",
+            "date": "2018-06-15",
+            "state": "scheduled",
+            "days_late": 0,
+            "value_usd": 89.3039064063406,
+            "job_id": "W-11-B",
+            "visit_type": "battery_day"
+          },
+          {
+            "site_id": "W-12",
+            "crew_id": "IA",
+            "date": "2018-06-11",
+            "state": "scheduled",
+            "days_late": 0,
+            "value_usd": 0.0,
+            "job_id": "W-12-I",
+            "visit_type": "install"
+          },
+          {
+            "site_id": "W-12",
+            "crew_id": "BA",
+            "date": "2018-06-12",
+            "state": "scheduled",
+            "days_late": 0,
+            "value_usd": 91.81681541029651,
+            "job_id": "W-12-B",
+            "visit_type": "battery_day"
+          },
+          {
+            "site_id": "W-13",
+            "crew_id": "IA",
+            "date": "2018-06-05",
+            "state": "scheduled",
+            "days_late": 0,
+            "value_usd": 0.0,
+            "job_id": "W-13-I",
+            "visit_type": "install"
+          },
+          {
+            "site_id": "W-13",
+            "crew_id": "BA",
+            "date": "2018-06-12",
+            "state": "scheduled",
+            "days_late": 0,
+            "value_usd": 91.81681541029651,
+            "job_id": "W-13-B",
+            "visit_type": "battery_day"
+          },
+          {
+            "site_id": "W-14",
+            "crew_id": "IA",
+            "date": "2018-06-12",
+            "state": "scheduled",
+            "days_late": 0,
+            "value_usd": 0.0,
+            "job_id": "W-14-I",
+            "visit_type": "install"
+          },
+          {
+            "site_id": "W-14",
+            "crew_id": "BA",
+            "date": "2018-06-15",
+            "state": "scheduled",
+            "days_late": 0,
+            "value_usd": 89.3039064063406,
+            "job_id": "W-14-B",
+            "visit_type": "battery_day"
+          },
+          {
+            "site_id": "W-15",
+            "crew_id": "IA",
+            "date": "2018-06-06",
+            "state": "scheduled",
+            "days_late": 0,
+            "value_usd": 0.0,
+            "job_id": "W-15-I",
+            "visit_type": "install"
+          },
+          {
+            "site_id": "W-15",
+            "crew_id": "BA",
+            "date": "2018-06-07",
+            "state": "scheduled",
+            "days_late": 0,
+            "value_usd": 94.49075274012043,
+            "job_id": "W-15-B",
+            "visit_type": "battery_day"
+          }
+        ],
+        "unscheduled": [],
+        "crew_days": [
+          {
+            "crew_id": "BA",
+            "date": "2018-06-05",
+            "cluster_id": "N",
+            "onsite_min": 240,
+            "travel_min": 34,
+            "available_min": 480
+          },
+          {
+            "crew_id": "BA",
+            "date": "2018-06-06",
+            "cluster_id": "S",
+            "onsite_min": 255,
+            "travel_min": 41,
+            "available_min": 480
+          },
+          {
+            "crew_id": "BA",
+            "date": "2018-06-07",
+            "cluster_id": "W",
+            "onsite_min": 330,
+            "travel_min": 33,
+            "available_min": 480
+          },
+          {
+            "crew_id": "BA",
+            "date": "2018-06-08",
+            "cluster_id": "S",
+            "onsite_min": 390,
+            "travel_min": 41,
+            "available_min": 480
+          },
+          {
+            "crew_id": "BA",
+            "date": "2018-06-11",
+            "cluster_id": "N",
+            "onsite_min": 435,
+            "travel_min": 34,
+            "available_min": 480
+          },
+          {
+            "crew_id": "BA",
+            "date": "2018-06-12",
+            "cluster_id": "W",
+            "onsite_min": 420,
+            "travel_min": 33,
+            "available_min": 480
+          },
+          {
+            "crew_id": "BA",
+            "date": "2018-06-13",
+            "cluster_id": "N",
+            "onsite_min": 420,
+            "travel_min": 34,
+            "available_min": 480
+          },
+          {
+            "crew_id": "BA",
+            "date": "2018-06-14",
+            "cluster_id": "S",
+            "onsite_min": 435,
+            "travel_min": 41,
+            "available_min": 480
+          },
+          {
+            "crew_id": "BA",
+            "date": "2018-06-15",
+            "cluster_id": "W",
+            "onsite_min": 405,
+            "travel_min": 33,
+            "available_min": 480
+          },
+          {
+            "crew_id": "IA",
+            "date": "2018-06-04",
+            "cluster_id": "N",
+            "onsite_min": 420,
+            "travel_min": 34,
+            "available_min": 480
+          },
+          {
+            "crew_id": "IA",
+            "date": "2018-06-05",
+            "cluster_id": "W",
+            "onsite_min": 360,
+            "travel_min": 33,
+            "available_min": 480
+          },
+          {
+            "crew_id": "IA",
+            "date": "2018-06-06",
+            "cluster_id": "W",
+            "onsite_min": 330,
+            "travel_min": 33,
+            "available_min": 480
+          },
+          {
+            "crew_id": "IA",
+            "date": "2018-06-07",
+            "cluster_id": "S",
+            "onsite_min": 390,
+            "travel_min": 41,
+            "available_min": 480
+          },
+          {
+            "crew_id": "IA",
+            "date": "2018-06-08",
+            "cluster_id": "N",
+            "onsite_min": 420,
+            "travel_min": 34,
+            "available_min": 480
+          },
+          {
+            "crew_id": "IA",
+            "date": "2018-06-11",
+            "cluster_id": "W",
+            "onsite_min": 390,
+            "travel_min": 33,
+            "available_min": 480
+          },
+          {
+            "crew_id": "IA",
+            "date": "2018-06-12",
+            "cluster_id": "W",
+            "onsite_min": 390,
+            "travel_min": 33,
+            "available_min": 480
+          },
+          {
+            "crew_id": "IA",
+            "date": "2018-06-13",
+            "cluster_id": null,
+            "onsite_min": 0,
+            "travel_min": 0,
+            "available_min": 480
+          },
+          {
+            "crew_id": "IA",
+            "date": "2018-06-14",
+            "cluster_id": null,
+            "onsite_min": 0,
+            "travel_min": 0,
+            "available_min": 480
+          },
+          {
+            "crew_id": "IA",
+            "date": "2018-06-15",
+            "cluster_id": null,
+            "onsite_min": 0,
+            "travel_min": 0,
+            "available_min": 480
+          },
+          {
+            "crew_id": "IB",
+            "date": "2018-06-04",
+            "cluster_id": "S",
+            "onsite_min": 360,
+            "travel_min": 41,
+            "available_min": 480
+          },
+          {
+            "crew_id": "IB",
+            "date": "2018-06-05",
+            "cluster_id": "S",
+            "onsite_min": 420,
+            "travel_min": 41,
+            "available_min": 480
+          },
+          {
+            "crew_id": "IB",
+            "date": "2018-06-06",
+            "cluster_id": "N",
+            "onsite_min": 360,
+            "travel_min": 34,
+            "available_min": 480
+          },
+          {
+            "crew_id": "IB",
+            "date": "2018-06-07",
+            "cluster_id": "S",
+            "onsite_min": 420,
+            "travel_min": 41,
+            "available_min": 480
+          },
+          {
+            "crew_id": "IB",
+            "date": "2018-06-08",
+            "cluster_id": "N",
+            "onsite_min": 390,
+            "travel_min": 34,
+            "available_min": 480
+          },
+          {
+            "crew_id": "IB",
+            "date": "2018-06-11",
+            "cluster_id": "W",
+            "onsite_min": 420,
+            "travel_min": 33,
+            "available_min": 480
+          },
+          {
+            "crew_id": "IB",
+            "date": "2018-06-12",
+            "cluster_id": "N",
+            "onsite_min": 390,
+            "travel_min": 34,
+            "available_min": 480
+          },
+          {
+            "crew_id": "IB",
+            "date": "2018-06-13",
+            "cluster_id": "S",
+            "onsite_min": 420,
+            "travel_min": 41,
+            "available_min": 480
+          },
+          {
+            "crew_id": "IB",
+            "date": "2018-06-14",
+            "cluster_id": null,
+            "onsite_min": 0,
+            "travel_min": 0,
+            "available_min": 480
+          },
+          {
+            "crew_id": "IB",
+            "date": "2018-06-15",
+            "cluster_id": null,
+            "onsite_min": 0,
+            "travel_min": 0,
+            "available_min": 480
+          }
+        ],
+        "objective": {
+          "jobs_on_time": 45,
+          "jobs_late": 0,
+          "jobs_unscheduled": 0,
+          "jobs_blocked": 0,
+          "total_delay_days": 0,
+          "operating_value_usd": 4136.5096690919245,
+          "changed_installs": 0,
+          "travel_allowance_min": 864,
+          "crew_utilization": 0.7237,
+          "value_distinguishes_choices": true,
+          "visits_moved": 0,
+          "customers_to_reschedule": 0
+        },
+        "validation": {
+          "checked": true,
+          "valid": true,
+          "issues": [],
+          "validator": "independent-v1"
+        },
+        "input_issues": [],
+        "assumptions": [
+          {
+            "key": "synthetic_inputs",
+            "text": "All inputs in this scenario are synthetic.",
+            "kind": "synthetic"
+          },
+          {
+            "key": "travel_allowance",
+            "text": "Travel is a fixed allowance per active crew-day and cluster, not a routed drive time.",
+            "kind": "assumed"
+          }
+        ],
+        "solve_ms": 375
+      },
+      "diff_vs_original": {
+        "before_plan_id": "standard-r0-recovery-3debd604",
+        "after_plan_id": "standard-r0-recovery-3debd604",
+        "changes": [],
+        "summary": {
+          "moved": 0,
+          "added": 0,
+          "removed": 0,
+          "newly_late": 0,
+          "value_delta_usd": 0.0,
+          "travel_delta_min": 0,
+          "customers_to_reschedule": 0
+        },
+        "headline": "No jobs change."
+      },
+      "diff_vs_no_action": {
+        "before_plan_id": "standard-r0-recovery-3debd604",
+        "after_plan_id": "standard-r0-recovery-3debd604",
+        "changes": [],
+        "summary": {
+          "moved": 0,
+          "added": 0,
+          "removed": 0,
+          "newly_late": 0,
+          "value_delta_usd": 0.0,
+          "travel_delta_min": 0,
+          "customers_to_reschedule": 0
+        },
+        "headline": "No jobs change."
+      },
+      "counts": {
+        "deadlines_missed": 0,
+        "deadlines_recovered": 0,
+        "delay_days": 0,
+        "visits_moved": 0,
+        "customers_to_reschedule": 0,
+        "unscheduled": 0
+      },
+      "economics": {
+        "net_impact_usd": 0.0,
+        "advantage_vs_no_action_usd": 0.0,
+        "cost_per_deadline_recovered_usd": null,
+        "lines": [
+          {
+            "label": "Existing crew labor",
+            "amount_usd": 0.0,
+            "kind": "labor",
+            "basis": "Existing roster is paid regardless of utilization; no claimed savings from uncompleted visits."
+          },
+          {
+            "label": "Overtime",
+            "amount_usd": 0.0,
+            "kind": "labor",
+            "basis": "0 authorized minutes / 60 \u00d7 $28.33/person-hour \u00d7 2.0 people \u00d7 1.5. Charged for authorized capacity, including idle minutes."
+          },
+          {
+            "label": "Temporary capacity",
+            "amount_usd": 0.0,
+            "kind": "labor",
+            "basis": "0 added crew-days \u00d7 $453.28/day; full day charged."
+          },
+          {
+            "label": "Lost modeled operating value",
+            "amount_usd": 0.0,
+            "kind": "value",
+            "basis": "Original minus option gross operating margin over the same evaluation horizon; 2018 hindsight prices, not forecast profit. Wage inputs are 2023 dollars without inflation conversion; illustrative comparison."
+          },
+          {
+            "label": "Incremental travel",
+            "amount_usd": 0.0,
+            "kind": "other",
+            "basis": "Difference in fixed travel allowance minutes \u00d7 $0.0/min; no route mileage."
+          },
+          {
+            "label": "Deadline penalty",
+            "amount_usd": 0.0,
+            "kind": "penalty",
+            "basis": "Additional missed homes vs the original plan, never below 0, \u00d7 $0.0; default disabled."
+          },
+          {
+            "label": "Customer rescheduling",
+            "amount_usd": 0.0,
+            "kind": "other",
+            "basis": "0 distinct customers \u00d7 $0.0; default disabled."
+          }
+        ]
+      },
+      "overtime_min": 0,
+      "explanations": [],
+      "crew_load": [
+        {
+          "crew_id": "BA",
+          "date": "2018-06-05",
+          "before": 0.5708333333333333,
+          "after": 0.5708333333333333
+        },
+        {
+          "crew_id": "BA",
+          "date": "2018-06-06",
+          "before": 0.6166666666666667,
+          "after": 0.6166666666666667
+        },
+        {
+          "crew_id": "BA",
+          "date": "2018-06-07",
+          "before": 0.75625,
+          "after": 0.75625
+        },
+        {
+          "crew_id": "BA",
+          "date": "2018-06-08",
+          "before": 0.8979166666666667,
+          "after": 0.8979166666666667
+        },
+        {
+          "crew_id": "BA",
+          "date": "2018-06-11",
+          "before": 0.9770833333333333,
+          "after": 0.9770833333333333
+        },
+        {
+          "crew_id": "BA",
+          "date": "2018-06-12",
+          "before": 0.94375,
+          "after": 0.94375
+        },
+        {
+          "crew_id": "BA",
+          "date": "2018-06-13",
+          "before": 0.9458333333333333,
+          "after": 0.9458333333333333
+        },
+        {
+          "crew_id": "BA",
+          "date": "2018-06-14",
+          "before": 0.9916666666666667,
+          "after": 0.9916666666666667
+        },
+        {
+          "crew_id": "BA",
+          "date": "2018-06-15",
+          "before": 0.9125,
+          "after": 0.9125
+        },
+        {
+          "crew_id": "IA",
+          "date": "2018-06-04",
+          "before": 0.9458333333333333,
+          "after": 0.9458333333333333
+        },
+        {
+          "crew_id": "IA",
+          "date": "2018-06-05",
+          "before": 0.81875,
+          "after": 0.81875
+        },
+        {
+          "crew_id": "IA",
+          "date": "2018-06-06",
+          "before": 0.75625,
+          "after": 0.75625
+        },
+        {
+          "crew_id": "IA",
+          "date": "2018-06-07",
+          "before": 0.8979166666666667,
+          "after": 0.8979166666666667
+        },
+        {
+          "crew_id": "IA",
+          "date": "2018-06-08",
+          "before": 0.9458333333333333,
+          "after": 0.9458333333333333
+        },
+        {
+          "crew_id": "IA",
+          "date": "2018-06-11",
+          "before": 0.88125,
+          "after": 0.88125
+        },
+        {
+          "crew_id": "IA",
+          "date": "2018-06-12",
+          "before": 0.88125,
+          "after": 0.88125
+        },
+        {
+          "crew_id": "IA",
+          "date": "2018-06-13",
+          "before": 0.0,
+          "after": 0.0
+        },
+        {
+          "crew_id": "IA",
+          "date": "2018-06-14",
+          "before": 0.0,
+          "after": 0.0
+        },
+        {
+          "crew_id": "IA",
+          "date": "2018-06-15",
+          "before": 0.0,
+          "after": 0.0
+        },
+        {
+          "crew_id": "IB",
+          "date": "2018-06-04",
+          "before": 0.8354166666666667,
+          "after": 0.8354166666666667
+        },
+        {
+          "crew_id": "IB",
+          "date": "2018-06-05",
+          "before": 0.9604166666666667,
+          "after": 0.9604166666666667
+        },
+        {
+          "crew_id": "IB",
+          "date": "2018-06-06",
+          "before": 0.8208333333333333,
+          "after": 0.8208333333333333
+        },
+        {
+          "crew_id": "IB",
+          "date": "2018-06-07",
+          "before": 0.9604166666666667,
+          "after": 0.9604166666666667
+        },
+        {
+          "crew_id": "IB",
+          "date": "2018-06-08",
+          "before": 0.8833333333333333,
+          "after": 0.8833333333333333
+        },
+        {
+          "crew_id": "IB",
+          "date": "2018-06-11",
+          "before": 0.94375,
+          "after": 0.94375
+        },
+        {
+          "crew_id": "IB",
+          "date": "2018-06-12",
+          "before": 0.8833333333333333,
+          "after": 0.8833333333333333
+        },
+        {
+          "crew_id": "IB",
+          "date": "2018-06-13",
+          "before": 0.9604166666666667,
+          "after": 0.9604166666666667
+        },
+        {
+          "crew_id": "IB",
+          "date": "2018-06-14",
+          "before": 0.0,
+          "after": 0.0
+        },
+        {
+          "crew_id": "IB",
+          "date": "2018-06-15",
+          "before": 0.0,
+          "after": 0.0
+        }
+      ],
+      "lowest_modeled_cost": false,
+      "stub": false
+    }
+  ],
+  "economic_assumptions": [
+    {
+      "key": "hourly_wage",
+      "value": 28.33,
+      "unit": "USD/person-hour",
+      "kind": "observed",
+      "source": "BLS OEWS May 2023 Houston, SOC 47-2111 mean wage. https://www.bls.gov/oes/2023/may/oes_26420.htm",
+      "editable": true
+    },
+    {
+      "key": "crew_size",
+      "value": 2.0,
+      "unit": "people/crew",
+      "kind": "assumed",
+      "source": "Two paid workers per crew; illustrative, not company staffing data.",
+      "editable": true
+    },
+    {
+      "key": "overtime_multiplier",
+      "value": 1.5,
+      "unit": "multiplier",
+      "kind": "assumed",
+      "source": "Illustrative overtime premium; not a determination of payroll eligibility.",
+      "editable": true
+    },
+    {
+      "key": "temporary_crew_day",
+      "value": 453.28,
+      "unit": "USD/crew-day",
+      "kind": "derived",
+      "source": "8 hours \u00d7 crew size \u00d7 hourly wage \u00d7 loaded factor 1.0 (assumed: no agency markup or benefits). Follows wage and crew size unless set directly.",
+      "editable": true
+    },
+    {
+      "key": "max_overtime_min",
+      "value": 120.0,
+      "unit": "minutes/crew-day",
+      "kind": "assumed",
+      "source": "Demo limits added capacity to two hours per crew-day.",
+      "editable": true
+    },
+    {
+      "key": "travel_cost_per_min",
+      "value": 0.0,
+      "unit": "USD/minute",
+      "kind": "assumed",
+      "source": "Disabled: no defensible incremental travel cost supplied.",
+      "editable": true
+    },
+    {
+      "key": "deadline_penalty",
+      "value": 0.0,
+      "unit": "USD/missed home",
+      "kind": "assumed",
+      "source": "Disabled: no contractual penalty supplied.",
+      "editable": true
+    },
+    {
+      "key": "reschedule_cost",
+      "value": 0.0,
+      "unit": "USD/customer",
+      "kind": "assumed",
+      "source": "Disabled: no measured customer-contact cost supplied.",
+      "editable": true
+    }
+  ],
+  "assumptions": [
+    {
+      "key": "candidate_search",
+      "text": "Deterministic bounded candidate search: up to 1 overtime and 1 temporary crew-days from the disruption date on. Visits and idle capacity before the disruption are fixed. Lowest modeled cost applies only to returned feasible options, including no action. Cold valuation preparation is outside the solve budget.",
+      "kind": "assumed"
+    }
+  ],
+  "stub": false
+}

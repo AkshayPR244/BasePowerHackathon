@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { api, unwrap } from "../api/client";
 import type { Edit, Mode, Schema } from "../api/types";
 import { useWorkspace } from "./store";
+import { temporaryCrewId } from "../lib/recovery";
 export function usePlanner() {
   const state = useWorkspace(),
     { scenarioId, revision, edits, result, baseline, selected } = state;
@@ -60,20 +61,24 @@ export function usePlanner() {
       if (id === requestId.current) setBusy("");
     }
   };
+  // One strict solve per scenario revision, also under StrictMode's double effects.
+  const autoSolved = useRef("");
   useEffect(() => {
-    if (scenario.data && !useWorkspace.getState().result) void solve("strict");
-    return () => {
-      requestId.current++;
-    };
-  }, [scenario.data]);
+    if (
+      !scenario.data ||
+      scenario.data.scenario_id !== scenarioId ||
+      useWorkspace.getState().result
+    )
+      return;
+    const key = `${scenarioId}:${revision}`;
+    if (autoSolved.current === key) return;
+    autoSolved.current = key;
+    void solve("strict");
+  }, [scenario.data, scenarioId, revision]);
   const reset = (id?: string) => {
     invalidate();
     state.reset(id);
   };
-  // Reset on the same scenario needs a fresh solve; scenario data itself is cached.
-  useEffect(() => {
-    if (scenario.data && !result && !busy) void solve("strict");
-  }, [revision]);
   const edit = (value: Edit) => {
     invalidate();
     state.edit(value);
@@ -98,21 +103,22 @@ export function usePlanner() {
   };
   const intervention = async (kind: "force" | "crew") => {
     if (!result || !selected || !scenario.data || stale) return;
+    const site = scenario.data.sites.find((s) => s.site_id === selected);
     const input: Edit =
       kind === "force"
         ? { kind: "force_include", site_id: selected }
         : {
             kind: "add_crew_day",
-            crew_id: "C",
+            crew_id: temporaryCrewId(scenario.data),
             date: scenario.data.config.planning_start,
             available_min: 480,
             skills: [
-              scenario.data.sites.find((s) => s.site_id === selected)
-                ?.required_skill ?? "install",
+              site?.required_skill ??
+                scenario.data.crew_days[0]?.skills[0] ??
+                "install",
             ],
             allowed_clusters: [
-              scenario.data.sites.find((s) => s.site_id === selected)
-                ?.cluster_id ?? "N",
+              site?.cluster_id ?? scenario.data.clusters[0]?.cluster_id ?? "",
             ],
           };
     const id = ++requestId.current;

@@ -3,6 +3,7 @@ import type { Edit, Plan } from "../api/types";
 interface State {
   scenarioId: string;
   revision: number;
+  session: number;
   edits: Edit[];
   selected: string | null;
   result: Plan | null;
@@ -12,9 +13,21 @@ interface State {
   accept: (plan: Plan) => boolean;
   reset: (scenarioId?: string) => void;
 }
+export const defaultScenarioId = "standard";
+function initialScenarioId() {
+  try {
+    return (
+      new URLSearchParams(globalThis.location?.search ?? "").get("scenario") ??
+      defaultScenarioId
+    );
+  } catch {
+    return defaultScenarioId;
+  }
+}
 export const useWorkspace = create<State>((set, get) => ({
-  scenarioId: "tiny",
+  scenarioId: initialScenarioId(),
   revision: 0,
+  session: 0,
   edits: [],
   selected: null,
   result: null,
@@ -36,6 +49,7 @@ export const useWorkspace = create<State>((set, get) => ({
     set((s) => ({
       scenarioId: scenarioId ?? s.scenarioId,
       revision: s.revision + 1,
+      session: s.session + 1,
       edits: [],
       selected: null,
       result: null,

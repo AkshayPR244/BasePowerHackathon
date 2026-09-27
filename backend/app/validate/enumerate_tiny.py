@@ -138,10 +138,12 @@ def enumerate_tiny(
         n_late = sum(a.days_late > 0 for a in finals)
         delay = sum(a.days_late for a in finals)
         value = sum(a.value_usd for a in finals)
-        changes = sum(
-            not p.locked and chosen.get(job_of_row(p, by_site)) != (p.crew_id, p.date)
+        moved = [
+            p
             for p in scenario.current_plan
-        )
+            if not p.locked and chosen.get(job_of_row(p, by_site)) != (p.crew_id, p.date)
+        ]
+        changes = len(moved)
         travel_minutes = sum(travel[cluster] for cluster, _ in groups.values())
         prefix = (
             (
@@ -172,6 +174,8 @@ def enumerate_tiny(
             total_delay_days=delay,
             operating_value_usd=value,
             changed_installs=changes,
+            visits_moved=changes,
+            customers_to_reschedule=len({p.site_id for p in moved}),
             travel_allowance_min=travel_minutes,
             crew_utilization=used / capacity if capacity else 0,
             value_distinguishes_choices=bool(

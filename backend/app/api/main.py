@@ -55,9 +55,10 @@ app = FastAPI(
 )
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173", "http://127.0.0.1:5173"],
+    allow_origins=[f"http://{h}:{p}" for h in ("localhost", "127.0.0.1") for p in (5173, 4173)],
     allow_methods=["*"],
     allow_headers=["*"],
+    expose_headers=["X-Rollout-Stub", "X-Request-ID"],
 )
 
 ERRORS = {
@@ -68,10 +69,16 @@ ERRORS = {
 }
 
 
+# Bounds keep one request from holding a solver worker for minutes.
+MAX_EDITS = 200
+MAX_REVISION = 2**53 - 1  # largest integer a JavaScript client can round-trip
+
+
 class ApiException(Exception):
-    def __init__(self, status: int, code: str, message: str, issues=()):
+    def __init__(self, status: int, code: str, message: str, issues=(), headers=None):
         self.status = status
         self.error = ApiError(code=code, message=message, input_issues=list(issues))
+        self.headers = headers or {}
 
 
 def _json(status: int, err: ApiError) -> JSONResponse:
@@ -80,16 +87,24 @@ def _json(status: int, err: ApiError) -> JSONResponse:
 
 @app.exception_handler(ApiException)
 async def _api_error(_: Request, exc: ApiException) -> JSONResponse:
-    return _json(exc.status, exc.error)
+    response = _json(exc.status, exc.error)
+    response.headers.update(exc.headers)
+    return response
 
 
 log = logging.getLogger("rollout.api")
 
 
+def _logged(what: str, exc: BaseException) -> str:
+    """Log the details server-side and return the request ID the client sees."""
+    request_id = uuid.uuid4().hex[:12]
+    log.error("request %s: %s", request_id, what, exc_info=exc)
+    return request_id
+
+
 def _server_error(code: str, exc: Exception) -> JSONResponse:
     """Log the details server-side. The client gets a generic message and a request ID."""
-    request_id = uuid.uuid4().hex[:12]
-    log.error("request %s failed with %s", request_id, code, exc_info=exc)
+    request_id = _logged(f"failed with {code}", exc)
     message = f"The server could not complete this request. Request ID: {request_id}."
     response = _json(500, ApiError(code=code, message=message))
     response.headers["X-Request-ID"] = request_id
@@ -134,7 +149,25 @@ def _scenario(scenario_id: str) -> Scenario:
             422, "invalid_input", f"Scenario {scenario_id} has input errors.", e.issues
         ) from e
     except (ValueError, KeyError, OSError) as e:
-        raise ApiException(422, "invalid_input", f"Scenario {scenario_id} did not load: {e}") from e
+        request_id = _logged(f"scenario {scenario_id} did not load", e)
+        raise ApiException(
+            422,
+            "invalid_input",
+            f"Scenario {scenario_id} did not load. Request ID: {request_id}.",
+            headers={"X-Request-ID": request_id},
+        ) from e
+
+
+def _check_size(revision: int, **lists: list | None) -> None:
+    if revision > MAX_REVISION:
+        raise ApiException(422, "invalid_request", f"revision must be at most {MAX_REVISION}.")
+    for name, items in lists.items():
+        if items is not None and len(items) > MAX_EDITS:
+            raise ApiException(
+                422,
+                "invalid_request",
+                f"{name} has {len(items)} items. The limit is {MAX_EDITS}.",
+            )
 
 
 @app.get("/api/health")
@@ -144,8 +177,18 @@ def health() -> dict[str, str]:
 
 
 @app.get("/api/scenarios")
-def list_scenarios() -> list[ScenarioSummary]:
-    return [summarize(load_scenario(s)) for s in scenario_ids()]
+def list_scenarios(response: Response) -> list[ScenarioSummary]:
+    # A broken scenario is left out and named in a header. A docstring here would change the spec.
+    good, broken = [], []
+    for sid in scenario_ids():
+        try:
+            good.append(summarize(load_scenario(sid)))
+        except Exception as e:  # noqa: BLE001 - one bad scenario must not hide the others
+            _logged(f"scenario {sid} did not load", e)
+            broken.append(sid)
+    if broken:
+        response.headers["X-Rollout-Broken-Scenarios"] = ",".join(broken)
+    return good
 
 
 @app.get("/api/scenarios/{scenario_id}", responses=ERRORS)
@@ -155,7 +198,9 @@ def get_scenario(scenario_id: str) -> Scenario:
 
 @app.post("/api/plans", responses=ERRORS)
 async def create_plan(req: PlanRequest) -> PlanResult:
-    return await asyncio.to_thread(plan, _scenario(req.scenario_id), req)
+    _check_size(req.revision, edits=req.edits)
+    scenario = await asyncio.to_thread(_scenario, req.scenario_id)
+    return await asyncio.to_thread(plan, scenario, req)
 
 
 @app.post("/api/plans/compare", responses=ERRORS)
@@ -167,7 +212,11 @@ def compare_plans(req: CompareRequest) -> PlanDiff:
 
 @app.post("/api/plans/counterfactual", responses=ERRORS)
 async def run_counterfactual(req: CounterfactualRequest) -> CounterfactualResult:
-    return await asyncio.to_thread(counterfactual, _scenario(req.request.scenario_id), req)
+    _check_size(req.request.revision, edits=req.request.edits)
+    if req.base.scenario_id != req.request.scenario_id:
+        raise ApiException(422, "scenario_mismatch", "The base plan comes from another scenario.")
+    scenario = await asyncio.to_thread(_scenario, req.request.scenario_id)
+    return await asyncio.to_thread(counterfactual, scenario, req)
 
 
 # Stubbed seams. Each response sets X-Rollout-Stub while any part is still a stub.
@@ -178,21 +227,48 @@ def _mark(response: Response, stub: bool) -> None:
         response.headers["X-Rollout-Stub"] = "true"
 
 
-async def _recovery_call(function, *args):
+def _raised_in_recovery(exc: BaseException) -> bool:
+    tb = exc.__traceback__
+    while tb is not None and tb.tb_next is not None:
+        tb = tb.tb_next
+    return tb is not None and tb.tb_frame.f_globals.get("__name__", "").startswith("app.recovery")
+
+
+def _recovery_error(exc: ValueError, scenario_id: str, client_plan: bool) -> ApiException:
+    """Map the recovery engine's own input errors to 422. Re-raise anything else as a server bug."""
+    if type(exc) is not ValueError or not _raised_in_recovery(exc):
+        raise exc
+    if not client_plan and "current plan" in str(exc).lower():
+        # The client sent no current plan, so the stored plan is at fault, not the request.
+        request_id = _logged(f"scenario {scenario_id} current plan rejected", exc)
+        return ApiException(
+            422,
+            "invalid_input",
+            f"The current plan stored in scenario {scenario_id} is not feasible. "
+            f"Request ID: {request_id}.",
+            headers={"X-Request-ID": request_id},
+        )
+    return ApiException(422, "invalid_recovery", str(exc))
+
+
+async def _recovery_call(function, scenario_id: str, client_plan: bool, *args):
     try:
         return await asyncio.to_thread(function, *args)
     except ValueError as exc:
-        raise ApiException(422, "invalid_recovery", str(exc)) from exc
+        raise _recovery_error(exc, scenario_id, client_plan) from exc
 
 
 @app.post("/api/recovery/options", responses=ERRORS)
 async def recovery_options(
     req: RecoveryOptionsRequest, response: Response
 ) -> RecoveryOptionsResult:
-    s = _scenario(req.scenario_id).model_copy(update={"revision": req.revision})
+    _check_size(req.revision, disruption=req.disruption)
+    s = await asyncio.to_thread(_scenario, req.scenario_id)
     out = await _recovery_call(
         recovery.recover,
-        s,
+        req.scenario_id,
+        req.current_plan is not None,
+        s.model_copy(update={"revision": req.revision}),
         req.disruption,
         req.current_plan,
         req.economics_overrides,
@@ -204,10 +280,13 @@ async def recovery_options(
 
 @app.post("/api/recovery/evaluate", responses=ERRORS)
 async def recovery_evaluate(req: EvaluateRequest, response: Response) -> RecoveryOption:
-    s = _scenario(req.scenario_id).model_copy(update={"revision": req.revision})
+    _check_size(req.revision, disruption=req.disruption, interventions=req.interventions)
+    s = await asyncio.to_thread(_scenario, req.scenario_id)
     out = await _recovery_call(
         recovery.evaluate,
-        s,
+        req.scenario_id,
+        req.current_plan is not None,
+        s.model_copy(update={"revision": req.revision}),
         req.disruption,
         req.interventions,
         req.current_plan,
@@ -220,12 +299,13 @@ async def recovery_evaluate(req: EvaluateRequest, response: Response) -> Recover
 
 @app.post("/api/recovery/approve", responses=ERRORS)
 def recovery_approve(req: ApproveRequest, response: Response) -> ApproveResult:
+    _check_size(req.revision)
     try:
         out = recovery.approve(
             _scenario(req.scenario_id).model_copy(update={"revision": req.revision}), req.option
         )
     except ValueError as exc:
-        raise ApiException(422, "invalid_recovery", str(exc)) from exc
+        raise _recovery_error(exc, req.scenario_id, True) from exc
     _mark(response, out.stub)
     return out
 

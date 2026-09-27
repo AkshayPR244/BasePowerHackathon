@@ -15,7 +15,7 @@ from app.data.validate_inputs import validate_inputs
 from app.planning.edits import apply_edits, appointment_windows
 from app.planning.solve import plan
 from app.recovery.repair import current_result
-from app.recovery.service import recover
+from app.recovery.service import prepared_scenario, recover
 from app.validate import validate_plan
 
 FEASIBLE = {"optimal", "feasible"}
@@ -51,8 +51,10 @@ def test_planning_and_recovery_behavior(sid):
     checked(s, strict)
     recovery = recover(s, edits)
     options = [recovery.no_action, *recovery.options]
+    # Recovery solves with the past frozen, so check options against that scenario.
+    prepared = prepared_scenario(s, edits)
     for option in options:
-        checked(s, option.result)
+        checked(prepared, option.result)
     incumbents = [o.result for o in options if o.status in FEASIBLE]
     expected = SUITE[sid].recovery_class
     if expected == "locked-infeasible":

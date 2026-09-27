@@ -5,14 +5,24 @@ export function SiteMap({
   plan,
   selected,
   affectedJobIds = [],
+  compact = false,
+  noPlanLabel = "No valid plan",
   onSelect,
 }: {
   scenario: Scenario;
   plan: Plan | null;
   selected: string | null;
   affectedJobIds?: string[];
+  compact?: boolean;
+  noPlanLabel?: string;
   onSelect: (id: string) => void;
 }) {
+  const stateOf = (siteId: string) =>
+    plan
+      ? (plan.assignments.find((a) => a.site_id === siteId)?.state ??
+        plan.unscheduled.find((u) => u.site_id === siteId)?.state ??
+        "unscheduled")
+      : null;
   const sites = scenario.sites.filter((s) => s.lon != null && s.lat != null);
   const affected = (siteId: string) =>
     affectedJobIds.some(
@@ -44,7 +54,7 @@ export function SiteMap({
           · select a site
         </span>
       </div>
-      <div className="map-layout">
+      <div className={compact ? "map-layout compact" : "map-layout"}>
         <svg
           className="site-map"
           viewBox={`0 0 ${spanX * scale + 100} 270`}
@@ -68,17 +78,14 @@ export function SiteMap({
             </g>
           ))}
           {sites.map((s) => {
-            const state =
-              plan?.assignments.find((a) => a.site_id === s.site_id)?.state ??
-              plan?.unscheduled.find((u) => u.site_id === s.site_id)?.state ??
-              "unscheduled";
+            const state = stateOf(s.site_id);
             const isAffected = affected(s.site_id);
             return (
               <g
                 key={s.site_id}
                 role="button"
                 tabIndex={0}
-                aria-label={`Select ${s.site_id}, ${state}${isAffected ? ", affected by disruption" : ""}`}
+                aria-label={`Select ${s.site_id}, ${state ?? noPlanLabel.toLowerCase()}${isAffected ? ", affected by disruption" : ""}`}
                 onClick={() => onSelect(s.site_id)}
                 onKeyDown={(e) => {
                   if (e.key === "Enter" || e.key === " ") {
@@ -86,37 +93,38 @@ export function SiteMap({
                     onSelect(s.site_id);
                   }
                 }}
-                className={`map-point status-${state} ${selected === s.site_id ? "selected" : ""} ${isAffected ? "affected" : ""}`}
+                className={`map-point status-${state ?? "none"} ${selected === s.site_id ? "selected" : ""} ${isAffected ? "affected" : ""}`}
                 transform={`translate(${x(s.lon!)},${y(s.lat!)})`}
               >
                 <title>
-                  {s.site_id}: {state}
+                  {s.site_id}: {state ?? noPlanLabel}
                 </title>
                 <circle r={selected === s.site_id ? 8 : 5} />
               </g>
             );
           })}
         </svg>
-        <div className="map-legend" aria-label="Site legend">
-          {sites.map((site) => {
-            const state =
-              plan?.assignments.find((a) => a.site_id === site.site_id)
-                ?.state ??
-              plan?.unscheduled.find((u) => u.site_id === site.site_id)
-                ?.state ??
-              "unscheduled";
-            return (
-              <button
-                key={site.site_id}
-                aria-pressed={selected === site.site_id}
-                onClick={() => onSelect(site.site_id)}
-              >
-                <strong className="mono">{site.site_id}</strong>
-                <Status state={state} />
-              </button>
-            );
-          })}
-        </div>
+        {!compact && (
+          <div className="map-legend" aria-label="Site legend">
+            {sites.map((site) => {
+              const state = stateOf(site.site_id);
+              return (
+                <button
+                  key={site.site_id}
+                  aria-pressed={selected === site.site_id}
+                  onClick={() => onSelect(site.site_id)}
+                >
+                  <strong className="mono">{site.site_id}</strong>
+                  {state ? (
+                    <Status state={state} />
+                  ) : (
+                    <span className="muted">{noPlanLabel}</span>
+                  )}
+                </button>
+              );
+            })}
+          </div>
+        )}
       </div>
       {affectedJobIds.length > 0 && (
         <div

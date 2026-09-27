@@ -14,6 +14,11 @@ from app.contracts.models import (
 from app.planning.explain import day, plural
 from app.planning.solve import plan
 
+_NO_CHANGE = {
+    PlanStatus.invalid_input: "No change. The intervention does not match this scenario.",
+    PlanStatus.timeout_no_incumbent: "No change. No plan was found in time.",
+}
+
 
 def counterfactual(base: Scenario, req: CounterfactualRequest) -> CounterfactualResult:
     request = req.request.model_copy(update={"edits": [*req.request.edits, req.intervention]})
@@ -26,7 +31,7 @@ def counterfactual(base: Scenario, req: CounterfactualRequest) -> Counterfactual
         diff = PlanDiff(
             **same.model_dump(exclude={"after_plan_id", "headline"}),
             after_plan_id=result.plan_id,
-            headline="No change. The intervention is infeasible.",
+            headline=_NO_CHANGE.get(result.status, "No change. The intervention is infeasible."),
         )
     return CounterfactualResult(
         intervention=req.intervention,
@@ -48,6 +53,10 @@ def _summary(req: CounterfactualRequest, result: PlanResult, diff: PlanDiff, fea
         )
     else:
         lead = "This intervention"
+    if result.status == PlanStatus.invalid_input:
+        return f"{lead} cannot be tested. {result.message}"
+    if result.status == PlanStatus.timeout_no_incumbent:
+        return f"{lead} was not tested to the end. {result.message}"
     if not feasible:
         why = next(
             (u.detail for u in result.unscheduled if u.reasons and u.state != JobState.blocked),
@@ -72,10 +81,10 @@ def _summary(req: CounterfactualRequest, result: PlanResult, diff: PlanDiff, fea
         verb = "becomes" if len(displaced) == 1 else "become"
         parts.append(f"{', '.join(displaced)} {verb} late instead.")
     if o and o.jobs_late == 0 and o.jobs_unscheduled == o.jobs_blocked:
-        parts.append("No job is late.")
+        parts.append("No home is late.")
     elif o:
-        parts.append(f"{plural(o.jobs_late, 'job')} late.")
+        parts.append(f"{plural(o.jobs_late, 'home')} {'is' if o.jobs_late == 1 else 'are'} late.")
     moved = diff.summary.moved
     if moved:
-        parts.append(f"{plural(moved, 'job')} {'moves' if moved == 1 else 'move'}.")
+        parts.append(f"{plural(moved, 'visit')} {'moves' if moved == 1 else 'move'}.")
     return " ".join(parts)

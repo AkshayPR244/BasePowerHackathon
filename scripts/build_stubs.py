@@ -1,12 +1,11 @@
-"""Build the stub fixtures behind the recovery and weather seams.
+"""Build the stub fixtures behind the parked weather seams (backend/app/replay/fixtures).
 
 Run from backend/: PYTHONPATH=. python ../scripts/build_stubs.py
 
-Plans, counts, diffs, cascade IDs, and crew load come from the real planner on the standard
-scenario with the 14 Jun 2018 storm case (all three crews lose the day). No-action uses
-earliest-deadline-first as a stand-in. Economics and explanations are placeholders.
-Storm events are real Houston Hobby observations. Every payload carries stub=true.
-Lane R replaces backend/app/recovery/fixtures. Lane W replaces backend/app/replay/fixtures.
+Counts come from the real planner on the standard scenario with the 14 Jun 2018 storm case
+(all three crews lose the day). No-action uses earliest-deadline-first as a stand-in.
+Economics are placeholders. Storm events are real Houston Hobby observations. Every payload
+carries stub=true. The recovery endpoints are live, so this script writes no recovery fixtures.
 """
 
 import datetime as dt
@@ -16,24 +15,17 @@ from pathlib import Path
 from pydantic import TypeAdapter
 
 from app.compare.diff import diff_plans
-from app.contracts.hashing import scenario_hash
 from app.contracts.models import (
     AddCrewDay,
-    ApproveResult,
-    CascadeStep,
     Case,
     CrewLoad,
-    EconomicAssumption,
     EconomicLine,
     Explanation,
-    ImpactAnalysis,
-    PlannedInstall,
     PlanRequest,
     ProvenanceNote,
     RecoveryCounts,
     RecoveryEconomics,
     RecoveryOption,
-    RecoveryOptionsResult,
     RemoveCrewDay,
     SeasonReplay,
     SeasonReplayEvent,
@@ -241,108 +233,6 @@ def main():
     ]
     cheapest = min(options, key=lambda o: o.economics.net_impact_usd)
     options = [o.model_copy(update={"lowest_modeled_cost": o is cheapest}) for o in options]
-
-    affected = [p.job_id for p in s.current_plan if p.date == STORM]
-    pushed = [c.job_id for c in diff_plans(original, rebalance).changes if c.job_id]
-    at_risk = sorted(
-        {a.site_id for a in no_action.assignments if a.days_late}
-        | {u.site_id for u in no_action.unscheduled}
-    )
-    batteries = sum(1 for j in affected if j.endswith("-B"))
-    result = RecoveryOptionsResult(
-        revision=1,
-        scenario_hash=scenario_hash(s, DISRUPTION),
-        impact=ImpactAnalysis(
-            headline=(
-                f"Storm on Thu 14 Jun stops all 3 crews. {len(affected)} visits lose their day, "
-                f"{batteries} of them battery days. {len(at_risk)} deadlines at risk if nothing "
-                "changes."
-            ),
-            affected_job_ids=affected,
-            lost_capacity_min=sum(c.available_min for c in s.crew_days if c.date == STORM),
-            cascade=[
-                CascadeStep(
-                    kind="disruption", label="Storm: every crew out Thu 14 Jun", job_ids=[]
-                ),
-                CascadeStep(kind="direct", label="Visits planned on Thu 14 Jun", job_ids=affected),
-                CascadeStep(kind="pushed", label="Visits moved to recover", job_ids=pushed),
-                CascadeStep(
-                    kind="commitment", label="Deadlines at risk with no action", job_ids=at_risk
-                ),
-            ],
-            deadlines_at_risk=len(at_risk),
-        ),
-        no_action=na,
-        options=options,
-        economic_assumptions=[
-            EconomicAssumption(
-                key="electrician_wage_usd_per_h",
-                value=0.0,
-                unit="USD/h",
-                kind="assumed",
-                source="STUB. Lane R cites BLS OEWS Houston.",
-                editable=True,
-            ),
-            EconomicAssumption(
-                key="overtime_multiplier",
-                value=1.5,
-                unit="x",
-                kind="assumed",
-                source="Time and a half for hours over 40 (FLSA).",
-                editable=True,
-            ),
-            EconomicAssumption(
-                key="temporary_crew_day_usd",
-                value=0.0,
-                unit="USD",
-                kind="assumed",
-                source="STUB. Lane R tags it.",
-                editable=True,
-            ),
-            EconomicAssumption(
-                key="deadline_penalty_usd",
-                value=0.0,
-                unit="USD",
-                kind="assumed",
-                source="Off by default.",
-                editable=True,
-            ),
-        ],
-        assumptions=list(rebalance.assumptions),
-        stub=True,
-    )
-    fixtures = ROOT / "recovery" / "fixtures"
-    dump(fixtures / "options.json", result)
-    custom = option(
-        "custom",
-        "custom",
-        "Temporary battery crew BT Fri 15 Jun",
-        [temp],
-        temporary,
-        original,
-        no_action,
-        950.0,
-        na_missed,
-        na_net,
-    )
-    dump(fixtures / "evaluate.json", custom)
-    dump(
-        fixtures / "approve.json",
-        ApproveResult(
-            new_current_plan=[
-                PlannedInstall(
-                    site_id=a.site_id,
-                    job_id=a.job_id,
-                    crew_id=a.crew_id,
-                    date=a.date,
-                    locked=a.date <= STORM,
-                )
-                for a in rebalance.assignments
-            ],
-            summary="STUB: Rebalance existing crews approved. Past days are locked.",
-            stub=True,
-        ),
-    )
 
     replay = ROOT / "replay" / "fixtures"
     storms = [

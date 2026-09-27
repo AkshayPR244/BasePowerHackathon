@@ -6,7 +6,13 @@ import pytest
 
 from app.api.scenarios import load_scenario
 from app.contracts.enums import Algorithm, Mode, PlanStatus
-from app.contracts.models import AddCrewDay, ForceInclude, PlanRequest, RemoveCrewDay
+from app.contracts.models import (
+    AddCrewDay,
+    ForceInclude,
+    MoveVisit,
+    PlanRequest,
+    RemoveCrewDay,
+)
 from app.contracts.visits import gap_ok
 from app.planning.edits import apply_edits
 from app.planning.solve import plan
@@ -21,6 +27,8 @@ CASES = [
     ("battery crew out Tue", Mode.recovery, [B_OUT_TUE]),
     ("install crew out Tue", Mode.recovery, [I_OUT_TUE]),
     ("force H3 with battery crew out", Mode.recovery, [B_OUT_TUE, ForceInclude(site_id="H3")]),
+    ("battery crew out Wed", Mode.recovery, [RemoveCrewDay(crew_id="B", date=WED)]),
+    ("H3 install locked on Wed", Mode.recovery, [MoveVisit(job_id="H3-I", crew_id="I", date=WED)]),
 ]
 
 

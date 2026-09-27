@@ -42,7 +42,9 @@ def generate(scenario_id, data_root=None, manifest_root=None, presets_root=None)
         notes = [
             p for p in original_cfg["provenance"] if p["input"] in (*copied, "sites.csv:profile_id")
         ]
-        (staging / "scenario.yaml").write_text(yaml.safe_dump({"provenance": notes}))
+        (staging / "scenario.yaml").write_text(
+            yaml.safe_dump({"provenance": notes}), encoding="utf-8", newline="\n"
+        )
         local_manifests = Path(scratch) / "manifests"
         generate_standard(staging, entry.seed, local_manifests, entry.spec)
         config_path = staging / "scenario.yaml"
@@ -92,7 +94,7 @@ def generate(scenario_id, data_root=None, manifest_root=None, presets_root=None)
                     derivation="Explicit reproducible suite specification.",
                 )
             )
-        config_path.write_text(yaml.safe_dump(cfg, sort_keys=False))
+        config_path.write_text(yaml.safe_dump(cfg, sort_keys=False), encoding="utf-8", newline="\n")
         refresh_manifest(config_path, scenario_id + "_scenario_yaml", local_manifests)
         previous = loader.DATA_ROOT
         try:
@@ -127,7 +129,9 @@ def generate(scenario_id, data_root=None, manifest_root=None, presets_root=None)
             "primary_disruption": [e.model_dump(mode="json") for e in edits],
             "recovery_class": entry.recovery_class,
         }
-        (presets_root / f"{scenario_id}.json").write_text(json.dumps(preset, indent=2) + "\n")
+        (presets_root / f"{scenario_id}.json").write_text(
+            json.dumps(preset, indent=2) + "\n", encoding="utf-8", newline="\n"
+        )
         return scenario
 
 

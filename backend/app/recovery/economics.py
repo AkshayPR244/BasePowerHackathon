@@ -27,8 +27,9 @@ DEFAULTS = {
     "temporary_crew_day": (
         453.28,
         "USD/crew-day",
-        "assumed",
-        "8 hours × 2 people × $28.33; no agency markup or benefits, editable.",
+        "derived",
+        "8 hours × crew size × hourly wage × loaded factor 1.0 (assumed: no agency "
+        "markup or benefits). Follows wage and crew size unless set directly.",
     ),
     "max_overtime_min": (
         120,
@@ -57,33 +58,55 @@ DEFAULTS = {
 }
 
 
+# Bounds keep every derived dollar amount finite and every count meaningful.
+LIMITS = {
+    "hourly_wage": (0, 1_000),
+    "crew_size": (1, 20),
+    "overtime_multiplier": (1, 5),
+    "temporary_crew_day": (0, 100_000),
+    "max_overtime_min": (0, 120),
+    "travel_cost_per_min": (0, 100),
+    "deadline_penalty": (0, 1_000_000),
+    "reschedule_cost": (0, 100_000),
+}
+WHOLE = {"crew_size": "a whole number of people", "max_overtime_min": "whole minutes"}
+HOURS_PER_DAY = 8
+
+
 def assumptions(overrides=None):
     overrides = overrides or {}
     unknown = set(overrides) - DEFAULTS.keys()
     if unknown:
         raise ValueError("Unknown economic assumptions: " + ", ".join(sorted(unknown)))
     for key, v in overrides.items():
-        if not math.isfinite(v) or v < 0:
-            raise ValueError(f"{key} must be finite and nonnegative.")
-    cap = overrides.get("max_overtime_min", 120)
-    if cap != int(cap):
-        raise ValueError("max_overtime_min must be whole minutes.")
-    if cap > 120:
-        raise ValueError("The demo overtime cap is 120 minutes per crew-day.")
+        lo, hi = LIMITS[key]
+        if isinstance(v, bool) or not isinstance(v, int | float) or not math.isfinite(v):
+            raise ValueError(f"{key} must be a finite number.")
+        if key in WHOLE and v != int(v):
+            raise ValueError(f"{key} must be {WHOLE[key]}.")
+        if not lo <= v <= hi:
+            raise ValueError(f"{key} must be between {lo:g} and {hi:g}.")
+    values = {k: overrides.get(k, v[0]) for k, v in DEFAULTS.items()}
+    if "temporary_crew_day" not in overrides:
+        values["temporary_crew_day"] = round(
+            HOURS_PER_DAY * values["crew_size"] * values["hourly_wage"], 2
+        )
     return [
         EconomicAssumption(
             key=k,
-            value=overrides.get(k, v),
+            value=values[k],
             unit=unit,
             kind="assumed" if k in overrides else kind,
             source=("Operator override. " if k in overrides else "") + source,
             editable=True,
         )
-        for k, (v, unit, kind, source) in DEFAULTS.items()
+        for k, (_, unit, kind, source) in DEFAULTS.items()
     ]
 
 
-def compute(original, result, interventions, counts, rates, no_action_cost=None):
+def compute(
+    original, result, interventions, counts, rates, no_action_cost=None, no_action_missed=None
+):
     values = {a.key: a.value for a in rates}
     if result.objective is None:
         return RecoveryEconomics(
@@ -143,10 +166,10 @@ def compute(original, result, interventions, counts, rates, no_action_cost=None)
         ),
         (
             "Deadline penalty",
-            (counts.deadlines_missed - (before.jobs_late + before.jobs_unscheduled))
+            max(0, counts.deadlines_missed - (before.jobs_late + before.jobs_unscheduled))
             * values["deadline_penalty"],
             "penalty",
-            f"Additional missed homes vs original × "
+            f"Additional missed homes vs the original plan, never below 0, × "
             f"${values['deadline_penalty']}; default disabled.",
         ),
         (
@@ -162,14 +185,17 @@ def compute(original, result, interventions, counts, rates, no_action_cost=None)
         for label, amount, kind, basis in entries
     ]
     cost = round(sum(x.amount_usd for x in lines), 2)
-    direct = sum(x.amount_usd for x in lines if x.kind != "value")
+    # Both sides are measured against no action. An option that also saves money costs $0.
+    per_deadline = None
+    if no_action_cost is not None and no_action_missed is not None:
+        recovered = no_action_missed - counts.deadlines_missed
+        if recovered > 0:
+            per_deadline = round(max(0.0, cost - no_action_cost) / recovered, 2)
     return RecoveryEconomics(
         net_impact_usd=cost,
         advantage_vs_no_action_usd=round(no_action_cost - cost, 2)
         if no_action_cost is not None
         else 0,
-        cost_per_deadline_recovered_usd=round(direct / counts.deadlines_recovered, 2)
-        if counts.deadlines_recovered > 0
-        else None,
+        cost_per_deadline_recovered_usd=per_deadline,
         lines=lines,
     )

@@ -69,6 +69,8 @@ def test_non_improving_capacity_is_omitted(monkeypatch):
     s = load_scenario("tiny_two_visit").model_copy(deep=True)
     s.revision += 101
     edits = [RemoveCrewDay(crew_id="B", date=dt.date(2018, 6, 5))]
-    monkeypatch.setattr(service, "_solve", lambda base, edits, budget: repair(base, edits[:1]))
+    monkeypatch.setattr(
+        service, "_solve", lambda base, edits, budget, hint=None: repair(base, edits[:1])
+    )
     out = recover(s, edits)
     assert [o.kind for o in out.options] == ["rebalance"]

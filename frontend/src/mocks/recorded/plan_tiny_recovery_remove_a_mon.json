@@ -30,7 +30,7 @@
       "value": 1.0,
       "bound": 1.0,
       "gap": 0.0,
-      "elapsed_ms": 0
+      "elapsed_ms": 16
     },
     {
       "name": "changed_installs",
@@ -201,5 +201,5 @@
       "kind": "assumed"
     }
   ],
-  "solve_ms": 3
+  "solve_ms": 16
 }

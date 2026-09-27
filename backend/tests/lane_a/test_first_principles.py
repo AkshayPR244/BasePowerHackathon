@@ -26,6 +26,14 @@ def test_federal_holidays_2018():
     ]
 
 
+def test_saturday_new_year_is_observed_the_friday_before():
+    assert not is_business_day(dt.date(2021, 12, 31))
+    assert dt.date(2021, 12, 31) in federal_holidays(2021)
+    assert dt.date(2021, 12, 31) not in federal_holidays(2022)
+    assert is_business_day(dt.date(2018, 12, 31))
+    assert len(federal_holidays(2018)) == 10
+
+
 def test_haversine_known_distance():
     # One degree of latitude is about 111.2 km.
     assert haversine_km((-95.0, 29.0), (-95.0, 30.0)) == pytest.approx(111.2, abs=0.2)

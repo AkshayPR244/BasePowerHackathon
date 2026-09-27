@@ -70,6 +70,66 @@ def record(index: list, name: str, method: str, path: str, body: dict | None = N
     return r.json()
 
 
+def record_canvas_defaults(index: list, storm: list, options: dict):
+    """Record approve for every option and the canvas test buttons at their default inputs.
+
+    Mirrors the defaults in frontend/src/components/EvaluationControls.tsx.
+    """
+    every = [options["no_action"], *options["options"]]
+    for o in every:
+        suffix = "" if o is options["options"][0] else f"_{o['kind']}"
+        record(
+            index,
+            f"recovery_approve_standard_storm{suffix}",
+            "POST",
+            "/api/recovery/approve",
+            {"scenario_id": "standard", "revision": 1, "option": o},
+        )
+    scenario = client.get("/api/scenarios/standard").json()
+    first_open = min(d["date"] for d in storm)
+    crew, date = "IA", "2018-06-15"
+    skill = {v["job_id"]: v["required_skill"] for s in scenario["sites"] for v in s["visits"]}
+    crew_skills = {k for c in scenario["crew_days"] if c["crew_id"] == crew for k in c["skills"]}
+    base = {"scenario_id": "standard", "revision": 1, "interactive": True}
+    bodies = {
+        "knockout": {**base, "disruption": [*storm, _remove(crew, date)], "interventions": []},
+        "overtime": {
+            **base,
+            "disruption": storm,
+            "interventions": [
+                {"kind": "extend_crew_day", "crew_id": crew, "date": date, "extra_min": 120}
+            ],
+        },
+    }
+    for o in every:
+        visits = sorted(
+            a["job_id"]
+            for a in o["result"]["assignments"]
+            if a["date"] >= first_open and a["job_id"]
+        )
+        movable = [v for v in visits if skill.get(v) in crew_skills]
+        if visits:
+            bodies[f"pin_{visits[0]}"] = {
+                **base,
+                "disruption": storm,
+                "interventions": [{"kind": "pin_visit", "job_id": visits[0]}],
+            }
+        if movable:
+            bodies[f"move_{movable[0]}"] = {
+                **base,
+                "disruption": storm,
+                "interventions": [
+                    {"kind": "move_visit", "job_id": movable[0], "crew_id": crew, "date": date}
+                ],
+            }
+    for name, body in bodies.items():
+        record(index, f"recovery_evaluate_storm_{name}", "POST", "/api/recovery/evaluate", body)
+
+
+def _remove(crew: str, date: str) -> dict:
+    return {"kind": "remove_crew_day", "crew_id": crew, "date": date}
+
+
 def main():
     shutil.rmtree(OUT, ignore_errors=True)
     OUT.mkdir(parents=True)
@@ -135,13 +195,7 @@ def main():
         {"scenario_id": "standard", "revision": 2, "disruption": storm, "interventions": []},
     )
     if options:
-        record(
-            index,
-            "recovery_approve_standard_storm",
-            "POST",
-            "/api/recovery/approve",
-            {"scenario_id": "standard", "revision": 1, "option": options["options"][0]},
-        )
+        record_canvas_defaults(index, storm, options)
     record(index, "storms", "GET", "/api/storms")
     record(index, "cases", "GET", "/api/cases")
     record(index, "season_replay", "GET", "/api/season-replay")

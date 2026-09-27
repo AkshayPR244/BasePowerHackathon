@@ -3,7 +3,7 @@
 import datetime as dt
 
 from app.contracts.enums import PlanStatus, ReasonCode
-from app.contracts.models import PlanRequest
+from app.contracts.models import ChangeAppointment, PlanRequest
 from app.planning.infeasibility import conflicting_jobs
 from app.planning.solve import plan
 
@@ -35,3 +35,12 @@ def test_strict_result_lists_the_conflict(tiny):
 
 def test_feasible_scenario_has_no_core(tiny):
     assert conflicting_jobs(tiny, set(), 5.0) is None
+
+
+def test_core_only_asks_forced_homes_to_be_on_time(tiny):
+    assert conflicting_jobs(_short_monday(tiny), {"N-02"}, 5.0) is None
+
+
+def test_core_respects_appointment_windows(tiny):
+    window = [ChangeAppointment(job_id="N-02", available_from=MON + dt.timedelta(days=1))]
+    assert conflicting_jobs(tiny, set(), 5.0, window) == ["N-02"]

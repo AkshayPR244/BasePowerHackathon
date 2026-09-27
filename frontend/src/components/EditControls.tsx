@@ -6,19 +6,17 @@ export function EditControls({
   scenario,
   edits,
   onEdit,
-  onReset,
 }: {
   scenario: Scenario;
   edits: Edit[];
   onEdit: (edit: Edit) => void;
-  onReset: () => void;
 }) {
   const [crew, setCrew] = useState(scenario.crew_days[0]?.crew_id ?? "");
   const [date, setDate] = useState(scenario.config.planning_start);
   return (
     <section className="disruptions" aria-label="Disruption controls">
       <div>
-        <span className="eyebrow">DISRUPTION</span>
+        <span className="eyebrow">BASELINE DISRUPTION TEST</span>
         <strong>
           {edits.length
             ? `${edits.length} change applied`
@@ -60,7 +58,6 @@ export function EditControls({
       >
         Remove crew-day
       </button>
-      <button onClick={onReset}>Reset demo</button>
       <span className="muted">
         {mockMode
           ? `Recorded: Crew A out ${dateLabel(scenario.config.planning_start)}`

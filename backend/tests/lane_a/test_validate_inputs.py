@@ -95,3 +95,12 @@ def test_geometry_ids_must_match(copied_tiny):
 def test_mutated_numeric_values_still_checked(scenario, field, value):
     setattr(scenario.crew_days[0], field, value)
     assert "BAD_VALUE" in codes(scenario)
+
+
+def test_blank_job_id_row_duplicates_the_battery_day_row():
+    s = load_scenario("tiny_two_visit")
+    extra = s.current_plan[0].model_copy(
+        update={"site_id": "H2", "job_id": None, "locked": False, "crew_id": "B"}
+    )
+    s.current_plan.append(extra)
+    assert "DUPLICATE_PLANNED_INSTALL" in codes(s)

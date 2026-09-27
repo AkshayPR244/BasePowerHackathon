@@ -44,8 +44,8 @@ def _csv(path: Path) -> list[dict]:
 
 
 def _features(path: Path, key: str) -> dict:
-    collection = json.loads(path.read_text())
-    if collection.get("type") != "FeatureCollection":
+    collection = json.loads(path.read_text(encoding="utf-8"))
+    if not isinstance(collection, dict) or collection.get("type") != "FeatureCollection":
         raise ValueError(f"{path.name}: expected a FeatureCollection")
     result = {}
     for row, feature in enumerate(collection["features"], 1):
@@ -85,7 +85,9 @@ def load_scenario(scenario_id: str) -> Scenario:
     folder = DATA_ROOT / scenario_id
     filename = "scenario.yaml"
     try:
-        config = yaml.safe_load((folder / filename).read_text())
+        config = yaml.safe_load((folder / filename).read_text(encoding="utf-8"))
+        if not isinstance(config, dict):
+            raise ValueError("expected a mapping of settings")
         travel = config.pop("travel_allowance_min")
         filename = "clusters.geojson"
         clusters = []
@@ -117,6 +119,7 @@ def load_scenario(scenario_id: str) -> Scenario:
             )
         for s in sites:
             s["profile_id"] = s.get("profile_id") or None
+            s["required_skill"] = (s.get("required_skill") or "").strip()
             s["lon"], s["lat"] = _point(geometries[s["site_id"]])
         filename = "visits.csv"
         if (folder / filename).exists():

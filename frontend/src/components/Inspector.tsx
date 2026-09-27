@@ -2,6 +2,7 @@ import type { Plan, Scenario, Schema } from "../api/types";
 import { Status } from "../design/status";
 import { dateLabel } from "../lib/format";
 import { Validation } from "./Header";
+import { temporaryCrewId } from "../lib/recovery";
 export function Inspector({
   scenario,
   plan,
@@ -93,7 +94,7 @@ export function Inspector({
               disabled={!canIntervene || busy}
               onClick={() => onIntervention("crew")}
             >
-              Add Crew C on first day
+              Add Crew {temporaryCrewId(scenario)} on first day
             </button>
           </div>
           {!canIntervene && (

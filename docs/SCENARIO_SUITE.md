@@ -96,8 +96,8 @@ All 12 homes stay on time with under 40% aggregate utilization. No disruption is
 [
   {
     "kind": "remove_crew_day",
-    "crew_id": "IA",
-    "date": "2018-06-07"
+    "crew_id": "IB",
+    "date": "2018-06-04"
   }
 ]
 ```
@@ -126,7 +126,7 @@ The named high-load install crew-day is lost. No action moves installs and batte
     "kind": "delay_inventory",
     "configuration_id": "B13",
     "from_date": "2018-06-04",
-    "to_date": "2018-06-07",
+    "to_date": "2018-06-06",
     "quantity": null
   }
 ]
@@ -154,12 +154,12 @@ Delay crosses the earliest booked battery visit, so affected battery visits and 
 [
   {
     "kind": "change_ready_date",
-    "site_id": "W-01",
+    "site_id": "S-01",
     "ready_date": "2018-06-06"
   },
   {
     "kind": "change_appointment",
-    "job_id": "W-01-B",
+    "job_id": "S-01-B",
     "available_from": "2018-06-07",
     "available_to": "2018-06-07"
   }
@@ -189,7 +189,7 @@ Readiness is inclusive. The named battery visit must land on the exact available
   {
     "kind": "remove_crew_day",
     "crew_id": "BN",
-    "date": "2018-06-08"
+    "date": "2018-06-07"
   }
 ]
 ```
@@ -245,7 +245,7 @@ Moving the named install past its original battery slot moves both visits under 
 [
   {
     "kind": "remove_crew_day",
-    "crew_id": "IB",
+    "crew_id": "IA",
     "date": "2018-06-05"
   }
 ]
@@ -304,7 +304,7 @@ The first receipt moves to June 11, after all June 8 deadlines. Disrupted strict
   {
     "kind": "remove_crew_day",
     "crew_id": "BA",
-    "date": "2018-06-13"
+    "date": "2018-06-08"
   }
 ]
 ```

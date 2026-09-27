@@ -1,7 +1,7 @@
 import type { Plan } from "../api/types";
 const quote = (value: unknown) =>
   `"${String(value ?? "")
-    .replace(/^[=+@\-]/, "'$&")
+    .replace(/^[=+@\-\t\r]/, "'$&")
     .replaceAll('"', '""')}"`;
 export function planCsv(plan: Plan) {
   const rows: unknown[][] = [

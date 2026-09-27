@@ -19,7 +19,7 @@ def test_diff_matches_expected():
     e = expected("compare_strict_vs_recovery")
     assert _strip(d.changes) == _strip(e.changes)
     assert frozen(d.summary) == frozen(e.summary)
-    assert d.headline == e.headline
+    assert d.headline == e.headline.replace("1 misses", "1 home misses")
 
 
 def test_notes_read_like_a_changelog():

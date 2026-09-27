@@ -88,16 +88,20 @@ def eligibility(scenario: Scenario, mode: Mode, forced: set[str]) -> Eligibility
         if empty is not None:
             elig.blocked[s.site_id] = _blocked_reasons(s, empty, scenario)
             continue
+        required = mode == Mode.strict or s.site_id in forced
         if len(jobs) == 2:
             first, last = jobs
-            raw[first.job_id], raw[last.job_id] = _pair_filter(
+            firsts, raw[last.job_id] = _pair_filter(
                 raw[first.job_id], raw[last.job_id], gap, origin
             )
             if not raw[last.job_id]:
                 elig.blocked[s.site_id] = [ReasonCode.NO_LEGAL_DATE]
                 continue
+            if required:
+                raw[first.job_id] = firsts
+            # Otherwise an install may stand alone when no battery day can follow it.
         opts = dict(raw)
-        if mode == Mode.strict or s.site_id in forced:
+        if required:
             final = jobs[-1]
             opts[final.job_id] = [o for o in opts[final.job_id] if o[1] <= s.deadline]
             if len(jobs) == 2:

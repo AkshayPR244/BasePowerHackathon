@@ -6,7 +6,7 @@ import pytest
 
 from app.api.scenarios import load_scenario
 from app.contracts.enums import Mode, PlanStatus
-from app.contracts.models import ForceInclude, PlanRequest
+from app.contracts.models import ForceInclude, PlanRequest, RemoveCrewDay
 from app.planning.solve import plan
 
 
@@ -33,3 +33,16 @@ def test_forcing_a_blocked_home_is_infeasible(tiny, mode):
 @pytest.fixture(scope="module")
 def two_visit():
     return load_scenario("tiny_two_visit")
+
+
+def unlocked(scenario):
+    rows = [p.model_copy(update={"locked": False}) for p in scenario.current_plan]
+    return scenario.model_copy(update={"current_plan": rows})
+
+
+@pytest.mark.parametrize("days,unlock", [((4, 5), False), ((4, 6), False), ((4, 5, 6), True)])
+def test_value_flag_matches_the_validator(two_visit, days, unlock):
+    s = unlocked(two_visit) if unlock else two_visit
+    r = run(s, [RemoveCrewDay(crew_id="B", date=D(d)) for d in days])
+    assert r.validation.valid
+    assert r.objective is not None

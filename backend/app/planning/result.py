@@ -27,6 +27,7 @@ from app.contracts.models import (
 from app.contracts.visits import job_of_row, jobs_of
 from app.planning import explain
 from app.planning.model import Eligibility
+from app.validate.plan import value_distinguishes_choices
 
 NOT_RUN = ValidationReport(checked=False, valid=False, issues=[], validator="not run")
 
@@ -86,7 +87,7 @@ def build_result(
     sites = {s.site_id: s for s in scenario.sites}
     travel = {c.cluster_id: c.travel_allowance_min for c in scenario.clusters}
     unlocked = [p for p in scenario.current_plan if not p.locked]
-    values_equal = len(set(values.values()) | {0.0}) <= 1
+    values_equal = not value_distinguishes_choices(scenario, values)
 
     unscheduled = [
         UnscheduledJob(

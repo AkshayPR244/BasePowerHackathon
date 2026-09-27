@@ -65,6 +65,16 @@ def _blocked(scenario: Scenario) -> set[str]:
     return out
 
 
+def value_distinguishes_choices(scenario: Scenario, values: dict) -> bool:
+    """True when two legal battery-day slots carry different values."""
+    candidates = [
+        values.get((s.site_id, c.date), 0.0)
+        for s in scenario.sites
+        for c in legal_slots(scenario, s)
+    ]
+    return bool(candidates and max(candidates) - min(candidates) > 1e-9)
+
+
 def recompute_usage(scenario: Scenario, assignments: list[Assignment]) -> list[CrewDayUsage]:
     sites = {s.site_id: s for s in scenario.sites}
     jobs = _jobs(scenario)
@@ -120,11 +130,6 @@ def recompute_objective(scenario: Scenario, assignments: list[Assignment], *, va
         if a is None or (a.crew_id, a.date) != (p.crew_id, p.date):
             moved += 1
             moved_homes.add(p.site_id)
-    candidates = [
-        values.get((s.site_id, c.date), 0.0)
-        for s in scenario.sites
-        for c in legal_slots(scenario, s)
-    ]
     return ObjectiveComponents(
         jobs_on_time=sum(d == 0 for d in late),
         jobs_late=sum(d > 0 for d in late),
@@ -135,7 +140,7 @@ def recompute_objective(scenario: Scenario, assignments: list[Assignment], *, va
         changed_installs=moved,
         travel_allowance_min=sum(u.travel_min for u in usage),
         crew_utilization=min(1.0, used / available) if available else 0.0,
-        value_distinguishes_choices=bool(candidates and max(candidates) - min(candidates) > 1e-9),
+        value_distinguishes_choices=value_distinguishes_choices(scenario, values),
         visits_moved=moved,
         customers_to_reschedule=len(moved_homes),
     )

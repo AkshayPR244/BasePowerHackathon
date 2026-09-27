@@ -60,6 +60,28 @@ test.describe("live canvas on recorded responses", () => {
       page.getByText("Synthetic plan", { exact: true }),
     ).toBeVisible();
     await expect(page.locator("body")).not.toContainText("storm");
+    const optionChips = page.locator(".option-chip");
+    await expect(optionChips.first()).toHaveCSS("min-height", "40px");
+    const optionColors = await page
+      .locator(".frontier-point")
+      .evaluateAll((points) =>
+        points.map((point) => ({
+          kind: point.getAttribute("data-option-kind"),
+          color: getComputedStyle(point.querySelector("circle")!).stroke,
+        })),
+      );
+    expect(new Set(optionColors.map(({ kind }) => kind)).size).toBe(
+      optionColors.length,
+    );
+    expect(
+      new Set(optionColors.map(({ color }) => color).filter(Boolean)).size,
+    ).toBe(optionColors.length);
+    expect(
+      (await page.locator(".frontier-svg").boundingBox())!.height,
+    ).toBeGreaterThanOrEqual(300);
+    const planBox = (await page.locator(".plan-figure").boundingBox())!;
+    const frontierBox = (await page.locator(".frontier-figure").boundingBox())!;
+    expect(frontierBox.y).toBeGreaterThanOrEqual(planBox.y + planBox.height);
     await page.screenshot({ path: "e2e/screenshots/live-canvas.png" });
     await page.getByTestId("workspace-link").click();
     await expect(page.getByTestId("recovery-canvas")).toBeVisible();
@@ -302,6 +324,21 @@ test.describe("live canvas against the live API", () => {
       await optionPoints.count(),
     );
     const optionChips = page.locator(".option-chip");
+    await expect(optionChips.first()).toHaveCSS("min-height", "40px");
+    const optionColors = await page
+      .locator(".frontier-point")
+      .evaluateAll((points) =>
+        points.map((point) => ({
+          kind: point.getAttribute("data-option-kind"),
+          color: getComputedStyle(point.querySelector("circle")!).stroke,
+        })),
+      );
+    expect(new Set(optionColors.map(({ kind }) => kind)).size).toBe(
+      optionColors.length,
+    );
+    expect(
+      new Set(optionColors.map(({ color }) => color).filter(Boolean)).size,
+    ).toBe(optionColors.length);
     for (let index = 0; index < (await optionChips.count()); index += 1) {
       await optionChips.nth(index).click();
       await expectVisibleCrewSkills(page);

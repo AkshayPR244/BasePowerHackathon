@@ -218,7 +218,10 @@ export function OptionFrontier({
                 className={`option-chip ${selectedId === option.option_id ? "option-chip-selected" : ""}`}
                 onClick={() => onSelect(option.option_id)}
               >
-                {label(option)}
+                <span className="option-chip-heading">
+                  <span className="option-chip-swatch" aria-hidden="true" />
+                  <span>{label(option)}</span>
+                </span>
                 {option.lowest_modeled_cost && (
                   <small>Lowest modeled cost</small>
                 )}

@@ -15,6 +15,11 @@
   --visit-battery: #5f9188;
   --plot-grid: #dce5e1;
   --plot-line: #50676d;
+  --option-no-action: var(--plot-line);
+  --option-rebalance: var(--st-scheduled);
+  --option-overtime: var(--st-late);
+  --option-temporary-capacity: var(--st-blocked);
+  --option-custom: var(--st-locked);
   --surface-quiet: #f4f7f5;
   --font-ui: "IBM Plex Sans", sans-serif;
   --font-code: "IBM Plex Sans", sans-serif;

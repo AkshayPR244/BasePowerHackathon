@@ -6,6 +6,7 @@ import shutil
 import pytest
 
 from app.api.scenarios import load_scenario
+from app.compare.diff import diff_plans
 from app.contracts.enums import Algorithm, JobState, Mode, PlanStatus, ReasonCode
 from app.contracts.models import (
     ChangeAppointment,
@@ -113,6 +114,22 @@ def test_no_legal_date_names_the_appointment_window(tiny):
     r = run(tiny, [ChangeAppointment(job_id="N-02", available_from=D(5))], Mode.strict)
     assert r.status == PlanStatus.infeasible
     assert "N-02 is due Mon 4 Jun. Its visit has an appointment window from Tue 5 Jun." in r.message
+
+
+def test_headline_uses_the_newly_late_visit(tiny):
+    edits = [RemoveCrewDay(crew_id="B", date=D(4)), RemoveCrewDay(crew_id="A", date=D(4))]
+    before = run(tiny, edits)
+    after = run(tiny, [*edits, RemoveCrewDay(crew_id="B", date=D(5))])
+
+    def n02_three_days_late(r):
+        rows = [
+            a.model_copy(update={"days_late": 3}) if a.site_id == "N-02" else a
+            for a in r.assignments
+        ]
+        return r.model_copy(update={"assignments": rows})
+
+    d = diff_plans(n02_three_days_late(before), n02_three_days_late(after))
+    assert d.headline.endswith("1 home misses its deadline by 1 day.")
 
 
 def test_install_may_stand_alone_in_recovery():

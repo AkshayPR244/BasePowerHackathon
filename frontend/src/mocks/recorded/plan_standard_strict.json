@@ -16,7 +16,7 @@
       "value": 0.0,
       "bound": 0.0,
       "gap": 0.0,
-      "elapsed_ms": 78
+      "elapsed_ms": 94
     },
     {
       "name": "operating_value",
@@ -24,7 +24,7 @@
       "value": 4136.48,
       "bound": 4136.48,
       "gap": 0.0,
-      "elapsed_ms": 31
+      "elapsed_ms": 14
     },
     {
       "name": "travel",
@@ -32,7 +32,7 @@
       "value": 864.0,
       "bound": 864.0,
       "gap": 0.0,
-      "elapsed_ms": 14
+      "elapsed_ms": 0
     }
   ],
   "assignments": [
@@ -1205,5 +1205,5 @@
       "kind": "assumed"
     }
   ],
-  "solve_ms": 202
+  "solve_ms": 218
 }

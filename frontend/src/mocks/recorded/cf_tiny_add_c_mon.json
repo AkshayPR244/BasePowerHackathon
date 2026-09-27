@@ -48,7 +48,7 @@
         "value": 0.0,
         "bound": 0.0,
         "gap": 0.0,
-        "elapsed_ms": 14
+        "elapsed_ms": 16
       },
       {
         "name": "total_delay",
@@ -80,7 +80,7 @@
         "value": 165.0,
         "bound": 165.0,
         "gap": 0.0,
-        "elapsed_ms": 0
+        "elapsed_ms": 16
       }
     ],
     "assignments": [
@@ -235,7 +235,7 @@
         "kind": "assumed"
       }
     ],
-    "solve_ms": 14
+    "solve_ms": 32
   },
   "diff": {
     "before_plan_id": "tiny-r1-recovery-a27dc71d",

@@ -6,9 +6,57 @@
     "request": null
   },
   {
+    "name": "scenario_balanced_small",
+    "method": "GET",
+    "path": "/api/scenarios/balanced_small",
+    "request": null
+  },
+  {
+    "name": "scenario_crew_out_recoverable",
+    "method": "GET",
+    "path": "/api/scenarios/crew_out_recoverable",
+    "request": null
+  },
+  {
+    "name": "scenario_inventory_delay_recoverable",
+    "method": "GET",
+    "path": "/api/scenarios/inventory_delay_recoverable",
+    "request": null
+  },
+  {
+    "name": "scenario_late_overflow",
+    "method": "GET",
+    "path": "/api/scenarios/late_overflow",
+    "request": null
+  },
+  {
+    "name": "scenario_locked_infeasible",
+    "method": "GET",
+    "path": "/api/scenarios/locked_infeasible",
+    "request": null
+  },
+  {
+    "name": "scenario_readiness_appointment",
+    "method": "GET",
+    "path": "/api/scenarios/readiness_appointment",
+    "request": null
+  },
+  {
+    "name": "scenario_skill_cluster_bottleneck",
+    "method": "GET",
+    "path": "/api/scenarios/skill_cluster_bottleneck",
+    "request": null
+  },
+  {
     "name": "scenario_standard",
     "method": "GET",
     "path": "/api/scenarios/standard",
+    "request": null
+  },
+  {
+    "name": "scenario_tight_feasible",
+    "method": "GET",
+    "path": "/api/scenarios/tight_feasible",
     "request": null
   },
   {
@@ -21,6 +69,18 @@
     "name": "scenario_tiny_two_visit",
     "method": "GET",
     "path": "/api/scenarios/tiny_two_visit",
+    "request": null
+  },
+  {
+    "name": "scenario_two_visit_cascade",
+    "method": "GET",
+    "path": "/api/scenarios/two_visit_cascade",
+    "request": null
+  },
+  {
+    "name": "scenario_value_sensitive",
+    "method": "GET",
+    "path": "/api/scenarios/value_sensitive",
     "request": null
   },
   {
@@ -154,7 +214,7 @@
             "value": 0.0,
             "bound": 0.0,
             "gap": 0.0,
-            "elapsed_ms": 0
+            "elapsed_ms": 62
           },
           {
             "name": "operating_value",
@@ -325,7 +385,7 @@
             "kind": "assumed"
           }
         ],
-        "solve_ms": 0
+        "solve_ms": 94
       },
       "after": {
         "plan_id": "tiny-r1-recovery-a27dc71d",
@@ -351,7 +411,7 @@
             "value": 1.0,
             "bound": 1.0,
             "gap": 0.0,
-            "elapsed_ms": 0
+            "elapsed_ms": 15
           },
           {
             "name": "total_delay",
@@ -530,7 +590,7 @@
             "kind": "assumed"
           }
         ],
-        "solve_ms": 16
+        "solve_ms": 15
       }
     }
   },
@@ -575,7 +635,7 @@
             "value": 1.0,
             "bound": 1.0,
             "gap": 0.0,
-            "elapsed_ms": 0
+            "elapsed_ms": 15
           },
           {
             "name": "total_delay",
@@ -754,7 +814,7 @@
             "kind": "assumed"
           }
         ],
-        "solve_ms": 16
+        "solve_ms": 15
       },
       "intervention": {
         "kind": "force_include",
@@ -803,7 +863,7 @@
             "value": 1.0,
             "bound": 1.0,
             "gap": 0.0,
-            "elapsed_ms": 0
+            "elapsed_ms": 15
           },
           {
             "name": "total_delay",
@@ -982,7 +1042,7 @@
             "kind": "assumed"
           }
         ],
-        "solve_ms": 16
+        "solve_ms": 15
       },
       "intervention": {
         "kind": "add_crew_day",
@@ -1021,7 +1081,7 @@
             "value": 0.0,
             "bound": 0.0,
             "gap": 0.0,
-            "elapsed_ms": 78
+            "elapsed_ms": 94
           },
           {
             "name": "operating_value",
@@ -1029,7 +1089,7 @@
             "value": 4136.48,
             "bound": 4136.48,
             "gap": 0.0,
-            "elapsed_ms": 31
+            "elapsed_ms": 14
           },
           {
             "name": "travel",
@@ -1037,7 +1097,7 @@
             "value": 864.0,
             "bound": 864.0,
             "gap": 0.0,
-            "elapsed_ms": 14
+            "elapsed_ms": 0
           }
         ],
         "assignments": [
@@ -2210,7 +2270,7 @@
             "kind": "assumed"
           }
         ],
-        "solve_ms": 202
+        "solve_ms": 218
       },
       "after": {
         "plan_id": "standard-r1-recovery-e70745cb",
@@ -2236,15 +2296,15 @@
             "value": 4.0,
             "bound": 4.0,
             "gap": 0.0,
-            "elapsed_ms": 4734
+            "elapsed_ms": 7296
           },
           {
             "name": "total_delay",
             "status": "feasible",
             "value": 120.0,
-            "bound": 90.0,
-            "gap": 0.25,
-            "elapsed_ms": 5171
+            "bound": 88.0,
+            "gap": 0.26666666666666666,
+            "elapsed_ms": 3875
           },
           {
             "name": "changed_installs",
@@ -2252,7 +2312,7 @@
             "value": 4.0,
             "bound": 4.0,
             "gap": 0.0,
-            "elapsed_ms": 139
+            "elapsed_ms": 282
           },
           {
             "name": "operating_value",
@@ -2260,7 +2320,7 @@
             "value": 3758.52,
             "bound": 3758.52,
             "gap": 0.0,
-            "elapsed_ms": 14
+            "elapsed_ms": 31
           },
           {
             "name": "travel",
@@ -2268,7 +2328,7 @@
             "value": 831.0,
             "bound": 831.0,
             "gap": 0.0,
-            "elapsed_ms": 31
+            "elapsed_ms": 32
           }
         ],
         "assignments": [
@@ -3426,7 +3486,7 @@
             "kind": "assumed"
           }
         ],
-        "solve_ms": 10203
+        "solve_ms": 11858
       }
     }
   },
@@ -5100,7 +5160,7 @@
               "value": 7.0,
               "bound": 7.0,
               "gap": 0.0,
-              "elapsed_ms": 14
+              "elapsed_ms": 62
             },
             {
               "name": "total_delay",
@@ -5108,7 +5168,7 @@
               "value": 210.0,
               "bound": 210.0,
               "gap": 0.0,
-              "elapsed_ms": 16
+              "elapsed_ms": 46
             },
             {
               "name": "changed_installs",
@@ -5116,7 +5176,7 @@
               "value": 7.0,
               "bound": 7.0,
               "gap": 0.0,
-              "elapsed_ms": 16
+              "elapsed_ms": 15
             },
             {
               "name": "operating_value",
@@ -5124,7 +5184,7 @@
               "value": 3506.2,
               "bound": 3506.2,
               "gap": 0.0,
-              "elapsed_ms": 0
+              "elapsed_ms": 16
             },
             {
               "name": "travel",
@@ -5132,7 +5192,7 @@
               "value": 823.0,
               "bound": 823.0,
               "gap": 0.0,
-              "elapsed_ms": 0
+              "elapsed_ms": 30
             }
           ],
           "assignments": [
@@ -6268,7 +6328,7 @@
               "kind": "assumed"
             }
           ],
-          "solve_ms": 187
+          "solve_ms": 515
         },
         "diff_vs_original": {
           "before_plan_id": "standard-r1-recovery-c2f8ba65",
@@ -6752,7 +6812,7 @@
               "value": 4.0,
               "bound": 4.0,
               "gap": 0.0,
-              "elapsed_ms": 16
+              "elapsed_ms": 30
             },
             {
               "name": "total_delay",
@@ -6760,7 +6820,7 @@
               "value": 120.0,
               "bound": 120.0,
               "gap": 0.0,
-              "elapsed_ms": 31
+              "elapsed_ms": 30
             },
             {
               "name": "changed_installs",
@@ -6776,7 +6836,7 @@
               "value": 3774.1,
               "bound": 3774.1,
               "gap": 0.0,
-              "elapsed_ms": 0
+              "elapsed_ms": 31
             },
             {
               "name": "travel",
@@ -7934,7 +7994,7 @@
               "kind": "assumed"
             }
           ],
-          "solve_ms": 281
+          "solve_ms": 437
         },
         "diff_vs_original": {
           "before_plan_id": "standard-r1-recovery-c2f8ba65",

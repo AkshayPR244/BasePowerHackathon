@@ -44,7 +44,7 @@
         "value": 7.0,
         "bound": 7.0,
         "gap": 0.0,
-        "elapsed_ms": 16
+        "elapsed_ms": 14
       },
       {
         "name": "total_delay",
@@ -52,7 +52,7 @@
         "value": 210.0,
         "bound": 210.0,
         "gap": 0.0,
-        "elapsed_ms": 14
+        "elapsed_ms": 16
       },
       {
         "name": "changed_installs",
@@ -60,7 +60,7 @@
         "value": 7.0,
         "bound": 7.0,
         "gap": 0.0,
-        "elapsed_ms": 0
+        "elapsed_ms": 15
       },
       {
         "name": "operating_value",
@@ -1204,7 +1204,7 @@
         "kind": "assumed"
       }
     ],
-    "solve_ms": 219
+    "solve_ms": 375
   },
   "diff_vs_original": {
     "before_plan_id": "standard-r1-recovery-c2f8ba65",

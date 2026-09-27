@@ -117,7 +117,7 @@
         "kind": "assumed"
       }
     ],
-    "solve_ms": 31
+    "solve_ms": 62
   },
   "diff_vs_original": {
     "before_plan_id": "standard-r1-recovery-c2f8ba65",

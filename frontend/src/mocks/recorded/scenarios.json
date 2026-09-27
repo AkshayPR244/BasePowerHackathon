@@ -1,5 +1,82 @@
 [
   {
+    "scenario_id": "balanced_small",
+    "name": "balanced_small synthetic two-visit recovery benchmark",
+    "scenario_hash": "3a14ed9f05b2427e29b34db04c467b39e5d59fdd5c20f2dce1bcfee0e54fc90f",
+    "planning_start": "2018-06-04",
+    "planning_end": "2018-06-15",
+    "n_sites": 12,
+    "n_crews": 3,
+    "n_crew_days": 29,
+    "synthetic": true
+  },
+  {
+    "scenario_id": "crew_out_recoverable",
+    "name": "crew_out_recoverable synthetic two-visit recovery benchmark",
+    "scenario_hash": "2eb6914612519c39c29bd21852eed9fde46189130f4ea52e75c2efd88258a39b",
+    "planning_start": "2018-06-04",
+    "planning_end": "2018-06-15",
+    "n_sites": 24,
+    "n_crews": 3,
+    "n_crew_days": 29,
+    "synthetic": true
+  },
+  {
+    "scenario_id": "inventory_delay_recoverable",
+    "name": "inventory_delay_recoverable synthetic two-visit recovery benchmark",
+    "scenario_hash": "aec12d21c2c9c85dde5136fdce1dedeb29dfa04cc7debcfc11a04250b0e6a885",
+    "planning_start": "2018-06-04",
+    "planning_end": "2018-06-15",
+    "n_sites": 18,
+    "n_crews": 3,
+    "n_crew_days": 29,
+    "synthetic": true
+  },
+  {
+    "scenario_id": "late_overflow",
+    "name": "late_overflow synthetic two-visit recovery benchmark",
+    "scenario_hash": "2fdab9a80ffb725fc337f2a1ae38e1d2f2105153650388aaa5e65923352bcc5c",
+    "planning_start": "2018-06-04",
+    "planning_end": "2018-06-14",
+    "n_sites": 12,
+    "n_crews": 3,
+    "n_crew_days": 26,
+    "synthetic": true
+  },
+  {
+    "scenario_id": "locked_infeasible",
+    "name": "locked_infeasible synthetic two-visit recovery benchmark",
+    "scenario_hash": "f71e1ce61ba68fb5455b96280dd51dfbc67b99fa54b8c7cc2b24fe6b7f23f68c",
+    "planning_start": "2018-06-04",
+    "planning_end": "2018-06-15",
+    "n_sites": 12,
+    "n_crews": 3,
+    "n_crew_days": 29,
+    "synthetic": true
+  },
+  {
+    "scenario_id": "readiness_appointment",
+    "name": "readiness_appointment synthetic two-visit recovery benchmark",
+    "scenario_hash": "d901ba62bfc5288e97c4512d6585f6c34082790b5999bb9cfbbd0bc5dbfc8ef1",
+    "planning_start": "2018-06-04",
+    "planning_end": "2018-06-15",
+    "n_sites": 12,
+    "n_crews": 3,
+    "n_crew_days": 29,
+    "synthetic": true
+  },
+  {
+    "scenario_id": "skill_cluster_bottleneck",
+    "name": "skill_cluster_bottleneck synthetic two-visit recovery benchmark",
+    "scenario_hash": "f3568d0cba7e12b55483aec26dba9a1baba52be0a4a57d3789626895304adc93",
+    "planning_start": "2018-06-04",
+    "planning_end": "2018-06-15",
+    "n_sites": 12,
+    "n_crews": 4,
+    "n_crew_days": 38,
+    "synthetic": true
+  },
+  {
     "scenario_id": "standard",
     "name": "standard synthetic two-visit recovery benchmark",
     "scenario_hash": "cb4ff456e8a6b1ebed416af56b95cc83cb3715a642f5bde46506019c7fa7e550",
@@ -8,6 +85,17 @@
     "n_sites": 45,
     "n_crews": 3,
     "n_crew_days": 29,
+    "synthetic": true
+  },
+  {
+    "scenario_id": "tight_feasible",
+    "name": "tight_feasible synthetic two-visit recovery benchmark",
+    "scenario_hash": "1990f71693e9db4088175a256a0ddede91b9de06bcd356e4a9ed51c96dc995a3",
+    "planning_start": "2018-06-04",
+    "planning_end": "2018-06-14",
+    "n_sites": 30,
+    "n_crews": 3,
+    "n_crew_days": 26,
     "synthetic": true
   },
   {
@@ -30,6 +118,28 @@
     "n_sites": 3,
     "n_crews": 2,
     "n_crew_days": 6,
+    "synthetic": true
+  },
+  {
+    "scenario_id": "two_visit_cascade",
+    "name": "two_visit_cascade synthetic two-visit recovery benchmark",
+    "scenario_hash": "8ee6345852e51d3a32125a8ab3f1b64a0c5abb0d10865d04ab7153e498c2e1bf",
+    "planning_start": "2018-06-04",
+    "planning_end": "2018-06-15",
+    "n_sites": 12,
+    "n_crews": 3,
+    "n_crew_days": 29,
+    "synthetic": true
+  },
+  {
+    "scenario_id": "value_sensitive",
+    "name": "value_sensitive synthetic two-visit recovery benchmark",
+    "scenario_hash": "c4df4c3b09737dfa4020a91e4cc16bcf78c6caa22b515702fb89099fbae96510",
+    "planning_start": "2018-06-04",
+    "planning_end": "2018-06-15",
+    "n_sites": 12,
+    "n_crews": 3,
+    "n_crew_days": 29,
     "synthetic": true
   }
 ]

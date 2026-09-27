@@ -5,6 +5,8 @@ export interface Narrative {
   operator: string;
   situation: string;
   trigger: string;
+  what_went_wrong: string;
+  unavailable_resources: string[];
   question: string;
   what_to_watch: string[];
   success_criterion: string;

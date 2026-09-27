@@ -5,6 +5,10 @@
     "operator": "Dispatch manager",
     "situation": "A small synthetic portfolio has room between commitments. Start by checking that every home can finish on time.",
     "trigger": "No disruption is applied in this healthy baseline.",
+    "what_went_wrong": "Nothing failed. This scenario is the control case used to confirm that the undisrupted plan is healthy.",
+    "unavailable_resources": [
+      "None — every crew-day, inventory receipt, and appointment window remains available."
+    ],
     "question": "Does the schedule leave enough room for routine operational variation?",
     "what_to_watch": [
       "On-time commitments and spare crew capacity",
@@ -19,6 +23,11 @@
     "operator": "Capacity planner",
     "situation": "A busy portfolio shares a tightly loaded battery crew. The original commitments are achievable.",
     "trigger": "The busiest battery crew-day is removed in this modeled stress test.",
+    "what_went_wrong": "Battery crew BA cannot work on Tuesday, June 5, removing a fully planned battery crew-day from an already tight schedule.",
+    "unavailable_resources": [
+      "Crew BA on 2018-06-05",
+      "All battery-installation minutes assigned to that crew-day"
+    ],
     "question": "Can the team recover without exceeding its remaining capacity?",
     "what_to_watch": [
       "Battery crew utilization before the deadline",
@@ -33,6 +42,11 @@
     "operator": "Dispatch manager",
     "situation": "The undisrupted schedule has assigned install and battery crews to every synthetic home.",
     "trigger": "A modeled absence removes the busiest install crew-day.",
+    "what_went_wrong": "Install crew IA is absent on Thursday, June 7, so every electrical install booked to that crew-day loses its assigned capacity.",
+    "unavailable_resources": [
+      "Crew IA on 2018-06-07",
+      "The install-skilled capacity on that crew-day"
+    ],
     "question": "Which recovery protects commitments with the least appointment disruption?",
     "what_to_watch": [
       "Directly affected installs and their battery visits",
@@ -47,6 +61,11 @@
     "operator": "Inventory coordinator",
     "situation": "Battery receipts arrive in dated batches sized to the healthy plan.",
     "trigger": "The first incoming receipt moves to the business day after its earliest booked battery visit.",
+    "what_went_wrong": "The June 4 delivery of B13 batteries is delayed until June 7, so battery appointments scheduled before the replacement receipt no longer have inventory.",
+    "unavailable_resources": [
+      "B13 battery inventory expected on 2018-06-04",
+      "Replacement B13 units are unavailable until 2018-06-07"
+    ],
     "question": "Can battery visits be reshuffled around the actual receipt date?",
     "what_to_watch": [
       "Battery visits displaced by the delayed receipt",
@@ -61,6 +80,11 @@
     "operator": "Scheduling coordinator",
     "situation": "The healthy schedule assumes each synthetic home is ready and available for its visits.",
     "trigger": "One home becomes ready later and its battery visit receives an exact appointment window.",
+    "what_went_wrong": "Home W-01 is not ready until June 6, and its battery visit W-01-B can now occur only on June 7. The original timing is no longer legal.",
+    "unavailable_resources": [
+      "Site W-01 before 2018-06-06",
+      "Customer access for visit W-01-B on every date except 2018-06-07"
+    ],
     "question": "What can still be achieved while honoring both availability constraints?",
     "what_to_watch": [
       "Readiness date and the explicit appointment window",
@@ -75,6 +99,11 @@
     "operator": "Regional dispatcher",
     "situation": "Install and battery crews are assigned to separate North and South territories.",
     "trigger": "The busiest battery crew-day is removed; the other territory still has its crew.",
+    "what_went_wrong": "North battery crew BN is unavailable on Friday, June 8. The South crew remains staffed but is not qualified for the affected North territory.",
+    "unavailable_resources": [
+      "North battery crew BN on 2018-06-08",
+      "No eligible cross-territory battery crew for the North cluster"
+    ],
     "question": "Can the affected territory recover without borrowing an ineligible crew?",
     "what_to_watch": [
       "Crew skill and allowed territory",
@@ -89,6 +118,11 @@
     "operator": "Dispatch manager",
     "situation": "Each synthetic home needs an electrical install before its battery appointment, with a two-business-day gap.",
     "trigger": "An install appointment moves beyond its original battery date.",
+    "what_went_wrong": "Electrical install W-01-I is moved to June 8. Its dependent battery visit can no longer keep the earlier booking because the required two-business-day gap would be violated.",
+    "unavailable_resources": [
+      "Customer access for install W-01-I on every date except 2018-06-08",
+      "The original downstream slot for battery visit W-01-B"
+    ],
     "question": "Which downstream battery commitment must change to preserve precedence?",
     "what_to_watch": [
       "The moved install and its dependent battery visit",
@@ -103,6 +137,11 @@
     "operator": "Operations lead",
     "situation": "The healthy plan is fully booked and every appointment is locked.",
     "trigger": "An install crew-day with locked bookings becomes unavailable.",
+    "what_went_wrong": "Install crew IB is unavailable on Tuesday, June 5, but visits assigned to that crew-day are locked and cannot legally move. The promises and available capacity now conflict.",
+    "unavailable_resources": [
+      "Crew IB on 2018-06-05",
+      "Alternative appointment dates for the affected locked visits"
+    ],
     "question": "Can any option honor the locks, or must the operator revise the assumptions?",
     "what_to_watch": [
       "Infeasibility instead of silently moving a lock",
@@ -117,6 +156,11 @@
     "operator": "Operations lead",
     "situation": "The original plan finishes inside the commitment window; extra business days are available afterward.",
     "trigger": "The battery receipt moves beyond all original deadlines.",
+    "what_went_wrong": "The June 4 delivery of B13 batteries is delayed until June 11, after the original commitment window. Battery work cannot start on time even though overflow crew capacity exists.",
+    "unavailable_resources": [
+      "B13 battery inventory expected on 2018-06-04",
+      "All replacement B13 inventory until 2018-06-11"
+    ],
     "question": "How much can be completed in overflow, and which appointments become late?",
     "what_to_watch": [
       "Late jobs completed in the overflow days",
@@ -131,6 +175,11 @@
     "operator": "Planning analyst",
     "situation": "The healthy plan meets every commitment. A shared capacity stress test exposes choices between otherwise legal recovery schedules.",
     "trigger": "The same busy battery crew-day is removed for both policy comparisons, opening alternative legal commissioning dates.",
+    "what_went_wrong": "Battery crew BA is unavailable on Wednesday, June 13. Its battery jobs must be reassigned, creating several legal schedules with different commissioning dates and modeled value.",
+    "unavailable_resources": [
+      "Crew BA on 2018-06-13",
+      "The battery-installation capacity assigned to that crew-day"
+    ],
     "question": "Does earlier commissioning increase modeled operating margin under identical constraints?",
     "what_to_watch": [
       "Assignment differences between objective policies",

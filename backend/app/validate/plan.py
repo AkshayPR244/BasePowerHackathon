@@ -336,34 +336,34 @@ def validate_plan(scenario: Scenario, result: PlanResult) -> ValidationReport:
 
     try:
         values = {(r.site_id, r.install_date): r.value_usd for r in value_table(scenario)}
-        for a in finals:
-            if not isclose(
-                a.value_usd, values.get((a.site_id, a.date), 0.0), abs_tol=1e-6, rel_tol=1e-9
-            ):
-                add(
-                    "OBJECTIVE_MISMATCH",
-                    "Assignment value differs from source valuation",
-                    a.site_id,
-                )
-        expected = recompute_objective(scenario, result.assignments, values=values)
-        if result.objective is None:
-            add("OBJECTIVE_MISMATCH", "An incumbent must include objective components")
-        else:
-            for field, value in expected.model_dump().items():
-                actual = getattr(result.objective, field)
-                if field in ADDED_OBJECTIVE_FIELDS and actual is None:
-                    continue  # results from before contract 1.1 do not carry these fields
-                # Frozen fixture utilization is rounded to four decimal places.
-                tolerance = 0.000051 if field == "crew_utilization" else 1e-6
-                same = (
-                    isclose(actual, value, abs_tol=tolerance, rel_tol=1e-9)
-                    if isinstance(value, float)
-                    else actual == value
-                )
-                if not same:
-                    add("OBJECTIVE_MISMATCH", f"{field}: expected {value}, got {actual}")
-    except (ValueError, OSError) as exc:
-        add("OBJECTIVE_MISMATCH", f"Cannot verify operating value: {exc}")
+    except (ValueError, OSError):
+        values = {}  # no value data, so every claimed value must be $0
+    for a in finals:
+        if not isclose(
+            a.value_usd, values.get((a.site_id, a.date), 0.0), abs_tol=1e-6, rel_tol=1e-9
+        ):
+            add(
+                "OBJECTIVE_MISMATCH",
+                "Assignment value differs from source valuation",
+                a.site_id,
+            )
+    expected = recompute_objective(scenario, result.assignments, values=values)
+    if result.objective is None:
+        add("OBJECTIVE_MISMATCH", "An incumbent must include objective components")
+    else:
+        for field, value in expected.model_dump().items():
+            actual = getattr(result.objective, field)
+            if field in ADDED_OBJECTIVE_FIELDS and actual is None:
+                continue  # results from before contract 1.1 do not carry these fields
+            # Frozen fixture utilization is rounded to four decimal places.
+            tolerance = 0.000051 if field == "crew_utilization" else 1e-6
+            same = (
+                isclose(actual, value, abs_tol=tolerance, rel_tol=1e-9)
+                if isinstance(value, float)
+                else actual == value
+            )
+            if not same:
+                add("OBJECTIVE_MISMATCH", f"{field}: expected {value}, got {actual}")
     return ValidationReport(
         checked=True, valid=not issues, issues=issues, validator="independent-v1"
     )

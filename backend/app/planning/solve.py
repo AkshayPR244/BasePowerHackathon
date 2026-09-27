@@ -113,8 +113,15 @@ def plan(base: Scenario, req: PlanRequest) -> PlanResult:
                 kind=DataKind.derived,
             )
         )
+    message = result.message
+    if value_note and not values:
+        message = f"{message} Energy values are unavailable, so value did not affect this plan."
     result = result.model_copy(
-        update={"solve_ms": int((time.monotonic() - t0) * 1000), "assumptions": notes}
+        update={
+            "solve_ms": int((time.monotonic() - t0) * 1000),
+            "assumptions": notes,
+            "message": message.strip(),
+        }
     )
     return _validated(scenario, result)
 

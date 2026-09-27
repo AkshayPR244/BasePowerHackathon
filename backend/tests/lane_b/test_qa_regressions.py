@@ -1,6 +1,7 @@
 """Regressions from the QA sweep of the planner, baselines, and explanation text."""
 
 import datetime as dt
+import shutil
 
 import pytest
 
@@ -46,3 +47,19 @@ def test_value_flag_matches_the_validator(two_visit, days, unlock):
     r = run(s, [RemoveCrewDay(crew_id="B", date=D(d)) for d in days])
     assert r.validation.valid
     assert r.objective is not None
+
+
+def test_missing_prices_give_a_valid_zero_value_plan(tmp_path, monkeypatch):
+    from app.data import load as loader
+    from app.valuation import value_table as vt
+
+    shutil.copytree(loader.DATA_ROOT / "tiny_two_visit", tmp_path / "tiny_two_visit")
+    (tmp_path / "tiny_two_visit" / "prices.parquet").unlink()
+    monkeypatch.setattr(loader, "DATA_ROOT", tmp_path)
+    monkeypatch.setattr(vt, "CACHE_ROOT", tmp_path / "cache")
+    s = loader.load_scenario("tiny_two_visit")
+    r = run(s, mode=Mode.strict)
+    assert r.status == PlanStatus.optimal and r.validation.valid
+    assert r.objective.value_distinguishes_choices is False
+    assert r.objective.operating_value_usd == 0
+    assert "Energy values are unavailable" in r.message

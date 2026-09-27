@@ -94,11 +94,11 @@ def diff_plans(before: PlanResult, after: PlanResult) -> PlanDiff:
         after_plan_id=after.plan_id,
         changes=changes,
         summary=summary,
-        headline=headline(summary, after),
+        headline=headline(summary, after, changes),
     )
 
 
-def headline(s: DiffSummary, after: PlanResult) -> str:
+def headline(s: DiffSummary, after: PlanResult, changes: list[PlanChange]) -> str:
     if not (s.moved or s.added or s.removed or s.newly_late):
         return "No jobs change."
     parts = []
@@ -114,9 +114,13 @@ def headline(s: DiffSummary, after: PlanResult) -> str:
     if s.removed:
         parts.append(f"{plural(s.removed, 'job')} dropped.")
     if s.newly_late:
-        late = [a for a in after.assignments if a.state == JobState.late]
-        days = max((a.days_late for a in late), default=0)
+        late = {
+            c.job_id or c.site_id
+            for c in changes
+            if c.after_state == JobState.late and c.before_state != JobState.late
+        }
+        days = max((a.days_late for a in after.assignments if _key(a) in late), default=0)
         verb = "misses its deadline" if s.newly_late == 1 else "miss their deadlines"
         suffix = f" by {plural(days, 'day')}" if s.newly_late == 1 and days else ""
-        parts.append(f"{s.newly_late} {verb}{suffix}.")
+        parts.append(f"{plural(s.newly_late, 'home')} {verb}{suffix}.")
     return " ".join(parts)

@@ -32,18 +32,18 @@ class Board:
         self.minutes: dict[Slot, int] = {}
         self.placed: dict[str, Slot] = {}  # job_id -> slot
 
-    def predecessor(self, job: Job) -> Job | None:
-        if not job.final or job.visit_type is None:
+    def partner(self, job: Job) -> Job | None:
+        if job.visit_type is None:
             return None
-        return next(j for j in self.jobs.values() if j.site_id == job.site_id and not j.final)
+        return next(j for j in self.jobs.values() if j.site_id == job.site_id and j != job)
 
     def ready(self, job: Job, day: dt.date) -> bool:
-        """A battery day needs its install placed at least `gap` business days earlier."""
-        first = self.predecessor(job)
-        if first is None:
-            return True
-        slot = self.placed.get(first.job_id)
-        return slot is not None and gap_ok(slot[1], day, self.gap, self.origin)
+        """A battery day needs its install at least `gap` business days earlier."""
+        other = self.partner(job)
+        slot = self.placed.get(other.job_id) if other else None
+        if not job.final:
+            return slot is None or gap_ok(day, slot[1], self.gap, self.origin)
+        return other is None or (slot is not None and gap_ok(slot[1], day, self.gap, self.origin))
 
     def fits(self, jid: str, slot: Slot, *, check_ready: bool = True) -> bool:
         job = self.jobs[jid]

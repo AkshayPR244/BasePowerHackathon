@@ -113,8 +113,15 @@ def plan(base: Scenario, req: PlanRequest) -> PlanResult:
                 kind=DataKind.derived,
             )
         )
+    message = result.message
+    if value_note and not values:
+        message = f"{message} Energy values are unavailable, so value did not affect this plan."
     result = result.model_copy(
-        update={"solve_ms": int((time.monotonic() - t0) * 1000), "assumptions": notes}
+        update={
+            "solve_ms": int((time.monotonic() - t0) * 1000),
+            "assumptions": notes,
+            "message": message.strip(),
+        }
     )
     return _validated(scenario, result)
 
@@ -141,15 +148,30 @@ def _solve(scenario, req, forced, values, policy, common) -> PlanResult:
     elig = restrict_appointments(eligibility(scenario, mode, forced), req.edits)
     stages = _stage_list(mode, policy)
 
+    stuck = sorted(forced & set(elig.blocked))
+    if stuck:
+        site = next(s for s in scenario.sites if s.site_id == stuck[0])
+        detail = explain.blocked_detail(site, elig.blocked[stuck[0]], scenario)
+        return build_result(
+            scenario=scenario,
+            elig=elig,
+            placed=None,
+            status=PlanStatus.infeasible,
+            stages=_infeasible_stages(stages),
+            message=f"{explain.cannot_finish(stuck)} {detail}",
+            **common,
+        )
+
     missing = [
-        u for u in no_legal_date_jobs(scenario, elig) if mode == Mode.strict or u.site_id in forced
+        u
+        for u in no_legal_date_jobs(scenario, elig, req.edits)
+        if mode == Mode.strict or u.site_id in forced
     ]
     if missing:
-        ids = ", ".join(u.site_id for u in missing)
         lead = (
             "No plan meets every deadline."
             if mode == Mode.strict
-            else f"{ids} cannot finish by its deadline."
+            else explain.cannot_finish([u.site_id for u in missing])
         )
         return build_result(
             scenario=scenario,
@@ -230,20 +252,21 @@ def _solve(scenario, req, forced, values, policy, common) -> PlanResult:
         if status == PlanStatus.timeout_no_incumbent:
             msg = f"No plan found within {budget:g} s. This does not prove none exists."
         elif mode == Mode.strict or forced:
-            msg = (
-                "No plan meets every deadline with this crew capacity and inventory. "
-                "Try recovery mode."
+            hint = "Try recovery mode." if mode == Mode.strict else "Force fewer homes."
+            msg = f"No plan meets every deadline with this crew capacity and inventory. {hint}"
+            core = conflicting_jobs(
+                scenario, forced if mode == Mode.recovery else set(), budget, req.edits
             )
-            core = conflicting_jobs(scenario, forced if mode == Mode.recovery else set(), budget)
             if core:
                 if mode == Mode.recovery:
                     core = [sid for sid in core if sid in forced] or core
-                ids = ", ".join(core)
-                detail = (
-                    f"{ids} cannot all finish by their deadlines "
-                    "with the crews and inventory available."
+                lead = (
+                    f"{core[0]} cannot finish by its deadline"
+                    if len(core) == 1
+                    else f"{explain.join_ids(core)} cannot all finish by their deadlines"
                 )
-                msg = f"No plan meets every deadline. {detail} Try recovery mode."
+                detail = f"{lead} with the crews and inventory available."
+                msg = f"No plan meets every deadline. {detail} {hint}"
                 extra = [
                     UnscheduledJob(
                         site_id=sid,
@@ -314,7 +337,12 @@ def plan_message(scenario: Scenario, r: PlanResult) -> str:
     parts = [explain.describe_edits(scenario, r.edits)] if r.edits else []
     schedulable = o.jobs_on_time + o.jobs_late + o.jobs_unscheduled - o.jobs_blocked
     if o.jobs_late == 0 and o.jobs_unscheduled == o.jobs_blocked:
-        parts.append(f"All {schedulable} schedulable jobs meet their deadlines.")
+        if schedulable == 0:
+            parts.append("No home can be scheduled.")
+        elif schedulable == 1:
+            parts.append("The 1 schedulable job meets its deadline.")
+        else:
+            parts.append(f"All {schedulable} schedulable jobs meet their deadlines.")
     else:
         late = [a for a in r.assignments if a.days_late]
         for a in late:
@@ -324,18 +352,21 @@ def plan_message(scenario: Scenario, r: PlanResult) -> str:
             )
         n_uns = o.jobs_unscheduled - o.jobs_blocked
         if n_uns:
-            parts.append(f"{explain.plural(n_uns, 'job')} not scheduled.")
+            verb = "is" if n_uns == 1 else "are"
+            parts.append(f"{explain.plural(n_uns, 'home')} {verb} not scheduled.")
     if o.customers_to_reschedule and any(a.visit_type for a in r.assignments):
+        moves = "moves" if o.visits_moved == 1 else "move"
+        needs = "needs" if o.customers_to_reschedule == 1 else "need"
         parts.append(
-            f"{explain.plural(o.visits_moved, 'visit')} move, so "
-            f"{explain.plural(o.customers_to_reschedule, 'customer')} need a new date."
+            f"{explain.plural(o.visits_moved, 'visit')} {moves}, so "
+            f"{explain.plural(o.customers_to_reschedule, 'customer')} {needs} a new date."
         )
     blocked = [u for u in r.unscheduled if u.state == JobState.blocked]
     if blocked:
         if len(blocked) == 1:
             parts.append(f"Blocked: {blocked[0].detail}")
         else:
-            parts.append(f"{len(blocked)} jobs are blocked. See the deferred list.")
+            parts.append(f"{len(blocked)} homes are blocked. See the deferred list.")
     if r.status == PlanStatus.feasible:
         parts.append("The time limit ended before the solver proved this plan is the best.")
     return " ".join(p.strip() for p in parts if p)

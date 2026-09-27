@@ -3,6 +3,7 @@ from pathlib import Path
 
 import pytest
 
+from app.contracts.hashing import scenario_hash
 from app.contracts.models import CrewDay, PlanResult
 from app.data import load_scenario
 
@@ -19,6 +20,8 @@ def expected_plans():
 
 def edited_scenario(plan):
     s = load_scenario("tiny")
+    if plan.edits:
+        s.scenario_hash = scenario_hash(s, plan.edits)
     for e in plan.edits:
         if e.kind == "remove_crew_day":
             s.crew_days = [c for c in s.crew_days if (c.crew_id, c.date) != (e.crew_id, e.date)]

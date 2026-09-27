@@ -97,9 +97,13 @@ def validate_inputs(scenario: Scenario) -> list[InputIssue]:
         j = jobs.get(p.job_id)
         return j if j is not None and j.site_id == p.site_id else None
 
-    for key, count in Counter((p.site_id, p.job_id) for p in scenario.current_plan).items():
+    # A blank job_id means the home's final visit, so key rows on the visit they resolve to.
+    resolved = Counter(
+        j.job_id if (j := row_job(p)) else p.job_id or p.site_id for p in scenario.current_plan
+    )
+    for key, count in resolved.items():
         if count > 1:
-            add("DUPLICATE_PLANNED_INSTALL", f"Multiple current plan rows for {key[1] or key[0]}")
+            add("DUPLICATE_PLANNED_INSTALL", f"Multiple current plan rows for {key}")
     locks = []
     for p in scenario.current_plan:
         site, crew, job = sites.get(p.site_id), crew_days.get((p.crew_id, p.date)), row_job(p)

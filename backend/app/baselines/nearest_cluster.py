@@ -4,24 +4,19 @@ A crew keeps its previous cluster while work remains there. Otherwise it takes t
 with the most pending visits it can serve that day.
 """
 
-from app.baselines.greedy import Board, Slot
+from app.baselines.greedy import Board
 from app.contracts.models import Scenario
 from app.planning.model import Eligibility
 
 
-def nearest_cluster(
-    scenario: Scenario, elig: Eligibility, locks: dict[str, Slot], forced: set[str]
-) -> Board:
-    board = Board(scenario, elig)
-    for jid, slot in sorted(locks.items(), key=lambda kv: board.jobs[kv[0]].final):
-        board.place(jid, slot)
+def nearest_cluster(scenario: Scenario, elig: Eligibility, board: Board, forced: set[str]) -> Board:
     sites, jobs = board.sites, board.jobs
     last: dict[str, str] = {}
     for c in sorted(scenario.crew_days, key=lambda c: (c.date, c.crew_id)):
         slot = (c.crew_id, c.date)
         pending = [
             jid
-            for jid, opts in elig.any_option.items()
+            for jid, opts in elig.options.items()
             if jid not in board.placed and slot in opts and board.ready(jobs[jid], c.date)
         ]
         if pending:

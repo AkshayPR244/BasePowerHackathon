@@ -118,9 +118,10 @@ export const unproven = (option: Option) =>
 export function validationLabel(option: Option): string {
   const validation = option.result.validation;
   if (!validation.checked) return "Not validated";
-  return validation.valid
+  if (!validation.valid) return `${validation.issues.length} violations`;
+  return option.status === "optimal" || option.status === "feasible"
     ? "Validated"
-    : `${validation.issues.length} violations`;
+    : "No plan to draw";
 }
 
 // A plan is drawn or approved only when it exists and the independent validator passed it.

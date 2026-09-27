@@ -338,6 +338,9 @@ export function PlanFigure({
         {traceHomeId && (
           <span className="trace-label">Tracing {traceHomeId}</span>
         )}
+        <span className="cluster-key">
+          Synthetic home prefixes: N North, S South, W West
+        </span>
       </div>
       {view === "crew" ? (
         <div className="crew-plot" ref={plotRef} data-tool={tool}>

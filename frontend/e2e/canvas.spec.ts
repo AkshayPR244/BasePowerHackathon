@@ -47,6 +47,27 @@ async function waitForRecovery(page: Page, info: TestInfo, name: string) {
   await capture(page, info, name);
 }
 
+async function expectVisibleCrewSkills(page: Page) {
+  const mismatches = await page
+    .locator(".crew-row-fragment")
+    .evaluateAll((rows) =>
+      rows.flatMap((row) => {
+        const role = row
+          .querySelector(".crew-label small")
+          ?.textContent?.trim();
+        return [...row.querySelectorAll(".visit-mark")]
+          .filter((visit) => {
+            const expectedRole = visit.classList.contains("visit-install")
+              ? "Install crew"
+              : "Battery crew";
+            return role !== "Temporary crew" && role !== expectedRole;
+          })
+          .map((visit) => ({ role, visit: visit.textContent?.trim() }));
+      }),
+    );
+  expect(mismatches).toEqual([]);
+}
+
 test("baseline, linked options, plan views, and approval", async ({
   page,
 }, info) => {
@@ -55,6 +76,9 @@ test("baseline, linked options, plan views, and approval", async ({
   await expect(
     page.getByText("Costs are modeled", { exact: true }),
   ).toBeVisible();
+  await expect(page.locator(".cluster-key")).toContainText(
+    "N North, S South, W West",
+  );
   const triggerMeanings = [
     ["knockout", "Remove this crew-day's capacity."],
     ["halfday", "Keep half of its available minutes."],
@@ -73,6 +97,11 @@ test("baseline, linked options, plan views, and approval", async ({
   await expect(page.locator(".option-chip")).toHaveCount(
     await optionPoints.count(),
   );
+  const optionChips = page.locator(".option-chip");
+  for (let index = 0; index < (await optionChips.count()); index += 1) {
+    await optionChips.nth(index).click();
+    await expectVisibleCrewSkills(page);
+  }
   if ((await optionPoints.count()) > 1) {
     await optionPoints.nth(1).click();
     await capture(page, info, "01-selected-option");

@@ -348,6 +348,13 @@ p {
   color: var(--plot-line);
 }
 
+.cluster-key {
+  margin-left: auto;
+  color: var(--ink-2);
+  font-size: 9px;
+  white-space: nowrap;
+}
+
 .crew-plot {
   position: relative;
   display: grid;

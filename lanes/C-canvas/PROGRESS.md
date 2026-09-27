@@ -4,11 +4,11 @@
 
 Any agent or person can pick this up cold. Rewrite this block before you stop.
 
-- **Branch:** `lane/C-canvas`, synced through `origin/main` at the Lane R integration. Push the completed C changes and request review.
+- **Branch:** `lane/C-canvas`, synced through `origin/main` at `4df6c6f`. The prior canvas is merged in PR #10; this live-sandbox redesign is follow-up C work.
 - **Setup:** `cd frontend && pnpm install`
 - **Check:** `cd frontend && pnpm typecheck && pnpm test && pnpm build`
 - **Read first:** `AGENTS.md`, `CLAUDE.md` ("Product (read first)"), `lanes/C-canvas/BRIEF.md`, `docs/DESIGN.md`, `docs/CONTRACTS.md` (recovery shapes), `frontend/src/mocks/recorded/index.json`, `.claude/skills/design-system/SKILL.md`
-- **Next:** No unchecked C feature items remain. Commit and push the C work, then request team/evaluator review.
+- **Next:** C-16 is implemented and locally verified. Request review after H updates the legacy shell/flow e2e specs.
 - **Then:** the next item in `lanes/C-canvas/feature_list.json` with `"passes": false`, highest priority first.
 
 ## Done
@@ -29,9 +29,10 @@ Any agent or person can pick this up cold. Rewrite this block before you stop.
 - C-13: affected homes are highlighted and counted by cluster, with no routes or storm movement.
 - C-14: number keys select options, A opens approval, and K tests a crew-day knockout.
 - C-15: the canvas remains visible in dark mode. Evidence: `frontend/e2e/screenshots/canvas-dark.png`.
+- C-16: rebuilt the default view as a trigger-driven live recovery canvas with crew/home figures, a validated option frontier, and approval. It has no weather framing. All six trigger definitions are visible. During a solve, the prior revision stays visible under a stale label with approval paused; one API-derived move path compares the previous displayed plan with the new recovery, while a stronger persistent tint marks cumulative moves from the current plan. The home timeline uses the same previous-plan baseline. Disruptions and home protection call `/api/recovery/evaluate`; returned custom plans are shown only when validated at the current revision, and stale evaluator responses are ignored. All eight C-owned live Playwright flows pass at 1440×900 with screenshots after each interaction and no page scroll. Frontend unit tests (29), typecheck, build, and format check pass.
 
 ## In progress
 - None.
 
 ## Blockers
-- `pnpm test` still fails only at the known H-04 stale expectation in `src/lib/export.test.ts`. C left that H-owned test unchanged; 27 of 28 frontend unit tests pass.
+- H-owned `frontend/e2e/` flows still need to be updated from the retired Workspace UI to the live recovery canvas; C-owned `canvas.spec.ts` covers the live triggers, evaluator requests, options, trace, and approval.

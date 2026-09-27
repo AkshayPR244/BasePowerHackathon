@@ -1,380 +1,283 @@
-import { expect, test } from "@playwright/test";
-import { load } from "./helpers";
+import { expect, test, type Page, type TestInfo } from "@playwright/test";
 
-test("standard scenario shows both visits with unique keys", async ({
-  page,
-}) => {
-  const duplicateKeyWarnings: string[] = [];
-  page.on("console", (message) => {
-    if (message.text().includes("same key"))
-      duplicateKeyWarnings.push(message.text());
-  });
-
-  await load(page);
-  await page
-    .getByRole("combobox", { name: "Scenario" })
-    .selectOption("standard");
-
-  const visits = page.locator(".job").filter({ hasText: "N-01" });
-  await expect(visits).toHaveCount(2);
-  await expect(
-    visits.filter({ hasText: "Install · 120 min on-site" }),
-  ).toHaveCount(1);
-  await expect(
-    visits.filter({ hasText: "Battery day · 60 min on-site" }),
-  ).toHaveCount(1);
-  await expect(
-    visits.filter({ hasText: "Install · 120 min on-site" }),
-  ).toBeVisible();
-  await expect(
-    visits.filter({ hasText: "Battery day · 60 min on-site" }),
-  ).toBeVisible();
-  expect(duplicateKeyWarnings).toEqual([]);
-
-  await page.screenshot({
-    path: "e2e/screenshots/standard-two-visit.png",
-    fullPage: true,
-  });
+test.beforeEach(async () => {
+  test.skip(process.env.CANVAS_LIVE !== "1", "Uses the real recovery API.");
 });
 
-test("disruption bar summarizes storm impact and no-action cost", async ({
-  page,
-}) => {
-  await load(page);
-  await page
-    .getByRole("combobox", { name: "Scenario" })
-    .selectOption("standard");
-
-  const bar = page.getByTestId("disruption-bar");
-  await expect(bar.locator(".disruption-summary strong")).toContainText(
-    "visits affected",
-  );
-  await expect(bar).toContainText("This replay applies a modeled operational");
-  await expect(bar.getByTestId("affected-visits")).toContainText("7");
-  await expect(bar.getByTestId("deadlines-at-risk")).toContainText("7");
-  await expect(bar.getByTestId("no-action-cost")).toContainText("$630.25");
-  await expect(bar.getByText("Stub data")).toHaveCount(0);
-
-  await page.screenshot({
-    path: "e2e/screenshots/canvas-disruption.png",
-    fullPage: true,
+async function openCanvas(page: Page, info: TestInfo) {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto("/");
+  await page.waitForLoadState("networkidle");
+  await expect(page.getByTestId("live-recovery-canvas")).toBeVisible();
+  await expect(page.getByTestId("live-results")).toBeVisible({
+    timeout: 60_000,
   });
-});
+  await capture(page, info, "00-baseline");
+}
 
-test("cascade steps highlight affected visits", async ({ page }) => {
-  await load(page);
-  await page
-    .getByRole("combobox", { name: "Scenario" })
-    .selectOption("standard");
+async function capture(page: Page, info: TestInfo, name: string) {
+  const dimensions = await page.evaluate(() => ({
+    width: window.innerWidth,
+    height: window.innerHeight,
+    documentWidth: document.documentElement.scrollWidth,
+    documentHeight: document.documentElement.scrollHeight,
+  }));
+  expect(dimensions.width).toBe(1440);
+  expect(dimensions.height).toBe(900);
+  expect(dimensions.documentWidth).toBeLessThanOrEqual(1440);
+  expect(dimensions.documentHeight).toBeLessThanOrEqual(900);
+  await page.screenshot({ path: info.outputPath(`${name}.png`) });
+}
 
-  const direct = page.getByTestId("cascade-direct");
-  await expect(direct).toContainText("Visits using changed resources");
-  await direct.click();
-  await expect(direct).toHaveAttribute("aria-pressed", "true");
-  await expect(page.getByTestId("visit-S-02-B")).toHaveClass(/highlighted/);
-  await expect(page.getByTestId("visit-S-02-I")).not.toHaveClass(/highlighted/);
-  await page.getByRole("button", { name: "Clear highlight" }).click();
-  await expect(page.getByTestId("visit-S-02-B")).not.toHaveClass(/highlighted/);
-});
-
-test("plan lanes order crews and show visit links and lost capacity", async ({
-  page,
-}) => {
-  await load(page);
-  await page
-    .getByRole("combobox", { name: "Scenario" })
-    .selectOption("standard");
-
-  const crewRows = page.locator(".calendar tbody tr");
-  await expect(crewRows.nth(0)).toContainText("Crew IA");
-  await expect(crewRows.nth(1)).toContainText("Crew IB");
-  await expect(crewRows.nth(2)).toContainText("Crew BA");
-  await expect(page.getByTestId("lost-capacity-IA-2018-06-14")).toBeVisible();
-  await expect(page.getByTestId("visit-arc").first()).toBeAttached();
-
-  await page.screenshot({
-    path: "e2e/screenshots/canvas-lanes.png",
-    fullPage: true,
-  });
-});
-
-test("diff overlays show old positions and respect reduced motion", async ({
-  page,
-}) => {
-  await page.emulateMedia({ reducedMotion: "reduce" });
-  await load(page);
-  await page
-    .getByRole("combobox", { name: "Scenario" })
-    .selectOption("standard");
-
-  await expect(page.locator(".moved-ghost").first()).toBeVisible();
-  await expect(page.locator(".moved-visit").first()).toBeVisible();
-  await expect(page.locator(".unchanged-visit").first()).toBeVisible();
-  await expect(page.locator(".moved-visit").first()).toHaveCSS(
-    "animation-name",
-    "none",
-  );
-
-  await page.screenshot({
-    path: "e2e/screenshots/canvas-diff.png",
-    fullPage: true,
-  });
-});
-
-test("options show modeled cost, customer impact, overtime, and lowest cost", async ({
-  page,
-}) => {
-  await load(page);
-  await page
-    .getByRole("combobox", { name: "Scenario" })
-    .selectOption("standard");
-
-  const options = page.getByTestId("option-list");
-  await expect(options.locator("button[data-option-kind]")).toHaveCount(3);
-  const rebalance = options.locator('[data-option-kind="rebalance"]');
-  const temporary = options.locator('[data-option-kind="temporary_capacity"]');
-  await expect(rebalance).toContainText("Lowest modeled cost");
-  await expect(rebalance).toContainText("$353.83");
-  await expect(temporary).toContainText("7 customers to reschedule");
-  await expect(temporary).toContainText("$453.28");
-  const overtime = options.locator('[data-option-kind="overtime"]');
-  if (await overtime.count())
-    await expect(overtime).toContainText("min overtime");
-
-  await page.screenshot({
-    path: "e2e/screenshots/canvas-options.png",
-    fullPage: true,
-  });
-});
-
-test("approve confirms the selected recovery option", async ({ page }) => {
-  await load(page);
-  await page
-    .getByRole("combobox", { name: "Scenario" })
-    .selectOption("standard");
-
-  const panel = page.getByTestId("option-panel");
-  await expect(panel).toContainText("Rebalance existing crews");
-  await expect(panel).toContainText("$353.83");
-  await page.getByTestId("approve-option").click();
-  const dialog = page.getByRole("dialog");
-  await expect(dialog).toContainText("18 customers to reschedule");
-  await dialog.getByRole("button", { name: "Confirm approval" }).click();
-  await expect(page.getByTestId("approval-result")).toContainText(
-    "Recovery approved for this analysis.",
-  );
-  await expect(page.getByTestId("approval-result")).not.toContainText(
-    "Stub data.",
-  );
-
-  await page.screenshot({
-    path: "e2e/screenshots/canvas-approve.png",
-    fullPage: true,
-  });
-});
-
-test("manipulate actions call the live evaluator", async ({ page }) => {
-  test.skip(process.env.CANVAS_LIVE !== "1", "Runs against the live API only.");
-  const evaluations: { disruption: unknown[]; interventions: unknown[] }[] = [];
-  const evaluationStatuses: number[] = [];
-  page.on("request", (request) => {
-    if (request.url().endsWith("/api/recovery/evaluate"))
-      evaluations.push(request.postDataJSON());
-  });
-  page.on("response", (response) => {
-    if (response.url().endsWith("/api/recovery/evaluate"))
-      evaluationStatuses.push(response.status());
-  });
-  await load(page);
-  await page
-    .getByRole("combobox", { name: "Scenario" })
-    .selectOption("standard");
-
-  const controls = page.getByTestId("evaluation-controls");
-  const actions = [
-    "Knock out Crew IB · Wed 13 Jun",
-    "Add 120 min overtime",
-    "Pin N-02 battery day",
-    "Move N-02 battery day",
-  ];
-  for (const [index, name] of actions.entries()) {
-    await controls.getByRole("button", { name }).click();
-    await expect.poll(() => evaluations.length).toBe(index + 1);
-    await expect.poll(() => evaluationStatuses.length).toBe(index + 1);
-    expect(evaluationStatuses[index]).toBe(200);
-    await expect(controls.locator(".evaluation-result")).toContainText(
-      "Evaluate manual recovery changes",
-    );
-  }
-  expect(evaluations[0].disruption).toHaveLength(4);
-  expect(evaluations[1].interventions).toMatchObject([
-    { kind: "extend_crew_day", extra_min: 120 },
-  ]);
-  expect(evaluations[2].interventions).toMatchObject([
-    { kind: "pin_visit", job_id: "N-02-B" },
-  ]);
-  expect(evaluations[3].interventions).toMatchObject([
-    { kind: "move_visit", job_id: "N-02-B" },
-  ]);
-});
-
-test("live canvas loads recovery impact and options", async ({ page }) => {
-  test.skip(process.env.CANVAS_LIVE !== "1", "Runs against the live API only.");
-  await load(page);
-  await expect(page.getByText("Live API", { exact: true })).toBeVisible();
-  await page
-    .getByRole("combobox", { name: "Scenario" })
-    .selectOption("standard");
-  await expect(page.getByTestId("disruption-bar")).toContainText(
-    "7 visits affected",
-    { timeout: 60_000 },
-  );
-  await expect(
-    page.getByTestId("option-list").locator("button[data-option-kind]"),
-  ).not.toHaveCount(0);
-  await page.locator('[data-option-kind="rebalance"]').click();
-  await page.getByTestId("approve-option").click();
-  const dialog = page.getByRole("dialog");
-  await dialog.getByRole("button", { name: "Confirm approval" }).click();
-  await expect(page.getByTestId("approval-result")).toContainText(
-    "Recovery approved for this analysis.",
-  );
-
-  await page.screenshot({
-    path: "e2e/screenshots/canvas-live.png",
-    fullPage: true,
-  });
-});
-
-test("option thumbnails compare crew load by day", async ({ page }) => {
-  await load(page);
-  await page
-    .getByRole("combobox", { name: "Scenario" })
-    .selectOption("standard");
-
-  const cards = page.locator(".option-card");
-  await expect(cards.first()).toBeVisible();
-  await expect(cards.first().locator(".mini-lane")).toHaveCount(3);
-  await expect(cards.first().locator(".mini-lane-day")).not.toHaveCount(0);
-  await expect(
-    cards.first().getByLabel("Crew load before and after"),
-  ).toBeVisible();
-
-  await page.screenshot({
-    path: "e2e/screenshots/canvas-thumbnails.png",
-    fullPage: true,
-  });
-});
-
-test("economic drawer shows each line and its basis", async ({ page }) => {
-  await load(page);
-  await page
-    .getByRole("combobox", { name: "Scenario" })
-    .selectOption("standard");
-
-  const breakdown = page.getByTestId("economic-breakdown");
-  await breakdown.locator("summary").click();
-  await expect(breakdown).toContainText("Lost modeled operating value");
-  await expect(breakdown).toContainText(
-    "Original minus option gross operating margin",
-  );
-
-  await page.screenshot({
-    path: "e2e/screenshots/canvas-drawer.png",
-    fullPage: true,
-  });
-});
-
-test("assumptions edits are sent as economics overrides", async ({ page }) => {
-  test.skip(process.env.CANVAS_LIVE !== "1", "Runs against the live API only.");
-  const requests: Record<string, unknown>[] = [];
-  page.on("request", (request) => {
-    if (request.url().endsWith("/api/recovery/options"))
-      requests.push(request.postDataJSON());
-  });
-  await load(page);
-  await page
-    .getByRole("combobox", { name: "Scenario" })
-    .selectOption("standard");
-
-  const assumptions = page.getByTestId("assumptions-panel");
-  await assumptions.locator("summary").click();
-  await assumptions
-    .getByRole("spinbutton", { name: "hourly wage" })
-    .fill("100");
-  await assumptions.getByTestId("apply-economics").click();
-  await expect
-    .poll(() => requests.some((request) => request.economics_overrides))
-    .toBe(true);
-  expect(requests.at(-1)?.economics_overrides).toMatchObject({
-    hourly_wage: 100,
-  });
-  await expect(assumptions).toContainText("Operator override");
-});
-
-test("map inset groups affected homes by cluster", async ({ page }) => {
-  await load(page);
-  await page
-    .getByRole("combobox", { name: "Scenario" })
-    .selectOption("standard");
-
-  const inset = page.getByTestId("affected-map-inset");
-  await expect(inset).toContainText("Affected homes by cluster");
-  const southCluster = inset.locator(".affected-cluster").filter({
-    hasText: "7 affected homes",
-  });
-  await expect(southCluster).toContainText("S");
-  await expect(southCluster).toContainText("7 affected homes");
-  await expect(
-    page.getByRole("button", { name: /Select S-02.*affected by disruption/ }),
-  ).toBeVisible();
-});
-
-test("keyboard keys select options, approve, and knock out a crew-day", async ({
-  page,
-}) => {
-  await load(page);
-  await page
-    .getByRole("combobox", { name: "Scenario" })
-    .selectOption("standard");
-
-  await page.keyboard.press("2");
-  await expect(page.locator('[data-option-kind="rebalance"]')).toHaveAttribute(
+async function chooseTool(page: Page, info: TestInfo, tool: string) {
+  await page.getByTestId(`tool-${tool}`).click();
+  await expect(page.getByTestId(`tool-${tool}`)).toHaveAttribute(
     "aria-pressed",
     "true",
   );
-  await page.keyboard.press("a");
-  await expect(page.getByRole("dialog")).toBeVisible();
-  await page.getByRole("button", { name: "Cancel" }).click();
-  const evaluations: unknown[] = [];
-  page.on("request", (request) => {
-    if (request.url().endsWith("/api/recovery/evaluate"))
-      evaluations.push(request.postDataJSON());
+  await capture(page, info, `01-tool-${tool}`);
+}
+
+async function waitForRecovery(page: Page, info: TestInfo, name: string) {
+  await expect(page.getByTestId("live-results")).toBeVisible({
+    timeout: 60_000,
   });
-  await page.keyboard.press("k");
-  await expect.poll(() => evaluations.length).toBe(1);
+  await expect(page.getByTestId("working-state")).toHaveCount(0);
+  await expect(page.getByTestId("previous-result")).toHaveCount(0);
+  await capture(page, info, name);
+}
+
+test("baseline, linked options, plan views, and approval", async ({
+  page,
+}, info) => {
+  await openCanvas(page, info);
+  await expect(page.getByText("Synthetic plan", { exact: true })).toBeVisible();
+  await expect(
+    page.getByText("Costs are modeled", { exact: true }),
+  ).toBeVisible();
+  const triggerMeanings = [
+    ["knockout", "Remove this crew-day's capacity."],
+    ["halfday", "Keep half of its available minutes."],
+    ["long", "Subtract this visit's duration from its crew-day."],
+    ["reschedule", "Set this home's visits to start next business day."],
+    ["protect", "Pin its visits to their current crews and days."],
+    ["trace", "Compare its current and recovered battery day."],
+  ];
+  for (const [tool, meaning] of triggerMeanings) {
+    await expect(page.getByTestId(`tool-${tool}`)).toContainText(meaning);
+  }
+
+  const optionPoints = page.locator(".frontier-point circle");
+  await expect(optionPoints.first()).toBeVisible();
+  if ((await optionPoints.count()) > 1) {
+    await optionPoints.nth(1).click();
+    await capture(page, info, "01-selected-option");
+    await expect(page.getByTestId("selected-recovery")).toBeVisible();
+  }
+
+  await page.getByRole("button", { name: "By home" }).click();
+  await expect(page.locator(".home-row")).toHaveCount(45);
+  await capture(page, info, "02-by-home");
+  await page.getByRole("button", { name: "By crew" }).click();
+  await expect(page.locator(".crew-day").first()).toBeVisible();
+  await capture(page, info, "03-by-crew");
+
+  await page.getByTestId("approve-option").click();
+  await expect(page.getByRole("dialog")).toBeVisible();
+  await capture(page, info, "04-approve-confirmation");
+  await page.getByRole("button", { name: "Confirm approval" }).click();
+  await expect(page.getByTestId("approval-status")).toBeVisible({
+    timeout: 60_000,
+  });
+  await capture(page, info, "05-approved");
 });
 
-test("dark canvas preserves readable recovery controls", async ({ page }) => {
-  await load(page);
-  await page
-    .getByRole("combobox", { name: "Scenario" })
-    .selectOption("standard");
-  const lightBackground = await page
-    .locator("body")
-    .evaluate((body) => getComputedStyle(body).backgroundColor);
-
-  await page.getByRole("button", { name: "Toggle dark mode" }).click();
-  await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
-  const darkBackground = await page
-    .locator("body")
-    .evaluate((body) => getComputedStyle(body).backgroundColor);
-  expect(darkBackground).not.toBe(lightBackground);
-  await expect(page.getByTestId("disruption-bar")).toBeVisible();
-  await expect(page.getByTestId("option-list")).toBeVisible();
-
-  await page.screenshot({
-    path: "e2e/screenshots/canvas-dark.png",
-    fullPage: true,
+test("knock out a crew-day from the plan", async ({ page }, info) => {
+  await openCanvas(page, info);
+  await chooseTool(page, info, "knockout");
+  await page.route("**/api/recovery/options", async (route) => {
+    if (route.request().postDataJSON()?.revision === 1) {
+      await new Promise((resolve) => setTimeout(resolve, 1200));
+    }
+    await route.continue();
   });
+  const evaluation = page.waitForResponse(
+    (response) =>
+      response.url().includes("/api/recovery/evaluate") &&
+      response.request().method() === "POST",
+  );
+  await page.locator(".crew-day-action:not(:disabled)").first().click();
+  await expect(page.getByTestId("previous-result")).toBeVisible();
+  await expect(page.getByTestId("plan-figure")).toBeVisible();
+  await expect(page.getByTestId("live-subline")).toContainText(
+    "Reassigning its visits",
+  );
+  await expect(page.getByTestId("approve-option")).toBeDisabled();
+  await expect(page.getByTestId("selected-recovery")).toContainText(
+    "Previous result. Approval is paused",
+  );
+  await capture(page, info, "01-previous-result-while-solving");
+  const evaluated = await evaluation;
+  expect(evaluated.ok()).toBeTruthy();
+  expect(await evaluated.json()).toMatchObject({ kind: "custom" });
+  expect(evaluated.request().postDataJSON()).toMatchObject({
+    scenario_id: "standard",
+    revision: 1,
+    interventions: [],
+  });
+  await expect(page.getByTestId("live-headline")).toContainText("loses");
+  await waitForRecovery(page, info, "02-knockout-applied");
+  await expect(
+    page.locator('.option-chip[data-option-kind="custom"]'),
+  ).toBeVisible();
+  await expect(page.locator(".trace-overlay-arrival path")).toHaveCount(1);
+  await expect(page.locator(".move-origin-anchor")).toHaveCount(1);
+  await expect(page.locator(".visit-old-mark")).toHaveCount(0);
+  const movedVisit = page.locator(".visit-moved > button").first();
+  const movedShade = await movedVisit.evaluate(
+    (element) => getComputedStyle(element).backgroundColor,
+  );
+  const originalShade = await page
+    .locator(".visit-install:not(.visit-moved) > button")
+    .first()
+    .evaluate((element) => getComputedStyle(element).backgroundColor);
+  expect(movedShade).not.toBe(originalShade);
+  await page.locator(".trigger-rail").hover();
+  await page.waitForTimeout(1500);
+  await expect(page.locator(".trace-overlay-arrival path")).toHaveCount(0);
+  await expect(movedVisit).toBeVisible();
+  expect(
+    await movedVisit.evaluate(
+      (element) => getComputedStyle(element).backgroundColor,
+    ),
+  ).toBe(movedShade);
+
+  const previousSlots = await page
+    .locator(".visit-mark > button")
+    .evaluateAll((buttons) =>
+      Object.fromEntries(
+        buttons.map((button) => {
+          const cell = button.closest(".crew-day");
+          return [
+            button.dataset.newKey,
+            `${cell?.getAttribute("data-crew-id")}|${cell?.getAttribute("data-date")}`,
+          ];
+        }),
+      ),
+    );
+  await page
+    .locator(
+      '.crew-day[data-crew-id="IB"][data-date="2018-06-04"] .crew-day-action',
+    )
+    .click();
+  await expect(page.getByTestId("live-headline")).toContainText(
+    "Crew IB loses",
+  );
+  await waitForRecovery(page, info, "03-second-change-applied");
+  const origin = await page
+    .locator(".move-origin-anchor")
+    .evaluate((anchor) => ({
+      key: anchor.getAttribute("data-old-key"),
+      slot: `${anchor.parentElement?.getAttribute("data-crew-id")}|${anchor.parentElement?.getAttribute("data-date")}`,
+    }));
+  expect(previousSlots[origin.key ?? ""]).toBe(origin.slot);
+  await page.getByRole("button", { name: "By home" }).click();
+  await expect(page.locator(".visit-key")).toContainText(
+    "Previous plan battery day",
+  );
+  await expect(page.locator(".home-row").first()).toHaveAttribute(
+    "aria-label",
+    /previous plan battery day/,
+  );
+  await capture(page, info, "04-second-change-by-home");
+});
+
+test("cut a crew-day to half capacity", async ({ page }, info) => {
+  await openCanvas(page, info);
+  await chooseTool(page, info, "halfday");
+  await page.locator(".crew-day-action:not(:disabled)").nth(1).click();
+  await expect(page.getByTestId("live-headline")).toContainText("half day");
+  await waitForRecovery(page, info, "02-half-day-applied");
+});
+
+test("mark a visit as running long", async ({ page }, info) => {
+  await openCanvas(page, info);
+  await chooseTool(page, info, "long");
+  await page.locator(".visit-mark > button").first().click();
+  await expect(page.getByTestId("live-headline")).toContainText("runs long");
+  await waitForRecovery(page, info, "02-running-long-applied");
+});
+
+test("reschedule a home from the plan", async ({ page }, info) => {
+  await openCanvas(page, info);
+  await page.getByRole("button", { name: "By home" }).click();
+  await capture(page, info, "01-by-home");
+  await chooseTool(page, info, "reschedule");
+  await page.locator(".home-row").first().click();
+  await expect(page.getByTestId("live-headline")).toContainText(
+    "needs a new date",
+  );
+  await waitForRecovery(page, info, "03-home-rescheduled");
+});
+
+test("protect a home from movement", async ({ page }, info) => {
+  await openCanvas(page, info);
+  await page.getByRole("button", { name: "By home" }).click();
+  await capture(page, info, "01-by-home");
+  await chooseTool(page, info, "protect");
+  const home = page.locator(".home-row").first();
+  const homeId = (await home.locator("strong").innerText()).trim();
+  const evaluation = page.waitForResponse(
+    (response) =>
+      response.url().includes("/api/recovery/evaluate") &&
+      response.request().method() === "POST",
+  );
+  await home.click();
+  const evaluated = await evaluation;
+  expect(evaluated.ok()).toBeTruthy();
+  expect(evaluated.request().postDataJSON().interventions).toContainEqual(
+    expect.objectContaining({ kind: "pin_visit" }),
+  );
+  await expect(page.getByTestId("live-headline")).toContainText(
+    `${homeId} is protected`,
+  );
+  await waitForRecovery(page, info, "03-home-protected");
+});
+
+test("trace one home and reveal only its movement", async ({ page }, info) => {
+  await openCanvas(page, info);
+  const movableVisit = page
+    .locator('.visit-mark button[data-state="scheduled"]')
+    .first();
+  const crewDay = movableVisit.locator(
+    "xpath=ancestor::div[contains(@class,'crew-day')]",
+  );
+  await chooseTool(page, info, "knockout");
+  await crewDay.locator(".crew-day-action").click();
+  await waitForRecovery(page, info, "02-triggered-plan");
+  const movedVisit = page.locator(".visit-moved > button").first();
+  await expect(movedVisit).toBeVisible();
+  await chooseTool(page, info, "trace");
+  await movedVisit.hover();
+  await expect(page.locator(".trace-overlay path")).toHaveCount(1);
+  await capture(page, info, "03-one-move-traced");
+  await movedVisit.click();
+  await expect(page.getByText(/Tracing home/)).toBeVisible();
+  await capture(page, info, "04-home-traced");
+});
+
+test("random trigger re-solves and reset restores the baseline", async ({
+  page,
+}, info) => {
+  await openCanvas(page, info);
+  await page.getByTestId("random-trigger").click();
+  await expect(page.getByTestId("live-headline")).not.toContainText(
+    "ready to change",
+  );
+  await waitForRecovery(page, info, "01-random-trigger");
+  await page.getByTestId("reset-plan").click();
+  await expect(page.getByTestId("live-headline")).toContainText(
+    "current plan is restored",
+  );
+  await waitForRecovery(page, info, "02-reset-baseline");
 });

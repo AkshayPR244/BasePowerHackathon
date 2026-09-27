@@ -35,10 +35,13 @@ Any agent or person can pick this up cold. Rewrite this block before you stop.
 - QA sweep fixes (2026-09-26, `fix/canvas`): the app opens on `standard` and the Recovery Canvas is the page. The day 1 workspace is behind "Advanced: baseline plan" and opens by default only for scenarios with no recovery case (`?scenario=tiny`). Canvas state is keyed on scenario and demo session. Approval resets on option change and ignores stale responses. The confirm dialog is a modal `<dialog>` that freezes its option. Ghosts render in lost crew-day cells. Invalid, timed-out, and unproven options are labeled, never drawn, and cannot be approved. Economics overrides keep the last good options on error and offer Reset assumptions. Evaluate sends overrides and the analysis revision. Mocks match on the full recovery request. Theme follows the system and persists. Light tokens pass AA (`--accent #c4470a`, `--st-late #8a6508`).
 - C-17 to C-21 pass in mock mode. Evidence: `frontend/e2e/screenshots/canvas-first.png`, `canvas-dark.png`.
 
+- Integration with main (`integrate/ui-canvas`): the live canvas is the default page. It ignores stale approvals, uses a modal confirm dialog, draws ghosts in lost crew-day cells, labels withheld and unproven options, follows the system theme, and keeps locked rows locked. Mock tests and screenshots: `frontend/e2e/canvas-live.spec.ts`, `frontend/e2e/screenshots/live-canvas.png`, `live-canvas-knockout.png`, `live-canvas-dark.png`.
+
 ## In progress
 - None.
 
 ## Blockers
 - The live checks for C-08, C-09, and C-12 were not run in this pass. The backend was changing. Needs: a running live API on port 8000.
-- `docs/DESIGN.md` still lists the old light `--accent` and `--st-late` values. Docs are not in lane C's paths.
+- `docs/DESIGN.md` still lists the old palette. The light tokens are now `--accent #b03f33`, `--st-scheduled #456b60`, `--st-locked #526c7d`. Docs are not in lane C's paths.
+- Knock out on a crew-day with locked installs (Mon 4 Jun) makes every option infeasible. The canvas shows the reason. Decide if the canvas should block that click.
 - The H-owned e2e specs still test the workspace view at `/?scenario=tiny`. The live canvas has its own mock and live tests in `frontend/e2e/canvas.spec.ts`.

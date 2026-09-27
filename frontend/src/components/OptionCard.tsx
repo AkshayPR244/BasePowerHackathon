@@ -85,6 +85,17 @@ export function OptionCard({
         {!valid && " · No validated plan to approve"}
       </span>
       <span className="mini-lanes" aria-label="Crew load before and after">
+        <span className="mini-lanes-heading">
+          <strong>Crew workload before and after</strong>
+          <span className="mini-lanes-legend" aria-label="Workload legend">
+            <span>
+              <i className="mini-before" aria-hidden="true" /> Before
+            </span>
+            <span>
+              <i className="mini-after" aria-hidden="true" /> After
+            </span>
+          </span>
+        </span>
         {crews.map((crew) => (
           <span className="mini-lane" key={crew}>
             <span className="mini-lane-label">{crew}</span>
@@ -96,6 +107,7 @@ export function OptionCard({
                     className="mini-lane-day"
                     key={`${crew}-${load.date}`}
                     title={`${crew} ${load.date}: ${(load.before * 100).toFixed(0)}% before, ${(load.after * 100).toFixed(0)}% after`}
+                    aria-label={`${crew} ${load.date}: ${(load.before * 100).toFixed(0)}% before, ${(load.after * 100).toFixed(0)}% after`}
                   >
                     <span
                       className="mini-before"

@@ -556,6 +556,13 @@ test("option thumbnails compare crew load by day", async ({ page }) => {
   await expect(
     cards.first().getByLabel("Crew load before and after"),
   ).toBeVisible();
+  await expect(cards.first()).toContainText("Crew workload before and after");
+  await expect(cards.first().getByLabel("Workload legend")).toContainText(
+    "Before",
+  );
+  await expect(cards.first().getByLabel("Workload legend")).toContainText(
+    "After",
+  );
 
   await page.screenshot({
     path: "e2e/screenshots/canvas-thumbnails.png",

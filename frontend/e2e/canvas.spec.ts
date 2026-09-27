@@ -501,6 +501,9 @@ test("manipulate actions call the live evaluator", async ({ page }) => {
     "pin-visit",
     "move-visit",
   ].entries()) {
+    // After the storm only battery days remain, so only Crew BA can take a move.
+    if (id === "move-visit")
+      await controls.getByLabel("Crew").selectOption("BA");
     await controls.getByTestId(id).click();
     await expect.poll(() => evaluationStatuses.length).toBe(index + 1);
     expect(evaluationStatuses[index]).toBe(200);
